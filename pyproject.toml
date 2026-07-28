@@ -1,0 +1,14 @@
+[project]
+name = "pegsim"
+version = "0.1.0"
+description = "Add your description here"
+requires-python = ">=3.12"
+dependencies = [
+    "matplotlib>=3.11.1",
+    "mujoco>=3.11.0",
+    "numpy>=2.5.1",
+    "pytest>=9.1.1",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
