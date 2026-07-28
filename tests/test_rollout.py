@@ -4,7 +4,7 @@ import numpy as np
 import pytest
 
 from pegsim.control import ImpedanceGains
-from pegsim.rollout import EpisodeConfig, InsertionProfile, axis_xy_at_z, ground_truth_seated, run_episode
+from pegsim.rollout import EpisodeConfig, InsertionProfile, axis_xy_at_z, ground_truth_seated, hole_center_xy, run_episode
 from pegsim.scene import SolverSpec, TaskSpec
 from pegsim.search import SpiralSpec
 
@@ -60,6 +60,36 @@ class TestAxisXyAtZ:
         xy = axis_xy_at_z(tip_pos, axis_dir, 0.0)
         expected_x = 0.04 * math.tan(tilt)  # lever arm * tan(tilt)
         assert xy[0] == pytest.approx(expected_x, abs=1e-9)
+
+
+class TestHoleCenterXy:
+    def test_mouth_is_always_world_origin_regardless_of_tilt(self):
+        for tilt_deg in (0.0, 5.0, -20.0):
+            np.testing.assert_allclose(hole_center_xy(0.0, tilt_deg), [0.0, 0.0], atol=1e-12)
+
+    def test_zero_tilt_is_world_origin_at_any_depth(self):
+        np.testing.assert_allclose(hole_center_xy(-0.02, 0.0), [0.0, 0.0], atol=1e-12)
+
+    def test_tilted_hole_shifts_center_at_depth(self):
+        tilt_deg = 10.0
+        z = -0.01
+        expected_x = z * math.tan(math.radians(tilt_deg))
+        xy = hole_center_xy(z, tilt_deg)
+        assert xy[0] == pytest.approx(expected_x)
+        assert xy[1] == 0.0
+
+    def test_seated_check_uses_hole_center_not_world_origin_when_tilted(self):
+        """A peg exactly ON the tilted hole's centerline at depth must read
+        as centered, even though it is off world-origin there."""
+        tilt_deg = 10.0
+        z_tip = -0.02
+        tip_pos = np.array([hole_center_xy(z_tip, tilt_deg)[0], 0.0, z_tip])
+        axis_dir = np.array([math.sin(math.radians(tilt_deg)), 0.0, math.cos(math.radians(tilt_deg))])
+        force = np.array([0.0, 0.0, -1.0])
+        assert ground_truth_seated(tip_pos, axis_dir, force, TASK, TASK.plate_thickness - 0.001, 0.0, tilt_deg)
+        # Same physical peg, checked against world-origin (tilt=0 assumption)
+        # instead, must NOT read as centered -- this is the bug being guarded.
+        assert not ground_truth_seated(tip_pos, axis_dir, force, TASK, TASK.plate_thickness - 0.001, 0.0, 0.0)
 
 
 class TestGroundTruthSeated:

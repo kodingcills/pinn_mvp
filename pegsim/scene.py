@@ -289,8 +289,21 @@ def _plate_geoms_xml(task: TaskSpec) -> str:
     return "\n".join(lines)
 
 
-def build_mjcf(task: TaskSpec, solver: SolverSpec) -> str:
-    """Generate the full peg-in-hole MJCF model as an XML string."""
+def build_mjcf(task: TaskSpec, solver: SolverSpec, plate_tilt_deg: float = 0.0) -> str:
+    """Generate the full peg-in-hole MJCF model as an XML string.
+
+    plate_tilt_deg: fixture-misalignment scenario, not a CAD parameter --
+    tilts the whole plate body (and therefore the hole axis) about world Y
+    by this angle, rotating about the body origin (world (0,0,0), the
+    nominal hole mouth center), so the hole's (x,y) location is unchanged
+    but its axis is no longer vertical. Used to test angular tolerance
+    (Milestone 4 Stage B item B0c), never part of TaskSpec since a real
+    customer CAD spec has no "how misaligned is my fixture" field.
+    """
+    plate_quat = _fmt(np.array([
+        math.cos(math.radians(plate_tilt_deg) / 2.0), 0.0,
+        math.sin(math.radians(plate_tilt_deg) / 2.0), 0.0,
+    ]))
     return f"""<mujoco model="peg_in_hole">
   <option timestep="{solver.timestep:.10g}" cone="{solver.cone}" \
 integrator="{solver.integrator}" gravity="0 0 -9.81"/>
@@ -299,7 +312,7 @@ integrator="{solver.integrator}" gravity="0 0 -9.81"/>
 
   <worldbody>
     <light pos="0 0 1" dir="0 0 -1" diffuse="1 1 1"/>
-    <body name="plate" pos="0 0 0">
+    <body name="plate" pos="0 0 0" quat="{plate_quat}">
 {_plate_geoms_xml(task)}
     </body>
 

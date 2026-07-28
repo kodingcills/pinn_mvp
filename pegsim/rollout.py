@@ -89,6 +89,7 @@ class EpisodeConfig:
     spiral_spec: SpiralSpec | None = None  # None => straight drop, no search
     target_depth: float = None  # default set in __post_init__: task.plate_thickness - margin
     seat_persist_s: float = 0.1  # ground_truth_seated must hold continuously this long
+    plate_tilt_deg: float = 0.0  # fixture-misalignment scenario, see scene.build_mjcf
 
     def __post_init__(self) -> None:
         assert self.z_start > 0, "z_start must be above the plate (z=0)"
@@ -110,6 +111,15 @@ def axis_xy_at_z(tip_pos: np.ndarray, axis_dir: np.ndarray, z_target: float) -> 
     return tip_pos[:2] + axis_dir[:2] * s
 
 
+def hole_center_xy(z: float, hole_tilt_deg: float) -> np.ndarray:
+    """True (x, y) of the hole's own centerline at world height z, for a
+    hole tilted about world Y by hole_tilt_deg (see scene.build_mjcf's
+    plate_tilt_deg). The tilt rotates about the mouth (world origin at
+    z=0), so the mouth itself never moves -- only depth away from it does,
+    by z*tan(tilt). At hole_tilt_deg=0 this is always (0, 0)."""
+    return np.array([z * math.tan(math.radians(hole_tilt_deg)), 0.0])
+
+
 def ground_truth_seated(
     tip_pos: np.ndarray,
     axis_dir: np.ndarray,
@@ -117,12 +127,18 @@ def ground_truth_seated(
     task: TaskSpec,
     target_depth: float,
     pen_allow: float,
+    hole_tilt_deg: float = 0.0,
 ) -> bool:
-    """Sim-only success check: uses the true hole position (world origin),
-    valid here because this grades the benchmark offline -- it is never used
-    to drive control or train a policy (Rule Zero). Tilt-robust by geometric
+    """Sim-only success check: uses the true hole position, valid here
+    because this grades the benchmark offline -- it is never used to drive
+    control or train a policy (Rule Zero). Tilt-robust by geometric
     containment: checks BOTH ends of the engaged segment (the tip, and where
-    the axis crosses the plate's mouth at z=0).
+    the axis crosses the plate's mouth at z=0) against the HOLE's own
+    (possibly tilted) centerline, not blindly against world (0,0) -- a
+    tilted hole's centerline only passes through the origin at its mouth
+    (z=0); at any other depth it has shifted by z*tan(hole_tilt_deg), and
+    comparing against world (0,0) there would wrongly penalize a peg that is
+    genuinely centered in the tilted hole.
 
     clearance + pen_allow, not clearance alone: a peg resting against the
     bore wall settles AT clearance by definition (that is the wall), so
@@ -139,8 +155,9 @@ def ground_truth_seated(
     not diagonal wedging, so there is nothing to calibrate against yet.
     """
     z_tip = tip_pos[2]
-    tip_lateral = float(np.linalg.norm(tip_pos[:2]))
-    mouth_lateral = float(np.linalg.norm(axis_xy_at_z(tip_pos, axis_dir, 0.0)))
+    tip_lateral = float(np.linalg.norm(tip_pos[:2] - hole_center_xy(z_tip, hole_tilt_deg)))
+    mouth_xy = axis_xy_at_z(tip_pos, axis_dir, 0.0)
+    mouth_lateral = float(np.linalg.norm(mouth_xy - hole_center_xy(0.0, hole_tilt_deg)))
     lateral_force = float(np.linalg.norm(contact_force_world[:2]))
     axial_force = abs(float(contact_force_world[2]))
     f_wedge = math.inf  # deferred -- see module docstring and PHASE2.md
@@ -154,7 +171,7 @@ def ground_truth_seated(
 
 
 def run_episode(cfg: EpisodeConfig, pen_allow: float = 0.0) -> dict[str, object]:
-    model = mujoco.MjModel.from_xml_string(build_mjcf(cfg.task, cfg.solver))
+    model = mujoco.MjModel.from_xml_string(build_mjcf(cfg.task, cfg.solver, cfg.plate_tilt_deg))
     data = mujoco.MjData(model)
 
     x0 = cfg.initial_offset_r * math.cos(cfg.initial_offset_theta)
@@ -253,7 +270,7 @@ def run_episode(cfg: EpisodeConfig, pen_allow: float = 0.0) -> dict[str, object]
         mouth_lateral_log[i] = np.linalg.norm(axis_xy_at_z(tip, axis_dir, 0.0))
         tilt_deg_log[i] = math.degrees(math.acos(min(1.0, max(-1.0, axis_dir[2]))))
 
-        if ground_truth_seated(tip, axis_dir, force, cfg.task, cfg.target_depth, pen_allow):
+        if ground_truth_seated(tip, axis_dir, force, cfg.task, cfg.target_depth, pen_allow, cfg.plate_tilt_deg):
             consecutive_ok += 1
         else:
             consecutive_ok = 0

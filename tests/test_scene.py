@@ -248,3 +248,28 @@ class TestBlindHoleFloor:
         xml = build_mjcf(task, SOLVER)
         model = mujoco.MjModel.from_xml_string(xml)
         assert mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_GEOM, "floor") < 0
+
+
+class TestPlateTilt:
+    """Stage B item B0c: fixture-misalignment scenario, not a CAD parameter
+    -- tilts the hole axis about world Y, rotating about the mouth center
+    (world origin) so the hole's (x,y) location is unchanged."""
+
+    @pytest.mark.parametrize("tilt_deg", [0.0, 5.0, 20.0, -15.0])
+    def test_hole_axis_tilts_about_world_y(self, tilt_deg):
+        xml = build_mjcf(TASK, SOLVER, plate_tilt_deg=tilt_deg)
+        model = mujoco.MjModel.from_xml_string(xml)
+        data = mujoco.MjData(model)
+        mujoco.mj_forward(model, data)
+        gid = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_GEOM, "floor")
+        world_z_axis = data.geom_xmat[gid].reshape(3, 3)[:, 2]
+        expected = np.array([math.sin(math.radians(tilt_deg)), 0.0, math.cos(math.radians(tilt_deg))])
+        np.testing.assert_allclose(world_z_axis, expected, atol=1e-9)
+
+    def test_zero_tilt_leaves_floor_at_world_origin_xy(self):
+        xml = build_mjcf(TASK, SOLVER, plate_tilt_deg=0.0)
+        model = mujoco.MjModel.from_xml_string(xml)
+        data = mujoco.MjData(model)
+        mujoco.mj_forward(model, data)
+        gid = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_GEOM, "floor")
+        np.testing.assert_allclose(data.geom_xpos[gid][:2], [0.0, 0.0], atol=1e-9)

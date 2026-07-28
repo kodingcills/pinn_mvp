@@ -34,32 +34,43 @@ def raycast_topmost_z(model, data, r, theta, peg_body_id, start_z=0.02):
     return None if dist < 0 else start_z - dist
 
 
-def main() -> None:
-    model = mujoco.MjModel.from_xml_string(build_mjcf(TASK, SolverSpec()))
+def _render(plate_tilt_deg: float, out_path: str, title: str) -> None:
+    model = mujoco.MjModel.from_xml_string(build_mjcf(TASK, SolverSpec(), plate_tilt_deg=plate_tilt_deg))
     data = mujoco.MjData(model)
     mujoco.mj_forward(model, data)
     peg_body_id = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_BODY, "peg")
 
-    r_mm = np.arange(0.0, 15.0, 0.05)
+    # Signed r along the tilt axis (world x), not |r|, so the asymmetric
+    # profile a tilted hole produces is visible instead of folded over.
+    r_mm = np.arange(-15.0, 15.0, 0.05)
     z_mm = []
     for r in r_mm:
-        z = raycast_topmost_z(model, data, r / 1000.0, 0.0, peg_body_id)
+        theta = 0.0 if r >= 0 else math.pi
+        z = raycast_topmost_z(model, data, abs(r) / 1000.0, theta, peg_body_id)
         z_mm.append(np.nan if z is None else z * 1000.0)
     z_mm = np.array(z_mm)
 
     fig, ax = plt.subplots(figsize=(8, 4))
     ax.plot(r_mm, z_mm, "-", lw=1.5, color="tab:blue")
     ax.axvline(TASK.hole_radius * 1000, color="gray", ls="--", lw=0.8, label="hole_radius")
+    ax.axvline(-TASK.hole_radius * 1000, color="gray", ls="--", lw=0.8)
     ax.axvline((TASK.hole_radius + TASK.chamfer_width) * 1000, color="gray", ls=":", lw=0.8, label="hole_radius+chamfer")
+    ax.axvline(-(TASK.hole_radius + TASK.chamfer_width) * 1000, color="gray", ls=":", lw=0.8)
     ax.axhline(-TASK.plate_thickness * 1000, color="tab:red", ls="--", lw=0.8, label="floor (-plate_thickness)")
-    ax.set_xlabel("radius r (mm)")
+    ax.set_xlabel("signed radius along tilt axis, world x (mm)")
     ax.set_ylabel("topmost solid z (mm)")
-    ax.set_title("Plate cross section (theta=0 raycast silhouette)")
+    ax.set_title(title)
     ax.legend(fontsize=8)
     ax.grid(alpha=0.3)
     fig.tight_layout()
-    fig.savefig("docs/scene_cross_section.png", dpi=150)
-    print("saved docs/scene_cross_section.png")
+    fig.savefig(out_path, dpi=150)
+    print(f"saved {out_path}")
+
+
+def main() -> None:
+    _render(0.0, "docs/scene_cross_section.png", "Plate cross section (raycast silhouette, no tilt)")
+    _render(10.0, "docs/scene_cross_section_tilted.png",
+            "Plate cross section, plate_tilt_deg=10 (Stage B item B0c fixture-misalignment scenario)")
 
 
 if __name__ == "__main__":
