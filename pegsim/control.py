@@ -27,21 +27,48 @@ MAX_TILT_RAD = math.radians(10.0)
 @dataclass(frozen=True)
 class ImpedanceGains:
     """Cartesian stiffness. Damping is never a free parameter here -- it is
-    derived per-DOF from the mass matrix (see derived_damping)."""
+    derived per-DOF from the mass matrix (see derived_damping).
+
+    Rotational stiffness is per-DOF, not a shared k_rot: rz's inertia (about
+    the cylinder's long axis, no parallel-axis term) is roughly two orders of
+    magnitude smaller than rx/ry's (which pick up a parallel-axis term since
+    the hinges sit at the tip, not the CoM). k_rz defaults near-zero, not
+    exactly zero: a round peg in a round hole doesn't care what angle it
+    spins to about its own axis, so rz needs no restoring stiffness for
+    insertion, but derived_damping's D=2*sqrt(K*M) needs a nonzero K to
+    produce any damping at all -- exactly zero would leave rz undamped and
+    free to spin up from any small perturbation.
+
+    k_rx/k_ry=1.0, not the original 5.0: the per-DOF diagonal cap in
+    stability_cap (K <= (2/dt)^2*M_ii) says K=5 is fine in isolation for
+    rx/ry on the 5mm/50g peg (M_ii=4.2e-5 gives a cap of ~168) -- but that
+    check treats each DOF as decoupled, and it isn't. mj_fullM's off-diagonal
+    terms (M_x,ry = M_y,rx = 1.25e-3, verified numerically) couple x-translation
+    with ry-rotation and y with rx (the same tip-vs-CoM offset that couples
+    gravity into rx/ry). Empirically, K_rx=K_ry=5 and 2 both diverge under
+    lateral motion despite passing the per-DOF cap; 1.5 and 1.25 are still
+    marginal (unstable under a faster/larger lateral ramp); 1.0 held stable
+    under both. The per-DOF diagonal cap is necessary but NOT sufficient for
+    this coupled 6-DOF chain -- flagged, not silently worked around.
+    """
 
     k_xy: float = 500.0
     k_z: float = 2000.0
-    k_rot: float = 5.0
+    k_rx: float = 1.0
+    k_ry: float = 1.0
+    k_rz: float = 0.05
 
     def __post_init__(self) -> None:
         assert self.k_xy > 0, "k_xy must be positive"
         assert self.k_z > 0, "k_z must be positive"
-        assert self.k_rot > 0, "k_rot must be positive"
+        assert self.k_rx > 0, "k_rx must be positive"
+        assert self.k_ry > 0, "k_ry must be positive"
+        assert self.k_rz > 0, "k_rz must be positive (near-zero is fine, exactly zero leaves rz undamped)"
 
     @property
     def stiffness_vector(self) -> np.ndarray:
         """Order matches PEG_DOF_JOINT_NAMES: (x, y, z, rx, ry, rz)."""
-        return np.array([self.k_xy, self.k_xy, self.k_z, self.k_rot, self.k_rot, self.k_rot])
+        return np.array([self.k_xy, self.k_xy, self.k_z, self.k_rx, self.k_ry, self.k_rz])
 
 
 def peg_dof_ids(model: mujoco.MjModel) -> np.ndarray:
@@ -68,6 +95,66 @@ def derived_damping(model: mujoco.MjModel, data: mujoco.MjData, dof_ids: np.ndar
     m_diag = full_m[dof_ids, dof_ids]
     assert np.all(m_diag > 0), "mass matrix diagonal must be positive -- check armature/joint setup"
     return 2.0 * np.sqrt(stiffness * m_diag)
+
+
+def stability_cap(model: mujoco.MjModel, data: mujoco.MjData, dof_ids: np.ndarray, dt: float) -> np.ndarray:
+    """Max per-DOF stiffness for which explicit force injection stays stable:
+    K_i <= (2/dt)^2 * M_ii.
+
+    qfrc_applied is a plain per-step external force, computed in Python from
+    the CURRENT state -- it gets none of MuJoCo's implicit treatment of
+    passive (native joint stiffness/damping) terms, regardless of
+    integrator="implicitfast". That makes this equivalent to semi-implicit
+    Euler integration of a mass-spring system driven by an external force,
+    whose stability limit is omega_n*dt < 2 with omega_n = sqrt(K/M);
+    rearranged, K <= (2/dt)^2 * M. Verified against the rz blow-up in
+    Milestone 2/3: M_rz for the 5mm/50g peg was 6.25e-7, giving a cap of 2.5
+    at dt=1ms -- the old shared K_rot=5 exceeded it by 2x, exactly matching
+    the observed instability.
+    """
+    full_m = np.zeros((model.nv, model.nv))
+    mujoco.mj_fullM(model, data, full_m)
+    m_diag = full_m[dof_ids, dof_ids]
+    return (2.0 / dt) ** 2 * m_diag
+
+
+def assert_gains_stable(
+    model: mujoco.MjModel,
+    data: mujoco.MjData,
+    gains: ImpedanceGains,
+    dt: float,
+    warn_margin: float = 0.8,
+) -> None:
+    """One-time stability check at controller construction (call once per
+    episode, right after the initial mj_forward, before stepping). Asserts no
+    DOF's stiffness exceeds its stability_cap at the model's current
+    configuration, and prints a warning for any DOF within warn_margin of its
+    cap even if not yet violated.
+
+    NECESSARY, NOT SUFFICIENT: this treats each DOF as decoupled, but x/ry
+    and y/rx are coupled through mj_fullM's off-diagonal terms (the same
+    tip-vs-CoM offset that couples gravity into rx/ry). K_rx=K_ry=5 and 2
+    both pass this per-DOF check comfortably (cap ~168 at rest) yet diverge
+    empirically under lateral motion; only empirical sweeping down to
+    K_rx=K_ry=1 gave a version that actually held (see ImpedanceGains
+    defaults' comment). This function still catches gross violations (it
+    caught the original shared K_rot=5 on rz, cap 2.5), it just cannot catch
+    coupling-driven instability the diagonal-only formula doesn't model.
+    """
+    dof_ids = peg_dof_ids(model)
+    cap = stability_cap(model, data, dof_ids, dt)
+    stiffness = gains.stiffness_vector
+    for name, k, c in zip(PEG_DOF_JOINT_NAMES, stiffness, cap):
+        assert k <= c, (
+            f"K for {name} ({k:.6g}) exceeds the explicit-integration stability "
+            f"cap (2/dt)^2*M_ii = {c:.6g} at dt={dt} -- this WILL blow up, not "
+            "a maybe (see the rz finding in the Milestone 2/3 report)"
+        )
+        if k > warn_margin * c:
+            print(
+                f"WARNING: {name} stiffness {k:.6g} is at {100.0 * k / c:.1f}% of "
+                f"its stability cap {c:.6g} (dt={dt}) -- little margin left"
+            )
 
 
 def _orientation_error(quat_cur: np.ndarray, quat_des: np.ndarray) -> np.ndarray:

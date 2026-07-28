@@ -8,13 +8,18 @@ from pegsim.control import (
     MAX_TILT_RAD,
     ImpedanceGains,
     _orientation_error,
+    assert_gains_stable,
     compute_and_apply_qfrc,
     derived_damping,
     peg_contact_force_world,
     peg_dof_ids,
+    stability_cap,
 )
 from pegsim.scene import SolverSpec, TaskSpec, build_mjcf
 
+# The canonical peg. Every downstream milestone uses this -- no substitute
+# fixture for stability convenience (see ImpedanceGains' docstring for why
+# the default gains were changed instead of the peg).
 TASK = TaskSpec(
     peg_radius=0.005,
     radial_clearance=0.0005,
@@ -27,24 +32,6 @@ TASK = TaskSpec(
 )
 SOLVER = SolverSpec()
 GRAVITY = 9.81
-
-# Bigger than TASK specifically so rz's own inertia clears the explicit-force
-# stability margin (see TestImpedanceClosedLoop docstring below): with TASK's
-# 5mm/50g peg, M_rz = 0.5*m*r^2 = 6.25e-7 kg*m^2, giving a stable-timestep
-# bound dt_max = 2*sqrt(M_rz/k_rot) = 0.71ms -- under the 1ms step this
-# project fixes, and any nonzero lateral motion excites a genuine numerical
-# (not physical) blow-up in rz. STABLE_TASK's 10mm/200g peg gives
-# M_rz = 1e-5, dt_max = 2.8ms, comfortably clear.
-STABLE_TASK = TaskSpec(
-    peg_radius=0.01,
-    radial_clearance=0.0005,
-    chamfer_width=0.001,
-    plate_thickness=0.02,
-    peg_length=0.08,
-    peg_mass=0.2,
-    n_segments=16,
-    friction=0.4,
-)
 
 
 def _fresh_model_data(task: TaskSpec = TASK):
@@ -81,6 +68,44 @@ class TestDerivedDamping:
         gains = ImpedanceGains()
         damping = derived_damping(model, data, dof_ids, gains.stiffness_vector)
         assert np.all(damping > 0)
+
+
+class TestStabilityCap:
+    """K_i <= (2/dt)^2 * M_ii: necessary (catches gross violations like the
+    original shared K_rot=5 on rz) but NOT sufficient (x/ry and y/rx are
+    coupled through mj_fullM's off-diagonal terms -- see ImpedanceGains'
+    docstring). Both properties get their own test."""
+
+    def test_default_gains_pass_the_per_dof_cap(self):
+        model, data = _fresh_model_data()
+        mujoco.mj_forward(model, data)
+        gains = ImpedanceGains()
+        assert_gains_stable(model, data, gains, SOLVER.timestep)  # must not raise
+
+    def test_old_shared_k_rot_five_on_rz_would_have_violated_the_cap(self):
+        model, data = _fresh_model_data()
+        mujoco.mj_forward(model, data)
+        dof_ids = peg_dof_ids(model)
+        cap = stability_cap(model, data, dof_ids, SOLVER.timestep)
+        rz_cap = cap[5]
+        assert rz_cap < 5.0, f"expected rz's cap (~2.5) to be under the old shared K_rot=5, got {rz_cap}"
+
+    def test_cap_scales_as_inverse_dt_squared(self):
+        model, data = _fresh_model_data()
+        mujoco.mj_forward(model, data)
+        dof_ids = peg_dof_ids(model)
+        cap_1ms = stability_cap(model, data, dof_ids, 0.001)
+        cap_2ms = stability_cap(model, data, dof_ids, 0.002)
+        np.testing.assert_allclose(cap_1ms, 4.0 * cap_2ms)
+
+    def test_raises_when_a_dof_exceeds_its_cap(self):
+        model, data = _fresh_model_data()
+        mujoco.mj_forward(model, data)
+        # k_rz=5 matches the OLD shared K_rot value, which exceeds rz's cap
+        # (~2.5) on this peg at dt=1ms -- exactly the regression this guards.
+        gains = ImpedanceGains(k_rz=5.0)
+        with pytest.raises(AssertionError, match="peg_rz"):
+            assert_gains_stable(model, data, gains, SOLVER.timestep)
 
 
 class TestStaticRestContactForce:
@@ -132,15 +157,10 @@ class TestOrientationErrorFrame:
 
 
 class TestImpedanceClosedLoop:
-    """Uses STABLE_TASK, not the module-level TASK: see STABLE_TASK's comment.
-    With TASK's small peg, any nonzero lateral (x/y) setpoint seeds a real
-    (not sign-error) numerical blow-up in rz, because explicit force
-    injection (qfrc_applied, mandated by the spec so control.py is the sole
-    source of stiffness/damping) gets none of the implicit integrator's
-    stability benefit -- only native passive joint terms do. Flagged to the
-    user: this is a genuine finding for Milestone 4 (continuous lateral
-    motion during spiral search) with a small peg at K_rot=5, dt=1ms, not
-    something to silently work around here."""
+    """All on TASK, the canonical 5mm/50g peg -- per-DOF gains (K_rx=K_ry=1,
+    K_rz=0.05) replace the old shared K_rot=5 specifically so this peg is
+    stable under lateral motion without a substitute fixture. See
+    ImpedanceGains' docstring for the empirical sweep that set K_rx=K_ry=1."""
 
     def test_holds_small_lateral_setpoint_in_free_space(self):
         """Sanity check for sign errors in the J^T F_cart mapping: with no
@@ -152,10 +172,11 @@ class TestImpedanceClosedLoop:
         # peg's CoM-offset inertial coupling (tip != CoM), genuinely induces
         # tilt -- that is real rigid-body physics, not a controller bug. Ramp
         # the setpoint here too, matching realistic usage.
-        model, data = _fresh_model_data(STABLE_TASK)
+        model, data = _fresh_model_data()
         mujoco.mj_forward(model, data)
         gains = ImpedanceGains()
-        target = np.array([0.001, -0.0015, 0.01])  # free space, well above the plate
+        assert_gains_stable(model, data, gains, SOLVER.timestep)
+        target = np.array([0.0018, -0.0018, 0.01])  # near 1.25*capture_radius laterally
         ramp_steps = 1000
 
         for i in range(3000):
@@ -168,12 +189,10 @@ class TestImpedanceClosedLoop:
         np.testing.assert_allclose(data.site_xpos[site_id], target, atol=5e-4)
         assert np.linalg.norm(data.qvel[:3]) < 1e-2
 
-    def test_zero_lateral_offset_z_ramp_is_stable_on_small_peg(self):
+    def test_zero_lateral_offset_z_ramp_is_stable(self):
         """Milestone 2's actual usage (step1_drop.py): x_des/y_des held at
-        zero, only z_des ramps. Uses TASK (the small peg), not STABLE_TASK --
-        with zero lateral setpoint there is nothing to seed rz's marginal
-        instability, so this must stay clean on the real fixture."""
-        model, data = _fresh_model_data(TASK)
+        zero, only z_des ramps."""
+        model, data = _fresh_model_data()
         mujoco.mj_forward(model, data)
         gains = ImpedanceGains()
 

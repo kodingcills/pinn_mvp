@@ -17,7 +17,13 @@ from pathlib import Path
 import mujoco
 import numpy as np
 
-from pegsim.control import ImpedanceGains, compute_and_apply_qfrc, min_contact_dist, peg_contact_force_world
+from pegsim.control import (
+    ImpedanceGains,
+    assert_gains_stable,
+    compute_and_apply_qfrc,
+    min_contact_dist,
+    peg_contact_force_world,
+)
 from pegsim.scene import SolverSpec, TaskSpec, build_mjcf
 
 TASK = TaskSpec(
@@ -41,6 +47,7 @@ def run_episode(task: TaskSpec, solver: SolverSpec, gains: ImpedanceGains) -> di
     model = mujoco.MjModel.from_xml_string(build_mjcf(task, solver))
     data = mujoco.MjData(model)
     mujoco.mj_forward(model, data)
+    assert_gains_stable(model, data, gains, solver.timestep)
 
     dt = solver.timestep
     n_steps = int(abs(Z_END - Z_START) / (RAMP_RATE * dt)) + 1
