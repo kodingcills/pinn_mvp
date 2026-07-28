@@ -71,9 +71,13 @@ class SolverSpec:
     """Solver / contact parameters, kept separate from TaskSpec so they can be
     swept independently (see Milestone 3 contact-model audit)."""
 
+    # No default: dt is part of the validated (k_xy, k_rx, k_ry, dt) gains
+    # combination (see ImpedanceGains), not independently choosable -- 0.001
+    # and 0.0005 are both used deliberately elsewhere in this project for
+    # DIFFERENT, non-interchangeable gains combinations.
+    timestep: float
     solref: tuple[float, float] = (0.002, 1.0)
     solimp: tuple[float, float, float] = (0.9, 0.95, 0.0001)
-    timestep: float = 0.001
     cone: str = "elliptic"
     integrator: str = "implicitfast"
 

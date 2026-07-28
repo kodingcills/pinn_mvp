@@ -24,7 +24,7 @@ TASK = TaskSpec(
 
 
 def main() -> None:
-    model = mujoco.MjModel.from_xml_string(build_mjcf(TASK, SolverSpec()))
+    model = mujoco.MjModel.from_xml_string(build_mjcf(TASK, SolverSpec(timestep=0.001)))
     data = mujoco.MjData(model)
     # Move the peg far away -- it sits at the world origin by default and
     # would otherwise be the first thing every ray hits.

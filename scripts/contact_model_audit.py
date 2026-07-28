@@ -69,7 +69,7 @@ TASK = TaskSpec(
     n_segments=16,
     friction=0.4,
 )
-GAINS = ImpedanceGains()
+GAINS = ImpedanceGains(k_xy=500.0, k_rx=1.0, k_ry=1.0)
 
 Z_START = 0.005
 Z_END = -0.045
@@ -81,9 +81,9 @@ LATERAL_OFFSET = 0.5 * TASK.capture_radius  # inside the chamfer catch range
 Z_FLOOR = -(TASK.plate_thickness + TASK.peg_length) + 0.002
 
 SETTINGS = {
-    "A_default": SolverSpec(solref=(0.02, 1.0), solimp=(0.9, 0.95, 0.001)),
-    "B_tuned": SolverSpec(solref=(0.002, 1.0), solimp=(0.9, 0.95, 0.0001)),
-    "C_very_stiff": SolverSpec(solref=(0.0005, 1.0), solimp=(0.9, 0.95, 0.00005)),
+    "A_default": SolverSpec(solref=(0.02, 1.0), solimp=(0.9, 0.95, 0.001), timestep=0.001),
+    "B_tuned": SolverSpec(solref=(0.002, 1.0), solimp=(0.9, 0.95, 0.0001), timestep=0.001),
+    "C_very_stiff": SolverSpec(solref=(0.0005, 1.0), solimp=(0.9, 0.95, 0.00005), timestep=0.001),
 }
 
 

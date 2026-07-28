@@ -25,7 +25,7 @@ TASK = TaskSpec(
     friction=0.4,
 )
 SOLVER = SolverSpec(timestep=0.0005)  # A5: stable, 2x cheaper than 0.00025
-GAINS = ImpedanceGains(k_rx=5.0, k_ry=5.0, k_rz=0.05)  # K_xy stays 500 (default), untouched
+GAINS = ImpedanceGains(k_xy=500.0, k_rx=5.0, k_ry=5.0, k_rz=0.05)  # K_xy stays 500 (default), untouched
 INSERTION = InsertionProfile()
 OFFSET = 0.00175  # 1.75mm, just outside passive R_passive=1.5mm -- forces real sliding search
 

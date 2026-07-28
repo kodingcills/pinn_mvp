@@ -24,7 +24,7 @@ TASK = TaskSpec(
     friction=0.4,
 )
 SOLVER = SolverSpec(timestep=0.0005)
-GAINS = ImpedanceGains(k_rx=5.0, k_ry=5.0, k_rz=0.05)
+GAINS = ImpedanceGains(k_xy=500.0, k_rx=5.0, k_ry=5.0, k_rz=0.05)
 INSERTION = InsertionProfile()
 PEN_ALLOW = 3.7035e-05
 OFFSET = 0.0018  # 1.8mm

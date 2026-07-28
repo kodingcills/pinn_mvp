@@ -373,3 +373,44 @@ def run_episode(cfg: EpisodeConfig, pen_allow: float = 0.0) -> dict[str, object]
         "seated": seated_step is not None,
         "time_to_seat_s": time_log[seated_step] if seated_step is not None else math.inf,
     }
+
+
+@dataclass(frozen=True)
+class ValidatedConfig:
+    """A single named, versioned bundle of every parameter that must move
+    together for a validated result to stay valid (Milestone 4 G4-escalated).
+
+    ImpedanceGains.k_xy/k_rx/k_ry and SolverSpec.timestep have no class
+    defaults precisely so a caller can't silently assemble a plausible but
+    never-tested combination from independent per-class defaults -- that is
+    exactly how k_xy=1000 (validated only together with k_rx=k_ry=5.0 and
+    dt=0.0005) broke test_holds_small_lateral_setpoint_in_free_space (which
+    uses k_rx=k_ry=1.0 and dt=0.001, a DIFFERENT validated combination) when
+    it was set as a shared default in isolation. Use one of the named
+    bundles below, or construct your own ValidatedConfig and name what
+    validated it.
+    """
+
+    task: TaskSpec
+    solver: SolverSpec
+    gains: ImpedanceGains
+    insertion: InsertionProfile
+    name: str
+    validated_by: str
+
+
+VALIDATED_LOOSE_V1 = ValidatedConfig(
+    task=TaskSpec(
+        peg_radius=0.005, radial_clearance=0.0005, chamfer_width=0.001,
+        plate_thickness=0.01, peg_length=0.05, peg_mass=0.05, n_segments=16, friction=0.4,
+    ),
+    solver=SolverSpec(timestep=0.0005),
+    gains=ImpedanceGains(k_xy=1000.0, k_rx=5.0, k_ry=5.0, k_rz=0.05),
+    insertion=InsertionProfile(f_search=1.0),
+    name="VALIDATED_LOOSE_V1",
+    validated_by=(
+        "scripts/measure_e3_search_phase_sweep.py (F5 re-sweep post seating-"
+        "trigger fix): 13/16 capture at 1.8mm offset, breakaway and seating-"
+        "trigger asserts both clear with margin."
+    ),
+)

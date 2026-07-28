@@ -27,7 +27,7 @@ TASK = TaskSpec(
     n_segments=16,
     friction=0.4,
 )
-GAINS = ImpedanceGains(k_rx=5.0, k_ry=5.0, k_rz=0.05)
+GAINS = ImpedanceGains(k_xy=500.0, k_rx=5.0, k_ry=5.0, k_rz=0.05)
 INSERTION = InsertionProfile()
 Z_START = 0.005
 MAX_SECONDS = 10.0

@@ -36,7 +36,7 @@ TASK = TaskSpec(
     n_segments=16,
     friction=0.4,
 )
-GAINS = ImpedanceGains()
+GAINS = ImpedanceGains(k_xy=500.0, k_rx=1.0, k_ry=1.0)
 
 Z_START = 0.005
 Z_END = -0.045
@@ -114,7 +114,7 @@ def main() -> int:
     parser.add_argument("--out", type=Path, default=Path("data/step1_drop.npz"))
     args = parser.parse_args()
 
-    solver = SolverSpec()
+    solver = SolverSpec(timestep=0.001)
     log = run_episode(TASK, solver, GAINS)
 
     if args.check:

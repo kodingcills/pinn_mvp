@@ -35,7 +35,7 @@ def raycast_topmost_z(model, data, r, theta, peg_body_id, start_z=0.02):
 
 
 def _render(plate_tilt_deg: float, out_path: str, title: str) -> None:
-    model = mujoco.MjModel.from_xml_string(build_mjcf(TASK, SolverSpec(), plate_tilt_deg=plate_tilt_deg))
+    model = mujoco.MjModel.from_xml_string(build_mjcf(TASK, SolverSpec(timestep=0.001), plate_tilt_deg=plate_tilt_deg))
     data = mujoco.MjData(model)
     mujoco.mj_forward(model, data)
     peg_body_id = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_BODY, "peg")

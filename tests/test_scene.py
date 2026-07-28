@@ -16,7 +16,7 @@ TASK = TaskSpec(
     n_segments=16,
     friction=0.4,
 )
-SOLVER = SolverSpec()
+SOLVER = SolverSpec(timestep=0.001)
 
 
 def _compiled_model_data():
@@ -83,7 +83,7 @@ class TestTaskSpecConstraints:
 class TestSolverSpecConstraints:
     def test_rejects_pyramidal_cone(self):
         with pytest.raises(AssertionError, match="cone"):
-            SolverSpec(cone="pyramidal")
+            SolverSpec(cone="pyramidal", timestep=0.001)
 
     def test_rejects_nonpositive_timestep(self):
         with pytest.raises(AssertionError, match="timestep"):

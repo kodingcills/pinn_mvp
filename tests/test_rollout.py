@@ -3,10 +3,19 @@ import math
 import numpy as np
 import pytest
 
-from pegsim.control import ImpedanceGains
-from pegsim.rollout import EpisodeConfig, InsertionProfile, axis_xy_at_z, ground_truth_seated, hole_center_xy, run_episode
-from pegsim.scene import SolverSpec, TaskSpec
-from pegsim.search import DELTA_MAX_SPEC_M, SpiralSpec
+from pegsim.control import ImpedanceGains, assert_gains_stable
+from pegsim.rollout import (
+    VALIDATED_LOOSE_V1,
+    EpisodeConfig,
+    InsertionProfile,
+    assert_seating_trigger_reachable,
+    axis_xy_at_z,
+    ground_truth_seated,
+    hole_center_xy,
+    run_episode,
+)
+from pegsim.scene import SolverSpec, TaskSpec, build_mjcf
+from pegsim.search import DELTA_MAX_SPEC_M, SpiralSpec, assert_search_force_budget
 
 TASK = TaskSpec(
     peg_radius=0.005,
@@ -18,9 +27,37 @@ TASK = TaskSpec(
     n_segments=16,
     friction=0.4,
 )
-SOLVER = SolverSpec()
-GAINS = ImpedanceGains()
+SOLVER = SolverSpec(timestep=0.001)
+GAINS = ImpedanceGains(k_xy=500.0, k_rx=1.0, k_ry=1.0)
 INSERTION = InsertionProfile()
+
+
+class TestValidatedLooseV1:
+    """Milestone 4 G4-escalated: VALIDATED_LOOSE_V1 bundles every parameter
+    that must move together (see its docstring). Guards against silent
+    drift in the bundle itself -- if any of its own asserts start failing,
+    that's a real regression, not a config-mismatch symptom."""
+
+    def test_gains_stable(self):
+        import mujoco
+        model = mujoco.MjModel.from_xml_string(
+            build_mjcf(VALIDATED_LOOSE_V1.task, VALIDATED_LOOSE_V1.solver)
+        )
+        data = mujoco.MjData(model)
+        mujoco.mj_forward(model, data)
+        assert_gains_stable(model, data, VALIDATED_LOOSE_V1.gains, VALIDATED_LOOSE_V1.solver.timestep)
+
+    def test_seating_trigger_reachable(self):
+        assert_seating_trigger_reachable(VALIDATED_LOOSE_V1.insertion, VALIDATED_LOOSE_V1.gains)
+
+    def test_search_force_budget(self):
+        r_cap_dyn = 0.0016  # measured, scripts/measure_c2a_dynamic_capture_radius.py
+        spiral_spec = SpiralSpec(task=VALIDATED_LOOSE_V1.task, delta_max=DELTA_MAX_SPEC_M,
+                                  v_t=0.005)
+        assert_search_force_budget(
+            VALIDATED_LOOSE_V1.task, VALIDATED_LOOSE_V1.gains.k_xy,
+            VALIDATED_LOOSE_V1.insertion.f_search, spiral_spec, r_cap_dyn,
+        )
 
 
 class TestInsertionProfileConstraints:
