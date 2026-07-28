@@ -167,12 +167,12 @@ def main() -> None:
     insertion = InsertionProfile(f_search=1.0)
     target_depth = TASK.plate_thickness - 0.001
 
-    angles = [i * 2.0 * math.pi / 16 for i in range(16)]
+    angles_deg = [i * 22.5 for i in range(16)]
     print(f"\n{'theta_deg':>10s} {'seated':>7s} {'time_to_seat_s':>15s} {'total_steps':>12s}")
     t0 = time.time()
     n_seated = 0
     times = []
-    for deg in angles:
+    for deg in angles_deg:
         r = run_probe_trial(math.radians(deg), gains, insertion, probe_spec, target_depth)
         n_seated += int(r["seated"])
         if r["seated"]:

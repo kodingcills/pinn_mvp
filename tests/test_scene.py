@@ -90,6 +90,46 @@ class TestSolverSpecConstraints:
             SolverSpec(timestep=0.0)
 
 
+class TestCompiledSolverOptionsMatchSpec:
+    """Milestone 4 G1: SolverSpec's own __post_init__ only validates the
+    Python-level string/tuple values -- it says nothing about what MuJoCo's
+    compiler actually did with them. This project has already been bitten
+    once by XML-vs-runtime divergence (a solref timeconst silently clamped
+    by the compiler) and once by a suspicion of the same class of bug (the
+    4-fold cardinal capture pattern, investigated as a possible pyramidal-
+    cone compile fallback -- ruled out, but only by checking the compiled
+    model directly, which is exactly what these tests now do permanently)."""
+
+    def test_cone_compiles_to_elliptic(self):
+        model, _ = _compiled_model_data()
+        assert model.opt.cone == mujoco.mjtCone.mjCONE_ELLIPTIC
+
+    def test_integrator_compiles_to_implicitfast(self):
+        model, _ = _compiled_model_data()
+        assert model.opt.integrator == mujoco.mjtIntegrator.mjINT_IMPLICITFAST
+
+    def test_timestep_compiles_unchanged(self):
+        model, _ = _compiled_model_data()
+        assert model.opt.timestep == pytest.approx(SOLVER.timestep)
+
+    def test_geom_solref_solimp_compile_unchanged(self):
+        """Checks EVERY geom, not just one -- the default block in
+        scene.py applies to all of them, so any per-geom divergence would
+        indicate the default isn't being inherited as assumed."""
+        model, _ = _compiled_model_data()
+        for gid in range(model.ngeom):
+            np.testing.assert_allclose(model.geom_solref[gid], SOLVER.solref)
+            # geom_solimp has 5 entries (dmin, dmax, width, midpoint, power);
+            # SolverSpec only configures the first 3, the rest are MuJoCo
+            # defaults -- only the configured ones are ours to verify.
+            np.testing.assert_allclose(model.geom_solimp[gid][:3], SOLVER.solimp)
+
+    def test_geom_friction_compiles_unchanged(self):
+        model, _ = _compiled_model_data()
+        for gid in range(model.ngeom):
+            assert model.geom_friction[gid, 0] == pytest.approx(TASK.friction)
+
+
 class TestChamferGeometry:
     """Milestone 1 required test: chamfer face endpoints land exactly where intended."""
 

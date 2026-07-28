@@ -93,6 +93,27 @@ design constant must state the bias condition it was measured under --
 zero bias, or a specific (f_search, k_xy) pair -- or it will silently
 overstate how sharp the boundary really is.
 
+**UPDATE, post seating-trigger fix (F1-F4 below):** the search-phase
+seating-phase transition previously fired on an ABSOLUTE depth
+(`z_tip < -chamfer_width`), which low f_search physically cannot reach
+(descent is capped at f_search/k_z). This bug, not force-starved passive
+engagement, explained a f_search=1N static settle at 1.51mm failing to
+seat. Re-measured directly with the fix: R_passive bracket at theta=0 is
+IDENTICAL, (1.5, 2.0)mm, at both f_search=1N and f_search=4N -- confirming
+F2's statics argument (mu=0.4 << 1, no self-locking possible on a 45deg
+chamfer face at any force) and contradicting the "sub-newton bias
+perturbs a marginal, force-dependent mechanism" framing above for THAT
+test case.
+
+The ORIGINAL 7/16 direction-dependent capture at 1.8mm (f_search=4N,
+k_xy=500, search ON) is UNAFFECTED by this bug (f=4N always cleared the
+old absolute threshold) and still stands as measured. Whether its
+direction-dependence is a genuinely anisotropic R_passive (scene tiling
+asymmetry) or something else is still open -- re-verify with a per-angle
+static-settle sweep (search OFF) at exactly 1.8mm before trusting the
+"small lateral bias" explanation above; it was written before this
+contamination was found and needs the same scrutiny.
+
 ## Search-phase force budget: k_xy*R_spiral must exceed mu*f_search
 
 Found via the same C2a 16-angle cross-check: at f_search=4N, k_xy=500,
@@ -116,3 +137,70 @@ since Milestone 1 (pegsim/scene.py's TaskSpec default) -- it was never
 is lubricated or plastic-on-plastic (0.1-0.2 typical), this doubles the
 friction floor above and should be revisited with the user before it's
 relied on as a design constant.
+
+## Seating-phase trigger was an absolute-depth stale constant (F1-F5)
+
+`in_seating_phase` fired on `z_tip < -chamfer_width` (an absolute -1mm),
+which silently assumed the search-phase reference could always push the
+tip that far down. False whenever `f_search/k_z < chamfer_width`: at
+f_search<=2N (k_z=2000) the peg's max unsupported descent tops out at
+<=1mm, strictly short of the trigger, and the seating ramp never fires no
+matter how well the lateral search finds the hole. Same class of bug as
+the old z_end=-45mm ramp target above -- a stale constant surviving a
+spec change (the blind-hole floor), producing a physics-shaped symptom
+("search is fundamentally hard at low f_search") that invited a
+physics-shaped explanation (friction/passive-engagement starvation)
+instead of the actual threshold bug.
+
+Fixed: `pegsim.rollout.DELTA_Z_TRIGGER` (0.2mm) + a live-tracked `z_flat`
+baseline (updated only while genuinely flat, not engaging), trigger fires
+on `z_flat - z_tip > DELTA_Z_TRIGGER`, independent of f_search/k_z.
+`assert_seating_trigger_reachable` catches configs that can't clear the
+trigger with margin. Re-swept F_search x k_xy after the fix (see
+scripts/measure_e3_search_phase_sweep.py): capture jumped from 0/16 to
+12-13/16 across f_search=1-2N at both k_xy=500 and 1000, exactly the
+"largely f_search-independent, gated by breakaway" pattern predicted once
+the trigger stopped being the binding constraint.
+
+Standing lesson: two real bugs in a row (the z_end ramp target, this
+trigger) were stale constants left over from a geometry/spec change, and
+both produced symptoms that looked like fundamental physics limits.
+Check constants against the CURRENT geometry/config before building a
+theory on top of a measurement.
+
+## k_xy above ~1000 destabilizes tip-over at these K_rot values -- physical, not numerical, uninvestigated
+
+At k_xy=2000 (k_rx=k_ry=5.0, dt=0.0005), a search-phase trial tipped past
+the 10deg safety bound after ~370 steps (0.185s). Checked the coupled-mode
+numerical-stability hypothesis directly: built the full 6x6 joint-space K
+(J^T diag(stiffness) J) and M (mj_fullM) through the trajectory and
+solved the generalized eigenvalue problem: max(omega*dt) stayed flat at
+~0.38-0.39 throughout, including at the crash step -- nowhere near the
+omega*dt<=2 explicit-integration limit. Not a linear numerical
+instability (370 steps also rules out an integrator blowup on its own,
+which fails in single digits). This is a genuine dynamic tip-over: as
+tilt grows the contact migrates toward the rim, the moment arm grows,
+and it runs away. Uninvestigated further -- not blocking, since k_xy=1000
+already works (13/16, see above) and 500 works too (12/16).
+
+## The validated search config is a COMBINATION, not independent defaults
+
+Attempted to lock k_xy=1000 (ImpedanceGains) and f_search=1.0
+(InsertionProfile) as the shared dataclass defaults (Milestone 4 G4).
+Reverted both: `ImpedanceGains()` with k_xy=1000 broke
+`test_holds_small_lateral_setpoint_in_free_space` (tilt hit 11.98deg) --
+that test uses k_rx=k_ry=1.0 (the OTHER default, tuned specifically
+against k_xy=500) and dt=0.001 (SolverSpec's default, not the 0.0005 every
+search-config sweep in this document actually used). The (f_search=1N,
+k_xy=1000) result above was only ever validated together with
+k_rx=k_ry=5.0 AND dt=0.0005 -- changing one shared default in isolation
+silently breaks unrelated call sites (free-space sanity checks, straight
+drops) that depend on the OTHER defaults staying matched to what they
+were tuned against.
+
+Conclusion: `ImpedanceGains`/`InsertionProfile`'s class defaults stay at
+their original (k_xy=500, f_search=4.0, k_rx=k_ry=1.0) values. The locked
+search config (f_search=1N, k_xy=1000, k_rx=k_ry=5.0, dt=0.0005) is a
+named combination that search-oriented scripts must construct explicitly
+(as measure_e3_search_phase_sweep.py, measure_e6_probe_vs_spiral.py, etc.
+already do) -- it is not safe as a silent global default.
