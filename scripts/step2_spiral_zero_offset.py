@@ -1,12 +1,19 @@
 """Milestone 4 sanity check: with zero initial offset, adding the spiral
 search must not prevent seating or destabilize contact -- confirms the
-search overlay itself before Milestone 4's real test (fixed offsets)."""
+search overlay itself before Milestone 4's real test (fixed offsets).
+
+Uses the stable gains config (K_rx=K_ry=5.0, dt=0.0005 -- see Stage A item
+A5: dt=0.001 is unstable for this peg at K_rot=5, dt=0.0005 is verified
+stable and is 2x cheaper than the 0.00025 used during diagnosis) and
+InsertionProfile's two-phase axial strategy (Stage A item A1/A1b/A1c).
+pen_allow measured from a zero-offset run, see PHASE2.md / commit history.
+"""
 from __future__ import annotations
 
 import sys
 
 from pegsim.control import ImpedanceGains
-from pegsim.rollout import EpisodeConfig, run_episode
+from pegsim.rollout import EpisodeConfig, InsertionProfile, run_episode
 from pegsim.scene import SolverSpec, TaskSpec
 from pegsim.search import SpiralSpec
 
@@ -20,24 +27,24 @@ TASK = TaskSpec(
     n_segments=16,
     friction=0.4,
 )
-GAINS = ImpedanceGains()
+GAINS = ImpedanceGains(k_rx=5.0, k_ry=5.0, k_rz=0.05)
+INSERTION = InsertionProfile()
 Z_START = 0.005
-Z_END = -0.045
-Z_RATE = 0.01
 MAX_SECONDS = 10.0
+PEN_ALLOW = 3.7035e-05  # 1.5x measured max interpenetration near the floor
 
 
 def main() -> int:
-    solver = SolverSpec()
+    solver = SolverSpec(timestep=0.0005)
     spiral_spec = SpiralSpec(task=TASK, delta_max=1.25 * TASK.capture_radius)
 
     cfg = EpisodeConfig(
-        task=TASK, solver=solver, gains=GAINS,
-        z_start=Z_START, z_end=Z_END, z_rate=Z_RATE,
+        task=TASK, solver=solver, gains=GAINS, insertion=INSERTION,
+        z_start=Z_START,
         initial_offset_r=0.0, initial_offset_theta=0.0,
         max_seconds=MAX_SECONDS, spiral_spec=spiral_spec,
     )
-    log = run_episode(cfg)
+    log = run_episode(cfg, pen_allow=PEN_ALLOW)
 
     finite_dist = log["min_contact_dist"][log["min_contact_dist"] < 1e30]
     max_interpenetration_mm = -finite_dist[finite_dist < 0].min() * 1000.0 if (finite_dist < 0).any() else 0.0

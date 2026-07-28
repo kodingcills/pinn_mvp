@@ -11,7 +11,7 @@ from __future__ import annotations
 import math
 
 from pegsim.control import ImpedanceGains
-from pegsim.rollout import EpisodeConfig, run_episode
+from pegsim.rollout import EpisodeConfig, InsertionProfile, run_episode
 from pegsim.scene import SolverSpec, TaskSpec
 from pegsim.search import SpiralSpec
 
@@ -20,13 +20,13 @@ def run_offset_sweep(
     task: TaskSpec,
     solver: SolverSpec,
     gains: ImpedanceGains,
+    insertion: InsertionProfile,
     offsets_m: list[float],
     angles_rad: list[float],
     z_start: float,
-    z_end: float,
-    z_rate: float,
     max_seconds: float,
     spiral_spec: SpiralSpec | None = None,
+    pen_allow: float = 0.0,
 ) -> list[dict]:
     """Run one episode per (offset, angle) pair. Returns a flat list of
     per-trial result dicts -- one row per trial, easy to turn into a table
@@ -38,13 +38,13 @@ def run_offset_sweep(
     for offset in offsets_m:
         for angle in angles_rad:
             cfg = EpisodeConfig(
-                task=task, solver=solver, gains=gains,
-                z_start=z_start, z_end=z_end, z_rate=z_rate,
+                task=task, solver=solver, gains=gains, insertion=insertion,
+                z_start=z_start,
                 initial_offset_r=offset, initial_offset_theta=angle,
                 max_seconds=max_seconds, spiral_spec=spiral_spec,
             )
             try:
-                log = run_episode(cfg)
+                log = run_episode(cfg, pen_allow=pen_allow)
                 results.append({
                     "offset_m": offset,
                     "angle_rad": angle,

@@ -2,6 +2,7 @@ import math
 
 from pegsim.characterize import find_r_passive, run_offset_sweep, success_rate_by_offset
 from pegsim.control import ImpedanceGains
+from pegsim.rollout import InsertionProfile
 from pegsim.scene import SolverSpec, TaskSpec
 
 TASK = TaskSpec(
@@ -14,14 +15,15 @@ TASK = TaskSpec(
     n_segments=16,
     friction=0.4,
 )
+INSERTION = InsertionProfile()
 
 
 class TestRunOffsetSweep:
     def test_returns_one_row_per_offset_angle_pair(self):
         results = run_offset_sweep(
-            TASK, SolverSpec(), ImpedanceGains(),
+            TASK, SolverSpec(), ImpedanceGains(), INSERTION,
             offsets_m=[0.0, 0.001], angles_rad=[0.0, math.pi / 2],
-            z_start=0.005, z_end=-0.045, z_rate=0.01, max_seconds=6.0,
+            z_start=0.005, max_seconds=6.0,
         )
         assert len(results) == 4
         assert all("seated" in r and "max_tilt_deg" in r for r in results)
@@ -30,9 +32,9 @@ class TestRunOffsetSweep:
         # k_rz=5 exceeds its stability cap for this peg at dt=0.001 (see
         # control.py) -- confirms the sweep survives a trial that asserts.
         results = run_offset_sweep(
-            TASK, SolverSpec(), ImpedanceGains(k_rz=5.0),
+            TASK, SolverSpec(), ImpedanceGains(k_rz=5.0), INSERTION,
             offsets_m=[0.002], angles_rad=[0.0],
-            z_start=0.005, z_end=-0.045, z_rate=0.01, max_seconds=1.0,
+            z_start=0.005, max_seconds=1.0,
         )
         assert len(results) == 1
         assert results[0]["unstable"]

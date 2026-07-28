@@ -6,6 +6,14 @@ and time-to-seat per offset.
 Because the friction cone is elliptic, results should be angle-independent
 -- systematic variation with angle is a bug to investigate, not noise to
 average over.
+
+STALE PENDING STAGE B: this sweeps fractions of the placeholder
+capture_radius (0.25R-1.25R = 0.375-1.875mm). Stage A found R_passive (no
+search) sits at ~1.5mm = capture_radius exactly after the A1 force-control
+fix, so this range barely leaves the passive funnel's own reach -- Stage B
+item B4 redefines the search-on sweep around delta_max=2.0mm (a product
+requirement) and a re-picked chamfer, which will supersede this script's
+offset range. Left runnable (API updated) but not re-reported here.
 """
 from __future__ import annotations
 
@@ -15,7 +23,7 @@ import sys
 import numpy as np
 
 from pegsim.control import ImpedanceGains
-from pegsim.rollout import EpisodeConfig, run_episode
+from pegsim.rollout import EpisodeConfig, InsertionProfile, run_episode
 from pegsim.scene import SolverSpec, TaskSpec
 from pegsim.search import SpiralSpec
 
@@ -29,10 +37,10 @@ TASK = TaskSpec(
     n_segments=16,
     friction=0.4,
 )
-GAINS = ImpedanceGains()
+GAINS = ImpedanceGains(k_rx=5.0, k_ry=5.0, k_rz=0.05)
+INSERTION = InsertionProfile()
+PEN_ALLOW = 3.7035e-05
 Z_START = 0.005
-Z_END = -0.045
-Z_RATE = 0.01
 MAX_SECONDS = 12.0
 
 OFFSET_FRACTIONS = (0.25, 0.5, 0.75, 1.0, 1.25)
@@ -40,7 +48,7 @@ ANGLES_DEG = (0, 45, 90, 135, 180, 225, 270, 315)
 
 
 def main() -> int:
-    solver = SolverSpec()
+    solver = SolverSpec(timestep=0.0005)
     spiral_spec = SpiralSpec(task=TASK, delta_max=1.25 * TASK.capture_radius)
 
     print(f"{'offset/R':10s} {'offset_mm':10s} {'success_rate':12s} {'mean_tts_s':11s} {'std_tts_s':10s} {'min_tts_s':10s} {'max_tts_s':10s}")
@@ -53,12 +61,12 @@ def main() -> int:
         per_angle = []
         for angle_deg in ANGLES_DEG:
             cfg = EpisodeConfig(
-                task=TASK, solver=solver, gains=GAINS,
-                z_start=Z_START, z_end=Z_END, z_rate=Z_RATE,
+                task=TASK, solver=solver, gains=GAINS, insertion=INSERTION,
+                z_start=Z_START,
                 initial_offset_r=offset_r, initial_offset_theta=math.radians(angle_deg),
                 max_seconds=MAX_SECONDS, spiral_spec=spiral_spec,
             )
-            log = run_episode(cfg)
+            log = run_episode(cfg, pen_allow=PEN_ALLOW)
             seated_flags.append(log["seated"])
             if log["seated"]:
                 times_to_seat.append(log["time_to_seat_s"])

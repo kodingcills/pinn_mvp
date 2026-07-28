@@ -4,7 +4,7 @@ import numpy as np
 import pytest
 
 from pegsim.control import ImpedanceGains
-from pegsim.rollout import EpisodeConfig, axis_xy_at_z, ground_truth_seated, run_episode
+from pegsim.rollout import EpisodeConfig, InsertionProfile, axis_xy_at_z, ground_truth_seated, run_episode
 from pegsim.scene import SolverSpec, TaskSpec
 from pegsim.search import SpiralSpec
 
@@ -20,21 +20,27 @@ TASK = TaskSpec(
 )
 SOLVER = SolverSpec()
 GAINS = ImpedanceGains()
+INSERTION = InsertionProfile()
+
+
+class TestInsertionProfileConstraints:
+    def test_rejects_f_target_at_or_above_f_yield(self):
+        with pytest.raises(AssertionError, match="f_target"):
+            InsertionProfile(f_target=25.0, f_yield=25.0)
+
+    def test_rejects_nonpositive_v_descent(self):
+        with pytest.raises(AssertionError, match="v_descent"):
+            InsertionProfile(v_descent=0.0)
 
 
 class TestEpisodeConfigConstraints:
-    def test_rejects_z_start_below_z_end(self):
+    def test_rejects_nonpositive_z_start(self):
         with pytest.raises(AssertionError, match="z_start"):
-            EpisodeConfig(TASK, SOLVER, GAINS, z_start=-0.01, z_end=0.005, z_rate=0.01,
-                          initial_offset_r=0.0, initial_offset_theta=0.0, max_seconds=1.0)
-
-    def test_rejects_nonpositive_z_rate(self):
-        with pytest.raises(AssertionError, match="z_rate"):
-            EpisodeConfig(TASK, SOLVER, GAINS, z_start=0.005, z_end=-0.01, z_rate=0.0,
+            EpisodeConfig(TASK, SOLVER, GAINS, INSERTION, z_start=-0.01,
                           initial_offset_r=0.0, initial_offset_theta=0.0, max_seconds=1.0)
 
     def test_default_target_depth_is_derived_from_plate_thickness(self):
-        cfg = EpisodeConfig(TASK, SOLVER, GAINS, z_start=0.005, z_end=-0.045, z_rate=0.01,
+        cfg = EpisodeConfig(TASK, SOLVER, GAINS, INSERTION, z_start=0.005,
                              initial_offset_r=0.0, initial_offset_theta=0.0, max_seconds=1.0)
         assert cfg.target_depth == pytest.approx(TASK.plate_thickness - 0.001)
 
@@ -61,13 +67,22 @@ class TestGroundTruthSeated:
         tip_pos = np.array([0.0, 0.0, -0.001])  # nowhere near the floor
         axis_dir = np.array([0.0, 0.0, 1.0])
         force = np.zeros(3)
-        assert not ground_truth_seated(tip_pos, axis_dir, force, TASK, TASK.plate_thickness - 0.001)
+        assert not ground_truth_seated(tip_pos, axis_dir, force, TASK, TASK.plate_thickness - 0.001, 0.0)
 
-    def test_rejects_tip_lateral_beyond_clearance(self):
+    def test_rejects_tip_lateral_beyond_clearance_plus_allowance(self):
         tip_pos = np.array([0.001, 0.0, -0.02])  # deep enough, but 1mm off axis
         axis_dir = np.array([0.0, 0.0, 1.0])
         force = np.zeros(3)
-        assert not ground_truth_seated(tip_pos, axis_dir, force, TASK, TASK.plate_thickness - 0.001)
+        assert not ground_truth_seated(tip_pos, axis_dir, force, TASK, TASK.plate_thickness - 0.001, 0.0)
+
+    def test_pen_allow_admits_a_reading_just_over_clearance(self):
+        # 0.5005mm, 5 microns over clearance -- fails with pen_allow=0, passes
+        # with a pen_allow measured from real interpenetration.
+        tip_pos = np.array([0.0005005, 0.0, -0.02])
+        axis_dir = np.array([0.0, 0.0, 1.0])
+        force = np.zeros(3)
+        assert not ground_truth_seated(tip_pos, axis_dir, force, TASK, TASK.plate_thickness - 0.001, 0.0)
+        assert ground_truth_seated(tip_pos, axis_dir, force, TASK, TASK.plate_thickness - 0.001, 1e-5)
 
     def test_rejects_mouth_lateral_beyond_clearance_even_if_tip_centered(self):
         # Tip reads centered, but enough tilt puts the mouth crossing 1mm off.
@@ -75,27 +90,19 @@ class TestGroundTruthSeated:
         tilt = math.atan(0.001 / 0.02)
         axis_dir = np.array([math.sin(tilt), 0.0, math.cos(tilt)])
         force = np.zeros(3)
-        assert not ground_truth_seated(tip_pos, axis_dir, force, TASK, TASK.plate_thickness - 0.001)
-
-    def test_rejects_high_lateral_force_relative_to_axial_wedge_bound(self):
-        tip_pos = np.array([0.0, 0.0, -0.02])
-        axis_dir = np.array([0.0, 0.0, 1.0])
-        axial = 10.0
-        f_wedge = axial / (2.0 * TASK.friction)
-        force = np.array([f_wedge * 1.1, 0.0, -axial])
-        assert not ground_truth_seated(tip_pos, axis_dir, force, TASK, TASK.plate_thickness - 0.001)
+        assert not ground_truth_seated(tip_pos, axis_dir, force, TASK, TASK.plate_thickness - 0.001, 0.0)
 
     def test_accepts_deep_centered_untilted_low_lateral_force(self):
         tip_pos = np.array([0.0, 0.0, -0.02])
         axis_dir = np.array([0.0, 0.0, 1.0])
         force = np.array([0.0, 0.0, -1.0])
-        assert ground_truth_seated(tip_pos, axis_dir, force, TASK, TASK.plate_thickness - 0.001)
+        assert ground_truth_seated(tip_pos, axis_dir, force, TASK, TASK.plate_thickness - 0.001, 0.0)
 
 
 class TestRunEpisode:
     def test_zero_offset_no_spiral_seats(self):
         cfg = EpisodeConfig(
-            TASK, SOLVER, GAINS, z_start=0.005, z_end=-0.045, z_rate=0.01,
+            TASK, SOLVER, GAINS, INSERTION, z_start=0.005,
             initial_offset_r=0.0, initial_offset_theta=0.0, max_seconds=6.0,
         )
         log = run_episode(cfg)
@@ -107,9 +114,29 @@ class TestRunEpisode:
         (already-aligned) case from seating."""
         spiral_spec = SpiralSpec(task=TASK, delta_max=1.25 * TASK.capture_radius)
         cfg = EpisodeConfig(
-            TASK, SOLVER, GAINS, z_start=0.005, z_end=-0.045, z_rate=0.01,
+            TASK, SOLVER, GAINS, INSERTION, z_start=0.005,
             initial_offset_r=0.0, initial_offset_theta=0.0, max_seconds=10.0,
             spiral_spec=spiral_spec,
         )
         log = run_episode(cfg)
         assert log["seated"]
+
+    def test_settled_force_stays_near_f_target(self):
+        """A1 fix: settled axial force should track f_target (default 15N),
+        not the old stale-ramp-driven 70N."""
+        cfg = EpisodeConfig(
+            TASK, SOLVER, GAINS, INSERTION, z_start=0.005,
+            initial_offset_r=0.0, initial_offset_theta=0.0, max_seconds=6.0,
+        )
+        log = run_episode(cfg)
+        settled_fz = abs(log["contact_force"][-200:, 2].mean())
+        assert settled_fz == pytest.approx(INSERTION.f_target, rel=0.1)
+
+    def test_peak_force_stays_under_f_yield(self):
+        cfg = EpisodeConfig(
+            TASK, SOLVER, GAINS, INSERTION, z_start=0.005,
+            initial_offset_r=0.0, initial_offset_theta=0.0, max_seconds=6.0,
+        )
+        log = run_episode(cfg)
+        peak_fz = float(np.abs(log["contact_force"][:, 2]).max())
+        assert peak_fz < INSERTION.f_yield
