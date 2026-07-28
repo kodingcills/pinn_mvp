@@ -216,11 +216,18 @@ def run_episode(cfg: EpisodeConfig, pen_allow: float = 0.0) -> dict[str, object]
 
     # The search has two stopping mechanisms, both driven by real
     # (FK/contact) signals, never simulator ground truth:
-    #  - PAUSE (resumable): while actively in contact with the chamfer/bore,
-    #    hold the setpoint instead of advancing theta. Without this, the
-    #    setpoint keeps sweeping outward while the chamfer is midway through
-    #    funneling the peg to center, dragging it back out before funneling
-    #    finishes.
+    #  - PAUSE (resumable): hold the setpoint instead of advancing theta
+    #    while engaging a SLOPED surface (chamfer/bore), not while merely
+    #    resting on the flat table -- gated on lateral_force > mu*axial_force,
+    #    the largest lateral force pure friction against a vertical-normal
+    #    flat surface could produce (anything more means a sloped normal is
+    #    redirecting force, i.e. genuine chamfer/bore contact). Gating on
+    #    ANY contact instead (an earlier version) is a real bug: routine
+    #    table contact is continuous while sliding, so "pause while in
+    #    contact" froze the spiral after ~6 steps out of 12000 in a direct
+    #    check -- theta never meaningfully advanced, and every earlier
+    #    "search ON" result in this project needs re-checking against this
+    #    fix, not just this specific measurement.
     #  - STOP (permanent): once actually centered within clearance (checked
     #    at the mouth, not the tip), stop for good.
     xy_des = nominal_xy
@@ -238,7 +245,10 @@ def run_episode(cfg: EpisodeConfig, pen_allow: float = 0.0) -> dict[str, object]
         mouth_now = axis_xy_at_z(tip_now, axis_dir_now, 0.0)
         if not search_done and np.linalg.norm(mouth_now) <= cfg.task.radial_clearance:
             search_done = True
-        in_contact = math.isfinite(min_contact_dist(data))
+        force_now = peg_contact_force_world(model, data)
+        lateral_force_now = float(np.linalg.norm(force_now[:2]))
+        axial_force_now = abs(float(force_now[2]))
+        engaging_slope = lateral_force_now > cfg.task.friction * axial_force_now
         in_seating_phase = tip_now[2] < -cfg.task.chamfer_width  # real FK depth, past the chamfer
         phase_target = z_seating_target if in_seating_phase else z_search_target
         z_des_raw = _rate_limited_advance(z_des_raw, phase_target, cfg.insertion.v_descent * dt)
@@ -246,7 +256,7 @@ def run_episode(cfg: EpisodeConfig, pen_allow: float = 0.0) -> dict[str, object]
         # LIVE tip position, in either phase.
         z_des_leashed = max(z_des_raw, tip_now[2] - cfg.insertion.f_target / cfg.gains.k_z)
 
-        if not search_done and spiral is not None and tip_now[2] <= 0.001 and not in_contact:
+        if not search_done and spiral is not None and tip_now[2] <= 0.001 and not engaging_slope:
             # The spiral only starts advancing once the peg is actually
             # near the plate surface -- otherwise it wanders past clearance
             # well before the peg is physically at the hole's entrance.
