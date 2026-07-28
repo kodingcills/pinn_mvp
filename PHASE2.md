@@ -71,3 +71,48 @@ answer for the right reason once force control is honest -- not because
 the ridge-fulcrum geometric hypothesis was right (it was falsified by
 direct raycast) but because the excess tipping authority came from
 commanding more force than a real fixture-mounted system safely could.
+
+### R_passive is not a hard boundary -- it is the threshold of a marginal mechanism
+
+The 1.5mm figure above was measured search-OFF, zero lateral bias: the peg
+settles under pure axial force with no lateral spring pulling it anywhere.
+The 16-angle cross-check at 1.8mm offset (Milestone 4, C2a/D1-D3) found
+7/16 start angles capture past that boundary, direction-dependent (a
+contiguous ~135deg arc, not scattered) -- with the spiral search ON, at
+gains/f_search that turned out (see the force-budget finding below) to be
+too weak to actually DRIVE the peg anywhere, but not too weak to apply a
+sub-newton lateral BIAS to the same marginal tip-and-lever mechanism (D3
+trajectory plot: the peg takes a near-straight path into the hole with the
+commanded spiral setpoint barely moving, i.e. passive capture nudged by a
+small static force, not active tracking).
+
+Conclusion: R_passive=1.5mm is the threshold of a moment-limited mechanism
+that a small lateral bias perturbs in either direction, not a fixed
+geometric cliff. Any future use of "1.5mm" (or any R_passive number) as a
+design constant must state the bias condition it was measured under --
+zero bias, or a specific (f_search, k_xy) pair -- or it will silently
+overstate how sharp the boundary really is.
+
+## Search-phase force budget: k_xy*R_spiral must exceed mu*f_search
+
+Found via the same C2a 16-angle cross-check: at f_search=4N, k_xy=500,
+mu=0.4, the spiral's maximum deliverable lateral spring force at its own
+maximum radius (k_xy*R_spiral = 500*0.002625 = 1.31N) never exceeded the
+friction floor set by the search-phase axial preload (mu*f_search =
+0.4*4.0 = 1.6N). Every failing start angle ran the spiral to full
+exhaustion (all ~3.3 revolutions) while the actual tip never left a
+~0.3mm tangle near its start -- the spiral was structurally too weak to
+overcome friction and move the peg at ANY point in its own trajectory,
+independent of starting angle.
+
+`pegsim.search.assert_search_force_budget` now checks this (and the
+related steady-state-lag-vs-R_cap_dyn constraint) at construction time,
+given a measured R_cap_dyn. See scripts/measure_e3_search_phase_sweep.py
+for the retuned (f_search, k_xy) sweep this motivated.
+
+mu itself: confirmed via git history that friction=0.4 has been the value
+since Milestone 1 (pegsim/scene.py's TaskSpec default) -- it was never
+0.2 and never changed. 0.4 is dry steel-on-steel; if the target assembly
+is lubricated or plastic-on-plastic (0.1-0.2 typical), this doubles the
+friction floor above and should be revisited with the user before it's
+relied on as a design constant.

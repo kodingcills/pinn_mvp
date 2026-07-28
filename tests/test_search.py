@@ -4,7 +4,7 @@ import numpy as np
 import pytest
 
 from pegsim.scene import TaskSpec
-from pegsim.search import ArchimedeanSpiral, SpiralSpec
+from pegsim.search import ArchimedeanSpiral, ProbeSpec, SpiralSpec
 
 TASK = TaskSpec(
     peg_radius=0.005,
@@ -110,3 +110,42 @@ class TestArchimedeanSpiralIntegration:
             theta_at_target = 2.0 * math.pi * n_revolutions
             r_at_theta = spec.a + spec.b * theta_at_target
             assert abs(r_at_theta - target_r) < pitch + 1e-9
+
+
+class TestProbeSpecCoverage:
+    """Empirical, not just formula-trusting: sample many points inside
+    delta_max and verify every one is within r_cap_dyn of some probe point
+    -- the same standard this project holds scene geometry to (raycast, not
+    just trust the tiling math)."""
+
+    def test_rejects_nonpositive_fields(self):
+        with pytest.raises(AssertionError, match="delta_max"):
+            ProbeSpec(task=TASK, delta_max=0.0, r_cap_dyn=0.0016)
+        with pytest.raises(AssertionError, match="r_cap_dyn"):
+            ProbeSpec(task=TASK, delta_max=0.002, r_cap_dyn=0.0)
+        with pytest.raises(AssertionError, match="lift_height"):
+            ProbeSpec(task=TASK, delta_max=0.002, r_cap_dyn=0.0016, lift_height=0.0)
+
+    def test_disk_fully_covered(self):
+        spec = ProbeSpec(task=TASK, delta_max=0.002, r_cap_dyn=0.0016)
+        pts = np.array(spec.points)
+        rng = np.random.default_rng(0)
+        n_samples = 5000
+        r = spec.delta_max * np.sqrt(rng.uniform(0.0, 1.0, n_samples))  # area-uniform
+        theta = rng.uniform(0.0, 2.0 * math.pi, n_samples)
+        samples = np.stack([r * np.cos(theta), r * np.sin(theta)], axis=1)
+        dists = np.linalg.norm(samples[:, None, :] - pts[None, :, :], axis=2)
+        min_dists = dists.min(axis=1)
+        assert min_dists.max() <= spec.r_cap_dyn, (
+            f"worst-covered sample point is {min_dists.max()*1000:.4f}mm from "
+            f"its nearest probe, exceeding r_cap_dyn={spec.r_cap_dyn*1000:.4f}mm"
+        )
+
+    def test_point_count_matches_hex_covering_formula(self):
+        # delta_max=2mm, r_cap_dyn=1.6mm -> spacing=1.6*sqrt(3)=2.771mm;
+        # ring 1 (radius=spacing) has inner coverage edge at
+        # spacing-r_cap_dyn=1.171mm <= delta_max, so it's needed; ring 2
+        # (radius=2*spacing=5.543mm) has inner edge 3.943mm > delta_max, not
+        # needed. Center + 6 = 7 points.
+        spec = ProbeSpec(task=TASK, delta_max=0.002, r_cap_dyn=0.0016)
+        assert len(spec.points) == 7

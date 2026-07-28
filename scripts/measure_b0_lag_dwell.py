@@ -12,7 +12,7 @@ import numpy as np
 from pegsim.control import ImpedanceGains, assert_gains_stable, compute_and_apply_qfrc, min_contact_dist
 from pegsim.rollout import InsertionProfile
 from pegsim.scene import SolverSpec, TaskSpec, build_mjcf
-from pegsim.search import ArchimedeanSpiral, SpiralSpec
+from pegsim.search import DELTA_MAX_SPEC_M, ArchimedeanSpiral, SpiralSpec
 
 TASK = TaskSpec(
     peg_radius=0.005,
@@ -29,7 +29,7 @@ GAINS = ImpedanceGains(k_rx=5.0, k_ry=5.0, k_rz=0.05)  # K_xy stays 500 (default
 INSERTION = InsertionProfile()
 OFFSET = 0.00175  # 1.75mm, just outside passive R_passive=1.5mm -- forces real sliding search
 
-spiral_spec = SpiralSpec(task=TASK, delta_max=1.25 * TASK.capture_radius)
+spiral_spec = SpiralSpec(task=TASK, delta_max=DELTA_MAX_SPEC_M)
 model = mujoco.MjModel.from_xml_string(build_mjcf(TASK, SOLVER))
 data = mujoco.MjData(model)
 data.qpos[0] = OFFSET

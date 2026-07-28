@@ -6,7 +6,7 @@ import pytest
 from pegsim.control import ImpedanceGains
 from pegsim.rollout import EpisodeConfig, InsertionProfile, axis_xy_at_z, ground_truth_seated, hole_center_xy, run_episode
 from pegsim.scene import SolverSpec, TaskSpec
-from pegsim.search import SpiralSpec
+from pegsim.search import DELTA_MAX_SPEC_M, SpiralSpec
 
 TASK = TaskSpec(
     peg_radius=0.005,
@@ -142,7 +142,7 @@ class TestRunEpisode:
     def test_zero_offset_with_spiral_still_seats(self):
         """The search overlay must not destabilize or prevent the trivial
         (already-aligned) case from seating."""
-        spiral_spec = SpiralSpec(task=TASK, delta_max=1.25 * TASK.capture_radius)
+        spiral_spec = SpiralSpec(task=TASK, delta_max=DELTA_MAX_SPEC_M)
         cfg = EpisodeConfig(
             TASK, SOLVER, GAINS, INSERTION, z_start=0.005,
             initial_offset_r=0.0, initial_offset_theta=0.0, max_seconds=10.0,

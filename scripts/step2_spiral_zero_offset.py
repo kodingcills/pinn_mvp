@@ -15,7 +15,7 @@ import sys
 from pegsim.control import ImpedanceGains
 from pegsim.rollout import EpisodeConfig, InsertionProfile, run_episode
 from pegsim.scene import SolverSpec, TaskSpec
-from pegsim.search import SpiralSpec
+from pegsim.search import DELTA_MAX_SPEC_M, SpiralSpec
 
 TASK = TaskSpec(
     peg_radius=0.005,
@@ -36,7 +36,7 @@ PEN_ALLOW = 3.7035e-05  # 1.5x measured max interpenetration near the floor
 
 def main() -> int:
     solver = SolverSpec(timestep=0.0005)
-    spiral_spec = SpiralSpec(task=TASK, delta_max=1.25 * TASK.capture_radius)
+    spiral_spec = SpiralSpec(task=TASK, delta_max=DELTA_MAX_SPEC_M)
 
     cfg = EpisodeConfig(
         task=TASK, solver=solver, gains=GAINS, insertion=INSERTION,

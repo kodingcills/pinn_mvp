@@ -25,7 +25,7 @@ import numpy as np
 from pegsim.control import ImpedanceGains
 from pegsim.rollout import EpisodeConfig, InsertionProfile, run_episode
 from pegsim.scene import SolverSpec, TaskSpec
-from pegsim.search import SpiralSpec
+from pegsim.search import DELTA_MAX_SPEC_M, SpiralSpec
 
 TASK = TaskSpec(
     peg_radius=0.005,
@@ -49,7 +49,7 @@ ANGLES_DEG = (0, 45, 90, 135, 180, 225, 270, 315)
 
 def main() -> int:
     solver = SolverSpec(timestep=0.0005)
-    spiral_spec = SpiralSpec(task=TASK, delta_max=1.25 * TASK.capture_radius)
+    spiral_spec = SpiralSpec(task=TASK, delta_max=DELTA_MAX_SPEC_M)
 
     print(f"{'offset/R':10s} {'offset_mm':10s} {'success_rate':12s} {'mean_tts_s':11s} {'std_tts_s':10s} {'min_tts_s':10s} {'max_tts_s':10s}")
     print("-" * 75)

@@ -16,6 +16,26 @@ from pegsim.control import ImpedanceGains, assert_gains_stable, compute_and_appl
 from pegsim.scene import SolverSpec, TaskSpec, build_mjcf
 from pegsim.search import ArchimedeanSpiral, SpiralSpec
 
+# Depth below the flat table (z=0) that means "genuinely engaging the
+# sloped chamfer/bore", not settling noise -- measured flat-table settling
+# noise is <0.001mm, so this has ~50x margin while still catching
+# engagement early (see run_episode's search-pause comment for why a
+# force-based gate was tried first and rejected).
+DEPTH_ENGAGE_MARGIN = 0.00005
+
+# How far BELOW the peg's own flat-table baseline (z_flat, tracked live --
+# see run_episode) counts as "committed to the seating ramp". Replaces an
+# earlier absolute threshold (z_tip < -chamfer_width) that silently assumed
+# the search-phase reference could always push the peg down chamfer_width
+# (1mm) below the table -- false whenever f_search/k_z < chamfer_width (an
+# f_search of 4N against k_z=2000 gives exactly chamfer_width; anything
+# less physically cannot reach the old trigger at all, and the seating
+# phase never fires, no matter how well the search finds the hole).
+# 0.2mm is a few times the solver's flat-table settling noise (<0.001mm),
+# so it's not tripped by noise, but small enough to fire on real partial
+# engagement rather than requiring near-full chamfer depth.
+DELTA_Z_TRIGGER = 0.0002
+
 
 @dataclass(frozen=True)
 class InsertionProfile:
@@ -67,6 +87,21 @@ class InsertionProfile:
             "broken part"
         )
         assert self.v_descent > 0, "v_descent must be positive"
+
+
+def assert_seating_trigger_reachable(insertion: InsertionProfile, gains: ImpedanceGains) -> None:
+    """The search-phase descent allowance (how far past the table surface
+    the search reference can pull the tip once unsupported) must clear
+    DELTA_Z_TRIGGER with margin, or the seating-phase transition can never
+    fire regardless of how well the lateral search finds the hole."""
+    descent_allowance = insertion.f_search / gains.k_z
+    assert descent_allowance > 2.0 * DELTA_Z_TRIGGER, (
+        f"search-phase descent allowance f_search/k_z = "
+        f"{descent_allowance * 1000:.4f}mm does not clear "
+        f"2*DELTA_Z_TRIGGER = {2.0 * DELTA_Z_TRIGGER * 1000:.4f}mm -- the "
+        "peg cannot descend far enough past its own flat-table baseline to "
+        "ever trigger the seating phase"
+    )
 
 
 def _rate_limited_advance(current: float, target: float, max_step: float) -> float:
@@ -181,6 +216,7 @@ def run_episode(cfg: EpisodeConfig, pen_allow: float = 0.0) -> dict[str, object]
     data.qpos[2] = cfg.z_start
     mujoco.mj_forward(model, data)
     assert_gains_stable(model, data, cfg.gains, cfg.solver.timestep)
+    assert_seating_trigger_reachable(cfg.insertion, cfg.gains)
 
     # The spiral is centered on the peg's STARTING (nominal) position, not
     # world origin: it represents the controller's best guess at the hole
@@ -218,21 +254,52 @@ def run_episode(cfg: EpisodeConfig, pen_allow: float = 0.0) -> dict[str, object]
     # (FK/contact) signals, never simulator ground truth:
     #  - PAUSE (resumable): hold the setpoint instead of advancing theta
     #    while engaging a SLOPED surface (chamfer/bore), not while merely
-    #    resting on the flat table -- gated on lateral_force > mu*axial_force,
-    #    the largest lateral force pure friction against a vertical-normal
-    #    flat surface could produce (anything more means a sloped normal is
-    #    redirecting force, i.e. genuine chamfer/bore contact). Gating on
-    #    ANY contact instead (an earlier version) is a real bug: routine
-    #    table contact is continuous while sliding, so "pause while in
-    #    contact" froze the spiral after ~6 steps out of 12000 in a direct
-    #    check -- theta never meaningfully advanced, and every earlier
-    #    "search ON" result in this project needs re-checking against this
-    #    fix, not just this specific measurement.
+    #    resting on the flat table -- gated on FK depth (tip_now[2] below a
+    #    small margin past the flat table's z=0), not lateral force. Force
+    #    was tried first (lateral_force > mu*axial_force, the largest
+    #    lateral force pure friction against a vertical-normal flat surface
+    #    could produce) and is WRONG: kinetic friction during genuine flat-
+    #    table sliding sits right at mu*N by definition, so the gate
+    #    flickered true/false every step right at the threshold and froze
+    #    x_des just as badly as gating on any contact did (verified: a
+    #    dead-center linear sweep still failed to capture with the force
+    #    gate). Depth is unambiguous: flat-table settling noise measured at
+    #    <0.001mm, chamfer engagement drops the tip tens of microns or more
+    #    almost immediately, so DEPTH_ENGAGE_MARGIN below has ~50x margin.
+    #    Gating on ANY contact (the very first version) was also wrong:
+    #    routine table contact is continuous while sliding, so "pause while
+    #    in contact" froze the spiral after ~6 steps out of 12000 in a
+    #    direct check -- theta never meaningfully advanced, and every
+    #    earlier "search ON" result in this project needed re-checking
+    #    against these fixes.
     #  - STOP (permanent): once actually centered within clearance (checked
-    #    at the mouth, not the tip), stop for good.
+    #    at the mouth, not the tip), stop for good -- SNAPPED to the peg's
+    #    own current position, not left at whatever the setpoint last
+    #    computed to. The commanded setpoint lags the actual tip during
+    #    active search (measured ~1.6mm at v_t=5mm/s), so freezing at the
+    #    commanded value froze it up to ~1.3mm away from where the peg
+    #    genuinely was -- a persistent misaligned spring pull that wedged
+    #    the peg partway into the bore instead of letting it settle
+    #    (verified directly: tip_z plateaued at ~-1.9mm instead of
+    #    continuing to the floor). Using the peg's own measured position is
+    #    still RULE-ZERO compliant -- it never references the true hole
+    #    location, only the peg's own FK.
     xy_des = nominal_xy
     search_done = False
     z_des_raw = cfg.z_start  # matches actual start -- zero initial spring error
+
+    # z_flat: a running baseline of the peg's own resting depth while
+    # genuinely on the flat table (not engaging a slope), updated only in
+    # that regime so it doesn't drift down once real engagement begins.
+    # in_seating_phase fires on descent RELATIVE to this baseline
+    # (DELTA_Z_TRIGGER below it), not on an absolute depth -- an absolute
+    # -chamfer_width threshold silently assumed the search-phase reference
+    # could always push the tip that far down, which is false whenever
+    # f_search/k_z < chamfer_width (assert_seating_trigger_reachable checks
+    # this at construction, but the trigger itself must not depend on it
+    # either).
+    z_flat = None
+    Z_FLAT_EMA_ALPHA = 0.001
 
     seated_step = None
     consecutive_ok = 0
@@ -245,11 +312,16 @@ def run_episode(cfg: EpisodeConfig, pen_allow: float = 0.0) -> dict[str, object]
         mouth_now = axis_xy_at_z(tip_now, axis_dir_now, 0.0)
         if not search_done and np.linalg.norm(mouth_now) <= cfg.task.radial_clearance:
             search_done = True
-        force_now = peg_contact_force_world(model, data)
-        lateral_force_now = float(np.linalg.norm(force_now[:2]))
-        axial_force_now = abs(float(force_now[2]))
-        engaging_slope = lateral_force_now > cfg.task.friction * axial_force_now
-        in_seating_phase = tip_now[2] < -cfg.task.chamfer_width  # real FK depth, past the chamfer
+            xy_des = tip_now[:2].copy()
+        engaging_slope = tip_now[2] < -DEPTH_ENGAGE_MARGIN
+        if tip_now[2] <= 0.001 and not engaging_slope:
+            # Peg has arrived at the plate and is genuinely flat (not still
+            # descending from z_start, not engaging a slope) -- safe to
+            # update the baseline.
+            z_flat = tip_now[2] if z_flat is None else (
+                (1.0 - Z_FLAT_EMA_ALPHA) * z_flat + Z_FLAT_EMA_ALPHA * tip_now[2]
+            )
+        in_seating_phase = z_flat is not None and (z_flat - tip_now[2]) > DELTA_Z_TRIGGER
         phase_target = z_seating_target if in_seating_phase else z_search_target
         z_des_raw = _rate_limited_advance(z_des_raw, phase_target, cfg.insertion.v_descent * dt)
         # Force leash: never command more than f_target/K_z ahead of the

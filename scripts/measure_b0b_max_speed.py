@@ -7,7 +7,7 @@ from pegsim.characterize import run_offset_sweep
 from pegsim.control import ImpedanceGains
 from pegsim.rollout import InsertionProfile
 from pegsim.scene import SolverSpec, TaskSpec
-from pegsim.search import SpiralSpec
+from pegsim.search import DELTA_MAX_SPEC_M, SpiralSpec
 
 TASK = TaskSpec(
     peg_radius=0.005,
@@ -27,7 +27,7 @@ OFFSET = 0.0018  # 1.8mm, within R_spiral, beyond passive R_passive
 ANGLES = [0.0, 1.5707963267948966, 3.141592653589793, 4.71238898038469]  # 0/90/180/270 deg
 
 for v_t in (0.01, 0.025, 0.05, 0.10):
-    spiral_spec = SpiralSpec(task=TASK, delta_max=1.25 * TASK.capture_radius, v_t=v_t)
+    spiral_spec = SpiralSpec(task=TASK, delta_max=DELTA_MAX_SPEC_M, v_t=v_t)
     max_seconds = spiral_spec.r_spiral**2 / (2 * spiral_spec.b * v_t) + 3.0
     results = run_offset_sweep(
         TASK, SOLVER, GAINS, INSERTION,

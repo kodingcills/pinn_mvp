@@ -25,6 +25,14 @@ import numpy as np
 
 from pegsim.scene import TaskSpec
 
+# Product spec: the max lateral pose uncertainty the search must cover is a
+# property of the fixture/vision tolerance stack, not of the hole geometry --
+# it must NOT be derived from capture_radius (a prior version used
+# 1.25*capture_radius, which silently shrinks or grows delta_max every time
+# the hole geometry changes, even though the robot's actual pose uncertainty
+# hasn't).
+DELTA_MAX_SPEC_M = 0.002
+
 
 @dataclass(frozen=True)
 class SpiralSpec:
@@ -104,3 +112,100 @@ class ArchimedeanSpiral:
             self.theta += theta_dot * dt
         r = min(self.radius, self.spec.r_spiral)
         return np.array([r * math.cos(self.theta), r * math.sin(self.theta)])
+
+
+def assert_search_force_budget(
+    task: TaskSpec,
+    k_xy: float,
+    f_search: float,
+    spiral: SpiralSpec,
+    r_cap_dyn: float,
+) -> None:
+    """Breakaway-force check: whether the lateral spring can move the peg at
+    all against friction, at any point in the spiral's own trajectory. Found
+    via the C2a 16-angle cross-check: at f_search=4N, k_xy=500, mu=0.4, every
+    failing start angle ran the spiral to full exhaustion (all ~3.3
+    revolutions) while the tip never left a ~0.3mm tangle near its start --
+    k_xy*R_spiral (1.31N) never exceeded mu*f_search (1.6N), so the spiral
+    was too weak to overcome friction at ANY point in its own trajectory, at
+    any starting angle.
+
+    NOTE: an earlier version of this also asserted a steady-state LAG bound
+    (mu*f_search/k_xy <= 0.25*r_cap_dyn), reasoning that tracking slop eats
+    into the capture radius. That reasoning was wrong: the lag is TANGENTIAL
+    (a phase delay along the spiral's direction of travel), not a radial
+    loss -- its radial component is L*b/r, a couple percent of L, not L
+    itself. Empirically, the config that violated that bound hardest
+    (f_search=4N, k_xy=1000, lag=1.53mm vs a 0.4mm bound) captured 16/16.
+    Removed.
+
+    r_cap_dyn is a measured constant (see
+    scripts/measure_c2a_dynamic_capture_radius.py), not derived from
+    TaskSpec -- callers must pass in a value they actually measured for
+    their (task, gains) pair, not a guess.
+    """
+    breakaway_force = task.friction * f_search
+    max_lateral_force = k_xy * spiral.r_spiral
+    assert max_lateral_force > 2.0 * breakaway_force, (
+        f"max deliverable lateral spring force k_xy*R_spiral = "
+        f"{max_lateral_force:.4f}N does not clear 2x the friction floor "
+        f"2*mu*f_search = {2.0 * breakaway_force:.4f}N -- the spiral cannot "
+        "reliably overcome friction even at its own maximum radius"
+    )
+    r_breakaway = breakaway_force / k_xy
+    assert r_breakaway < 0.5 * r_cap_dyn, (
+        f"breakaway radius mu*f_search/k_xy = {r_breakaway * 1000:.4f}mm "
+        f"does not clear 0.5*r_cap_dyn = {0.5 * r_cap_dyn * 1000:.4f}mm -- "
+        "holes inside the breakaway radius only ever get a single radial "
+        "crossing (the peg starts moving only once the spiral has grown "
+        "past r_breakaway), not full spiral coverage"
+    )
+
+
+@dataclass(frozen=True)
+class ProbeSpec:
+    """Lift-and-step lateral search: an alternative to the Archimedean
+    spiral (Milestone 4 E6) that sidesteps the friction force budget
+    entirely by translating with the peg lifted clear of the table, then
+    lowering to check for capture -- no lateral spring force ever has to
+    overcome table friction, unlike a dragged spiral search (see
+    assert_search_force_budget's docstring for why that budget can fail).
+
+    Probe points are laid out on a hexagonal covering lattice: circles of
+    radius r_cap_dyn centered on a triangular lattice with spacing
+    r_cap_dyn*sqrt(3) is the loosest packing that still covers the plane
+    with no gaps (the deepest point between three adjacent lattice points
+    sits at spacing/sqrt(3) = r_cap_dyn from each center) -- covered
+    empirically, not just by the formula, in
+    tests/test_search.py::TestProbeSpecCoverage.
+    """
+
+    task: TaskSpec
+    delta_max: float  # max lateral pose uncertainty this search must cover
+    r_cap_dyn: float  # measured dynamic capture radius -- see measure_c2a_dynamic_capture_radius.py
+    lift_height: float = 0.001  # m, clears the table surface (z=0) before translating
+
+    def __post_init__(self) -> None:
+        assert self.delta_max > 0, "delta_max must be positive"
+        assert self.r_cap_dyn > 0, "r_cap_dyn must be positive"
+        assert self.lift_height > 0, "lift_height must be positive"
+
+    @property
+    def spacing(self) -> float:
+        return self.r_cap_dyn * math.sqrt(3.0)
+
+    @property
+    def points(self) -> list[np.ndarray]:
+        """Probe offsets (x, y) relative to the nominal search center,
+        ring by ring outward, stopping once every point within delta_max is
+        within r_cap_dyn of some ring already generated."""
+        pts = [np.array([0.0, 0.0])]
+        ring = 1
+        while ring * self.spacing - self.r_cap_dyn <= self.delta_max:
+            ring_radius = ring * self.spacing
+            n_points = 6 * ring
+            for k in range(n_points):
+                angle = 2.0 * math.pi * k / n_points
+                pts.append(np.array([ring_radius * math.cos(angle), ring_radius * math.sin(angle)]))
+            ring += 1
+        return pts
