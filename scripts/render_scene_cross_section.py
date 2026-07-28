@@ -1,0 +1,66 @@
+"""Render the plate's r-z cross section (raycast silhouette) to
+docs/scene_cross_section.png. Committed alongside any geometry change --
+this is what would have caught every Item-2-style bug in one look."""
+from __future__ import annotations
+
+import math
+
+import matplotlib
+
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
+import mujoco
+import numpy as np
+
+from pegsim.scene import SolverSpec, TaskSpec, build_mjcf
+
+TASK = TaskSpec(
+    peg_radius=0.005,
+    radial_clearance=0.0005,
+    chamfer_width=0.001,
+    plate_thickness=0.01,
+    peg_length=0.05,
+    peg_mass=0.05,
+    n_segments=16,
+    friction=0.4,
+)
+
+
+def raycast_topmost_z(model, data, r, theta, peg_body_id, start_z=0.02):
+    geomid = np.zeros(1, dtype=np.int32)
+    pnt = np.array([r * math.cos(theta), r * math.sin(theta), start_z])
+    vec = np.array([0.0, 0.0, -1.0])
+    dist = mujoco.mj_ray(model, data, pnt, vec, None, 1, peg_body_id, geomid)
+    return None if dist < 0 else start_z - dist
+
+
+def main() -> None:
+    model = mujoco.MjModel.from_xml_string(build_mjcf(TASK, SolverSpec()))
+    data = mujoco.MjData(model)
+    mujoco.mj_forward(model, data)
+    peg_body_id = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_BODY, "peg")
+
+    r_mm = np.arange(0.0, 15.0, 0.05)
+    z_mm = []
+    for r in r_mm:
+        z = raycast_topmost_z(model, data, r / 1000.0, 0.0, peg_body_id)
+        z_mm.append(np.nan if z is None else z * 1000.0)
+    z_mm = np.array(z_mm)
+
+    fig, ax = plt.subplots(figsize=(8, 4))
+    ax.plot(r_mm, z_mm, "-", lw=1.5, color="tab:blue")
+    ax.axvline(TASK.hole_radius * 1000, color="gray", ls="--", lw=0.8, label="hole_radius")
+    ax.axvline((TASK.hole_radius + TASK.chamfer_width) * 1000, color="gray", ls=":", lw=0.8, label="hole_radius+chamfer")
+    ax.axhline(-TASK.plate_thickness * 1000, color="tab:red", ls="--", lw=0.8, label="floor (-plate_thickness)")
+    ax.set_xlabel("radius r (mm)")
+    ax.set_ylabel("topmost solid z (mm)")
+    ax.set_title("Plate cross section (theta=0 raycast silhouette)")
+    ax.legend(fontsize=8)
+    ax.grid(alpha=0.3)
+    fig.tight_layout()
+    fig.savefig("docs/scene_cross_section.png", dpi=150)
+    print("saved docs/scene_cross_section.png")
+
+
+if __name__ == "__main__":
+    main()

@@ -27,6 +27,7 @@ class TaskSpec:
     peg_mass: float
     n_segments: int = 16
     friction: float = 0.4
+    blind_hole: bool = True
 
     def __post_init__(self) -> None:
         assert self.peg_radius > 0, "peg_radius must be positive"
@@ -235,6 +236,25 @@ def _table_tiles(task: TaskSpec) -> list[RingTile]:
     )
 
 
+def _floor_geom_xml(task: TaskSpec) -> str:
+    """Blind-hole floor: a plain solid disk (no hole to preserve, so a single
+    cylinder primitive is exact -- no convex-hull concern) at the bottom of
+    the bore. Radius = hole_radius so its edge lines up exactly with the bore
+    wall's contact face, leaving no gap the peg could catch on.
+
+    Without this, the hole is a through-hole and nothing axially stops the
+    peg -- "seated" has no physical bottom-out event to detect, and Phase 2's
+    reward design (a resistance-rise confirmation signal at seating) has
+    nothing to be validated against.
+    """
+    half_height = task.chamfer_width / 2.0
+    center_z = -task.plate_thickness - half_height
+    return (
+        f'    <geom name="floor" type="cylinder" pos="0 0 {center_z:.10g}" '
+        f'size="{task.hole_radius:.10g} {half_height:.10g}"/>'
+    )
+
+
 def _fmt(values: np.ndarray) -> str:
     return " ".join(f"{v:.10g}" for v in values)
 
@@ -264,6 +284,8 @@ def _plate_geoms_xml(task: TaskSpec) -> str:
                 f'pos="{_fmt(tile.pos)}" quat="{_fmt(tile.quat)}" '
                 f'size="{_fmt(tile.size)}"/>'
             )
+    if task.blind_hole:
+        lines.append(_floor_geom_xml(task))
     return "\n".join(lines)
 
 

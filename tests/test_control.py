@@ -191,7 +191,10 @@ class TestImpedanceClosedLoop:
 
     def test_zero_lateral_offset_z_ramp_is_stable(self):
         """Milestone 2's actual usage (step1_drop.py): x_des/y_des held at
-        zero, only z_des ramps."""
+        zero, only z_des ramps. TASK.blind_hole=True by default (Item 0), so
+        the peg bottoms out on the floor at z=-plate_thickness well before
+        the commanded z_end -- z_end is intentionally deeper than reachable
+        so the controller presses into the floor."""
         model, data = _fresh_model_data()
         mujoco.mj_forward(model, data)
         gains = ImpedanceGains()
@@ -212,7 +215,7 @@ class TestImpedanceClosedLoop:
         mujoco.mju_mat2Quat(quat_cur, data.site_xmat[site_id])
         tilt = 2.0 * math.acos(min(1.0, abs(quat_cur[0])))
         assert tilt < math.radians(0.1)
-        np.testing.assert_allclose(data.site_xpos[site_id][2], z_end, atol=1e-4)
+        np.testing.assert_allclose(data.site_xpos[site_id][2], -TASK.plate_thickness, atol=1e-4)
 
     def test_tilt_assert_fires_beyond_ten_degrees(self):
         model, data = _fresh_model_data()

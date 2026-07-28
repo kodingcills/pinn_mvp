@@ -35,6 +35,18 @@ def _geom_world_point(model, data, name: str, local_offset: np.ndarray) -> np.nd
     return xpos + xmat @ local_offset
 
 
+def _raycast_topmost_z(model, data, r: float, theta: float = 0.0, start_z: float = 0.02):
+    """Topmost solid z hit by a straight-down ray at (r, theta), excluding
+    the peg body (which sits at the world origin and would otherwise be hit
+    first). Returns None if nothing is hit."""
+    peg_body_id = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_BODY, "peg")
+    geomid = np.zeros(1, dtype=np.int32)
+    pnt = np.array([r * math.cos(theta), r * math.sin(theta), start_z])
+    vec = np.array([0.0, 0.0, -1.0])
+    dist = mujoco.mj_ray(model, data, pnt, vec, None, 1, peg_body_id, geomid)
+    return None if dist < 0 else start_z - dist
+
+
 def _geom_all_corners(model, data, name: str, size: np.ndarray) -> np.ndarray:
     gid = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_GEOM, name)
     xpos = data.geom_xpos[gid]
@@ -166,3 +178,73 @@ class TestPegBody:
         model, _ = _compiled_model_data()
         bid = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_BODY, "peg")
         assert model.body_mass[bid] == pytest.approx(TASK.peg_mass)
+
+
+class TestSilhouette:
+    """Permanent regression guard for the Item 2 investigation: an
+    independently-suspected ridge/ledge between the chamfer's outer edge and
+    the flat table top was checked by raycasting the actual compiled model
+    (not re-derived box algebra) and found NOT to exist, at both a tile
+    center and a tile boundary angle. This test locks that in."""
+
+    @pytest.mark.parametrize("theta_deg", [0.0, 11.25, 22.5])
+    def test_flat_at_z0_immediately_past_the_chamfer(self, theta_deg):
+        model, data = _compiled_model_data()
+        r_outer = TASK.hole_radius + TASK.chamfer_width
+        for r_mm in np.arange(r_outer * 1000 + 0.2, r_outer * 1000 + 3.0, 0.2):
+            z = _raycast_topmost_z(model, data, r_mm / 1000.0, math.radians(theta_deg))
+            assert z is not None, f"no hit at r={r_mm}mm theta={theta_deg}deg -- gap in the table ring"
+            assert abs(z) < 1e-6, f"topmost z={z*1000:.4f}mm at r={r_mm}mm theta={theta_deg}deg, expected 0 (flat table)"
+
+    @pytest.mark.parametrize("theta_deg", [0.0, 11.25])
+    def test_chamfer_slope_is_monotonic_no_hit_inside_hole(self, theta_deg):
+        model, data = _compiled_model_data()
+        theta = math.radians(theta_deg)
+        # Inside the hole radius: nothing above the bore/floor -- no ledge.
+        for r_mm in np.arange(0.5, TASK.hole_radius * 1000 - 0.05, 0.5):
+            z = _raycast_topmost_z(model, data, r_mm / 1000.0, theta)
+            assert z is None or z <= -TASK.plate_thickness + 1e-6, (
+                f"unexpected solid at r={r_mm}mm (inside hole_radius) z={z}"
+            )
+        # Across the chamfer: topmost z must increase monotonically with r.
+        # Starts 0.25mm past hole_radius, not right at it -- a ray cast
+        # exactly tangent to the bore/chamfer boundary edge is a raycasting
+        # precision artifact (grazes the corner and reports no hit within
+        # ~0.15mm of the exact edge), not a real geometric gap: Milestone 1's
+        # test_bore_angularly_continuous already checks tangential overlap
+        # analytically, not by raycast, and finds none.
+        r_outer_mm = (TASK.hole_radius + TASK.chamfer_width) * 1000
+        prev_z = -math.inf
+        for r_mm in np.arange(TASK.hole_radius * 1000 + 0.25, r_outer_mm - 0.05, 0.1):
+            z = _raycast_topmost_z(model, data, r_mm / 1000.0, theta)
+            assert z is not None, f"no hit in chamfer band at r={r_mm}mm"
+            assert z >= prev_z - 1e-9, f"non-monotonic chamfer slope at r={r_mm}mm: {z} < {prev_z}"
+            prev_z = z
+
+
+class TestBlindHoleFloor:
+    """Item 0: without an axial stop this is a through-hole, and 'seated' is
+    physically undefined -- Phase 2's bottom-out reward signal has nothing
+    to validate against."""
+
+    def test_floor_present_by_default(self):
+        model, _ = _compiled_model_data()
+        gid = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_GEOM, "floor")
+        assert gid >= 0
+
+    def test_floor_top_at_plate_thickness_depth(self):
+        model, data = _compiled_model_data()
+        z = _raycast_topmost_z(model, data, 0.0, 0.0)
+        assert z is not None, "no floor detected at hole center"
+        np.testing.assert_allclose(z, -TASK.plate_thickness, atol=1e-9)
+
+    def test_floor_radius_matches_hole_radius(self):
+        model, data = _compiled_model_data()
+        gid = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_GEOM, "floor")
+        assert model.geom_size[gid][0] == pytest.approx(TASK.hole_radius)
+
+    def test_through_hole_option_omits_floor(self):
+        task = TaskSpec(0.005, 0.0005, 0.001, 0.01, 0.05, 0.05, blind_hole=False)
+        xml = build_mjcf(task, SOLVER)
+        model = mujoco.MjModel.from_xml_string(xml)
+        assert mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_GEOM, "floor") < 0

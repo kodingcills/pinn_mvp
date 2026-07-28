@@ -90,9 +90,14 @@ def _check(log: dict[str, np.ndarray]) -> bool:
     if not np.all(np.isfinite(log["tip_pos"])) or not np.all(np.isfinite(log["f_cart"])):
         print("FAIL: non-finite value in tip_pos or f_cart")
         ok = False
+    # TASK.blind_hole=True by default (Item 0): the peg bottoms out on the
+    # floor at z=-plate_thickness well before reaching the commanded Z_END,
+    # which is intentionally deeper than reachable so the controller presses
+    # into the floor (the bottom-out force signature this check also wants).
     final_z = log["tip_pos"][-1, 2]
-    if abs(final_z - Z_END) > 1e-3:
-        print(f"FAIL: final tip z={final_z:.6f}, expected ~{Z_END} (tracking error too large)")
+    floor_z = -TASK.plate_thickness
+    if abs(final_z - floor_z) > 1e-3:
+        print(f"FAIL: final tip z={final_z:.6f}, expected ~{floor_z} (bottomed out on the blind-hole floor)")
         ok = False
     final_lateral = np.linalg.norm(log["tip_pos"][-1, :2])
     if final_lateral > 1e-3:

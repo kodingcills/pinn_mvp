@@ -10,7 +10,7 @@ from dataclasses import dataclass
 import mujoco
 import numpy as np
 
-from pegsim.control import ImpedanceGains, assert_gains_stable, compute_and_apply_qfrc, min_contact_dist
+from pegsim.control import ImpedanceGains, assert_gains_stable, compute_and_apply_qfrc, min_contact_dist, peg_contact_force_world
 from pegsim.scene import SolverSpec, TaskSpec, build_mjcf
 from pegsim.search import ArchimedeanSpiral, SpiralSpec
 
@@ -27,28 +27,64 @@ class EpisodeConfig:
     initial_offset_theta: float  # radians
     max_seconds: float
     spiral_spec: SpiralSpec | None = None  # None => straight drop, no search
-    seat_z_threshold: float = None  # default set in __post_init__
-    seat_lateral_threshold: float = None
+    target_depth: float = None  # default set in __post_init__: task.plate_thickness - margin
 
     def __post_init__(self) -> None:
         assert self.z_start > self.z_end, "z_start must be above z_end"
         assert self.z_rate > 0, "z_rate must be positive"
         assert self.initial_offset_r >= 0, "initial_offset_r must be non-negative"
         assert self.max_seconds > 0, "max_seconds must be positive"
-        if self.seat_z_threshold is None:
-            object.__setattr__(self, "seat_z_threshold", self.z_end + 0.002)
-        if self.seat_lateral_threshold is None:
-            # NOT radial_clearance: the peg_tip site sits at the BOTTOM of
-            # the shaft, but the bore engagement zone is near z=0, tens of mm
-            # above the tip once fully inserted. Even a tiny, safety-legal
-            # tilt (well under the 10deg bound -- ~0.15deg was observed) is
-            # amplified by that lever arm into a tip-vs-actual-shaft-position
-            # discrepancy several times bigger than radial_clearance itself.
-            # This threshold is a coarse "didn't end up somewhere wildly
-            # wrong" sanity check, not a precision centering requirement --
-            # depth (seat_z_threshold) is what actually distinguishes
-            # "passed through the bore" from "stuck resting on the table".
-            object.__setattr__(self, "seat_lateral_threshold", self.task.capture_radius)
+        if self.target_depth is None:
+            # "Seated" for a blind hole means bottomed out on the floor at
+            # z=-plate_thickness, not an arbitrary depth -- a through-hole
+            # has no such event (Item 0).
+            object.__setattr__(self, "target_depth", self.task.plate_thickness - 0.001)
+
+
+def axis_xy_at_z(tip_pos: np.ndarray, axis_dir: np.ndarray, z_target: float) -> np.ndarray:
+    """World (x, y) where the peg's central axis crosses world height
+    z_target, given the tip position (body origin) and the world direction
+    of the body's local z axis (the site_xmat third column)."""
+    s = (z_target - tip_pos[2]) / axis_dir[2]
+    return tip_pos[:2] + axis_dir[:2] * s
+
+
+def ground_truth_seated(
+    tip_pos: np.ndarray,
+    axis_dir: np.ndarray,
+    contact_force_world: np.ndarray,
+    task: TaskSpec,
+    target_depth: float,
+) -> bool:
+    """Sim-only success check: uses the true hole position (world origin),
+    valid here because this grades the benchmark offline -- it is never used
+    to drive control or train a policy (Rule Zero). Tilt-robust by geometric
+    containment: checks BOTH ends of the engaged segment (the tip, and where
+    the axis crosses the plate's mouth at z=0) rather than a single tilt
+    tolerance, since the tip alone is a poor proxy for centering once tilted
+    (a ~0.15deg tilt, well inside the 10deg bound, shifted the previous
+    tip-only reading by more than a full clearance width over the ~40mm
+    tip-to-mouth lever arm).
+
+    lateral force vs F_wedge guards against a wedged/jammed "success" where
+    the tip and mouth both read centered but the peg is jammed diagonally
+    under load: two-sided contact resists axial motion with up to 2*mu*N, so
+    jamming becomes possible once the lateral (normal) force N reaches
+    F_axial/(2*mu). This is the derived starting value, NOT YET calibrated
+    against a known-good/known-jammed force distribution.
+    """
+    z_tip = tip_pos[2]
+    tip_lateral = float(np.linalg.norm(tip_pos[:2]))
+    mouth_lateral = float(np.linalg.norm(axis_xy_at_z(tip_pos, axis_dir, 0.0)))
+    lateral_force = float(np.linalg.norm(contact_force_world[:2]))
+    axial_force = abs(float(contact_force_world[2]))
+    f_wedge = axial_force / (2.0 * task.friction) if axial_force > 0 else math.inf
+    return (
+        z_tip <= -target_depth
+        and tip_lateral <= task.radial_clearance
+        and mouth_lateral <= task.radial_clearance
+        and lateral_force < f_wedge
+    )
 
 
 def run_episode(cfg: EpisodeConfig) -> dict[str, object]:
@@ -78,6 +114,10 @@ def run_episode(cfg: EpisodeConfig) -> dict[str, object]:
     tip_pos = np.zeros((n_steps, 3))
     setpoint_xy = np.zeros((n_steps, 2))
     min_dist = np.full(n_steps, np.inf)
+    contact_force = np.zeros((n_steps, 3))
+    tip_lateral_log = np.zeros(n_steps)
+    mouth_lateral_log = np.zeros(n_steps)
+    tilt_deg_log = np.zeros(n_steps)
 
     # The search has two stopping mechanisms, both driven by real
     # (FK/contact) signals, never simulator ground truth:
@@ -87,7 +127,8 @@ def run_episode(cfg: EpisodeConfig) -> dict[str, object]:
     #    funneling the peg to center, dragging it back out before funneling
     #    finishes -- observed directly: without pausing, 0.5*capture_radius
     #    only succeeded at 2/8 angles despite pitch < capture_radius.
-    #  - STOP (permanent): once actually centered within clearance, stop for
+    #  - STOP (permanent): once actually centered within clearance (checked
+    #    at the mouth, not the tip -- see ground_truth_seated), stop for
     #    good rather than resuming if contact is later lost transiently.
     xy_des = nominal_xy
     search_done = False
@@ -97,7 +138,9 @@ def run_episode(cfg: EpisodeConfig) -> dict[str, object]:
         z_des = max(cfg.z_start - i * cfg.z_rate * dt, cfg.z_end)
         mujoco.mj_forward(model, data)
         tip_now = data.site_xpos[site_id]
-        if not search_done and np.linalg.norm(tip_now[:2]) <= cfg.task.radial_clearance:
+        axis_dir_now = data.site_xmat[site_id].reshape(3, 3)[:, 2]
+        mouth_now = axis_xy_at_z(tip_now, axis_dir_now, 0.0)
+        if not search_done and np.linalg.norm(mouth_now) <= cfg.task.radial_clearance:
             search_done = True
         in_contact = math.isfinite(min_contact_dist(data))
         if not search_done and spiral is not None and z_des <= 0.0 and not in_contact:
@@ -114,16 +157,19 @@ def run_episode(cfg: EpisodeConfig) -> dict[str, object]:
         mujoco.mj_step(model, data)
 
         tip = data.site_xpos[site_id]
+        axis_dir = data.site_xmat[site_id].reshape(3, 3)[:, 2]
+        force = peg_contact_force_world(model, data)
+
         time_log[i] = data.time
         tip_pos[i] = tip
         setpoint_xy[i] = xy_des
         min_dist[i] = min_contact_dist(data)
+        contact_force[i] = force
+        tip_lateral_log[i] = np.linalg.norm(tip[:2])
+        mouth_lateral_log[i] = np.linalg.norm(axis_xy_at_z(tip, axis_dir, 0.0))
+        tilt_deg_log[i] = math.degrees(math.acos(min(1.0, max(-1.0, axis_dir[2]))))
 
-        if (
-            seated_step is None
-            and tip[2] <= cfg.seat_z_threshold
-            and np.linalg.norm(tip[:2]) <= cfg.seat_lateral_threshold
-        ):
+        if seated_step is None and ground_truth_seated(tip, axis_dir, force, cfg.task, cfg.target_depth):
             seated_step = i
 
     return {
@@ -131,6 +177,11 @@ def run_episode(cfg: EpisodeConfig) -> dict[str, object]:
         "tip_pos": tip_pos,
         "setpoint_xy": setpoint_xy,
         "min_contact_dist": min_dist,
+        "contact_force": contact_force,
+        "tip_lateral": tip_lateral_log,
+        "mouth_lateral": mouth_lateral_log,
+        "tilt_deg": tilt_deg_log,
+        "max_tilt_deg": float(tilt_deg_log.max()),
         "seated": seated_step is not None,
         "time_to_seat_s": time_log[seated_step] if seated_step is not None else math.inf,
     }
