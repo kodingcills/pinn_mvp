@@ -206,3 +206,25 @@ named combination that search-oriented scripts must construct explicitly.
 The example scripts cited here previously were deleted after their control
 law became obsolete; their findings remain in git history. It is not safe as
 a silent global default.
+
+## Agent working rules
+
+**Code first, tests second.** Prefer correct code on the first try. Reason
+explicitly about edge cases, types, units, invariants, and failure modes before
+writing. Self-review the patch as if reviewing someone else's work, checking
+every numeric literal against its physical meaning, before running anything.
+
+**Test economy.** Targeted quiet runs (`pytest tests/test_x.py -q -x`) after
+meaningful changes only. Full suite twice: baseline at start, verification
+before reporting. Never between intermediate edits. On failure, diagnose the
+root cause and fix it properly; a re-run loop with small patches means reasoning
+has stopped.
+
+**Output economy.** Never dump full test output, logs, or stack traces. On
+failure: test id, one-line error, suspected cause. On pass: the count. Verbose
+only on request. Echoing passing test output every turn is the largest token
+sink in agentic work.
+
+**Code quality.** Comment WHY, not WHAT. Every numeric constant either derives
+from a config object or carries a comment naming what it was calibrated against.
+Assert physical relationships, not values, wherever quantities are coupled.
