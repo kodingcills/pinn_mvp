@@ -29,7 +29,7 @@ INSERTION = InsertionProfile(k_z_search=2000.0, f_search=4.0)
 PEN_ALLOW = 1.5 * 8e-6
 OFFSET = 0.0018  # 1.8mm
 V_T = 0.005
-R_CAP_DYN = 0.0016  # measured via measure_c2a_dynamic_capture_radius.py
+R_CAP_DYN = 0.0016  # measured by the deleted C2a script; see git history
 
 spiral_spec = SpiralSpec(task=TASK, delta_max=DELTA_MAX_SPEC_M, v_t=V_T)
 pitch = 2.0 * math.pi * spiral_spec.b

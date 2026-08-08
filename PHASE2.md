@@ -128,8 +128,9 @@ independent of starting angle.
 
 `pegsim.search.assert_search_force_budget` now checks this (and the
 related steady-state-lag-vs-R_cap_dyn constraint) at construction time,
-given a measured R_cap_dyn. See scripts/measure_e3_search_phase_sweep.py
-for the retuned (f_search, k_xy) sweep this motivated.
+given a measured R_cap_dyn. The retuned (f_search, k_xy) sweep script was
+deleted after its control law became obsolete; its findings remain in git
+history.
 
 mu itself: confirmed via git history that friction=0.4 has been the value
 since Milestone 1 (pegsim/scene.py's TaskSpec default) -- it was never
@@ -156,8 +157,8 @@ Fixed: `pegsim.rollout.DELTA_Z_TRIGGER` (0.2mm) + a live-tracked `z_flat`
 baseline (updated only while genuinely flat, not engaging), trigger fires
 on `z_flat - z_tip > DELTA_Z_TRIGGER`, independent of f_search/k_z.
 `assert_seating_trigger_reachable` catches configs that can't clear the
-trigger with margin. Re-swept F_search x k_xy after the fix (see
-scripts/measure_e3_search_phase_sweep.py): capture jumped from 0/16 to
+trigger with margin. The deleted F_search x k_xy sweep (see git history)
+showed capture jumped from 0/16 to
 12-13/16 across f_search=1-2N at both k_xy=500 and 1000, exactly the
 "largely f_search-independent, gated by breakaway" pattern predicted once
 the trigger stopped being the binding constraint.
@@ -201,6 +202,7 @@ were tuned against.
 Conclusion: `ImpedanceGains`/`InsertionProfile`'s class defaults stay at
 their original (k_xy=500, f_search=4.0, k_rx=k_ry=1.0) values. The locked
 search config (f_search=1N, k_xy=1000, k_rx=k_ry=5.0, dt=0.0005) is a
-named combination that search-oriented scripts must construct explicitly
-(as measure_e3_search_phase_sweep.py, measure_e6_probe_vs_spiral.py, etc.
-already do) -- it is not safe as a silent global default.
+named combination that search-oriented scripts must construct explicitly.
+The example scripts cited here previously were deleted after their control
+law became obsolete; their findings remain in git history. It is not safe as
+a silent global default.

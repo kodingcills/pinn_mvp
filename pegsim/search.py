@@ -159,10 +159,10 @@ def assert_search_force_budget(
     (f_search=4N, k_xy=1000, lag=1.53mm vs a 0.4mm bound) captured 16/16.
     Removed.
 
-    r_cap_dyn is a measured constant (see
-    scripts/measure_c2a_dynamic_capture_radius.py), not derived from
-    TaskSpec -- callers must pass in a value they actually measured for
-    their (task, gains) pair, not a guess.
+    r_cap_dyn is a measured constant (the measuring script was deleted after
+    its control law became obsolete; see git history), not derived from
+    TaskSpec -- callers must pass in a value they actually measured for their
+    (task, gains) pair, not a guess.
     """
     breakaway_force = task.friction * f_search
     max_lateral_force = k_xy * spiral.r_spiral
@@ -180,52 +180,3 @@ def assert_search_force_budget(
         "crossing (the peg starts moving only once the spiral has grown "
         "past r_breakaway), not full spiral coverage"
     )
-
-
-@dataclass(frozen=True)
-class ProbeSpec:
-    """Lift-and-step lateral search: an alternative to the Archimedean
-    spiral (Milestone 4 E6) that sidesteps the friction force budget
-    entirely by translating with the peg lifted clear of the table, then
-    lowering to check for capture -- no lateral spring force ever has to
-    overcome table friction, unlike a dragged spiral search (see
-    assert_search_force_budget's docstring for why that budget can fail).
-
-    Probe points are laid out on a hexagonal covering lattice: circles of
-    radius r_cap_dyn centered on a triangular lattice with spacing
-    r_cap_dyn*sqrt(3) is the loosest packing that still covers the plane
-    with no gaps (the deepest point between three adjacent lattice points
-    sits at spacing/sqrt(3) = r_cap_dyn from each center) -- covered
-    empirically, not just by the formula, in
-    tests/test_search.py::TestProbeSpecCoverage.
-    """
-
-    task: TaskSpec
-    delta_max: float  # max lateral pose uncertainty this search must cover
-    r_cap_dyn: float  # measured dynamic capture radius -- see measure_c2a_dynamic_capture_radius.py
-    lift_height: float = 0.001  # m, clears the table surface (z=0) before translating
-
-    def __post_init__(self) -> None:
-        assert self.delta_max > 0, "delta_max must be positive"
-        assert self.r_cap_dyn > 0, "r_cap_dyn must be positive"
-        assert self.lift_height > 0, "lift_height must be positive"
-
-    @property
-    def spacing(self) -> float:
-        return self.r_cap_dyn * math.sqrt(3.0)
-
-    @property
-    def points(self) -> list[np.ndarray]:
-        """Probe offsets (x, y) relative to the nominal search center,
-        ring by ring outward, stopping once every point within delta_max is
-        within r_cap_dyn of some ring already generated."""
-        pts = [np.array([0.0, 0.0])]
-        ring = 1
-        while ring * self.spacing - self.r_cap_dyn <= self.delta_max:
-            ring_radius = ring * self.spacing
-            n_points = 6 * ring
-            for k in range(n_points):
-                angle = 2.0 * math.pi * k / n_points
-                pts.append(np.array([ring_radius * math.cos(angle), ring_radius * math.sin(angle)]))
-            ring += 1
-        return pts
