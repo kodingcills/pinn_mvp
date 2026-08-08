@@ -118,6 +118,26 @@ class TestEpisodeConfigConstraints:
         with pytest.raises(AssertionError, match="criterion goes vacuous"):
             assert_pen_allow_meaningful(TASK, 0.2 * TASK.radial_clearance)
 
+    @pytest.mark.parametrize(
+        ("field", "value"),
+        (("control_decimation", 0), ("control_decimation", 1.5),
+         ("control_delay_steps", -1), ("control_delay_steps", True)),
+    )
+    def test_rejects_invalid_control_timing(self, field, value):
+        kwargs = {field: value}
+        with pytest.raises(AssertionError, match=field):
+            EpisodeConfig(
+                TASK,
+                SOLVER,
+                GAINS,
+                INSERTION,
+                z_start=0.005,
+                initial_offset_r=0.0,
+                initial_offset_theta=0.0,
+                max_seconds=1.0,
+                **kwargs,
+            )
+
 
 class TestAxisXyAtZ:
     def test_untilted_axis_reads_tip_xy_everywhere(self):
@@ -262,6 +282,49 @@ class TestRunEpisode:
         assert log["time"][-1] == pytest.approx(max_seconds, abs=1e-15)
         assert not log["seated"]
         assert math.isinf(log["time_to_seat_s"])
+
+    def test_decimated_controller_holds_qfrc_between_ticks(self):
+        decimation = 4
+        cfg = EpisodeConfig(
+            TASK,
+            SOLVER,
+            GAINS,
+            INSERTION,
+            z_start=0.005,
+            initial_offset_r=0.0,
+            initial_offset_theta=0.0,
+            max_seconds=0.012,
+            control_decimation=decimation,
+        )
+
+        log = run_episode(cfg)
+
+        np.testing.assert_array_equal(
+            np.flatnonzero(log["control_tick"]), np.array([0, 4, 8]),
+        )
+        for start in range(0, len(log["time"]), decimation):
+            block = log["qfrc_applied"][start:start + decimation]
+            np.testing.assert_array_equal(block, np.broadcast_to(block[0], block.shape))
+
+    def test_one_cycle_delay_applies_previous_control_tick_command(self):
+        common = dict(
+            task=TASK,
+            solver=SOLVER,
+            gains=GAINS,
+            insertion=INSERTION,
+            z_start=0.005,
+            initial_offset_r=0.0,
+            initial_offset_theta=0.0,
+            max_seconds=0.012,
+            control_decimation=4,
+        )
+        immediate = run_episode(EpisodeConfig(**common, control_delay_steps=0))
+        delayed = run_episode(EpisodeConfig(**common, control_delay_steps=1))
+
+        np.testing.assert_array_equal(delayed["qfrc_applied"][:4], 0.0)
+        np.testing.assert_array_equal(
+            delayed["qfrc_applied"][4:8], immediate["qfrc_applied"][:4],
+        )
 
     def test_zero_offset_no_spiral_seats(self):
         cfg = EpisodeConfig(

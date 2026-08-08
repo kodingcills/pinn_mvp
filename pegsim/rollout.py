@@ -238,12 +238,20 @@ class EpisodeConfig:
     depth_commit: float = DEPTH_COMMIT
     seed_z_flat_from_cad: bool = True
     force_continuous_handoff: bool = True
+    control_decimation: int = 1
+    control_delay_steps: int = 0
 
     def __post_init__(self) -> None:
         assert self.z_start > 0, "z_start must be above the plate (z=0)"
         assert self.initial_offset_r >= 0, "initial_offset_r must be non-negative"
         assert self.max_seconds > 0, "max_seconds must be positive"
         assert self.seat_persist_s > 0, "seat_persist_s must be positive"
+        assert type(self.control_decimation) is int and self.control_decimation >= 1, (
+            "control_decimation must be an integer >= 1"
+        )
+        assert type(self.control_delay_steps) is int and self.control_delay_steps >= 0, (
+            "control_delay_steps must be an integer >= 0"
+        )
         assert self.depth_commit > 0, "depth_commit must be positive"
         assert self.depth_commit < 0.5 * self.insertion.descent_allowance, (
             f"depth_commit = {self.depth_commit * 1000:.4f}mm does not clear "
@@ -382,6 +390,7 @@ def run_episode(cfg: EpisodeConfig, pen_allow: float = 0.0) -> dict[str, object]
     spiral = ArchimedeanSpiral(cfg.spiral_spec) if cfg.spiral_spec is not None else None
 
     dt = cfg.solver.timestep
+    control_period = cfg.control_decimation * dt
     n_steps = int(cfg.max_seconds / dt)
     site_id = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_SITE, "peg_tip")
 
@@ -416,6 +425,8 @@ def run_episode(cfg: EpisodeConfig, pen_allow: float = 0.0) -> dict[str, object]
     committed_log = np.zeros(n_steps, dtype=bool)
     spiral_theta_log = np.zeros(n_steps)
     z_flat_log = np.zeros(n_steps)
+    control_tick_log = np.zeros(n_steps, dtype=bool)
+    qfrc_applied_log = np.zeros((n_steps, model.nv))
     # searching: the peg is at the plate and has not yet captured -- the only
     # window in which "did the spiral advance?" is a meaningful question.
     # spiral_advanced: it actually advanced this step. The ratio of the two is
@@ -476,7 +487,7 @@ def run_episode(cfg: EpisodeConfig, pen_allow: float = 0.0) -> dict[str, object]
     # failure mode this audit exists to remove. 0.5s is slow relative to the
     # spiral's own timescale (one revolution takes 0.15-3.5s) so the baseline
     # cannot chase a transient dip, and fast relative to the episode.
-    z_flat_alpha = min(1.0, dt / Z_FLAT_TAU_S)
+    z_flat_alpha = min(1.0, control_period / Z_FLAT_TAU_S)
 
     seated_step = None
     consecutive_ok = 0
@@ -497,94 +508,101 @@ def run_episode(cfg: EpisodeConfig, pen_allow: float = 0.0) -> dict[str, object]
     # step would have used, so step 0 is not a special case.
     k_z_prev_active = cfg.insertion.k_z_search
     z_des_prev = cfg.z_start
+    z_des_leashed = cfg.z_start
+    searching = False
+    f_cart = np.zeros(6)
+    held_qfrc = np.zeros(model.nv)
+    delayed_commands: list[np.ndarray] = []
 
     for i in range(n_steps):
         mujoco.mj_forward(model, data)
-        tip_now = data.site_xpos[site_id]
-        axis_dir_now = data.site_xmat[site_id].reshape(3, 3)[:, 2]
-        mouth_now = axis_xy_at_z(tip_now, axis_dir_now, 0.0)
-        if not search_done and np.linalg.norm(mouth_now) <= cfg.task.radial_clearance:
-            search_done = True
-            capture_step = i
-            capture_tip_lateral = float(np.linalg.norm(tip_now[:2]))
-            capture_mouth_lateral = float(np.linalg.norm(mouth_now))
-            xy_des = tip_now[:2].copy()
-        z_flat_band = 0.5 * cfg.depth_commit
-        if cfg.seed_z_flat_from_cad:
-            depth_below_flat = z_flat - tip_now[2]
-            if data.ncon > 0 and abs(depth_below_flat) < z_flat_band:
-                z_flat = (1.0 - z_flat_alpha) * z_flat + z_flat_alpha * tip_now[2]
-        else:
-            # Historical comparison mode for L1 attribution. The old code
-            # began latching once the descending tip crossed z=+1mm, without
-            # requiring contact, and kept updating during flat-table sliding
-            # until the absolute depth gate said it was engaging. This is
-            # intentionally the old mid-fall behavior, not a better touch-off.
-            engaging = tip_now[2] < -cfg.depth_commit
-            if tip_now[2] <= 0.001 and not engaging:
-                z_flat = tip_now[2] if z_flat is None else (
-                    (1.0 - z_flat_alpha) * z_flat + z_flat_alpha * tip_now[2]
+        control_tick = i % cfg.control_decimation == 0
+        control_tick_log[i] = control_tick
+        if control_tick:
+            tip_now = data.site_xpos[site_id]
+            axis_dir_now = data.site_xmat[site_id].reshape(3, 3)[:, 2]
+            mouth_now = axis_xy_at_z(tip_now, axis_dir_now, 0.0)
+            if not search_done and np.linalg.norm(mouth_now) <= cfg.task.radial_clearance:
+                search_done = True
+                capture_step = i
+                capture_tip_lateral = float(np.linalg.norm(tip_now[:2]))
+                capture_mouth_lateral = float(np.linalg.norm(mouth_now))
+                xy_des = tip_now[:2].copy()
+            z_flat_band = 0.5 * cfg.depth_commit
+            if cfg.seed_z_flat_from_cad:
+                depth_below_flat = z_flat - tip_now[2]
+                if data.ncon > 0 and abs(depth_below_flat) < z_flat_band:
+                    z_flat = (1.0 - z_flat_alpha) * z_flat + z_flat_alpha * tip_now[2]
+            else:
+                # Historical comparison mode for L1 attribution. The old code
+                # began latching once the descending tip crossed z=+1mm,
+                # without requiring contact, and kept updating during sliding.
+                engaging = tip_now[2] < -cfg.depth_commit
+                if tip_now[2] <= 0.001 and not engaging:
+                    z_flat = tip_now[2] if z_flat is None else (
+                        (1.0 - z_flat_alpha) * z_flat + z_flat_alpha * tip_now[2]
+                    )
+                depth_below_flat = 0.0 if z_flat is None else z_flat - tip_now[2]
+
+            # ONE gate, with hysteresis. Both spiral pause and seating ramp
+            # key off the same physical event.
+            was_committed = committed
+            release_depth = COMMIT_RELEASE_FRACTION * cfg.depth_commit
+            committed = depth_below_flat > (
+                release_depth if committed else cfg.depth_commit
+            )
+
+            k_z_active = seating_gains.k_z if committed else cfg.insertion.k_z_search
+            active_gains = seating_gains if committed else search_gains
+
+            if committed != was_committed and cfg.force_continuous_handoff:
+                # Re-reference the setpoint so changing k_z preserves force.
+                f_now = k_z_prev_active * (tip_now[2] - z_des_prev)
+                f_cmd = f_now
+                z_des_raw = tip_now[2] - f_now / k_z_active
+
+            if cfg.force_continuous_handoff:
+                f_goal = (
+                    cfg.insertion.f_target if committed else cfg.insertion.f_search
                 )
-            depth_below_flat = 0.0 if z_flat is None else z_flat - tip_now[2]
+                f_cmd = _rate_limited_advance(
+                    f_cmd, f_goal, f_ramp_rate * control_period,
+                )
 
-        # ONE gate, with hysteresis. Both the spiral pause and the seating
-        # force ramp key off it -- they fire on the same physical event, and
-        # two constants describing one event is how they drifted apart.
-        was_committed = committed
-        release_depth = COMMIT_RELEASE_FRACTION * cfg.depth_commit
-        committed = depth_below_flat > (release_depth if committed else cfg.depth_commit)
+            phase_target = z_seating_target if committed else z_search_target
+            z_des_raw = _rate_limited_advance(
+                z_des_raw,
+                phase_target,
+                cfg.insertion.v_descent * control_period,
+            )
+            leash_force = (
+                f_cmd if cfg.force_continuous_handoff else cfg.insertion.f_target
+            )
+            z_des_leashed = max(
+                z_des_raw, tip_now[2] - leash_force / k_z_active,
+            )
 
-        k_z_active = seating_gains.k_z if committed else cfg.insertion.k_z_search
-        active_gains = seating_gains if committed else search_gains
+            at_plate = z_flat is not None and tip_now[2] <= z_flat + z_flat_band
+            searching = (not search_done) and spiral is not None and at_plate
+            if searching and not committed:
+                xy_des = nominal_xy + spiral.step(control_period)
+            x_des = np.array([xy_des[0], xy_des[1], z_des_leashed])
 
-        if committed != was_committed and cfg.force_continuous_handoff:
-            # FORCE CONTINUITY ACROSS THE STIFFNESS STEP. The setpoint is
-            # re-referenced so the commanded axial force is unchanged at the
-            # instant k_z changes: z_des_raw = z_tip - F_now / k_z_new.
-            # Stepping k_z with the setpoint held would multiply a real,
-            # nonzero position error by k_z_seating/k_z_search (4x here:
-            # 0.75N -> 3.0N). In sim that is an impulse through a spring; on
-            # hardware with an admittance interface it is a velocity
-            # discontinuity that trips a protective stop.
-            f_now = k_z_prev_active * (tip_now[2] - z_des_prev)
-            f_cmd = f_now
-            z_des_raw = tip_now[2] - f_now / k_z_active
+            f_cart = compute_and_apply_qfrc(model, data, active_gains, x_des)
+            delayed_commands.append(data.qfrc_applied.copy())
+            if len(delayed_commands) > cfg.control_delay_steps:
+                held_qfrc = delayed_commands.pop(0)
+            k_z_prev_active = k_z_active
+            z_des_prev = z_des_leashed
 
-        if cfg.force_continuous_handoff:
-            # The leash reference is RAMPED, never stepped, toward whichever
-            # force the current phase is aiming at. Parameterizing the seating
-            # phase by force makes the commanded force exactly f_cmd regardless
-            # of k_z, so the stiffness change is invisible.
-            f_goal = cfg.insertion.f_target if committed else cfg.insertion.f_search
-            f_cmd = _rate_limited_advance(f_cmd, f_goal, f_ramp_rate * dt)
-
-        phase_target = z_seating_target if committed else z_search_target
-        z_des_raw = _rate_limited_advance(z_des_raw, phase_target, cfg.insertion.v_descent * dt)
-        # Two governors (see InsertionProfile): z_des_raw rate-limits the
-        # setpoint and therefore bounds impact velocity; the leash bounds
-        # steady-state force. The comparison path deliberately restores the
-        # old 15N position leash, which did not preserve force across a k_z
-        # change; it exists only to attribute the historical result.
-        leash_force = (
-            f_cmd if cfg.force_continuous_handoff else cfg.insertion.f_target
-        )
-        z_des_leashed = max(z_des_raw, tip_now[2] - leash_force / k_z_active)
-
-        at_plate = z_flat is not None and tip_now[2] <= z_flat + z_flat_band
-        searching = (not search_done) and spiral is not None and at_plate
-        if searching and not committed:
-            # The spiral only advances once the peg is actually at the plate
-            # surface (otherwise it wanders past clearance well before the
-            # peg is physically at the hole's entrance) and only while
-            # uncommitted (otherwise it drags the peg back out of the hole).
-            xy_des = nominal_xy + spiral.step(dt)
-            spiral_advanced_log[i] = True
+        # Zero-order hold: the generalized-force vector, including bias
+        # compensation, remains exactly constant until the next control tick.
+        data.qfrc_applied[:] = held_qfrc
         searching_log[i] = searching
-        x_des = np.array([xy_des[0], xy_des[1], z_des_leashed])
-
-        f_cart = compute_and_apply_qfrc(model, data, active_gains, x_des)
-        k_z_prev_active = k_z_active
-        z_des_prev = z_des_leashed
+        # Decimation itself is not a search pause: this flag records whether
+        # the held controller state intends the spiral to advance.
+        spiral_advanced_log[i] = searching and not committed
+        qfrc_applied_log[i] = held_qfrc
         mujoco.mj_step(model, data)
 
         tip = data.site_xpos[site_id]
@@ -627,6 +645,8 @@ def run_episode(cfg: EpisodeConfig, pen_allow: float = 0.0) -> dict[str, object]
         "committed": committed_log,
         "spiral_theta": spiral_theta_log,
         "z_flat": z_flat_log,
+        "control_tick": control_tick_log,
+        "qfrc_applied": qfrc_applied_log,
         "searching": searching_log,
         "spiral_advanced": spiral_advanced_log,
         # Pause duty cycle: fraction of the SEARCH window (peg at the plate,
@@ -688,6 +708,8 @@ class ValidatedConfig:
     max_seconds: float  # s, episode budget -- MEASURED (J5), not arc-length arithmetic
     z_start: float  # m, initial tip height above the plate
     depth_commit: float  # m, FK depth below z_flat that commits to seating
+    control_decimation: int
+    control_delay_steps: int
 
     def __post_init__(self) -> None:
         assert self.z_start > 0, "z_start must be above the plate (z=0)"
@@ -729,4 +751,6 @@ VALIDATED_LOOSE_V1 = ValidatedConfig(
     max_seconds=16.3,
     z_start=0.005,
     depth_commit=DEPTH_COMMIT,
+    control_decimation=1,
+    control_delay_steps=0,
 )
