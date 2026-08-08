@@ -6,3 +6,7 @@ __pycache__/
 *.egg-info/
 .DS_Store
 MUJOCO_LOG.TXT
+
+# Agent/editor configuration is machine-local. Never commit these trees.
+.agents/
+.claude/
