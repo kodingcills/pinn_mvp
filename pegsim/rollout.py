@@ -138,16 +138,6 @@ class InsertionProfile:
             "broken part"
         )
         assert self.v_descent > 0, "v_descent must be positive"
-        assert DEPTH_COMMIT < 0.5 * self.descent_allowance, (
-            f"DEPTH_COMMIT = {DEPTH_COMMIT * 1000:.4f}mm does not clear "
-            f"0.5 * (f_search / k_z_search) = "
-            f"{0.5 * self.descent_allowance * 1000:.4f}mm -- the search-phase "
-            "axial reference cannot pull the tip that far past the table, so "
-            "the commit gate is physically unreachable no matter how well the "
-            "lateral search finds the hole (this is bug 4's failure mode: an "
-            "absolute depth threshold not coupled to the force that produces "
-            "the depth)"
-        )
 
     @property
     def descent_allowance(self) -> float:
@@ -161,11 +151,12 @@ def assert_commit_gate_reachable(
     insertion: InsertionProfile,
     gains: ImpedanceGains,
     settling_depth: float,
+    depth_commit: float = DEPTH_COMMIT,
 ) -> None:
     """Bracket DEPTH_COMMIT between its two bounds, the lower one MEASURED.
 
-    The upper bound (DEPTH_COMMIT < 0.5 * f_search/k_z_search) is checked in
-    InsertionProfile.__post_init__ -- it needs no simulation.
+    The upper bound (depth_commit < 0.5 * f_search/k_z_search) is checked in
+    EpisodeConfig.__post_init__ -- it needs no simulation.
 
     The lower bound does: settling_depth is how deep the tip actually rests
     below the flat table when it is merely SITTING near the hole, partially
@@ -180,16 +171,17 @@ def assert_commit_gate_reachable(
     assert settling_depth > 0, (
         "settling_depth must be a positive measured depth below the table"
     )
-    assert DEPTH_COMMIT > 3.0 * settling_depth, (
-        f"DEPTH_COMMIT = {DEPTH_COMMIT * 1000:.4f}mm does not clear 3x the "
+    z_flat_band = 0.5 * depth_commit
+    assert depth_commit > 3.0 * settling_depth, (
+        f"depth_commit = {depth_commit * 1000:.4f}mm does not clear 3x the "
         f"measured near-hole settling depth "
         f"({3.0 * settling_depth * 1000:.4f}mm) -- the peg reaches this depth "
         "just by resting against the chamfer, so the spiral would pause and "
         "the seating ramp would fire without the peg having committed to "
         "anything (this is the H1 pause-gate failure)"
     )
-    assert Z_FLAT_BAND > settling_depth, (
-        f"Z_FLAT_BAND = {Z_FLAT_BAND * 1000:.4f}mm is narrower than the "
+    assert z_flat_band > settling_depth, (
+        f"z_flat_band = {z_flat_band * 1000:.4f}mm is narrower than the "
         f"measured settling depth {settling_depth * 1000:.4f}mm -- the "
         "flat-table baseline could never update off its CAD-nominal value"
     )
@@ -243,12 +235,24 @@ class EpisodeConfig:
     target_depth: float | None = None  # derived in __post_init__ from measured z-stop residual
     seat_persist_s: float = 0.1  # ground_truth_seated must hold continuously this long
     plate_tilt_deg: float = 0.0  # fixture-misalignment scenario, see scene.build_mjcf
+    depth_commit: float = DEPTH_COMMIT
+    seed_z_flat_from_cad: bool = True
+    force_continuous_handoff: bool = True
 
     def __post_init__(self) -> None:
         assert self.z_start > 0, "z_start must be above the plate (z=0)"
         assert self.initial_offset_r >= 0, "initial_offset_r must be non-negative"
         assert self.max_seconds > 0, "max_seconds must be positive"
         assert self.seat_persist_s > 0, "seat_persist_s must be positive"
+        assert self.depth_commit > 0, "depth_commit must be positive"
+        assert self.depth_commit < 0.5 * self.insertion.descent_allowance, (
+            f"depth_commit = {self.depth_commit * 1000:.4f}mm does not clear "
+            f"0.5 * (f_search / k_z_search) = "
+            f"{0.5 * self.insertion.descent_allowance * 1000:.4f}mm -- the "
+            "search-phase axial reference cannot pull the tip that far past "
+            "the table, so the commit gate is physically unreachable no "
+            "matter how well the lateral search finds the hole"
+        )
         if self.target_depth is None:
             # "Seated" for a blind hole means bottomed out on the floor at
             # z=-plate_thickness within the measured 15N stop residual, not an
@@ -365,7 +369,7 @@ def run_episode(cfg: EpisodeConfig, pen_allow: float = 0.0) -> dict[str, object]
     search_gains = replace(cfg.gains, k_z=cfg.insertion.k_z_search)
     assert_gains_stable(model, data, seating_gains, cfg.solver.timestep)
     assert_gains_stable(model, data, search_gains, cfg.solver.timestep)
-    # DEPTH_COMMIT's upper bound is asserted in InsertionProfile.__post_init__
+    # depth_commit's upper bound is asserted in EpisodeConfig.__post_init__
     # (no simulation needed). Its lower bound needs a measured settling depth
     # and so belongs to config validation, not to every episode -- see
     # assert_commit_gate_reachable and pegsim.characterize.measure_settling_depths.
@@ -465,7 +469,7 @@ def run_episode(cfg: EpisodeConfig, pen_allow: float = 0.0) -> dict[str, object]
     # requiring contact stops a free-falling tip from latching a mid-air
     # value, and the band stops a partial-overhang settle (or a committed
     # descent) from dragging the baseline down after it.
-    z_flat = 0.0
+    z_flat = 0.0 if cfg.seed_z_flat_from_cad else None
     # Expressed as a TIME CONSTANT, never as a bare per-step alpha. The old
     # alpha=0.001 was a 0.5s filter at dt=0.0005 and a 1.0s filter at
     # dt=0.001 -- same literal, different physics, which is precisely the
@@ -505,21 +509,26 @@ def run_episode(cfg: EpisodeConfig, pen_allow: float = 0.0) -> dict[str, object]
             capture_tip_lateral = float(np.linalg.norm(tip_now[:2]))
             capture_mouth_lateral = float(np.linalg.norm(mouth_now))
             xy_des = tip_now[:2].copy()
-        depth_below_flat = z_flat - tip_now[2]
-        if data.ncon > 0 and abs(depth_below_flat) < Z_FLAT_BAND:
+        if z_flat is None and data.ncon > 0:
+            # Historical comparison mode for L1 attribution: establish the
+            # datum from the first sliding contact instead of CAD nominal.
+            z_flat = float(tip_now[2])
+        depth_below_flat = 0.0 if z_flat is None else z_flat - tip_now[2]
+        z_flat_band = 0.5 * cfg.depth_commit
+        if z_flat is not None and data.ncon > 0 and abs(depth_below_flat) < z_flat_band:
             z_flat = (1.0 - z_flat_alpha) * z_flat + z_flat_alpha * tip_now[2]
 
         # ONE gate, with hysteresis. Both the spiral pause and the seating
         # force ramp key off it -- they fire on the same physical event, and
         # two constants describing one event is how they drifted apart.
         was_committed = committed
-        release_depth = COMMIT_RELEASE_FRACTION * DEPTH_COMMIT
-        committed = depth_below_flat > (release_depth if committed else DEPTH_COMMIT)
+        release_depth = COMMIT_RELEASE_FRACTION * cfg.depth_commit
+        committed = depth_below_flat > (release_depth if committed else cfg.depth_commit)
 
         k_z_active = seating_gains.k_z if committed else cfg.insertion.k_z_search
         active_gains = seating_gains if committed else search_gains
 
-        if committed != was_committed:
+        if committed != was_committed and cfg.force_continuous_handoff:
             # FORCE CONTINUITY ACROSS THE STIFFNESS STEP. The setpoint is
             # re-referenced so the commanded axial force is unchanged at the
             # instant k_z changes: z_des_raw = z_tip - F_now / k_z_new.
@@ -547,7 +556,7 @@ def run_episode(cfg: EpisodeConfig, pen_allow: float = 0.0) -> dict[str, object]
         # steady-state force at f_cmd independent of where the peg stops.
         z_des_leashed = max(z_des_raw, tip_now[2] - f_cmd / k_z_active)
 
-        at_plate = tip_now[2] <= z_flat + Z_FLAT_BAND
+        at_plate = z_flat is not None and tip_now[2] <= z_flat + z_flat_band
         searching = (not search_done) and spiral is not None and at_plate
         if searching and not committed:
             # The spiral only advances once the peg is actually at the plate
@@ -580,7 +589,7 @@ def run_episode(cfg: EpisodeConfig, pen_allow: float = 0.0) -> dict[str, object]
         f_cmd_z_log[i] = f_cart[2]
         committed_log[i] = committed
         spiral_theta_log[i] = spiral.theta if spiral is not None else 0.0
-        z_flat_log[i] = z_flat
+        z_flat_log[i] = z_flat if z_flat is not None else math.nan
 
         if ground_truth_seated(tip, axis_dir, force, cfg.task, cfg.target_depth, pen_allow, cfg.plate_tilt_deg):
             consecutive_ok += 1
@@ -628,7 +637,7 @@ def run_episode(cfg: EpisodeConfig, pen_allow: float = 0.0) -> dict[str, object]
         "capture_tip_lateral": capture_tip_lateral,
         "capture_mouth_lateral": capture_mouth_lateral,
         "spiral_exhausted": spiral.exhausted if spiral is not None else None,
-        "z_flat_final": float(z_flat),
+        "z_flat_final": float(z_flat) if z_flat is not None else None,
     }
 
 
@@ -664,6 +673,7 @@ class ValidatedConfig:
     pen_allow: float  # m, MEASURED interpenetration allowance for the seat check
     max_seconds: float  # s, episode budget -- MEASURED (J5), not arc-length arithmetic
     z_start: float  # m, initial tip height above the plate
+    depth_commit: float  # m, FK depth below z_flat that commits to seating
 
     def __post_init__(self) -> None:
         assert self.z_start > 0, "z_start must be above the plate (z=0)"
@@ -704,4 +714,5 @@ VALIDATED_LOOSE_V1 = ValidatedConfig(
     pen_allow=1.5 * 8e-6,
     max_seconds=16.3,
     z_start=0.005,
+    depth_commit=DEPTH_COMMIT,
 )

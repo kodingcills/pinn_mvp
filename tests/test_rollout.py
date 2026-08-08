@@ -65,9 +65,11 @@ class TestValidatedLooseV1:
         cfg = VALIDATED_LOOSE_V1
         depths = measure_settling_depths(
             cfg.task, cfg.solver, cfg.gains, cfg.insertion,
-            offsets_m=[0.00175, 0.002, 0.003, 0.005],
+            offsets_m=[0.00175, 0.002, 0.003, 0.005], z_start=cfg.z_start,
         )
-        assert_commit_gate_reachable(cfg.insertion, cfg.gains, max(depths.values()))
+        assert_commit_gate_reachable(
+            cfg.insertion, cfg.gains, max(depths.values()), cfg.depth_commit,
+        )
 
     def test_search_force_budget(self):
         cfg = VALIDATED_LOOSE_V1
@@ -96,6 +98,21 @@ class TestEpisodeConfigConstraints:
         cfg = EpisodeConfig(TASK, SOLVER, GAINS, INSERTION, z_start=0.005,
                              initial_offset_r=0.0, initial_offset_theta=0.0, max_seconds=1.0)
         assert cfg.target_depth == pytest.approx(TASK.plate_thickness - 2.0 * 70e-6)
+
+    def test_rejects_commit_gate_beyond_search_descent_allowance(self):
+        insertion = InsertionProfile(k_z_search=2000.0, f_search=1.0)
+        with pytest.raises(AssertionError, match="physically unreachable"):
+            EpisodeConfig(
+                TASK,
+                SOLVER,
+                GAINS,
+                insertion,
+                z_start=0.005,
+                initial_offset_r=0.002,
+                initial_offset_theta=0.0,
+                max_seconds=1.0,
+                depth_commit=0.0005,
+            )
 
     def test_pen_allow_must_stay_small_relative_to_clearance(self):
         with pytest.raises(AssertionError, match="criterion goes vacuous"):
@@ -331,10 +348,10 @@ class TestRunEpisode:
         depth = log["z_flat"] - log["tip_pos"][:, 2]
         releases = np.flatnonzero(committed[:-1] & ~committed[1:])
         for i in releases:
-            assert depth[i + 1] <= COMMIT_RELEASE_FRACTION * DEPTH_COMMIT * 1.05, (
+            assert depth[i + 1] <= COMMIT_RELEASE_FRACTION * cfg.depth_commit * 1.05, (
                 f"released at depth {depth[i + 1] * 1000:.4f}mm, above the "
                 f"hysteresis threshold "
-                f"{COMMIT_RELEASE_FRACTION * DEPTH_COMMIT * 1000:.4f}mm"
+                f"{COMMIT_RELEASE_FRACTION * cfg.depth_commit * 1000:.4f}mm"
             )
 
     def test_peak_force_stays_under_f_yield(self):
