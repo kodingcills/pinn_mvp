@@ -509,14 +509,23 @@ def run_episode(cfg: EpisodeConfig, pen_allow: float = 0.0) -> dict[str, object]
             capture_tip_lateral = float(np.linalg.norm(tip_now[:2]))
             capture_mouth_lateral = float(np.linalg.norm(mouth_now))
             xy_des = tip_now[:2].copy()
-        if z_flat is None and data.ncon > 0:
-            # Historical comparison mode for L1 attribution: establish the
-            # datum from the first sliding contact instead of CAD nominal.
-            z_flat = float(tip_now[2])
-        depth_below_flat = 0.0 if z_flat is None else z_flat - tip_now[2]
         z_flat_band = 0.5 * cfg.depth_commit
-        if z_flat is not None and data.ncon > 0 and abs(depth_below_flat) < z_flat_band:
-            z_flat = (1.0 - z_flat_alpha) * z_flat + z_flat_alpha * tip_now[2]
+        if cfg.seed_z_flat_from_cad:
+            depth_below_flat = z_flat - tip_now[2]
+            if data.ncon > 0 and abs(depth_below_flat) < z_flat_band:
+                z_flat = (1.0 - z_flat_alpha) * z_flat + z_flat_alpha * tip_now[2]
+        else:
+            # Historical comparison mode for L1 attribution. The old code
+            # began latching once the descending tip crossed z=+1mm, without
+            # requiring contact, and kept updating during flat-table sliding
+            # until the absolute depth gate said it was engaging. This is
+            # intentionally the old mid-fall behavior, not a better touch-off.
+            engaging = tip_now[2] < -cfg.depth_commit
+            if tip_now[2] <= 0.001 and not engaging:
+                z_flat = tip_now[2] if z_flat is None else (
+                    (1.0 - z_flat_alpha) * z_flat + z_flat_alpha * tip_now[2]
+                )
+            depth_below_flat = 0.0 if z_flat is None else z_flat - tip_now[2]
 
         # ONE gate, with hysteresis. Both the spiral pause and the seating
         # force ramp key off it -- they fire on the same physical event, and
@@ -541,20 +550,25 @@ def run_episode(cfg: EpisodeConfig, pen_allow: float = 0.0) -> dict[str, object]
             f_cmd = f_now
             z_des_raw = tip_now[2] - f_now / k_z_active
 
-        # The leash reference is RAMPED, never stepped, toward whichever
-        # force the current phase is aiming at. Parameterizing the seating
-        # phase by force rather than by setpoint is what makes the commanded
-        # force exactly f_cmd regardless of k_z, so the stiffness change is
-        # invisible and no boundary recalculation is needed.
-        f_goal = cfg.insertion.f_target if committed else cfg.insertion.f_search
-        f_cmd = _rate_limited_advance(f_cmd, f_goal, f_ramp_rate * dt)
+        if cfg.force_continuous_handoff:
+            # The leash reference is RAMPED, never stepped, toward whichever
+            # force the current phase is aiming at. Parameterizing the seating
+            # phase by force makes the commanded force exactly f_cmd regardless
+            # of k_z, so the stiffness change is invisible.
+            f_goal = cfg.insertion.f_target if committed else cfg.insertion.f_search
+            f_cmd = _rate_limited_advance(f_cmd, f_goal, f_ramp_rate * dt)
 
         phase_target = z_seating_target if committed else z_search_target
         z_des_raw = _rate_limited_advance(z_des_raw, phase_target, cfg.insertion.v_descent * dt)
         # Two governors (see InsertionProfile): z_des_raw rate-limits the
         # setpoint and therefore bounds impact velocity; the leash bounds
-        # steady-state force at f_cmd independent of where the peg stops.
-        z_des_leashed = max(z_des_raw, tip_now[2] - f_cmd / k_z_active)
+        # steady-state force. The comparison path deliberately restores the
+        # old 15N position leash, which did not preserve force across a k_z
+        # change; it exists only to attribute the historical result.
+        leash_force = (
+            f_cmd if cfg.force_continuous_handoff else cfg.insertion.f_target
+        )
+        z_des_leashed = max(z_des_raw, tip_now[2] - leash_force / k_z_active)
 
         at_plate = z_flat is not None and tip_now[2] <= z_flat + z_flat_band
         searching = (not search_done) and spiral is not None and at_plate
