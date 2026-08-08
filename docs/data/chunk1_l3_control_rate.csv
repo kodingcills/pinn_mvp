@@ -1,0 +1,5 @@
+control_decimation,control_rate_Hz,delay_cycles,captures,trials,assertions,settled_Fz_mean_N,settled_Fz_min_N,settled_Fz_max_N,peak_Fz_N,max_postseat_abs_Fz_excursion_N,tts_min_s,tts_max_s,assert_tilt_min_deg,assert_tilt_max_deg,first_failure
+1,2000,0,16,16,0,14.950592,14.950554,14.950633,14.951185,4.180515,2.0150,3.1525,,,none
+2,1000,0,0,16,16,,,,,,,,10.99,15.47,tilt safety guard at first plate contact
+4,500,0,0,16,16,,,,,,,,11.90,12.62,tilt safety guard at first plate contact
+4,500,1,0,16,16,,,,,,,,20.26,22.38,tilt safety guard at first plate contact

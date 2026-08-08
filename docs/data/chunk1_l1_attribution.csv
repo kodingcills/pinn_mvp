@@ -1,0 +1,11 @@
+experiment,depth_commit_mm,k_z_search_N_per_m,z_flat_seed,force_continuous,captures,trials,rejected,failed_angles_deg,notes
+L1a,0.05,500,CAD,true,16,16,false,,Constructible 2x2 cell
+L1a,0.05,2000,CAD,true,16,16,false,,Constructible 2x2 cell
+L1a,0.50,500,CAD,true,16,16,false,,Canonical winning pair
+L1a,0.50,2000,CAD,true,0,0,true,,Rejected because 0.50mm gate exceeds half of 0.50mm descent allowance
+L1b,0.50,500,mid-fall,true,16,16,false,,One-at-a-time z_flat reversal at winning pair
+L1b,0.50,500,CAD,false,16,16,false,,One-at-a-time handoff reversal at winning pair
+interaction,0.05,2000,mid-fall,false,6,16,false,90;112.5;135;157.5;180;202.5;225;247.5;270;292.5,Exact all-old combination
+interaction,0.05,2000,mid-fall,true,6,16,false,90;112.5;135;157.5;180;202.5;225;247.5;270;292.5,Force continuity alone does not repair premature commit
+interaction,0.05,2000,CAD,false,16,16,false,,CAD seed alone restores full capture from all-old state
+interaction,0.50,500,mid-fall,false,16,16,false,,Winning gate and stiffness tolerate both old datum and handoff

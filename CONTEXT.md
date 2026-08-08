@@ -30,6 +30,7 @@ Task: peg-in-hole insertion. No RL is being trained. The deliverable is a
 | `pegsim/characterize.py` | `measure_settling_depths`, `run_offset_sweep` |
 | `scripts/` | demo steps, retained characterization tools, and the `measure_l1/l2/l3_*` Chunk 1 drivers |
 | `tests/` | incl. `TestCompiledSolverOptionsMatchSpec`, `TestSilhouette` |
+| `docs/` | engineering reports, raw result tables, and reproducible figures; start at `docs/README.md` |
 | `PHASE2.md` | deferred findings, hardware notes, product behavior notes |
 
 `pegsim/safety.py` **does not exist.** Milestone 5 was specified and never
