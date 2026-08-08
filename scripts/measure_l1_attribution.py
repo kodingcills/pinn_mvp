@@ -169,6 +169,28 @@ def main() -> None:
             f"failed_angles={failed_angles}"
         )
 
+    print("\nInteraction diagnostic: historical all-old combination")
+    old_rows = run_cell(0.00005, 2000.0, False, False)
+    old_failed_angles = [angle for angle, seated, _ in old_rows if not seated]
+    print(
+        f"depth=0.05mm k_z_search=2000 z_flat=mid-fall-latched "
+        f"force-continuous=off: {capture_count(old_rows)}/16; "
+        f"failed_angles={old_failed_angles}"
+    )
+    interaction_cases = (
+        ("old pair, mid-fall latch, continuity on", 0.00005, 2000.0, False, True),
+        ("old pair, CAD seed, continuity off", 0.00005, 2000.0, True, False),
+        ("winning pair, mid-fall latch, continuity off", 0.0005, 500.0, False, False),
+    )
+    for label, depth_commit, k_z, seed_from_cad, force_continuous in interaction_cases:
+        rows = run_cell(
+            depth_commit,
+            k_z,
+            seed_from_cad,
+            force_continuous,
+        )
+        print(f"{label}: {capture_count(rows)}/16")
+
 
 if __name__ == "__main__":
     main()
