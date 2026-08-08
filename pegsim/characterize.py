@@ -48,9 +48,9 @@ def run_offset_sweep(
                 results.append({
                     "offset_m": offset,
                     "angle_rad": angle,
-                    "seated": log["seated"],
-                    "time_to_seat_s": log["time_to_seat_s"],
-                    "max_tilt_deg": log["max_tilt_deg"],
+                    "seated": log.success,
+                    "time_to_seat_s": log.time_to_seat_s,
+                    "max_tilt_deg": log.max_tilt_deg,
                     "unstable": False,
                 })
             except AssertionError:
@@ -117,13 +117,13 @@ def measure_settling_depths(
             max_seconds=seconds, spiral_spec=None,
         )
         log = run_episode(cfg)
-        assert not log["committed"].any(), (
+        assert not log.committed.any(), (
             f"peg committed at offset {offset * 1000:.3f}mm with the spiral "
             "off -- the resting depth there already exceeds DEPTH_COMMIT, so "
             "there is no settling measurement to take and the gate cannot "
             "distinguish resting from committing at this config"
         )
         # Last 20% of the episode: past the ramp, at rest on the table.
-        tail = log["tip_pos"][int(0.8 * len(log["tip_pos"])):, 2]
+        tail = log.tip_pos[int(0.8 * len(log.tip_pos)):, 2]
         depths[offset] = float(-tail.mean())
     return depths

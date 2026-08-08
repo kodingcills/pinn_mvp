@@ -67,10 +67,10 @@ def main() -> int:
                 max_seconds=MAX_SECONDS, spiral_spec=spiral_spec,
             )
             log = run_episode(cfg, pen_allow=PEN_ALLOW)
-            seated_flags.append(log["seated"])
-            if log["seated"]:
-                times_to_seat.append(log["time_to_seat_s"])
-            per_angle.append((angle_deg, log["seated"], log["time_to_seat_s"]))
+            seated_flags.append(log.success)
+            if log.success:
+                times_to_seat.append(log.time_to_seat_s)
+            per_angle.append((angle_deg, log.success, log.time_to_seat_s))
 
         success_rate = float(np.mean(seated_flags))
         tts = np.array(times_to_seat) if times_to_seat else np.array([math.nan])

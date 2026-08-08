@@ -34,20 +34,20 @@ for deg in angles:
     )
     log = run_episode(episode_cfg, pen_allow=cfg.pen_allow)
     results.append((deg, log))
-    print(f"theta={deg:6.1f}deg seated={log['seated']} time_to_seat_s={log['time_to_seat_s']:.4f} "
-          f"spiral_exhausted={log['spiral_exhausted']}")
+    print(f"theta={deg:6.1f}deg seated={log.success} time_to_seat_s={log.time_to_seat_s:.4f} "
+          f"spiral_exhausted={log.spiral_exhausted}")
 
-seated_results = [(deg, log) for deg, log in results if log["seated"]]
-slowest_deg, slowest_log = max(seated_results, key=lambda x: x[1]["time_to_seat_s"])
+seated_results = [(deg, log) for deg, log in results if log.success]
+slowest_deg, slowest_log = max(seated_results, key=lambda x: x[1].time_to_seat_s)
 print(f"\nSlowest seated trial: theta={slowest_deg}deg, "
-      f"time_to_seat_s={slowest_log['time_to_seat_s']:.4f}, "
-      f"spiral_exhausted={slowest_log['spiral_exhausted']}")
+      f"time_to_seat_s={slowest_log.time_to_seat_s:.4f}, "
+      f"spiral_exhausted={slowest_log.spiral_exhausted}")
 
-seated_step = int(round(slowest_log["time_to_seat_s"] / cfg.solver.timestep))
-capture_step = slowest_log["capture_step"]
+seated_step = int(round(slowest_log.time_to_seat_s / cfg.solver.timestep))
+capture_step = slowest_log.capture_step
 up_to = capture_step if capture_step is not None else seated_step
-searching = slowest_log["searching"][:up_to]
-advanced = slowest_log["spiral_advanced"][:up_to]
+searching = slowest_log.searching[:up_to]
+advanced = slowest_log.spiral_advanced[:up_to]
 n_advancing = int((searching & advanced).sum())
 n_paused = int((searching & ~advanced).sum())
 print(f"Up to capture_step={capture_step} (search phase only): "

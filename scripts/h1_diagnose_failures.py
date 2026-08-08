@@ -39,9 +39,9 @@ for offset_mm, angle_deg in FAILING_TRIALS:
     log = run_episode(episode_cfg, pen_allow=cfg.pen_allow)
     dt = cfg.solver.timestep
 
-    dist = log["tip_lateral"]  # already norm(tip_xy) vs world origin, full time series
-    tip_z = log["tip_pos"][:, 2]
-    tip_xy = log["tip_pos"][:, :2]
+    dist = log.tip_lateral  # already norm(tip_xy) vs world origin, full time series
+    tip_z = log.tip_pos[:, 2]
+    tip_xy = log.tip_pos[:, :2]
 
     i_min = int(np.argmin(dist))
     min_dist = dist[i_min]
@@ -73,4 +73,4 @@ for offset_mm, angle_deg in FAILING_TRIALS:
     print(f"offset={offset_mm}mm theta={angle_deg}deg: min_dist={min_dist*1000:.4f}mm "
           f"z_at_min={z_at_min*1000:.4f}mm dwell={dwell_s*1000:.2f}ms z_drop={z_drop*1000:.4f}mm "
           f"tangential_speed={tangential_speed*1000:.2f}mm/s "
-          f"spiral_exhausted={log['spiral_exhausted']} branch=[{branch}]")
+          f"spiral_exhausted={log.spiral_exhausted} branch=[{branch}]")

@@ -53,7 +53,7 @@ def run_trial(args: tuple[float, float, float, bool, bool]) -> tuple[float, bool
         force_continuous,
     )
     log = run_episode(episode, pen_allow=VALIDATED_LOOSE_V1.pen_allow)
-    return angle_deg, bool(log["seated"]), float(log["time_to_seat_s"])
+    return angle_deg, bool(log.success), float(log.time_to_seat_s)
 
 
 def run_cell(

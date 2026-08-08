@@ -66,19 +66,19 @@ for offset_mm in SWEEP_OFFSETS_M:
             control_delay_steps=CFG.control_delay_steps,
         )
         log = run_episode(episode, pen_allow=CFG.pen_allow)
-        depth = log["z_flat"] - log["tip_pos"][:, 2]
-        committed = log["committed"]
+        depth = log.z_flat - log.tip_pos[:, 2]
+        committed = log.committed
         first_commit = int(np.argmax(committed)) if committed.any() else len(depth)
         window = depth[:first_commit]
-        window = window[np.isfinite(log["min_contact_dist"][:first_commit])]
+        window = window[np.isfinite(log.min_contact_dist[:first_commit])]
         if window.size == 0:
             continue
         p50, p99, mx = np.percentile(window, 50), np.percentile(window, 99), window.max()
         all_p99.append(p99)
         all_max.append(mx)
         print(f"{offset_mm * 1000:10.2f} {angle_deg:10.1f} {p50 * 1e6:9.2f} "
-              f"{p99 * 1e6:9.2f} {mx * 1e6:9.2f} {log['paused_fraction']:12.4f} "
-              f"{log['time_to_seat_s']:8.3f} {str(log['seated']):>7s}")
+              f"{p99 * 1e6:9.2f} {mx * 1e6:9.2f} {log.paused_fraction:12.4f} "
+              f"{log.time_to_seat_s:8.3f} {str(log.success):>7s}")
 
 print(f"\nacross all sweep trials: max p99 = {max(all_p99) * 1e6:.2f}um, "
       f"max excursion = {max(all_max) * 1e6:.2f}um")

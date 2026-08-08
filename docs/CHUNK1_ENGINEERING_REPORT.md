@@ -566,7 +566,9 @@ corrected to reflect:
 - L1 is attributed to the mid-fall datum mechanism, with the non-reproduced
   historical rate called out explicitly;
 - sampled control fails at 1000/500 Hz and remains a hardware blocker;
-- `run_episode` returns a result dictionary; there is no `TrialResult` class.
+- At the end of Chunk 1, `run_episode` returned a result dictionary and there
+  was no `TrialResult` class. M1 subsequently replaced that interface with a
+  typed `TrialResult` carrying settled-state estimator telemetry.
 
 ## Remaining engineering risks
 

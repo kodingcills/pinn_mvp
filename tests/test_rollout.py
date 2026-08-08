@@ -1,6 +1,6 @@
 import math
 import copy
-import struct
+from dataclasses import asdict, fields
 
 import numpy as np
 import pytest
@@ -13,9 +13,11 @@ from pegsim.rollout import (
     VALIDATED_LOOSE_V1,
     EpisodeConfig,
     InsertionProfile,
+    TrialResult,
     assert_commit_gate_reachable,
     assert_pen_allow_meaningful,
     axis_xy_at_z,
+    build_episode_model_data,
     ground_truth_seated,
     hole_center_xy,
     run_episode,
@@ -226,17 +228,15 @@ class TestGroundTruthSeated:
 class TestRunEpisode:
     @staticmethod
     def _assert_results_bit_identical(first, second):
-        assert first.keys() == second.keys()
-        for key in first:
-            a, b = first[key], second[key]
+        first_values = asdict(first)
+        second_values = asdict(second)
+        assert first_values.keys() == second_values.keys()
+        for key in first_values:
+            a, b = first_values[key], second_values[key]
             if isinstance(a, np.ndarray):
-                assert isinstance(b, np.ndarray), key
-                assert a.dtype == b.dtype, key
-                assert a.shape == b.shape, key
-                assert a.tobytes() == b.tobytes(), key
-            elif isinstance(a, float):
-                assert isinstance(b, float), key
-                assert struct.pack("=d", a) == struct.pack("=d", b), key
+                np.testing.assert_array_equal(a, b, err_msg=key)
+            elif isinstance(a, float) and math.isnan(a):
+                assert math.isnan(b), key
             else:
                 assert a == b, key
 
@@ -254,10 +254,15 @@ class TestRunEpisode:
             spiral_spec=cfg.spiral,
         )
         before = copy.deepcopy(episode)
+        model, data = build_episode_model_data(episode)
 
-        first = run_episode(episode, pen_allow=cfg.pen_allow)
+        first = run_episode(
+            episode, pen_allow=cfg.pen_allow, model=model, data=data,
+        )
         assert episode == before
-        second = run_episode(episode, pen_allow=cfg.pen_allow)
+        second = run_episode(
+            episode, pen_allow=cfg.pen_allow, model=model, data=data,
+        )
 
         assert episode == before
         self._assert_results_bit_identical(first, second)
@@ -278,10 +283,16 @@ class TestRunEpisode:
 
         log = run_episode(cfg)
 
-        assert len(log["time"]) == int(max_seconds / SOLVER.timestep)
-        assert log["time"][-1] == pytest.approx(max_seconds, abs=1e-15)
-        assert not log["seated"]
-        assert math.isinf(log["time_to_seat_s"])
+        assert len(log.time) == int(max_seconds / SOLVER.timestep)
+        assert log.time[-1] == pytest.approx(max_seconds, abs=1e-15)
+        assert not log.success
+        assert math.isinf(log.time_to_seat_s)
+        assert log.settled_tip_xy is None
+        assert log.settled_setpoint_xy is None
+        assert log.settled_descent is None
+        assert log.tilt_at_settle_rad is None
+        assert log.true_hole_xy is None
+        assert log.nominal_xy is None
 
     def test_decimated_controller_holds_qfrc_between_ticks(self):
         decimation = 4
@@ -300,10 +311,10 @@ class TestRunEpisode:
         log = run_episode(cfg)
 
         np.testing.assert_array_equal(
-            np.flatnonzero(log["control_tick"]), np.array([0, 4, 8]),
+            np.flatnonzero(log.control_tick), np.array([0, 4, 8]),
         )
-        for start in range(0, len(log["time"]), decimation):
-            block = log["qfrc_applied"][start:start + decimation]
+        for start in range(0, len(log.time), decimation):
+            block = log.qfrc_applied[start:start + decimation]
             np.testing.assert_array_equal(block, np.broadcast_to(block[0], block.shape))
 
     def test_one_cycle_delay_applies_previous_control_tick_command(self):
@@ -321,9 +332,9 @@ class TestRunEpisode:
         immediate = run_episode(EpisodeConfig(**common, control_delay_steps=0))
         delayed = run_episode(EpisodeConfig(**common, control_delay_steps=1))
 
-        np.testing.assert_array_equal(delayed["qfrc_applied"][:4], 0.0)
+        np.testing.assert_array_equal(delayed.qfrc_applied[:4], 0.0)
         np.testing.assert_array_equal(
-            delayed["qfrc_applied"][4:8], immediate["qfrc_applied"][:4],
+            delayed.qfrc_applied[4:8], immediate.qfrc_applied[:4],
         )
 
     def test_zero_offset_no_spiral_seats(self):
@@ -332,8 +343,8 @@ class TestRunEpisode:
             initial_offset_r=0.0, initial_offset_theta=0.0, max_seconds=6.0,
         )
         log = run_episode(cfg)
-        assert log["seated"]
-        assert log["time_to_seat_s"] < 6.0
+        assert log.success
+        assert log.time_to_seat_s < 6.0
 
     def test_zero_offset_with_spiral_still_seats(self):
         """The search overlay must not destabilize or prevent the trivial
@@ -345,23 +356,67 @@ class TestRunEpisode:
             spiral_spec=spiral_spec,
         )
         log = run_episode(cfg)
-        assert log["seated"]
+        assert log.success
 
     def test_capture_localization_error_within_clearance(self):
         """Phase 2 pre-flight P1: capture_mouth_lateral is logged at the
         exact step search_done fires, so it must satisfy the same
         <=radial_clearance condition that triggered search_done in the
         first place -- otherwise the two are measuring different moments."""
-        spiral_spec = SpiralSpec(task=TASK, delta_max=DELTA_MAX_SPEC_M, v_t=0.005)
+        validated = VALIDATED_LOOSE_V1
         cfg = EpisodeConfig(
-            TASK, SOLVER, GAINS, INSERTION, z_start=0.005,
-            initial_offset_r=0.0012, initial_offset_theta=0.0, max_seconds=10.0,
-            spiral_spec=spiral_spec,
+            validated.task,
+            validated.solver,
+            validated.gains,
+            validated.insertion,
+            z_start=validated.z_start,
+            initial_offset_r=validated.task.capture_radius,
+            initial_offset_theta=0.0,
+            max_seconds=validated.max_seconds,
+            spiral_spec=validated.spiral,
+            control_decimation=validated.control_decimation,
+            control_delay_steps=validated.control_delay_steps,
         )
-        log = run_episode(cfg)
-        assert log["capture_step"] is not None
-        assert log["capture_mouth_lateral"] <= TASK.radial_clearance
-        assert log["capture_tip_lateral"] is not None
+        log = run_episode(cfg, pen_allow=validated.pen_allow)
+        assert log.capture_step is not None
+        assert log.capture_mouth_lateral <= validated.task.radial_clearance
+        assert log.capture_tip_lateral is not None
+
+        assert log.success
+        required_consecutive = max(
+            1, int(round(cfg.seat_persist_s / validated.solver.timestep)),
+        )
+        onset_index = int(np.flatnonzero(log.time == log.time_to_seat_s)[0])
+        settle_index = onset_index + required_consecutive - 1
+        np.testing.assert_array_equal(log.settled_tip_xy, log.tip_pos[settle_index, :2])
+        np.testing.assert_array_equal(
+            log.settled_setpoint_xy, log.setpoint_xy[settle_index],
+        )
+        assert not np.shares_memory(log.settled_tip_xy, log.tip_pos)
+        assert not np.shares_memory(log.settled_setpoint_xy, log.setpoint_xy)
+        assert log.settled_descent == pytest.approx(
+            log.z_flat[settle_index] - log.tip_pos[settle_index, 2], abs=1e-15,
+        )
+        assert log.tilt_at_settle_rad == pytest.approx(
+            math.radians(log.tilt_deg[settle_index]), abs=1e-15,
+        )
+        np.testing.assert_array_equal(log.true_hole_xy, np.zeros(2))
+        np.testing.assert_allclose(
+            log.nominal_xy, [validated.task.capture_radius, 0.0], atol=1e-15,
+        )
+
+    def test_settled_fields_are_optional_and_result_is_not_frozen(self):
+        settled_fields = {
+            "settled_tip_xy",
+            "settled_setpoint_xy",
+            "settled_descent",
+            "tilt_at_settle_rad",
+            "true_hole_xy",
+            "nominal_xy",
+        }
+        defaults = {field.name: field.default for field in fields(TrialResult)}
+        assert all(defaults[name] is None for name in settled_fields)
+        assert not TrialResult.__dataclass_params__.frozen
 
     def test_settled_force_stays_near_f_target(self):
         """A1 fix: settled axial force should track f_target (default 15N),
@@ -371,7 +426,7 @@ class TestRunEpisode:
             initial_offset_r=0.0, initial_offset_theta=0.0, max_seconds=6.0,
         )
         log = run_episode(cfg)
-        settled_fz = abs(log["contact_force"][-200:, 2].mean())
+        settled_fz = abs(log.contact_force[-200:, 2].mean())
         assert settled_fz == pytest.approx(INSERTION.f_target, rel=0.1)
 
     def test_commanded_axial_force_is_continuous_across_the_stiffness_step(self):
@@ -389,9 +444,9 @@ class TestRunEpisode:
             max_seconds=cfg.max_seconds, spiral_spec=cfg.spiral,
         )
         log = run_episode(episode, pen_allow=cfg.pen_allow)
-        assert log["committed"].any(), "episode never committed -- nothing to test"
-        assert log["max_f_cmd_z_step"] < 0.5, (
-            f"commanded axial force jumped {log['max_f_cmd_z_step']:.4f}N in a "
+        assert log.committed.any(), "episode never committed -- nothing to test"
+        assert log.max_f_cmd_z_step < 0.5, (
+            f"commanded axial force jumped {log.max_f_cmd_z_step:.4f}N in a "
             "single physics step"
         )
 
@@ -407,8 +462,8 @@ class TestRunEpisode:
             max_seconds=cfg.max_seconds, spiral_spec=cfg.spiral,
         )
         log = run_episode(episode, pen_allow=cfg.pen_allow)
-        committed = log["committed"]
-        depth = log["z_flat"] - log["tip_pos"][:, 2]
+        committed = log.committed
+        depth = log.z_flat - log.tip_pos[:, 2]
         releases = np.flatnonzero(committed[:-1] & ~committed[1:])
         for i in releases:
             assert depth[i + 1] <= COMMIT_RELEASE_FRACTION * cfg.depth_commit * 1.05, (
@@ -423,5 +478,5 @@ class TestRunEpisode:
             initial_offset_r=0.0, initial_offset_theta=0.0, max_seconds=6.0,
         )
         log = run_episode(cfg)
-        peak_fz = float(np.abs(log["contact_force"][:, 2]).max())
+        peak_fz = float(np.abs(log.contact_force[:, 2]).max())
         assert peak_fz < INSERTION.f_yield

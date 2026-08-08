@@ -46,15 +46,15 @@ def main() -> int:
     )
     log = run_episode(cfg, pen_allow=PEN_ALLOW)
 
-    finite_dist = log["min_contact_dist"][log["min_contact_dist"] < 1e30]
+    finite_dist = log.min_contact_dist[log.min_contact_dist < 1e30]
     max_interpenetration_mm = -finite_dist[finite_dist < 0].min() * 1000.0 if (finite_dist < 0).any() else 0.0
 
-    print(f"seated: {log['seated']}")
-    print(f"time_to_seat_s: {log['time_to_seat_s']:.4f}")
+    print(f"seated: {log.success}")
+    print(f"time_to_seat_s: {log.time_to_seat_s:.4f}")
     print(f"max_interpenetration_mm: {max_interpenetration_mm:.5f}")
-    print(f"final tip: {log['tip_pos'][-1]}")
+    print(f"final tip: {log.tip_pos[-1]}")
 
-    ok = log["seated"] and max_interpenetration_mm < TASK.radial_clearance * 1000.0
+    ok = log.success and max_interpenetration_mm < TASK.radial_clearance * 1000.0
     print("OK" if ok else "FAIL")
     return 0 if ok else 1
 

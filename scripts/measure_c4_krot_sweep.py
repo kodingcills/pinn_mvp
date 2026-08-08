@@ -35,8 +35,8 @@ for k_rot in (5.0, 1.0, 0.3, 0.1):
                              max_seconds=8.0, spiral_spec=None)
         try:
             log = run_episode(cfg, pen_allow=PEN_ALLOW)
-            seated = log["seated"]
-            tilt = log["max_tilt_deg"]
+            seated = log.success
+            tilt = log.max_tilt_deg
         except AssertionError:
             seated = False
             tilt = float("nan")

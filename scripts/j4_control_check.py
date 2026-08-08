@@ -60,30 +60,30 @@ for offset_mm in (3.0, 4.0, 4.5, 5.0):
             print(f"{offset_mm:10.2f} {angle_deg:7.1f} {'TILT':>7s} "
                   f"  {str(exc).split(' -- ')[0][:40]}")
             continue
-        print(f"{offset_mm:10.2f} {angle_deg:7.1f} {str(log['seated']):>7s} "
-              f"{str(log['spiral_exhausted']):>10s} "
-              f"{log['tip_pos'][-1, 2] * 1000:11.4f} "
-              f"{log['tip_lateral'][-1] * 1000:13.4f}")
+        print(f"{offset_mm:10.2f} {angle_deg:7.1f} {str(log.success):>7s} "
+              f"{str(log.spiral_exhausted):>10s} "
+              f"{log.tip_pos[-1, 2] * 1000:11.4f} "
+              f"{log.tip_lateral[-1] * 1000:13.4f}")
 
 print("\n2. SEAT QUALITY on trials the sweep counts as successes")
 print(f"{'offset_mm':>10s} {'angle':>7s} {'final_z_mm':>11s} {'tip_lat_mm':>11s} "
       f"{'mouth_lat_mm':>13s} {'settled_Fz_N':>13s} {'peak_Fz_N':>10s} {'tts_s':>7s}")
 for offset_mm, angle_deg in ((1.5, 90.0), (1.75, 0.0), (2.0, 315.0), (2.25, 292.5)):
     log = run(offset_mm, angle_deg)
-    settled = abs(log["contact_force"][-200:, 2].mean())
-    peak = float(np.abs(log["contact_force"][:, 2]).max())
-    print(f"{offset_mm:10.2f} {angle_deg:7.1f} {log['tip_pos'][-1, 2] * 1000:11.4f} "
-          f"{log['tip_lateral'][-1] * 1000:11.4f} "
-          f"{log['mouth_lateral'][-1] * 1000:13.4f} {settled:13.4f} {peak:10.4f} "
-          f"{log['time_to_seat_s']:7.3f}")
+    settled = abs(log.contact_force[-200:, 2].mean())
+    peak = float(np.abs(log.contact_force[:, 2]).max())
+    print(f"{offset_mm:10.2f} {angle_deg:7.1f} {log.tip_pos[-1, 2] * 1000:11.4f} "
+          f"{log.tip_lateral[-1] * 1000:11.4f} "
+          f"{log.mouth_lateral[-1] * 1000:13.4f} {settled:13.4f} {peak:10.4f} "
+          f"{log.time_to_seat_s:7.3f}")
 
 print("\n3. FORCE CONTINUITY across the k_z_search -> k_z_seating step")
 print(f"{'offset_mm':>10s} {'angle':>7s} {'commit_step':>12s} {'F_before_N':>11s} "
       f"{'F_after_N':>10s} {'max_step_N':>11s}")
 for offset_mm, angle_deg in ((1.5, 90.0), (1.75, 0.0), (2.0, 315.0), (2.25, 292.5)):
     log = run(offset_mm, angle_deg)
-    committed = log["committed"]
+    committed = log.committed
     i = int(np.argmax(committed))
-    f = log["f_cmd_z"]
+    f = log.f_cmd_z
     print(f"{offset_mm:10.2f} {angle_deg:7.1f} {i:12d} {f[i - 1]:11.4f} "
-          f"{f[i]:10.4f} {log['max_f_cmd_z_step']:11.4f}")
+          f"{f[i]:10.4f} {log.max_f_cmd_z_step:11.4f}")

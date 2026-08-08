@@ -1,13 +1,13 @@
 """Episode runner: drives the peg through a two-phase axial insertion
 attempt (gentle force-referenced search, then a rate-limited and
 force-leashed ramp to seating depth) with an optional Archimedean spiral
-overlaid on the lateral setpoint. Returns a flat per-episode log dict --
-one flat .npz per episode, no database.
+overlaid on the lateral setpoint. Returns one typed TrialResult per episode.
 """
 from __future__ import annotations
 
 import math
 from dataclasses import dataclass, replace
+from typing import Optional
 
 import mujoco
 import numpy as np
@@ -352,10 +352,97 @@ def ground_truth_seated(
     )
 
 
-def run_episode(cfg: EpisodeConfig, pen_allow: float = 0.0) -> dict[str, object]:
-    assert_pen_allow_meaningful(cfg.task, pen_allow)
-    model = mujoco.MjModel.from_xml_string(build_mjcf(cfg.task, cfg.solver, cfg.plate_tilt_deg))
+@dataclass
+class TrialResult:
+    """Complete telemetry from one episode.
+
+    The six settled-state fields are defined only when ``success`` is true.
+    Consumers must gate on ``success`` before using them; a failed episode has
+    no physically meaningful estimator measurement instant.
+
+    This dataclass is intentionally mutable. Freezing it would prevent field
+    rebinding while leaving every NumPy array mutable, creating a false
+    immutability guarantee without protecting the data that matters.
+    """
+
+    time: np.ndarray
+    tip_pos: np.ndarray
+    setpoint_xy: np.ndarray
+    z_des: np.ndarray
+    min_contact_dist: np.ndarray
+    contact_force: np.ndarray
+    tip_lateral: np.ndarray
+    mouth_lateral: np.ndarray
+    tilt_deg: np.ndarray
+    max_tilt_deg: float
+    f_cmd_z: np.ndarray
+    committed: np.ndarray
+    spiral_theta: np.ndarray
+    z_flat: np.ndarray
+    control_tick: np.ndarray
+    qfrc_applied: np.ndarray
+    searching: np.ndarray
+    spiral_advanced: np.ndarray
+    paused_fraction: float
+    max_f_cmd_z_step: float
+    max_f_cmd_z_step_global: float
+    success: bool
+    time_to_seat_s: float
+    capture_step: Optional[int]
+    capture_tip_lateral: Optional[float]
+    capture_mouth_lateral: Optional[float]
+    spiral_exhausted: Optional[bool]
+    z_flat_final: Optional[float]
+    settled_tip_xy: Optional[np.ndarray] = None
+    settled_setpoint_xy: Optional[np.ndarray] = None
+    settled_descent: Optional[float] = None
+    tilt_at_settle_rad: Optional[float] = None
+    true_hole_xy: Optional[np.ndarray] = None
+    nominal_xy: Optional[np.ndarray] = None
+
+
+def build_episode_model_data(
+    cfg: EpisodeConfig,
+) -> tuple[mujoco.MjModel, mujoco.MjData]:
+    """Construct reusable MuJoCo state and validate the configured hole pose."""
+    model = mujoco.MjModel.from_xml_string(
+        build_mjcf(cfg.task, cfg.solver, cfg.plate_tilt_deg)
+    )
     data = mujoco.MjData(model)
+    mujoco.mj_forward(model, data)
+
+    bore_ids = np.array([
+        mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_GEOM, f"bore_{i}")
+        for i in range(cfg.task.n_segments)
+    ])
+    assert np.all(bore_ids >= 0), "compiled scene is missing one or more bore segments"
+
+    # The configured mouth is the world origin. For a tilted plate, compare
+    # the bore centroid to the same centerline at the centroid's world z;
+    # otherwise a correct rotation about the mouth would look like translation.
+    bore_centroid = data.geom_xpos[bore_ids, :2].mean(axis=0)
+    bore_world_z = float(data.geom_xpos[bore_ids, 2].mean())
+    configured_hole_xy = hole_center_xy(bore_world_z, cfg.plate_tilt_deg)
+    assert np.linalg.norm(bore_centroid - configured_hole_xy) < 1e-9, (
+        "compiled bore centroid does not match the configured hole position"
+    )
+    return model, data
+
+
+def run_episode(
+    cfg: EpisodeConfig,
+    pen_allow: float = 0.0,
+    *,
+    model: Optional[mujoco.MjModel] = None,
+    data: Optional[mujoco.MjData] = None,
+) -> TrialResult:
+    assert_pen_allow_meaningful(cfg.task, pen_allow)
+    assert (model is None) == (data is None), (
+        "model and data must either both be supplied or both be omitted"
+    )
+    if model is None:
+        model, data = build_episode_model_data(cfg)
+    assert data is not None  # narrowed for type checkers after paired validation
 
     # Episode boundary: reset every piece of MuJoCo runtime state before
     # applying this episode's initial condition. Estimator state will live
@@ -501,6 +588,12 @@ def run_episode(cfg: EpisodeConfig, pen_allow: float = 0.0) -> dict[str, object]
     capture_step = None
     capture_tip_lateral = None
     capture_mouth_lateral = None
+    settled_tip_xy = None
+    settled_setpoint_xy = None
+    settled_descent = None
+    tilt_at_settle_rad = None
+    true_hole_xy = None
+    settled_nominal_xy = None
 
     # Previous step's ACTIVE stiffness and commanded setpoint, needed to read
     # off the commanded force at the instant the phase flips (see the
@@ -629,30 +722,41 @@ def run_episode(cfg: EpisodeConfig, pen_allow: float = 0.0) -> dict[str, object]
             consecutive_ok = 0
         if seated_step is None and consecutive_ok >= required_consecutive:
             seated_step = i - required_consecutive + 1  # onset of the confirmed streak
+            assert z_flat is not None, (
+                "a successful episode must have a defined flat-table datum"
+            )
+            settled_tip_xy = tip[:2].copy()
+            settled_setpoint_xy = xy_des.copy()
+            settled_descent = float(z_flat - tip[2])
+            tilt_at_settle_rad = float(
+                math.acos(min(1.0, max(-1.0, axis_dir[2])))
+            )
+            true_hole_xy = hole_center_xy(0.0, cfg.plate_tilt_deg)
+            settled_nominal_xy = nominal_xy.copy()
 
-    return {
-        "time": time_log,
-        "tip_pos": tip_pos,
-        "setpoint_xy": setpoint_xy,
-        "z_des": z_des_log,
-        "min_contact_dist": min_dist,
-        "contact_force": contact_force,
-        "tip_lateral": tip_lateral_log,
-        "mouth_lateral": mouth_lateral_log,
-        "tilt_deg": tilt_deg_log,
-        "max_tilt_deg": float(tilt_deg_log.max()),
-        "f_cmd_z": f_cmd_z_log,
-        "committed": committed_log,
-        "spiral_theta": spiral_theta_log,
-        "z_flat": z_flat_log,
-        "control_tick": control_tick_log,
-        "qfrc_applied": qfrc_applied_log,
-        "searching": searching_log,
-        "spiral_advanced": spiral_advanced_log,
+    return TrialResult(
+        time=time_log,
+        tip_pos=tip_pos,
+        setpoint_xy=setpoint_xy,
+        z_des=z_des_log,
+        min_contact_dist=min_dist,
+        contact_force=contact_force,
+        tip_lateral=tip_lateral_log,
+        mouth_lateral=mouth_lateral_log,
+        tilt_deg=tilt_deg_log,
+        max_tilt_deg=float(tilt_deg_log.max()),
+        f_cmd_z=f_cmd_z_log,
+        committed=committed_log,
+        spiral_theta=spiral_theta_log,
+        z_flat=z_flat_log,
+        control_tick=control_tick_log,
+        qfrc_applied=qfrc_applied_log,
+        searching=searching_log,
+        spiral_advanced=spiral_advanced_log,
         # Pause duty cycle: fraction of the SEARCH window (peg at the plate,
         # not yet captured) in which the spiral was held instead of advancing.
         # H1 measured 82.8% here on its slow trial with the old 0.05mm gate.
-        "paused_fraction": (
+        paused_fraction=(
             float(1.0 - spiral_advanced_log.sum() / searching_log.sum())
             if searching_log.any() else 0.0
         ),
@@ -661,18 +765,26 @@ def run_episode(cfg: EpisodeConfig, pen_allow: float = 0.0) -> dict[str, object]
         # global max, which is dominated by contact events (floor impact
         # changes v_z in one step, and the derived damping term -D_z*v_z
         # moves with it) -- physics, not a commanded discontinuity.
-        "max_f_cmd_z_step": _max_step_near_edges(f_cmd_z_log, committed_log),
-        "max_f_cmd_z_step_global": (
+        max_f_cmd_z_step=_max_step_near_edges(f_cmd_z_log, committed_log),
+        max_f_cmd_z_step_global=(
             float(np.abs(np.diff(f_cmd_z_log)).max()) if n_steps > 1 else 0.0
         ),
-        "seated": seated_step is not None,
-        "time_to_seat_s": time_log[seated_step] if seated_step is not None else math.inf,
-        "capture_step": capture_step,
-        "capture_tip_lateral": capture_tip_lateral,
-        "capture_mouth_lateral": capture_mouth_lateral,
-        "spiral_exhausted": spiral.exhausted if spiral is not None else None,
-        "z_flat_final": float(z_flat) if z_flat is not None else None,
-    }
+        success=seated_step is not None,
+        time_to_seat_s=(
+            float(time_log[seated_step]) if seated_step is not None else math.inf
+        ),
+        capture_step=capture_step,
+        capture_tip_lateral=capture_tip_lateral,
+        capture_mouth_lateral=capture_mouth_lateral,
+        spiral_exhausted=spiral.exhausted if spiral is not None else None,
+        z_flat_final=float(z_flat) if z_flat is not None else None,
+        settled_tip_xy=settled_tip_xy,
+        settled_setpoint_xy=settled_setpoint_xy,
+        settled_descent=settled_descent,
+        tilt_at_settle_rad=tilt_at_settle_rad,
+        true_hole_xy=true_hole_xy,
+        nominal_xy=settled_nominal_xy,
+    )
 
 
 @dataclass(frozen=True)

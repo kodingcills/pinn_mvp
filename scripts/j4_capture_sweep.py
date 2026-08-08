@@ -60,13 +60,13 @@ for offset_mm in OFFSETS_MM:
         try:
             log = run_episode(episode, pen_allow=CFG.pen_allow)
             rows[(offset_mm, angle_deg)] = {
-                "seated": bool(log["seated"]),
-                "tts": float(log["time_to_seat_s"]),
-                "paused": float(log["paused_fraction"]),
-                "exhausted": log["spiral_exhausted"],
-                "max_tilt": float(log["max_tilt_deg"]),
-                "peak_fz": float(np.abs(log["contact_force"][:, 2]).max()),
-                "max_f_step": float(log["max_f_cmd_z_step"]),
+                "seated": bool(log.success),
+                "tts": float(log.time_to_seat_s),
+                "paused": float(log.paused_fraction),
+                "exhausted": log.spiral_exhausted,
+                "max_tilt": float(log.max_tilt_deg),
+                "peak_fz": float(np.abs(log.contact_force[:, 2]).max()),
+                "max_f_step": float(log.max_f_cmd_z_step),
                 "unstable": False,
             }
         except AssertionError:

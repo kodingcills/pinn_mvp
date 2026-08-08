@@ -32,7 +32,7 @@ def run_trial(args: tuple[float, float]) -> tuple[float, float, bool, str | None
         log = run_episode(episode, pen_allow=cfg.pen_allow)
     except AssertionError as exc:
         return offset_mm, angle_deg, False, str(exc)
-    return offset_mm, angle_deg, bool(log["seated"]), None
+    return offset_mm, angle_deg, bool(log.success), None
 
 
 def print_config() -> None:

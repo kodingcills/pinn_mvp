@@ -28,15 +28,15 @@ for offset_mm, angle_deg, label in CASES:
         control_delay_steps=cfg.control_delay_steps,
     )
     log = run_episode(episode_cfg, pen_allow=cfg.pen_allow)
-    dist = log["tip_lateral"]
-    tip_z = log["tip_pos"][:, 2]
-    setpoint_xy = log["setpoint_xy"]
-    tip_xy = log["tip_pos"][:, :2]
-    time = log["time"]
+    dist = log.tip_lateral
+    tip_z = log.tip_pos[:, 2]
+    setpoint_xy = log.setpoint_xy
+    tip_xy = log.tip_pos[:, :2]
+    time = log.time
     n = len(dist)
 
     print(f"=== {label}: offset={offset_mm}mm theta={angle_deg}deg "
-          f"(seated={log['seated']}, spiral_exhausted={log['spiral_exhausted']}, "
+          f"(seated={log.success}, spiral_exhausted={log.spiral_exhausted}, "
           f"n_steps={n}) ===")
     idx = np.linspace(0, n - 1, 25).astype(int)
     print(f"{'t_s':>7s} {'dist_mm':>8s} {'tip_z_mm':>9s} {'|err|_mm':>9s}")

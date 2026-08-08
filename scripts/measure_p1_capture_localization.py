@@ -53,19 +53,19 @@ for r, theta in zip(r_samples, theta_samples):
         n_no_capture += 1
         continue
 
-    captured = log["capture_step"] is not None
+    captured = log.capture_step is not None
     if captured:
-        capture_mouth_lateral.append(log["capture_mouth_lateral"])
-        capture_tip_lateral.append(log["capture_tip_lateral"])
-        capture_time_s.append(log["time"][log["capture_step"]])
+        capture_mouth_lateral.append(log.capture_mouth_lateral)
+        capture_tip_lateral.append(log.capture_tip_lateral)
+        capture_time_s.append(log.time[log.capture_step])
     else:
         n_no_capture += 1
 
     print(f"{r*1000:7.3f} {math.degrees(theta):10.2f} {str(captured):>9s} "
-          f"{(log['capture_mouth_lateral']*1000 if captured else float('nan')):13.4f} "
-          f"{(log['capture_tip_lateral']*1000 if captured else float('nan')):11.4f} "
-          f"{(log['time'][log['capture_step']] if captured else float('nan')):11.4f} "
-          f"{str(log['seated']):>7s}")
+          f"{(log.capture_mouth_lateral*1000 if captured else float('nan')):13.4f} "
+          f"{(log.capture_tip_lateral*1000 if captured else float('nan')):11.4f} "
+          f"{(log.time[log.capture_step] if captured else float('nan')):11.4f} "
+          f"{str(log.success):>7s}")
 
 capture_mouth_lateral = np.array(capture_mouth_lateral) * 1000  # mm
 capture_tip_lateral = np.array(capture_tip_lateral) * 1000

@@ -37,23 +37,23 @@ def run_trial(args: tuple[int, int, float]) -> dict[str, object]:
     except AssertionError as exc:
         return {"angle_deg": angle_deg, "seated": False, "error": str(exc)}
 
-    fz_abs = np.abs(log["contact_force"][:, 2])
+    fz_abs = np.abs(log.contact_force[:, 2])
     tail_steps = max(1, int(round(FORCE_WINDOW_S / cfg.solver.timestep)))
     settled_fz = float(fz_abs[-tail_steps:].mean())
     peak_fz = float(fz_abs.max())
-    if log["seated"]:
-        t_seat = float(log["time_to_seat_s"])
-        window = (log["time"] >= t_seat) & (log["time"] < t_seat + FORCE_WINDOW_S)
+    if log.success:
+        t_seat = float(log.time_to_seat_s)
+        window = (log.time >= t_seat) & (log.time < t_seat + FORCE_WINDOW_S)
         oscillation = float(np.ptp(fz_abs[window]))
     else:
         oscillation = math.nan
     return {
         "angle_deg": angle_deg,
-        "seated": bool(log["seated"]),
+        "seated": bool(log.success),
         "settled_fz": settled_fz,
         "peak_fz": peak_fz,
         "oscillation": oscillation,
-        "tts": float(log["time_to_seat_s"]),
+        "tts": float(log.time_to_seat_s),
         "error": None,
     }
 

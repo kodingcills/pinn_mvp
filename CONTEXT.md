@@ -26,7 +26,7 @@ Task: peg-in-hole insertion. No RL is being trained. The deliverable is a
 | `pegsim/scene.py` | MJCF generator: `TaskSpec`, `SolverSpec`, `build_mjcf` |
 | `pegsim/control.py` | Cartesian impedance controller, `InsertionProfile` |
 | `pegsim/search.py` | `ArchimedeanSpiral`, `SpiralSpec`, `DELTA_MAX_SPEC_M`, force-budget asserts |
-| `pegsim/rollout.py` | `run_episode`, `VALIDATED_LOOSE_V1`, `ground_truth_seated` |
+| `pegsim/rollout.py` | `run_episode`, `TrialResult`, `VALIDATED_LOOSE_V1`, `ground_truth_seated` |
 | `pegsim/characterize.py` | `measure_settling_depths`, `run_offset_sweep` |
 | `scripts/` | demo steps, retained characterization tools, and the `measure_l1/l2/l3_*` Chunk 1 drivers |
 | `tests/` | incl. `TestCompiledSolverOptionsMatchSpec`, `TestSilhouette` |
@@ -83,6 +83,25 @@ control  decimation 1 (2000Hz), delay 0; lower rates are not validated
 `SolverSpec.timestep` have **no defaults**; every construction site states them
 explicitly. Shared defaults were silently breaking callers tuned against
 different values.
+
+### Episode interface and offset convention
+
+`run_episode(cfg, pen_allow=0.0, *, model=None, data=None) -> TrialResult`.
+`model` and `data` must either both be omitted or both be supplied. Supplying a
+pair built by `build_episode_model_data` lets one worker reuse MuJoCo allocation
+across episodes; `run_episode` still resets all runtime physics state first.
+
+Offsets are **polar commanded-nominal offsets**, not hole translations:
+`initial_offset_r` is meters and `initial_offset_theta` is radians. They set the
+peg's initial `(x, y)` and the center of its commanded spiral. The true hole
+mouth remains at world `(0, 0)`. Thus an offset represents a nominal command
+that is wrong by that vector relative to the fixed hole.
+
+`TrialResult.success` gates all settled-state telemetry. On success,
+`settled_tip_xy`, `settled_setpoint_xy`, `settled_descent`,
+`tilt_at_settle_rad`, `true_hole_xy`, and `nominal_xy` are snapshots at the
+sample that completes the seating-persistence window. All six are `None` on
+failure.
 
 ---
 
@@ -148,7 +167,7 @@ physics-shaped symptom that cost multiple rounds of wrong theorizing.
 ## Standing rules
 
 1. **`run_episode` is the only thing that steps physics.** Diagnostics add
-   fields to its result dict and read them. No script writes its own loop.
+   fields to `TrialResult` and read them. No script writes its own loop.
    This is a rule, not a framework — do not build config hashing, parquet, or
    a replay system.
 2. Report what you **measured**, not what you concluded. Numbers in tables.
