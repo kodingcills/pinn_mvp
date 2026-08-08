@@ -123,6 +123,9 @@ failure.
 | R_passive | **1.5mm** | current config: 8/8 through 1.5mm, 0/8 from 1.75mm |
 | Sampled control | 1000/500Hz: 0/16 | tilt guard trips at first plate contact; default stays 2000Hz |
 | Search reach | 4.35mm | R_spiral + R_cap_dyn; 4.5/5.0mm fail correctly |
+| N2 radial probe capture | **128/128** | 1.0mm offset, golden bearings, search off, canonical 12um grading |
+| N2 probe estimator error | mean 0.02345mm; p95 0.04121mm; max 0.04199mm | `tip - clearance*u_probe`; max is 8.40% of 0.5mm fault threshold |
+| N2 probe bearing error | mean abs 2.534°; p95 4.587°; max 4.699° | residual is 16-fold facet geometry; harmonic amplitude 4.088° |
 
 ---
 
@@ -216,6 +219,11 @@ physics-shaped symptom that cost multiple rounds of wrong theorizing.
   coupled lateral/rotational impedance (`k_rx/k_ry=5` with the x/y coupling),
   not `D_z`, `K_z`, or the commit gate. Do not set decimation 4 as default.
 - **`F_wedge` = inf**, deferred. No jams exist in this regime to calibrate on.
+- **Search-disabled radial probing is accurate but facet-limited.** N2 seated
+  128/128 at a `2*clearance=1.0mm` commanded offset. The raw estimator has
+  p95/max error 0.04121/0.04199mm. Bearing error is not zero: its fitted 16th
+  harmonic is 4.088°, identifying the 16-box bore geometry rather than a frame
+  offset. See `docs/N2_PROBE_PRIMITIVE_REPORT.md`.
 
 ---
 
@@ -242,10 +250,10 @@ physics-shaped symptom that cost multiple rounds of wrong theorizing.
   cycle until a human clears it. Silent adaptation across a batch hides a
   mechanical fault behind software. The 0.5mm threshold is tied to what a
   pinned fixture should hold (microns), not to task clearance.
-- **Estimator blind zone.** A compliance estimator cannot measure a shift
-  smaller than the clearance: if the nominal setpoint still falls inside the
-  shifted bore, the peg reaches the setpoint without touching the wall, `e_vec`
-  goes slack, and innovation is exactly 0. At loose config clearance (0.5mm)
-  equals the fault threshold (0.5mm), so the silent-adapt branch is empty and
-  the estimator can only act as a fault detector. Its real value is at tight
-  clearance.
+- **Estimator measurement mode.** M2a showed only 0.106mm spring error at first
+  commit and near-zero error after the correct snap-to-tip capture behavior, so
+  spring deflection is not a usable natural-cycle direction signal. N2 instead
+  validated `hole_est = settled_tip_xy - clearance*u_probe` using a deliberate
+  search-disabled radial approach: 128/128 seated, p95 error 0.04121mm. N3 must
+  still measure the 64-trial natural-search negative before deliberate probing
+  is declared mandatory rather than merely the validated metrology mode.

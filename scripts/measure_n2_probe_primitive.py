@@ -206,6 +206,10 @@ def distribution(values: np.ndarray) -> dict[str, float]:
 def analyze(records: list[dict[str, object]]) -> dict[str, object]:
     cfg = VALIDATED_LOOSE_V1
     ordered = sorted(records, key=lambda record: int(record["trial_index"]))
+    assert len(ordered) == N_TRIALS, "N2 result set is incomplete"
+    assert [int(record["trial_index"]) for record in ordered] == list(range(N_TRIALS)), (
+        "N2 result indices are duplicated or missing"
+    )
     successful = [record for record in ordered if bool(record["success"])]
     excluded = [record for record in ordered if not bool(record["success"])]
     assert successful, "N2 produced no successful measurements"
@@ -310,6 +314,8 @@ def analyze(records: list[dict[str, object]]) -> dict[str, object]:
         "commanded_bearing_vs_error_pearson_r": linear_correlation,
         "bearing_error_16th_harmonic_amplitude_rad": harmonic_amplitude,
         "bearing_error_16th_harmonic_offset_rad": float(harmonic_coefficients[0]),
+        "bearing_error_16th_harmonic_sin_coefficient_rad": float(harmonic_coefficients[1]),
+        "bearing_error_16th_harmonic_cos_coefficient_rad": float(harmonic_coefficients[2]),
         "bearing_bins": bearing_bins,
         "settled_tip_xy_m": tip_xy.tolist(),
     }
@@ -390,6 +396,58 @@ def save_figures(records: list[dict[str, object]], summary: dict[str, object]) -
         encoding="utf-8",
     )
     plt.close(fig)
+
+    facet_period = 2.0 * math.pi / cfg.task.n_segments
+    commanded_rad = np.radians(commanded_deg)
+    facet_phase = (commanded_rad + 0.5 * facet_period) % facet_period - 0.5 * facet_period
+    order = np.argsort(facet_phase)
+    fit = (
+        float(summary["bearing_error_16th_harmonic_offset_rad"])
+        + float(summary["bearing_error_16th_harmonic_sin_coefficient_rad"])
+        * np.sin(cfg.task.n_segments * facet_phase)
+        + float(summary["bearing_error_16th_harmonic_cos_coefficient_rad"])
+        * np.cos(cfg.task.n_segments * facet_phase)
+    )
+    facet_fig, facet_axes = plt.subplots(1, 2, figsize=(11, 4.2), constrained_layout=True)
+    facet_axes[0].scatter(np.degrees(facet_phase), bearing_error_deg, s=18, alpha=0.75)
+    facet_axes[0].plot(
+        np.degrees(facet_phase[order]),
+        np.degrees(fit[order]),
+        color="#C84A42",
+        linewidth=2,
+        label="Fitted 16th harmonic",
+    )
+    facet_axes[0].axhline(0.0, color="#333333", linewidth=1)
+    facet_axes[0].set(
+        xlabel="Bearing phase within one 22.5° bore facet (deg)",
+        ylabel="Measured − commanded bearing (deg)",
+    )
+    facet_axes[0].set_title("Bearing error is facet-periodic")
+    facet_axes[0].legend()
+
+    facet_axes[1].scatter(np.degrees(facet_phase), tip_radius_um, s=18, alpha=0.75)
+    facet_axes[1].axhline(
+        cfg.task.radial_clearance * 1e6,
+        color="#C84A42",
+        linestyle="--",
+        label="Nominal clearance",
+    )
+    facet_axes[1].set(
+        xlabel="Bearing phase within one 22.5° bore facet (deg)",
+        ylabel="Settled tip radius (µm)",
+    )
+    facet_axes[1].set_title("Wall radius also follows facet phase")
+    facet_axes[1].legend()
+    facet_fig.suptitle("N2 residual structure: 16-segment bore geometry", fontsize=14)
+    facet_stem = FIGURES_DIR / "n2_probe_facet_phase"
+    facet_fig.savefig(facet_stem.with_suffix(".png"), dpi=180, bbox_inches="tight")
+    facet_svg = facet_stem.with_suffix(".svg")
+    facet_fig.savefig(facet_svg, bbox_inches="tight")
+    facet_svg.write_text(
+        "\n".join(line.rstrip() for line in facet_svg.read_text().splitlines()) + "\n",
+        encoding="utf-8",
+    )
+    plt.close(facet_fig)
 
 
 def print_config() -> None:
