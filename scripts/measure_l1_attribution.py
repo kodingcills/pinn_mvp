@@ -38,6 +38,8 @@ def episode_config(
         depth_commit=depth_commit_m,
         seed_z_flat_from_cad=seed_z_flat_from_cad,
         force_continuous_handoff=force_continuous_handoff,
+        control_decimation=1,
+        control_delay_steps=0,
     )
 
 

@@ -25,6 +25,8 @@ def run_trial(args: tuple[float, float]) -> tuple[float, float, bool, str | None
         max_seconds=cfg.max_seconds,
         spiral_spec=None,
         depth_commit=cfg.depth_commit,
+        control_decimation=1,
+        control_delay_steps=0,
     )
     try:
         log = run_episode(episode, pen_allow=cfg.pen_allow)
