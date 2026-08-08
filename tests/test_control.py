@@ -53,7 +53,7 @@ class TestDerivedDamping:
         model, data = _fresh_model_data()
         mujoco.mj_forward(model, data)
         dof_ids = peg_dof_ids(model)
-        gains = ImpedanceGains(k_xy=500.0, k_rx=1.0, k_ry=1.0)
+        gains = ImpedanceGains(k_xy=500.0, k_z=2000.0, k_rx=1.0, k_ry=1.0)
         damping = derived_damping(model, data, dof_ids, gains.stiffness_vector)
         d_rx, d_ry, d_rz = damping[3], damping[4], damping[5]
         # rz spins about the cylinder's long axis: far smaller inertia than
@@ -65,7 +65,7 @@ class TestDerivedDamping:
         model, data = _fresh_model_data()
         mujoco.mj_forward(model, data)
         dof_ids = peg_dof_ids(model)
-        gains = ImpedanceGains(k_xy=500.0, k_rx=1.0, k_ry=1.0)
+        gains = ImpedanceGains(k_xy=500.0, k_z=2000.0, k_rx=1.0, k_ry=1.0)
         damping = derived_damping(model, data, dof_ids, gains.stiffness_vector)
         assert np.all(damping > 0)
 
@@ -79,7 +79,7 @@ class TestStabilityCap:
     def test_default_gains_pass_the_per_dof_cap(self):
         model, data = _fresh_model_data()
         mujoco.mj_forward(model, data)
-        gains = ImpedanceGains(k_xy=500.0, k_rx=1.0, k_ry=1.0)
+        gains = ImpedanceGains(k_xy=500.0, k_z=2000.0, k_rx=1.0, k_ry=1.0)
         assert_gains_stable(model, data, gains, SOLVER.timestep)  # must not raise
 
     def test_old_shared_k_rot_five_on_rz_would_have_violated_the_cap(self):
@@ -103,7 +103,7 @@ class TestStabilityCap:
         mujoco.mj_forward(model, data)
         # k_rz=5 matches the OLD shared K_rot value, which exceeds rz's cap
         # (~2.5) on this peg at dt=1ms -- exactly the regression this guards.
-        gains = ImpedanceGains(k_xy=500.0, k_rx=1.0, k_ry=1.0, k_rz=5.0)
+        gains = ImpedanceGains(k_xy=500.0, k_z=2000.0, k_rx=1.0, k_ry=1.0, k_rz=5.0)
         with pytest.raises(AssertionError, match="peg_rz"):
             assert_gains_stable(model, data, gains, SOLVER.timestep)
 
@@ -181,7 +181,7 @@ class TestImpedanceClosedLoop:
         # the setpoint here too, matching realistic usage.
         model, data = _fresh_model_data()
         mujoco.mj_forward(model, data)
-        gains = ImpedanceGains(k_xy=500.0, k_rx=1.0, k_ry=1.0)
+        gains = ImpedanceGains(k_xy=500.0, k_z=2000.0, k_rx=1.0, k_ry=1.0)
         assert_gains_stable(model, data, gains, SOLVER.timestep)
         target = np.array([0.0018, -0.0018, 0.01])  # near 1.25*capture_radius laterally
         ramp_steps = 1000
@@ -204,7 +204,7 @@ class TestImpedanceClosedLoop:
         so the controller presses into the floor."""
         model, data = _fresh_model_data()
         mujoco.mj_forward(model, data)
-        gains = ImpedanceGains(k_xy=500.0, k_rx=1.0, k_ry=1.0)
+        gains = ImpedanceGains(k_xy=500.0, k_z=2000.0, k_rx=1.0, k_ry=1.0)
 
         z_start, z_end, rate = 0.005, -0.045, 0.01  # meters, m/s (per spec)
         dt = SOLVER.timestep
@@ -230,7 +230,7 @@ class TestImpedanceClosedLoop:
         rx_dof = dof_ids[3]
         data.qpos[rx_dof] = math.radians(15.0)  # beyond the 10 deg bound
         mujoco.mj_forward(model, data)
-        gains = ImpedanceGains(k_xy=500.0, k_rx=1.0, k_ry=1.0)
+        gains = ImpedanceGains(k_xy=500.0, k_z=2000.0, k_rx=1.0, k_ry=1.0)
         with pytest.raises(AssertionError, match="tilt"):
             compute_and_apply_qfrc(model, data, gains, np.zeros(3))
 

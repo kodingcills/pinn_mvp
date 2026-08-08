@@ -24,9 +24,9 @@ TASK = TaskSpec(
     friction=0.4,
 )
 SOLVER = SolverSpec(timestep=0.0005)
-GAINS = ImpedanceGains(k_xy=500.0, k_rx=5.0, k_ry=5.0, k_rz=0.05)
-INSERTION = InsertionProfile()
-PEN_ALLOW = 3.7035e-05
+GAINS = ImpedanceGains(k_xy=500.0, k_z=2000.0, k_rx=5.0, k_ry=5.0, k_rz=0.05)
+INSERTION = InsertionProfile(k_z_search=2000.0, f_search=4.0)
+PEN_ALLOW = 1.5 * 8e-6
 OFFSET = 0.0018  # 1.8mm
 V_T = 0.005
 R_CAP_DYN = 0.0016  # measured via measure_c2a_dynamic_capture_radius.py

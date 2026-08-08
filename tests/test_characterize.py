@@ -15,13 +15,13 @@ TASK = TaskSpec(
     n_segments=16,
     friction=0.4,
 )
-INSERTION = InsertionProfile()
+INSERTION = InsertionProfile(k_z_search=500.0, f_search=4.0)
 
 
 class TestRunOffsetSweep:
     def test_returns_one_row_per_offset_angle_pair(self):
         results = run_offset_sweep(
-            TASK, SolverSpec(timestep=0.001), ImpedanceGains(k_xy=500.0, k_rx=1.0, k_ry=1.0), INSERTION,
+            TASK, SolverSpec(timestep=0.001), ImpedanceGains(k_xy=500.0, k_z=2000.0, k_rx=1.0, k_ry=1.0), INSERTION,
             offsets_m=[0.0, 0.001], angles_rad=[0.0, math.pi / 2],
             z_start=0.005, max_seconds=6.0,
         )
@@ -32,7 +32,7 @@ class TestRunOffsetSweep:
         # k_rz=5 exceeds its stability cap for this peg at dt=0.001 (see
         # control.py) -- confirms the sweep survives a trial that asserts.
         results = run_offset_sweep(
-            TASK, SolverSpec(timestep=0.001), ImpedanceGains(k_xy=500.0, k_rx=1.0, k_ry=1.0, k_rz=5.0), INSERTION,
+            TASK, SolverSpec(timestep=0.001), ImpedanceGains(k_xy=500.0, k_z=2000.0, k_rx=1.0, k_ry=1.0, k_rz=5.0), INSERTION,
             offsets_m=[0.002], angles_rad=[0.0],
             z_start=0.005, max_seconds=1.0,
         )

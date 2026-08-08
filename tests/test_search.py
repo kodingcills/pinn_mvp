@@ -18,8 +18,8 @@ TASK = TaskSpec(
 )
 
 
-def _spec(delta_max=1.25 * TASK.capture_radius, **kwargs) -> SpiralSpec:
-    return SpiralSpec(task=TASK, delta_max=delta_max, **kwargs)
+def _spec(delta_max=1.25 * TASK.capture_radius, v_t=0.005, **kwargs) -> SpiralSpec:
+    return SpiralSpec(task=TASK, delta_max=delta_max, v_t=v_t, **kwargs)
 
 
 class TestSpiralSpecConstraints:

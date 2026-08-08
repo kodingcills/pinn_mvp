@@ -19,14 +19,14 @@ TASK = TaskSpec(
     friction=0.4,
 )
 SOLVER = SolverSpec(timestep=0.0005)
-INSERTION = InsertionProfile()
-PEN_ALLOW = 3.7035e-05
+INSERTION = InsertionProfile(k_z_search=2000.0, f_search=4.0)
+PEN_ALLOW = 1.5 * 8e-6
 
 # Coarse scan per K_rot to bracket the boundary, then refine.
 coarse_offsets_mm = [0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 6.0, 7.0]
 
 for k_rot in (5.0, 1.0, 0.3, 0.1):
-    gains = ImpedanceGains(k_xy=500.0, k_rx=k_rot, k_ry=k_rot, k_rz=0.05)
+    gains = ImpedanceGains(k_xy=500.0, k_z=2000.0, k_rx=k_rot, k_ry=k_rot, k_rz=0.05)
     boundary = None
     last_ok = None
     for offset_mm in coarse_offsets_mm:

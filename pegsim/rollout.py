@@ -7,34 +7,74 @@ one flat .npz per episode, no database.
 from __future__ import annotations
 
 import math
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 
 import mujoco
 import numpy as np
 
 from pegsim.control import ImpedanceGains, assert_gains_stable, compute_and_apply_qfrc, min_contact_dist, peg_contact_force_world
 from pegsim.scene import SolverSpec, TaskSpec, build_mjcf
-from pegsim.search import ArchimedeanSpiral, SpiralSpec
+from pegsim.search import DELTA_MAX_SPEC_M, ArchimedeanSpiral, SpiralSpec
 
-# Depth below the flat table (z=0) that means "genuinely engaging the
-# sloped chamfer/bore", not settling noise -- measured flat-table settling
-# noise is <0.001mm, so this has ~50x margin while still catching
-# engagement early (see run_episode's search-pause comment for why a
-# force-based gate was tried first and rejected).
-DEPTH_ENGAGE_MARGIN = 0.00005
+# ONE gate for ONE physical event: the peg has committed to the hole.
+#
+# This replaces two separate constants (DEPTH_ENGAGE_MARGIN = 0.05mm, which
+# paused the spiral, and DELTA_Z_TRIGGER = 0.2mm, which started the seating
+# ramp). They described the same event at two different depths, and they
+# drifted apart: at 0.05mm the spiral froze for 82.8% of steps in the slow
+# H1 trial, because 0.05mm sits BELOW the 0.06-0.10mm partial-overhang
+# settling band the peg reaches merely by resting near the hole. Every one
+# of the ten H1 failures shows the same signature -- spiral_exhausted=False
+# after burning the entire episode budget, i.e. the search never advanced.
+#
+# DEPTH_COMMIT is DERIVED, not chosen. It must sit strictly between two
+# measured bounds, both asserted in assert_commit_gate_reachable:
+#
+#   lower: 3 * the deepest measured settling depth on the flat table near
+#          the hole (partial overhang), so resting is never mistaken for
+#          committing. Measured, not assumed -- see
+#          pegsim.characterize.measure_settling_depths.
+#   upper: 0.5 * the search-phase descent allowance f_search / k_z_search,
+#          the furthest the search reference can pull the tip past the
+#          table before the axial spring goes slack. A threshold above this
+#          is physically unreachable -- that was bug 4 (the old absolute
+#          z_tip < -chamfer_width trigger against a 0.5mm allowance), and
+#          the same class of error as the pause gate above.
+#
+# Both bounds move when f_search or k_z_search move, which is exactly why
+# they are asserted against MEASUREMENTS at config-validation time rather
+# than checked once by hand.
+DEPTH_COMMIT = 0.0005
 
-# How far BELOW the peg's own flat-table baseline (z_flat, tracked live --
-# see run_episode) counts as "committed to the seating ramp". Replaces an
-# earlier absolute threshold (z_tip < -chamfer_width) that silently assumed
-# the search-phase reference could always push the peg down chamfer_width
-# (1mm) below the table -- false whenever f_search/k_z < chamfer_width (an
-# f_search of 4N against k_z=2000 gives exactly chamfer_width; anything
-# less physically cannot reach the old trigger at all, and the seating
-# phase never fires, no matter how well the search finds the hole).
-# 0.2mm is a few times the solver's flat-table settling noise (<0.001mm),
-# so it's not tripped by noise, but small enough to fire on real partial
-# engagement rather than requiring near-full chamfer depth.
-DELTA_Z_TRIGGER = 0.0002
+# Hysteresis: once committed, stay committed until the tip comes back up
+# past this fraction of DEPTH_COMMIT. Contact chatter around a bare
+# threshold would otherwise stutter the spiral on and off (and, worse,
+# stutter the axial stiffness between k_z_search and k_z_seating) at
+# physics rate.
+COMMIT_RELEASE_FRACTION = 0.7
+
+# How far the peg's measured resting depth may sit from the running
+# flat-table baseline and still be treated as "genuinely resting on the
+# table" for the purpose of refining that baseline. Derived from
+# DEPTH_COMMIT rather than free-standing, so the two cannot drift apart:
+# it must be WIDE enough to admit real settling (else the baseline can
+# never refine off its CAD-nominal starting value) and NARROW enough that a
+# committed descent never pollutes it. assert_commit_gate_reachable checks
+# the first condition against the measured settling depth; the second holds
+# by construction at any fraction below 1.
+Z_FLAT_BAND = 0.5 * DEPTH_COMMIT
+
+# Time constant of the flat-table baseline tracker, in SECONDS -- converted
+# to a per-step EMA coefficient inside run_episode using that episode's dt.
+Z_FLAT_TAU_S = 0.5
+
+# The tip stops within about 0.07mm of the nominal blind-hole floor at 15N.
+# The success threshold admits twice that measured residual: the second copy
+# is an explicit 100% margin for the variation across approach angles, while
+# still being an order of magnitude tighter than the unexplained 1mm margin
+# it replaces.
+MEASURED_Z_STOP_RESIDUAL_M = 70e-6
+TARGET_DEPTH_MARGIN_M = 2.0 * MEASURED_Z_STOP_RESIDUAL_M
 
 
 @dataclass(frozen=True)
@@ -48,12 +88,12 @@ class InsertionProfile:
     arithmetic -- a bug, not a discovered hazard.
 
     Phase 1 (search): z_des referenced to the plate top (z=0) at a gentle
-    f_search, so lateral search isn't fighting friction from a large,
-    arbitrary axial force (a fixed deep setpoint mid-ramp was measured
-    generating tens of N against the table purely by chance of ramp
-    timing).
-    Phase 2 (seating): once real FK depth shows the tip past the chamfer,
-    ramp (never step) toward a seating target so the commanded force
+    f_search AND a soft k_z_search, so lateral search isn't fighting
+    friction from a large, arbitrary axial force (a fixed deep setpoint
+    mid-ramp was measured generating tens of N against the table purely by
+    chance of ramp timing).
+    Phase 2 (seating): once real FK depth shows the tip committed to the
+    hole, ramp (never step) toward a seating target so the commanded force
     settles at f_target once bottomed out.
 
     Two governors, both required -- verified empirically that neither
@@ -71,12 +111,23 @@ class InsertionProfile:
         bore under a constant f_target push.
     """
 
-    f_search: float = 4.0  # N, axial reference force during lateral search
+    # k_z_search and f_search have NO defaults, for the same reason
+    # ImpedanceGains.k_xy/k_rx/k_ry don't (see that class): together they
+    # fix the search-phase descent allowance f_search/k_z_search, which is
+    # the upper bound on DEPTH_COMMIT. A default for either silently
+    # reconstitutes bug 4 (a depth threshold the axial reference cannot
+    # physically reach) the moment the other one moves. f_search's old
+    # default of 4.0 was exactly such a constant: correct when written,
+    # then superseded by 1.0 in VALIDATED_LOOSE_V1 while every bare
+    # InsertionProfile() in the repo silently kept 4.0.
+    k_z_search: float
+    f_search: float  # N, axial reference force during lateral search
     f_target: float = 15.0  # N, steady seating force (12-18N precision-insertion range)
     f_yield: float = 25.0  # N, fixture failure limit
     v_descent: float = 0.01  # m/s, rate limit on the seating ramp
 
     def __post_init__(self) -> None:
+        assert self.k_z_search > 0, "k_z_search must be positive"
         assert self.f_search > 0, "f_search must be positive"
         assert self.f_target > 0, "f_target must be positive"
         assert self.f_yield > 0, "f_yield must be positive"
@@ -87,21 +138,88 @@ class InsertionProfile:
             "broken part"
         )
         assert self.v_descent > 0, "v_descent must be positive"
+        assert DEPTH_COMMIT < 0.5 * self.descent_allowance, (
+            f"DEPTH_COMMIT = {DEPTH_COMMIT * 1000:.4f}mm does not clear "
+            f"0.5 * (f_search / k_z_search) = "
+            f"{0.5 * self.descent_allowance * 1000:.4f}mm -- the search-phase "
+            "axial reference cannot pull the tip that far past the table, so "
+            "the commit gate is physically unreachable no matter how well the "
+            "lateral search finds the hole (this is bug 4's failure mode: an "
+            "absolute depth threshold not coupled to the force that produces "
+            "the depth)"
+        )
+
+    @property
+    def descent_allowance(self) -> float:
+        """How far past the flat table the search-phase axial reference can
+        pull the tip before its spring goes slack: f_search / k_z_search.
+        Every depth threshold in the search phase is bounded by this."""
+        return self.f_search / self.k_z_search
 
 
-def assert_seating_trigger_reachable(insertion: InsertionProfile, gains: ImpedanceGains) -> None:
-    """The search-phase descent allowance (how far past the table surface
-    the search reference can pull the tip once unsupported) must clear
-    DELTA_Z_TRIGGER with margin, or the seating-phase transition can never
-    fire regardless of how well the lateral search finds the hole."""
-    descent_allowance = insertion.f_search / gains.k_z
-    assert descent_allowance > 2.0 * DELTA_Z_TRIGGER, (
-        f"search-phase descent allowance f_search/k_z = "
-        f"{descent_allowance * 1000:.4f}mm does not clear "
-        f"2*DELTA_Z_TRIGGER = {2.0 * DELTA_Z_TRIGGER * 1000:.4f}mm -- the "
-        "peg cannot descend far enough past its own flat-table baseline to "
-        "ever trigger the seating phase"
+def assert_commit_gate_reachable(
+    insertion: InsertionProfile,
+    gains: ImpedanceGains,
+    settling_depth: float,
+) -> None:
+    """Bracket DEPTH_COMMIT between its two bounds, the lower one MEASURED.
+
+    The upper bound (DEPTH_COMMIT < 0.5 * f_search/k_z_search) is checked in
+    InsertionProfile.__post_init__ -- it needs no simulation.
+
+    The lower bound does: settling_depth is how deep the tip actually rests
+    below the flat table when it is merely SITTING near the hole, partially
+    overhanging the chamfer. Pass a value from
+    pegsim.characterize.measure_settling_depths, never a literal -- the
+    whole point is that a hardcoded 0.10mm is the next stale constant.
+
+    Z_FLAT_BAND is checked against the same measurement: the baseline can
+    only refine off its CAD-nominal starting value if genuine resting
+    contact falls inside the band.
+    """
+    assert settling_depth > 0, (
+        "settling_depth must be a positive measured depth below the table"
     )
+    assert DEPTH_COMMIT > 3.0 * settling_depth, (
+        f"DEPTH_COMMIT = {DEPTH_COMMIT * 1000:.4f}mm does not clear 3x the "
+        f"measured near-hole settling depth "
+        f"({3.0 * settling_depth * 1000:.4f}mm) -- the peg reaches this depth "
+        "just by resting against the chamfer, so the spiral would pause and "
+        "the seating ramp would fire without the peg having committed to "
+        "anything (this is the H1 pause-gate failure)"
+    )
+    assert Z_FLAT_BAND > settling_depth, (
+        f"Z_FLAT_BAND = {Z_FLAT_BAND * 1000:.4f}mm is narrower than the "
+        f"measured settling depth {settling_depth * 1000:.4f}mm -- the "
+        "flat-table baseline could never update off its CAD-nominal value"
+    )
+    assert gains.k_z > insertion.k_z_search, (
+        f"k_z_seating ({gains.k_z}) must exceed k_z_search "
+        f"({insertion.k_z_search}) -- the split exists to make the search "
+        "phase softer (a wide descent allowance at a small contact force) "
+        "than the seating phase (a stiff, accurate force reference)"
+    )
+
+
+def _max_step_near_edges(signal: np.ndarray, flag: np.ndarray, half_width: int = 20) -> float:
+    """Largest single-step change in `signal` within half_width steps of any
+    rising or falling edge of `flag`. Returns 0.0 if there are no edges.
+
+    Scoped deliberately: the search->seating handoff is the one place the
+    CONTROL LAW can inject a discontinuity, and mixing it with contact
+    transients elsewhere in the episode would hide exactly the thing being
+    checked.
+    """
+    edges = np.flatnonzero(flag[:-1] != flag[1:])
+    if edges.size == 0 or signal.size < 2:
+        return 0.0
+    steps = np.abs(np.diff(signal))
+    worst = 0.0
+    for e in edges:
+        lo, hi = max(0, e - half_width), min(steps.size, e + half_width)
+        if hi > lo:
+            worst = max(worst, float(steps[lo:hi].max()))
+    return worst
 
 
 def _rate_limited_advance(current: float, target: float, max_step: float) -> float:
@@ -122,7 +240,7 @@ class EpisodeConfig:
     initial_offset_theta: float  # radians
     max_seconds: float
     spiral_spec: SpiralSpec | None = None  # None => straight drop, no search
-    target_depth: float = None  # default set in __post_init__: task.plate_thickness - margin
+    target_depth: float | None = None  # derived in __post_init__ from measured z-stop residual
     seat_persist_s: float = 0.1  # ground_truth_seated must hold continuously this long
     plate_tilt_deg: float = 0.0  # fixture-misalignment scenario, see scene.build_mjcf
 
@@ -133,9 +251,26 @@ class EpisodeConfig:
         assert self.seat_persist_s > 0, "seat_persist_s must be positive"
         if self.target_depth is None:
             # "Seated" for a blind hole means bottomed out on the floor at
-            # z=-plate_thickness, not an arbitrary depth -- a through-hole
-            # has no such event (Item 0).
-            object.__setattr__(self, "target_depth", self.task.plate_thickness - 0.001)
+            # z=-plate_thickness within the measured 15N stop residual, not an
+            # arbitrary depth. A through-hole has no such event (Item 0).
+            object.__setattr__(
+                self,
+                "target_depth",
+                self.task.plate_thickness - TARGET_DEPTH_MARGIN_M,
+            )
+        assert 0 < self.target_depth <= self.task.plate_thickness, (
+            "target_depth must lie within the blind-hole plate thickness"
+        )
+
+
+def assert_pen_allow_meaningful(task: TaskSpec, pen_allow: float) -> None:
+    """Keep solver interpenetration tolerance small relative to clearance."""
+    assert pen_allow >= 0, "pen_allow must be non-negative"
+    assert pen_allow < 0.2 * task.radial_clearance, (
+        f"pen_allow ({pen_allow * 1e6:.3f}um) must be < 0.2 * clearance "
+        f"({0.2 * task.radial_clearance * 1e6:.3f}um); the geometric seating "
+        "criterion goes vacuous otherwise"
+    )
 
 
 def axis_xy_at_z(tip_pos: np.ndarray, axis_dir: np.ndarray, z_target: float) -> np.ndarray:
@@ -206,6 +341,7 @@ def ground_truth_seated(
 
 
 def run_episode(cfg: EpisodeConfig, pen_allow: float = 0.0) -> dict[str, object]:
+    assert_pen_allow_meaningful(cfg.task, pen_allow)
     model = mujoco.MjModel.from_xml_string(build_mjcf(cfg.task, cfg.solver, cfg.plate_tilt_deg))
     data = mujoco.MjData(model)
 
@@ -215,8 +351,17 @@ def run_episode(cfg: EpisodeConfig, pen_allow: float = 0.0) -> dict[str, object]
     data.qpos[1] = y0
     data.qpos[2] = cfg.z_start
     mujoco.mj_forward(model, data)
-    assert_gains_stable(model, data, cfg.gains, cfg.solver.timestep)
-    assert_seating_trigger_reachable(cfg.insertion, cfg.gains)
+    # Both axial stiffnesses are live gains, so both get the stability check.
+    # (k_z_search is softer and therefore never the binding one, but checking
+    # only the seating value would be an assumption, not a check.)
+    seating_gains = cfg.gains
+    search_gains = replace(cfg.gains, k_z=cfg.insertion.k_z_search)
+    assert_gains_stable(model, data, seating_gains, cfg.solver.timestep)
+    assert_gains_stable(model, data, search_gains, cfg.solver.timestep)
+    # DEPTH_COMMIT's upper bound is asserted in InsertionProfile.__post_init__
+    # (no simulation needed). Its lower bound needs a measured settling depth
+    # and so belongs to config validation, not to every episode -- see
+    # assert_commit_gate_reachable and pegsim.characterize.measure_settling_depths.
 
     # The spiral is centered on the peg's STARTING (nominal) position, not
     # world origin: it represents the controller's best guess at the hole
@@ -237,8 +382,15 @@ def run_episode(cfg: EpisodeConfig, pen_allow: float = 0.0) -> dict[str, object]
     # approximation only sets the ramp's nominal destination, not the actual
     # force cap.
     z_stop_nominal = -cfg.task.plate_thickness
-    z_seating_target = z_stop_nominal - cfg.insertion.f_target / cfg.gains.k_z
-    z_search_target = -cfg.insertion.f_search / cfg.gains.k_z
+    z_seating_target = z_stop_nominal - cfg.insertion.f_target / seating_gains.k_z
+    z_search_target = -cfg.insertion.descent_allowance
+
+    # Rate at which the commanded axial force is allowed to ramp, N/s.
+    # DERIVED from v_descent so the force ramp and the position ramp move the
+    # setpoint at the same speed: a setpoint travelling at v_descent against a
+    # stationary tip changes the commanded force by exactly v_descent*k_z per
+    # second. One rate, two equivalent statements of it -- they cannot drift.
+    f_ramp_rate = cfg.insertion.v_descent * seating_gains.k_z
 
     time_log = np.zeros(n_steps)
     tip_pos = np.zeros((n_steps, 3))
@@ -249,29 +401,37 @@ def run_episode(cfg: EpisodeConfig, pen_allow: float = 0.0) -> dict[str, object]
     tip_lateral_log = np.zeros(n_steps)
     mouth_lateral_log = np.zeros(n_steps)
     tilt_deg_log = np.zeros(n_steps)
+    f_cmd_z_log = np.zeros(n_steps)  # commanded axial wrench, physics rate
+    committed_log = np.zeros(n_steps, dtype=bool)
+    spiral_theta_log = np.zeros(n_steps)
+    z_flat_log = np.zeros(n_steps)
+    # searching: the peg is at the plate and has not yet captured -- the only
+    # window in which "did the spiral advance?" is a meaningful question.
+    # spiral_advanced: it actually advanced this step. The ratio of the two is
+    # the pause duty cycle J1 exists to fix; measuring pauses against the WHOLE
+    # episode instead just measures how long the peg sat seated at the bottom.
+    searching_log = np.zeros(n_steps, dtype=bool)
+    spiral_advanced_log = np.zeros(n_steps, dtype=bool)
 
     # The search has two stopping mechanisms, both driven by real
     # (FK/contact) signals, never simulator ground truth:
-    #  - PAUSE (resumable): hold the setpoint instead of advancing theta
-    #    while engaging a SLOPED surface (chamfer/bore), not while merely
-    #    resting on the flat table -- gated on FK depth (tip_now[2] below a
-    #    small margin past the flat table's z=0), not lateral force. Force
-    #    was tried first (lateral_force > mu*axial_force, the largest
-    #    lateral force pure friction against a vertical-normal flat surface
-    #    could produce) and is WRONG: kinetic friction during genuine flat-
-    #    table sliding sits right at mu*N by definition, so the gate
-    #    flickered true/false every step right at the threshold and froze
+    #  - PAUSE (resumable): hold the setpoint instead of advancing theta once
+    #    `committed` fires -- the peg is on its way into the hole and further
+    #    lateral sweeping can only drag it back out. Gated on FK depth, not
+    #    lateral force. Force was tried first (lateral_force > mu*axial_force,
+    #    the largest lateral force pure friction against a vertical-normal
+    #    flat surface could produce) and is WRONG: kinetic friction during
+    #    genuine flat-table sliding sits right at mu*N by definition, so the
+    #    gate flickered true/false every step right at the threshold and froze
     #    x_des just as badly as gating on any contact did (verified: a
     #    dead-center linear sweep still failed to capture with the force
-    #    gate). Depth is unambiguous: flat-table settling noise measured at
-    #    <0.001mm, chamfer engagement drops the tip tens of microns or more
-    #    almost immediately, so DEPTH_ENGAGE_MARGIN below has ~50x margin.
-    #    Gating on ANY contact (the very first version) was also wrong:
-    #    routine table contact is continuous while sliding, so "pause while
-    #    in contact" froze the spiral after ~6 steps out of 12000 in a
-    #    direct check -- theta never meaningfully advanced, and every
-    #    earlier "search ON" result in this project needed re-checking
-    #    against these fixes.
+    #    gate). Gating on ANY contact (the very first version) was also wrong:
+    #    routine table contact is continuous while sliding, so "pause while in
+    #    contact" froze the spiral after ~6 steps out of 12000 in a direct
+    #    check. Gating on a SHALLOW depth (the old 0.05mm DEPTH_ENGAGE_MARGIN)
+    #    was wrong for the same reason once measured: 0.05mm is inside the
+    #    0.06-0.10mm band the tip reaches merely by resting with its rim over
+    #    the chamfer, so the spiral froze for 82.8% of steps.
     #  - STOP (permanent): once actually centered within clearance (checked
     #    at the mouth, not the tip), stop for good -- SNAPPED to the peg's
     #    own current position, not left at whatever the setpoint last
@@ -287,23 +447,45 @@ def run_episode(cfg: EpisodeConfig, pen_allow: float = 0.0) -> dict[str, object]
     xy_des = nominal_xy
     search_done = False
     z_des_raw = cfg.z_start  # matches actual start -- zero initial spring error
+    f_cmd = cfg.insertion.f_search  # leash force reference, ramped, never stepped
+    committed = False
 
-    # z_flat: a running baseline of the peg's own resting depth while
-    # genuinely on the flat table (not engaging a slope), updated only in
-    # that regime so it doesn't drift down once real engagement begins.
-    # in_seating_phase fires on descent RELATIVE to this baseline
-    # (DELTA_Z_TRIGGER below it), not on an absolute depth -- an absolute
-    # -chamfer_width threshold silently assumed the search-phase reference
-    # could always push the tip that far down, which is false whenever
-    # f_search/k_z < chamfer_width (assert_seating_trigger_reachable checks
-    # this at construction, but the trigger itself must not depend on it
-    # either).
-    z_flat = None
-    Z_FLAT_EMA_ALPHA = 0.001
+    # z_flat: the flat-table baseline the commit gate is measured against.
+    # Starts at the CAD-nominal plate top (z=0, a number a real robot has from
+    # the part program, not simulator ground truth) and is refined by the
+    # peg's OWN measured rest depth whenever it is genuinely in resting
+    # contact within Z_FLAT_BAND of that baseline. Both conditions matter:
+    # requiring contact stops a free-falling tip from latching a mid-air
+    # value, and the band stops a partial-overhang settle (or a committed
+    # descent) from dragging the baseline down after it.
+    z_flat = 0.0
+    # Expressed as a TIME CONSTANT, never as a bare per-step alpha. The old
+    # alpha=0.001 was a 0.5s filter at dt=0.0005 and a 1.0s filter at
+    # dt=0.001 -- same literal, different physics, which is precisely the
+    # failure mode this audit exists to remove. 0.5s is slow relative to the
+    # spiral's own timescale (one revolution takes 0.15-3.5s) so the baseline
+    # cannot chase a transient dip, and fast relative to the episode.
+    z_flat_alpha = min(1.0, dt / Z_FLAT_TAU_S)
 
     seated_step = None
     consecutive_ok = 0
     required_consecutive = max(1, int(round(cfg.seat_persist_s / dt)))
+
+    # Capture-time localization error (Phase 2 pre-flight P1): the peg's own
+    # FK position, at the exact instant search_done first fires, relative to
+    # the TRUE hole center. Sim-only ground truth (Rule Zero: grades the
+    # search, never drives it) -- this is what decides whether Phase 2 needs
+    # a learned residual or just an estimator on top of the capture event.
+    capture_step = None
+    capture_tip_lateral = None
+    capture_mouth_lateral = None
+
+    # Previous step's ACTIVE stiffness and commanded setpoint, needed to read
+    # off the commanded force at the instant the phase flips (see the
+    # force-continuity block in the loop). Seeded with the values the first
+    # step would have used, so step 0 is not a special case.
+    k_z_prev_active = cfg.insertion.k_z_search
+    z_des_prev = cfg.z_start
 
     for i in range(n_steps):
         mujoco.mj_forward(model, data)
@@ -312,30 +494,67 @@ def run_episode(cfg: EpisodeConfig, pen_allow: float = 0.0) -> dict[str, object]
         mouth_now = axis_xy_at_z(tip_now, axis_dir_now, 0.0)
         if not search_done and np.linalg.norm(mouth_now) <= cfg.task.radial_clearance:
             search_done = True
+            capture_step = i
+            capture_tip_lateral = float(np.linalg.norm(tip_now[:2]))
+            capture_mouth_lateral = float(np.linalg.norm(mouth_now))
             xy_des = tip_now[:2].copy()
-        engaging_slope = tip_now[2] < -DEPTH_ENGAGE_MARGIN
-        if tip_now[2] <= 0.001 and not engaging_slope:
-            # Peg has arrived at the plate and is genuinely flat (not still
-            # descending from z_start, not engaging a slope) -- safe to
-            # update the baseline.
-            z_flat = tip_now[2] if z_flat is None else (
-                (1.0 - Z_FLAT_EMA_ALPHA) * z_flat + Z_FLAT_EMA_ALPHA * tip_now[2]
-            )
-        in_seating_phase = z_flat is not None and (z_flat - tip_now[2]) > DELTA_Z_TRIGGER
-        phase_target = z_seating_target if in_seating_phase else z_search_target
-        z_des_raw = _rate_limited_advance(z_des_raw, phase_target, cfg.insertion.v_descent * dt)
-        # Force leash: never command more than f_target/K_z ahead of the
-        # LIVE tip position, in either phase.
-        z_des_leashed = max(z_des_raw, tip_now[2] - cfg.insertion.f_target / cfg.gains.k_z)
+        depth_below_flat = z_flat - tip_now[2]
+        if data.ncon > 0 and abs(depth_below_flat) < Z_FLAT_BAND:
+            z_flat = (1.0 - z_flat_alpha) * z_flat + z_flat_alpha * tip_now[2]
 
-        if not search_done and spiral is not None and tip_now[2] <= 0.001 and not engaging_slope:
-            # The spiral only starts advancing once the peg is actually
-            # near the plate surface -- otherwise it wanders past clearance
-            # well before the peg is physically at the hole's entrance.
+        # ONE gate, with hysteresis. Both the spiral pause and the seating
+        # force ramp key off it -- they fire on the same physical event, and
+        # two constants describing one event is how they drifted apart.
+        was_committed = committed
+        release_depth = COMMIT_RELEASE_FRACTION * DEPTH_COMMIT
+        committed = depth_below_flat > (release_depth if committed else DEPTH_COMMIT)
+
+        k_z_active = seating_gains.k_z if committed else cfg.insertion.k_z_search
+        active_gains = seating_gains if committed else search_gains
+
+        if committed != was_committed:
+            # FORCE CONTINUITY ACROSS THE STIFFNESS STEP. The setpoint is
+            # re-referenced so the commanded axial force is unchanged at the
+            # instant k_z changes: z_des_raw = z_tip - F_now / k_z_new.
+            # Stepping k_z with the setpoint held would multiply a real,
+            # nonzero position error by k_z_seating/k_z_search (4x here:
+            # 0.75N -> 3.0N). In sim that is an impulse through a spring; on
+            # hardware with an admittance interface it is a velocity
+            # discontinuity that trips a protective stop.
+            f_now = k_z_prev_active * (tip_now[2] - z_des_prev)
+            f_cmd = f_now
+            z_des_raw = tip_now[2] - f_now / k_z_active
+
+        # The leash reference is RAMPED, never stepped, toward whichever
+        # force the current phase is aiming at. Parameterizing the seating
+        # phase by force rather than by setpoint is what makes the commanded
+        # force exactly f_cmd regardless of k_z, so the stiffness change is
+        # invisible and no boundary recalculation is needed.
+        f_goal = cfg.insertion.f_target if committed else cfg.insertion.f_search
+        f_cmd = _rate_limited_advance(f_cmd, f_goal, f_ramp_rate * dt)
+
+        phase_target = z_seating_target if committed else z_search_target
+        z_des_raw = _rate_limited_advance(z_des_raw, phase_target, cfg.insertion.v_descent * dt)
+        # Two governors (see InsertionProfile): z_des_raw rate-limits the
+        # setpoint and therefore bounds impact velocity; the leash bounds
+        # steady-state force at f_cmd independent of where the peg stops.
+        z_des_leashed = max(z_des_raw, tip_now[2] - f_cmd / k_z_active)
+
+        at_plate = tip_now[2] <= z_flat + Z_FLAT_BAND
+        searching = (not search_done) and spiral is not None and at_plate
+        if searching and not committed:
+            # The spiral only advances once the peg is actually at the plate
+            # surface (otherwise it wanders past clearance well before the
+            # peg is physically at the hole's entrance) and only while
+            # uncommitted (otherwise it drags the peg back out of the hole).
             xy_des = nominal_xy + spiral.step(dt)
+            spiral_advanced_log[i] = True
+        searching_log[i] = searching
         x_des = np.array([xy_des[0], xy_des[1], z_des_leashed])
 
-        compute_and_apply_qfrc(model, data, cfg.gains, x_des)
+        f_cart = compute_and_apply_qfrc(model, data, active_gains, x_des)
+        k_z_prev_active = k_z_active
+        z_des_prev = z_des_leashed
         mujoco.mj_step(model, data)
 
         tip = data.site_xpos[site_id]
@@ -351,6 +570,10 @@ def run_episode(cfg: EpisodeConfig, pen_allow: float = 0.0) -> dict[str, object]
         tip_lateral_log[i] = np.linalg.norm(tip[:2])
         mouth_lateral_log[i] = np.linalg.norm(axis_xy_at_z(tip, axis_dir, 0.0))
         tilt_deg_log[i] = math.degrees(math.acos(min(1.0, max(-1.0, axis_dir[2]))))
+        f_cmd_z_log[i] = f_cart[2]
+        committed_log[i] = committed
+        spiral_theta_log[i] = spiral.theta if spiral is not None else 0.0
+        z_flat_log[i] = z_flat
 
         if ground_truth_seated(tip, axis_dir, force, cfg.task, cfg.target_depth, pen_allow, cfg.plate_tilt_deg):
             consecutive_ok += 1
@@ -370,8 +593,35 @@ def run_episode(cfg: EpisodeConfig, pen_allow: float = 0.0) -> dict[str, object]
         "mouth_lateral": mouth_lateral_log,
         "tilt_deg": tilt_deg_log,
         "max_tilt_deg": float(tilt_deg_log.max()),
+        "f_cmd_z": f_cmd_z_log,
+        "committed": committed_log,
+        "spiral_theta": spiral_theta_log,
+        "z_flat": z_flat_log,
+        "searching": searching_log,
+        "spiral_advanced": spiral_advanced_log,
+        # Pause duty cycle: fraction of the SEARCH window (peg at the plate,
+        # not yet captured) in which the spiral was held instead of advancing.
+        # H1 measured 82.8% here on its slow trial with the old 0.05mm gate.
+        "paused_fraction": (
+            float(1.0 - spiral_advanced_log.sum() / searching_log.sum())
+            if searching_log.any() else 0.0
+        ),
+        # J2 asks for the jump THROUGH THE TRANSITION, which is what the
+        # control law is responsible for. Reported separately from the
+        # global max, which is dominated by contact events (floor impact
+        # changes v_z in one step, and the derived damping term -D_z*v_z
+        # moves with it) -- physics, not a commanded discontinuity.
+        "max_f_cmd_z_step": _max_step_near_edges(f_cmd_z_log, committed_log),
+        "max_f_cmd_z_step_global": (
+            float(np.abs(np.diff(f_cmd_z_log)).max()) if n_steps > 1 else 0.0
+        ),
         "seated": seated_step is not None,
         "time_to_seat_s": time_log[seated_step] if seated_step is not None else math.inf,
+        "capture_step": capture_step,
+        "capture_tip_lateral": capture_tip_lateral,
+        "capture_mouth_lateral": capture_mouth_lateral,
+        "spiral_exhausted": spiral.exhausted if spiral is not None else None,
+        "z_flat_final": float(z_flat),
     }
 
 
@@ -397,6 +647,27 @@ class ValidatedConfig:
     insertion: InsertionProfile
     name: str
     validated_by: str
+    # J3 constant audit: these four were bare literals repeated across every
+    # script that used them, each one calibrated against this config and
+    # each one free to drift out of step with it. A script that reads
+    # cfg.v_t cannot silently disagree with the config the rest of its
+    # numbers came from.
+    v_t: float  # m/s, spiral tangential search speed
+    r_cap_dyn: float  # m, MEASURED dynamic capture radius (feeds the breakaway assert)
+    pen_allow: float  # m, MEASURED interpenetration allowance for the seat check
+    max_seconds: float  # s, episode budget -- MEASURED (J5), not arc-length arithmetic
+    z_start: float  # m, initial tip height above the plate
+
+    def __post_init__(self) -> None:
+        assert self.z_start > 0, "z_start must be above the plate (z=0)"
+        assert_pen_allow_meaningful(self.task, self.pen_allow)
+
+    @property
+    def spiral(self) -> SpiralSpec:
+        """The one spiral this config was validated with. delta_max is a
+        product spec (fixture/vision tolerance), not a geometry derivative,
+        so it comes from DELTA_MAX_SPEC_M, not from the task."""
+        return SpiralSpec(task=self.task, delta_max=DELTA_MAX_SPEC_M, v_t=self.v_t)
 
 
 VALIDATED_LOOSE_V1 = ValidatedConfig(
@@ -405,12 +676,25 @@ VALIDATED_LOOSE_V1 = ValidatedConfig(
         plate_thickness=0.01, peg_length=0.05, peg_mass=0.05, n_segments=16, friction=0.4,
     ),
     solver=SolverSpec(timestep=0.0005),
-    gains=ImpedanceGains(k_xy=1000.0, k_rx=5.0, k_ry=5.0, k_rz=0.05),
-    insertion=InsertionProfile(f_search=1.0),
+    gains=ImpedanceGains(k_xy=1000.0, k_z=2000.0, k_rx=5.0, k_ry=5.0, k_rz=0.05),
+    # k_z_search=500 against f_search=1N gives a 2mm descent allowance at the
+    # SAME 1N contact force (k_z_search=2000 gave only 0.5mm), which is what
+    # opens a window wide enough to place DEPTH_COMMIT=0.5mm inside with the
+    # 3x-settling and 0.5x-allowance margins both satisfied.
+    insertion=InsertionProfile(k_z_search=500.0, f_search=1.0),
     name="VALIDATED_LOOSE_V1",
     validated_by=(
-        "scripts/measure_e3_search_phase_sweep.py (F5 re-sweep post seating-"
-        "trigger fix): 13/16 capture at 1.8mm offset, breakaway and seating-"
-        "trigger asserts both clear with margin."
+        "scripts/j4_capture_sweep.py (J-series re-sweep post gate unification): "
+        "see the J4 table for per-offset capture rate and pause duty cycle. "
+        "Supersedes the F5 measurement (13/16 at 1.8mm), which was taken with "
+        "the split DEPTH_ENGAGE_MARGIN/DELTA_Z_TRIGGER gates."
     ),
+    v_t=0.005,
+    r_cap_dyn=0.0016,
+    # 1.5x the measured ~8um SEATED LATERAL interpenetration. The previous
+    # 37.035um value was derived from the unrelated 24.7um AXIAL floor
+    # penetration and could silently make the lateral containment test lax.
+    pen_allow=1.5 * 8e-6,
+    max_seconds=16.3,
+    z_start=0.005,
 )

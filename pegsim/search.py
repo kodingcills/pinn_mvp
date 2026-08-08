@@ -42,7 +42,11 @@ class SpiralSpec:
 
     task: TaskSpec
     delta_max: float  # max lateral pose uncertainty this search must cover
-    v_t: float = 0.005  # constant tangential search speed, m/s
+    # No default (J3 audit): v_t sets T_coverage, the impact energy at the
+    # outer radii, and the setpoint lag, and it was a bare 0.005 repeated in
+    # every script that touched the spiral. It belongs to the validated
+    # bundle (ValidatedConfig.v_t), which is the only place it is now set.
+    v_t: float  # constant tangential search speed, m/s
     pitch_safety: float = 0.5  # pitch = pitch_safety * capture_radius; must be in (0, 1)
 
     def __post_init__(self) -> None:
@@ -63,6 +67,22 @@ class SpiralSpec:
             f"R_spiral {self.r_spiral} must cover delta_max {self.delta_max} "
             "(constraint 9/10: the search must be able to reach every offset "
             "it is asked to cover)"
+        )
+        # J3 audit: TaskSpec.plate_outer_radius is derived from
+        # "1.25 * capture_radius", a factor calibrated against the Milestone 4
+        # capture-radius sweep and never revisited. The requirement it is
+        # standing in for is this one -- the peg body must never hang off the
+        # plate edge at the worst case the search can produce, which is a
+        # delta_max start plus a full R_spiral sweep away from it. Asserting
+        # the RELATIONSHIP here means the stale factor cannot silently stop
+        # covering the case even if delta_max or the spiral grows.
+        worst_case_center = self.delta_max + self.r_spiral
+        assert self.task.plate_outer_radius >= worst_case_center + self.task.peg_radius, (
+            f"plate_outer_radius {self.task.plate_outer_radius * 1000:.3f}mm does "
+            f"not contain the peg at its worst-case search position "
+            f"({(worst_case_center + self.task.peg_radius) * 1000:.3f}mm = "
+            f"delta_max + R_spiral + peg_radius) -- the peg would hang off the "
+            "plate edge mid-search"
         )
 
     @property

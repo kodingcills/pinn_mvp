@@ -37,9 +37,9 @@ TASK = TaskSpec(
     n_segments=16,
     friction=0.4,
 )
-GAINS = ImpedanceGains(k_xy=500.0, k_rx=5.0, k_ry=5.0, k_rz=0.05)
-INSERTION = InsertionProfile()
-PEN_ALLOW = 3.7035e-05
+GAINS = ImpedanceGains(k_xy=500.0, k_z=2000.0, k_rx=5.0, k_ry=5.0, k_rz=0.05)
+INSERTION = InsertionProfile(k_z_search=2000.0, f_search=4.0)
+PEN_ALLOW = 1.5 * 8e-6
 Z_START = 0.005
 MAX_SECONDS = 12.0
 
@@ -49,7 +49,7 @@ ANGLES_DEG = (0, 45, 90, 135, 180, 225, 270, 315)
 
 def main() -> int:
     solver = SolverSpec(timestep=0.0005)
-    spiral_spec = SpiralSpec(task=TASK, delta_max=DELTA_MAX_SPEC_M)
+    spiral_spec = SpiralSpec(task=TASK, delta_max=DELTA_MAX_SPEC_M, v_t=0.005)
 
     print(f"{'offset/R':10s} {'offset_mm':10s} {'success_rate':12s} {'mean_tts_s':11s} {'std_tts_s':10s} {'min_tts_s':10s} {'max_tts_s':10s}")
     print("-" * 75)

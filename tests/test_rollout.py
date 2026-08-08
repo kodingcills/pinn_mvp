@@ -3,12 +3,16 @@ import math
 import numpy as np
 import pytest
 
+from pegsim.characterize import measure_settling_depths
 from pegsim.control import ImpedanceGains, assert_gains_stable
 from pegsim.rollout import (
+    COMMIT_RELEASE_FRACTION,
+    DEPTH_COMMIT,
     VALIDATED_LOOSE_V1,
     EpisodeConfig,
     InsertionProfile,
-    assert_seating_trigger_reachable,
+    assert_commit_gate_reachable,
+    assert_pen_allow_meaningful,
     axis_xy_at_z,
     ground_truth_seated,
     hole_center_xy,
@@ -28,8 +32,8 @@ TASK = TaskSpec(
     friction=0.4,
 )
 SOLVER = SolverSpec(timestep=0.001)
-GAINS = ImpedanceGains(k_xy=500.0, k_rx=1.0, k_ry=1.0)
-INSERTION = InsertionProfile()
+GAINS = ImpedanceGains(k_xy=500.0, k_z=2000.0, k_rx=1.0, k_ry=1.0)
+INSERTION = InsertionProfile(k_z_search=500.0, f_search=4.0)
 
 
 class TestValidatedLooseV1:
@@ -47,27 +51,37 @@ class TestValidatedLooseV1:
         mujoco.mj_forward(model, data)
         assert_gains_stable(model, data, VALIDATED_LOOSE_V1.gains, VALIDATED_LOOSE_V1.solver.timestep)
 
-    def test_seating_trigger_reachable(self):
-        assert_seating_trigger_reachable(VALIDATED_LOOSE_V1.insertion, VALIDATED_LOOSE_V1.gains)
+    def test_commit_gate_bracketed_by_measured_settling(self):
+        """J2: DEPTH_COMMIT's lower bound is a MEASUREMENT, so this test
+        takes it rather than asserting against a literal.
+
+        Offsets must sit ABOVE R_passive (1.5mm) or the peg funnels straight
+        in and there is no resting state to measure -- below R_passive the
+        measurement asserts, which is the right failure. Settling deepens as
+        the rim overhangs more of the chamfer, so the near-hole end of this
+        range is the binding one."""
+        cfg = VALIDATED_LOOSE_V1
+        depths = measure_settling_depths(
+            cfg.task, cfg.solver, cfg.gains, cfg.insertion,
+            offsets_m=[0.00175, 0.002, 0.003, 0.005],
+        )
+        assert_commit_gate_reachable(cfg.insertion, cfg.gains, max(depths.values()))
 
     def test_search_force_budget(self):
-        r_cap_dyn = 0.0016  # measured, scripts/measure_c2a_dynamic_capture_radius.py
-        spiral_spec = SpiralSpec(task=VALIDATED_LOOSE_V1.task, delta_max=DELTA_MAX_SPEC_M,
-                                  v_t=0.005)
+        cfg = VALIDATED_LOOSE_V1
         assert_search_force_budget(
-            VALIDATED_LOOSE_V1.task, VALIDATED_LOOSE_V1.gains.k_xy,
-            VALIDATED_LOOSE_V1.insertion.f_search, spiral_spec, r_cap_dyn,
+            cfg.task, cfg.gains.k_xy, cfg.insertion.f_search, cfg.spiral, cfg.r_cap_dyn,
         )
 
 
 class TestInsertionProfileConstraints:
     def test_rejects_f_target_at_or_above_f_yield(self):
         with pytest.raises(AssertionError, match="f_target"):
-            InsertionProfile(f_target=25.0, f_yield=25.0)
+            InsertionProfile(k_z_search=500.0, f_search=4.0, f_target=25.0, f_yield=25.0)
 
     def test_rejects_nonpositive_v_descent(self):
         with pytest.raises(AssertionError, match="v_descent"):
-            InsertionProfile(v_descent=0.0)
+            InsertionProfile(k_z_search=500.0, f_search=4.0, v_descent=0.0)
 
 
 class TestEpisodeConfigConstraints:
@@ -79,7 +93,11 @@ class TestEpisodeConfigConstraints:
     def test_default_target_depth_is_derived_from_plate_thickness(self):
         cfg = EpisodeConfig(TASK, SOLVER, GAINS, INSERTION, z_start=0.005,
                              initial_offset_r=0.0, initial_offset_theta=0.0, max_seconds=1.0)
-        assert cfg.target_depth == pytest.approx(TASK.plate_thickness - 0.001)
+        assert cfg.target_depth == pytest.approx(TASK.plate_thickness - 2.0 * 70e-6)
+
+    def test_pen_allow_must_stay_small_relative_to_clearance(self):
+        with pytest.raises(AssertionError, match="criterion goes vacuous"):
+            assert_pen_allow_meaningful(TASK, 0.2 * TASK.radial_clearance)
 
 
 class TestAxisXyAtZ:
@@ -179,7 +197,7 @@ class TestRunEpisode:
     def test_zero_offset_with_spiral_still_seats(self):
         """The search overlay must not destabilize or prevent the trivial
         (already-aligned) case from seating."""
-        spiral_spec = SpiralSpec(task=TASK, delta_max=DELTA_MAX_SPEC_M)
+        spiral_spec = SpiralSpec(task=TASK, delta_max=DELTA_MAX_SPEC_M, v_t=0.005)
         cfg = EpisodeConfig(
             TASK, SOLVER, GAINS, INSERTION, z_start=0.005,
             initial_offset_r=0.0, initial_offset_theta=0.0, max_seconds=10.0,
@@ -187,6 +205,22 @@ class TestRunEpisode:
         )
         log = run_episode(cfg)
         assert log["seated"]
+
+    def test_capture_localization_error_within_clearance(self):
+        """Phase 2 pre-flight P1: capture_mouth_lateral is logged at the
+        exact step search_done fires, so it must satisfy the same
+        <=radial_clearance condition that triggered search_done in the
+        first place -- otherwise the two are measuring different moments."""
+        spiral_spec = SpiralSpec(task=TASK, delta_max=DELTA_MAX_SPEC_M, v_t=0.005)
+        cfg = EpisodeConfig(
+            TASK, SOLVER, GAINS, INSERTION, z_start=0.005,
+            initial_offset_r=0.0012, initial_offset_theta=0.0, max_seconds=10.0,
+            spiral_spec=spiral_spec,
+        )
+        log = run_episode(cfg)
+        assert log["capture_step"] is not None
+        assert log["capture_mouth_lateral"] <= TASK.radial_clearance
+        assert log["capture_tip_lateral"] is not None
 
     def test_settled_force_stays_near_f_target(self):
         """A1 fix: settled axial force should track f_target (default 15N),
@@ -198,6 +232,49 @@ class TestRunEpisode:
         log = run_episode(cfg)
         settled_fz = abs(log["contact_force"][-200:, 2].mean())
         assert settled_fz == pytest.approx(INSERTION.f_target, rel=0.1)
+
+    def test_commanded_axial_force_is_continuous_across_the_stiffness_step(self):
+        """J2: the search->seating handoff changes k_z by 4x while the
+        position error is real and nonzero. Parameterizing the seating phase
+        by FORCE (z_des = z_tip - F_cmd/k_z, re-referenced at the edge) makes
+        the commanded force identical either side of the switch. Stepping k_z
+        with the setpoint held would jump it 0.75N -> 3.0N -- in sim an
+        impulse through a spring, on hardware a velocity discontinuity that
+        trips a protective stop."""
+        cfg = VALIDATED_LOOSE_V1
+        episode = EpisodeConfig(
+            cfg.task, cfg.solver, cfg.gains, cfg.insertion, z_start=0.005,
+            initial_offset_r=0.0012, initial_offset_theta=0.0,
+            max_seconds=cfg.max_seconds, spiral_spec=cfg.spiral,
+        )
+        log = run_episode(episode, pen_allow=cfg.pen_allow)
+        assert log["committed"].any(), "episode never committed -- nothing to test"
+        assert log["max_f_cmd_z_step"] < 0.5, (
+            f"commanded axial force jumped {log['max_f_cmd_z_step']:.4f}N in a "
+            "single physics step"
+        )
+
+    def test_commit_gate_has_hysteresis(self):
+        """J1: contact chatter around a bare threshold would stutter the
+        spiral -- and the axial stiffness -- on and off at physics rate.
+        Every release must happen at the lower threshold, never at
+        DEPTH_COMMIT itself."""
+        cfg = VALIDATED_LOOSE_V1
+        episode = EpisodeConfig(
+            cfg.task, cfg.solver, cfg.gains, cfg.insertion, z_start=0.005,
+            initial_offset_r=0.0018, initial_offset_theta=math.radians(45.0),
+            max_seconds=cfg.max_seconds, spiral_spec=cfg.spiral,
+        )
+        log = run_episode(episode, pen_allow=cfg.pen_allow)
+        committed = log["committed"]
+        depth = log["z_flat"] - log["tip_pos"][:, 2]
+        releases = np.flatnonzero(committed[:-1] & ~committed[1:])
+        for i in releases:
+            assert depth[i + 1] <= COMMIT_RELEASE_FRACTION * DEPTH_COMMIT * 1.05, (
+                f"released at depth {depth[i + 1] * 1000:.4f}mm, above the "
+                f"hysteresis threshold "
+                f"{COMMIT_RELEASE_FRACTION * DEPTH_COMMIT * 1000:.4f}mm"
+            )
 
     def test_peak_force_stays_under_f_yield(self):
         cfg = EpisodeConfig(

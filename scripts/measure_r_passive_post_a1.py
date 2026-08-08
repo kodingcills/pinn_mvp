@@ -23,9 +23,9 @@ TASK = TaskSpec(
     friction=0.4,
 )
 SOLVER = SolverSpec(timestep=0.00025)
-GAINS = ImpedanceGains(k_xy=500.0, k_rx=5.0, k_ry=5.0, k_rz=0.05)
-INSERTION = InsertionProfile()
-PEN_ALLOW = 3.7035e-05  # 1.5x measured max interpenetration near the floor (0.0247mm), see report
+GAINS = ImpedanceGains(k_xy=500.0, k_z=2000.0, k_rx=5.0, k_ry=5.0, k_rz=0.05)
+INSERTION = InsertionProfile(k_z_search=2000.0, f_search=4.0)
+PEN_ALLOW = 1.5 * 8e-6  # 1.5x measured seated lateral interpenetration
 
 offsets_mm = [1.0, 1.25, 1.5, 1.6, 1.75, 2.0]
 angles_deg = [0, 45, 90, 135, 180, 225, 270, 315]

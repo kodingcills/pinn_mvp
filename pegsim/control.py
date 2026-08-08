@@ -52,18 +52,19 @@ class ImpedanceGains:
     this coupled 6-DOF chain -- flagged, not silently worked around.
     """
 
-    # k_xy, k_rx, k_ry, and SolverSpec.timestep have NO defaults, deliberately:
-    # a validated config is the COMBINATION of these four (plus f_search), not
-    # any one in isolation (see PHASE2.md's G4 finding -- k_xy=1000 was only
-    # ever validated together with k_rx=k_ry=5.0 and dt=0.0005; changing one in
-    # isolation from a "convenient default" silently produces an untested
-    # combination and breaks either the search config or a caller tuned
-    # against the others). Callers must state all three explicitly, or use
+    # k_xy, k_z, k_rx, k_ry, and SolverSpec.timestep have NO defaults,
+    # deliberately: a validated config is the COMBINATION of these five (plus
+    # f_search), not any one in isolation (see PHASE2.md's G4 finding --
+    # k_xy=1000 was only ever validated together with k_z=2000,
+    # k_rx=k_ry=5.0, and dt=0.0005; changing one in isolation from a
+    # "convenient default" silently produces an untested combination and
+    # breaks either the search config or a caller tuned against the others).
+    # Callers must state all four gains explicitly, or use
     # pegsim.rollout.VALIDATED_LOOSE_V1.
     k_xy: float
+    k_z: float
     k_rx: float
     k_ry: float
-    k_z: float = 2000.0
     k_rz: float = 0.05
 
     def __post_init__(self) -> None:

@@ -69,7 +69,7 @@ TASK = TaskSpec(
     n_segments=16,
     friction=0.4,
 )
-GAINS = ImpedanceGains(k_xy=500.0, k_rx=1.0, k_ry=1.0)
+GAINS = ImpedanceGains(k_xy=500.0, k_z=2000.0, k_rx=1.0, k_ry=1.0)
 
 Z_START = 0.005
 Z_END = -0.045

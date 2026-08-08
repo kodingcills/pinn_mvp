@@ -27,16 +27,16 @@ TASK = TaskSpec(
     n_segments=16,
     friction=0.4,
 )
-GAINS = ImpedanceGains(k_xy=500.0, k_rx=5.0, k_ry=5.0, k_rz=0.05)
-INSERTION = InsertionProfile()
+GAINS = ImpedanceGains(k_xy=500.0, k_z=2000.0, k_rx=5.0, k_ry=5.0, k_rz=0.05)
+INSERTION = InsertionProfile(k_z_search=2000.0, f_search=4.0)
 Z_START = 0.005
 MAX_SECONDS = 10.0
-PEN_ALLOW = 3.7035e-05  # 1.5x measured max interpenetration near the floor
+PEN_ALLOW = 1.5 * 8e-6  # 1.5x measured seated lateral interpenetration
 
 
 def main() -> int:
     solver = SolverSpec(timestep=0.0005)
-    spiral_spec = SpiralSpec(task=TASK, delta_max=DELTA_MAX_SPEC_M)
+    spiral_spec = SpiralSpec(task=TASK, delta_max=DELTA_MAX_SPEC_M, v_t=0.005)
 
     cfg = EpisodeConfig(
         task=TASK, solver=solver, gains=GAINS, insertion=INSERTION,
