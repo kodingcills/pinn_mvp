@@ -1,4 +1,6 @@
 import math
+import copy
+import struct
 
 import numpy as np
 import pytest
@@ -185,6 +187,65 @@ class TestGroundTruthSeated:
 
 
 class TestRunEpisode:
+    @staticmethod
+    def _assert_results_bit_identical(first, second):
+        assert first.keys() == second.keys()
+        for key in first:
+            a, b = first[key], second[key]
+            if isinstance(a, np.ndarray):
+                assert isinstance(b, np.ndarray), key
+                assert a.dtype == b.dtype, key
+                assert a.shape == b.shape, key
+                assert a.tobytes() == b.tobytes(), key
+            elif isinstance(a, float):
+                assert isinstance(b, float), key
+                assert struct.pack("=d", a) == struct.pack("=d", b), key
+            else:
+                assert a == b, key
+
+    def test_consecutive_identical_episodes_are_bit_identical_and_do_not_mutate_config(self):
+        cfg = VALIDATED_LOOSE_V1
+        episode = EpisodeConfig(
+            cfg.task,
+            cfg.solver,
+            cfg.gains,
+            cfg.insertion,
+            z_start=cfg.z_start,
+            initial_offset_r=0.002,
+            initial_offset_theta=math.radians(22.5),
+            max_seconds=cfg.max_seconds,
+            spiral_spec=cfg.spiral,
+        )
+        before = copy.deepcopy(episode)
+
+        first = run_episode(episode, pen_allow=cfg.pen_allow)
+        assert episode == before
+        second = run_episode(episode, pen_allow=cfg.pen_allow)
+
+        assert episode == before
+        self._assert_results_bit_identical(first, second)
+
+    def test_max_seconds_terminates_episode_without_spiral(self):
+        max_seconds = 0.01
+        cfg = EpisodeConfig(
+            TASK,
+            SOLVER,
+            GAINS,
+            INSERTION,
+            z_start=0.005,
+            initial_offset_r=0.003,
+            initial_offset_theta=0.0,
+            max_seconds=max_seconds,
+            spiral_spec=None,
+        )
+
+        log = run_episode(cfg)
+
+        assert len(log["time"]) == int(max_seconds / SOLVER.timestep)
+        assert log["time"][-1] == pytest.approx(max_seconds, abs=1e-15)
+        assert not log["seated"]
+        assert math.isinf(log["time_to_seat_s"])
+
     def test_zero_offset_no_spiral_seats(self):
         cfg = EpisodeConfig(
             TASK, SOLVER, GAINS, INSERTION, z_start=0.005,

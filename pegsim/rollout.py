@@ -345,6 +345,13 @@ def run_episode(cfg: EpisodeConfig, pen_allow: float = 0.0) -> dict[str, object]
     model = mujoco.MjModel.from_xml_string(build_mjcf(cfg.task, cfg.solver, cfg.plate_tilt_deg))
     data = mujoco.MjData(model)
 
+    # Episode boundary: reset every piece of MuJoCo runtime state before
+    # applying this episode's initial condition. Estimator state will live
+    # outside MjData in later chunks and may persist deliberately; physics
+    # state must not. mj_forward after qpos assignment populates contacts and
+    # all derived quantities before the first control evaluation reads them.
+    mujoco.mj_resetData(model, data)
+
     x0 = cfg.initial_offset_r * math.cos(cfg.initial_offset_theta)
     y0 = cfg.initial_offset_r * math.sin(cfg.initial_offset_theta)
     data.qpos[0] = x0
