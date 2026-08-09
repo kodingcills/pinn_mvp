@@ -1238,13 +1238,20 @@
     }
   },
   "measured_plateau": {
-    "definition": "conservative envelope of pooled error at n_segments=64 and 128",
+    "available": true,
+    "definition": "conservative envelope of complete pooled populations at n_segments=64 and 128",
     "per_n": {
       "64": {
+        "n_trials": 96,
+        "n_success": 96,
+        "complete": true,
         "pooled_mean_error_m": 1.9227456782365354e-06,
         "pooled_max_error_m": 6.245676588506265e-06
       },
       "128": {
+        "n_trials": 96,
+        "n_success": 96,
+        "complete": true,
         "pooled_mean_error_m": 2.9177757971605932e-06,
         "pooled_max_error_m": 6.81427200978916e-06
       }
@@ -1258,6 +1265,7 @@
     "fault_threshold_margin_over_rounded_max": 71.42857142857143
   },
   "facet_to_penetration_crossover": {
+    "available": true,
     "facet_relief_formula": "clearance*(sec(pi/n_segments)-1)",
     "by_n": {
       "16": {
@@ -1290,6 +1298,7 @@
       64
     ],
     "measured_mechanism": "penetration first exceeds facet relief by n=32 while the facet harmonic remains strong; contact-solver behavior dominates by n=64, where the nth-harmonic fit collapses",
+    "unavailable_reason": null,
     "unresolved": "n=128 signed tangential DC offset"
   },
   "wall_clock": {
