@@ -24,7 +24,7 @@ import numpy as np
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
-from matplotlib.ticker import ScalarFormatter
+from matplotlib.ticker import NullFormatter, ScalarFormatter
 
 from pegsim.control import MAX_TILT_RAD, peg_dof_ids
 from pegsim.rollout import (
@@ -1362,10 +1362,22 @@ def save_figures(
     )
 
     fig, ax = plt.subplots(figsize=(7.6, 5.2), constrained_layout=True)
-    ax.loglog(n_values, max_error_um, "o", color="#C84A42", label="Fine maximum")
+    ax.loglog(
+        n_values,
+        max_error_um,
+        "o",
+        color="#C84A42",
+        label="Headline maximum (N2 golden; N4 fine)",
+    )
     ax.loglog(fit_n[max_curve_um > 0.0], max_curve_um[max_curve_um > 0.0],
               color="#C84A42", linestyle="--", label="Formal maximum fit (invalid)")
-    ax.loglog(n_values, mean_error_um, "s", color="#3569A8", label="Fine mean")
+    ax.loglog(
+        n_values,
+        mean_error_um,
+        "s",
+        color="#3569A8",
+        label="Headline mean (N2 golden; N4 fine)",
+    )
     ax.loglog(fit_n[mean_curve_um > 0.0], mean_curve_um[mean_curve_um > 0.0],
               color="#3569A8", linestyle="--", label="Formal mean fit (invalid)")
     plateau = summary["measured_plateau"]
@@ -1389,6 +1401,7 @@ def save_figures(
         xticks=n_values,
     )
     ax.get_xaxis().set_major_formatter(ScalarFormatter())
+    ax.get_xaxis().set_minor_formatter(NullFormatter())
     ax.grid(True, which="both", alpha=0.25)
     ax.legend()
     ax.set_title("N4 crossover: formal fit rejected, measured plateau retained")
@@ -1398,8 +1411,20 @@ def save_figures(
     max_residual_um = 1e6 * np.array(max_fit["residual_m"], dtype=float)
     mean_residual_um = 1e6 * np.array(mean_fit["residual_m"], dtype=float)
     ax.axhline(0.0, color="#333333", linewidth=1)
-    ax.plot(n_values, max_residual_um, "o-", color="#C84A42", label="Fine maximum")
-    ax.plot(n_values, mean_residual_um, "s-", color="#3569A8", label="Fine mean")
+    ax.plot(
+        n_values,
+        max_residual_um,
+        "o-",
+        color="#C84A42",
+        label="Headline maximum (N2 golden; N4 fine)",
+    )
+    ax.plot(
+        n_values,
+        mean_residual_um,
+        "s-",
+        color="#3569A8",
+        label="Headline mean (N2 golden; N4 fine)",
+    )
     ax.set(
         xlabel="Bore segments n",
         ylabel="Observed − fitted error (µm)",
