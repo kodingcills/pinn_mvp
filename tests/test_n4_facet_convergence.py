@@ -19,14 +19,17 @@ from scripts.measure_n4_facet_convergence import (
     analyze,
     assert_preflight,
     build_trial_specs,
+    decompose_estimator_error_m,
     distribution,
     estimate_hole_xy,
     facet_phase_rad,
+    facet_relief_m,
     fit_asymptote,
     fit_harmonic,
     load_n2_reference,
     make_episode,
     penetration_from_min_radius_m,
+    prepare_asymptote_fit_for_summary,
     predicted_vertex_radius_m,
     scene_key,
     summarize_population,
@@ -207,11 +210,36 @@ def test_asymptote_fit_confidence_interval_matches_independent_reference():
     )
 
 
+def test_nonmonotonic_fit_suppresses_nonphysical_intercept():
+    fit = {
+        "available": True,
+        **fit_asymptote({
+            16: 42e-6,
+            32: 14e-6,
+            64: 5.3e-6,
+            128: 6.8e-6,
+        }),
+    }
+
+    published = prepare_asymptote_fit_for_summary(fit)
+
+    assert not published["monotonic_nonincreasing"]
+    assert not published["valid_for_floor_inference"]
+    assert "non-monotonic" in published["invalidity_reason"]
+    assert "B_m" not in published
+    assert "B_confidence_interval_m" not in published
+    assert "A_m" in published
+    assert "sse_m2" in published
+    assert "r_squared" in published
+
+
 def test_population_statistics_use_ddof_zero_and_exclude_failures():
     success = {
         "success": True,
         "exclusion_reason": None,
         "estimator_error_norm_m": 3e-6,
+        "estimator_error_xy_m": [3e-6, 0.0],
+        "commanded_bearing_rad": 0.0,
         "bearing_deflection_rad": -0.02,
         "settled_tip_radius_m": 499e-6,
         "time_to_seat_s": 1.5,
@@ -220,6 +248,7 @@ def test_population_statistics_use_ddof_zero_and_exclude_failures():
     second_success = {
         **success,
         "estimator_error_norm_m": 5e-6,
+        "estimator_error_xy_m": [0.0, 5e-6],
         "bearing_deflection_rad": 0.04,
         "settled_tip_radius_m": 503e-6,
         "rollout_wall_time_s": 4.0,
@@ -242,6 +271,19 @@ def test_population_statistics_use_ddof_zero_and_exclude_failures():
     assert summary["signed_bearing_deflection_rad"]["mean"] == pytest.approx(0.01)
     assert summary["absolute_bearing_deflection_rad"]["mean"] == pytest.approx(0.03)
     assert summary["rollout_wall_time_s"]["mean"] == pytest.approx(4.0)
+    assert summary["signed_radial_estimator_error_m"]["mean"] == pytest.approx(
+        1.5e-6
+    )
+    assert summary["signed_tangential_estimator_error_m"]["mean"] == pytest.approx(
+        2.5e-6
+    )
+    assert summary["radial_estimator_error_rms_m"] == pytest.approx(
+        math.sqrt(4.5) * 1e-6
+    )
+    assert summary["tangential_estimator_error_rms_m"] == pytest.approx(
+        math.sqrt(12.5) * 1e-6
+    )
+    assert summary["maximum_inward_radial_error_m"] == 0.0
     assert distribution(np.array([1.0, 3.0]))["p95"] == pytest.approx(2.9)
 
 
@@ -252,6 +294,21 @@ def test_penetration_is_signed_and_vertex_uses_clearance_apothem():
     assert predicted_vertex_radius_m(clearance, 32) == pytest.approx(
         clearance / math.cos(math.pi / 32)
     )
+    assert facet_relief_m(clearance, 32) == pytest.approx(
+        clearance * (1.0 / math.cos(math.pi / 32) - 1.0)
+    )
+
+
+def test_error_decomposition_uses_commanded_probe_frame():
+    bearing = math.radians(37.0)
+    radial_axis = np.array([math.cos(bearing), math.sin(bearing)])
+    tangential_axis = np.array([-radial_axis[1], radial_axis[0]])
+    error = -3e-6 * radial_axis + 4e-6 * tangential_axis
+
+    radial, tangential = decompose_estimator_error_m(error, bearing)
+
+    assert radial == pytest.approx(-3e-6, abs=1e-18)
+    assert tangential == pytest.approx(4e-6, abs=1e-18)
 
 
 def _synthetic_record(spec, *, success=True):
@@ -315,6 +372,26 @@ def test_analysis_keys_shuffled_results_and_keeps_populations_separate():
     assert summary["by_n"]["128"]["coarse_nth_harmonic"]["order"] == 128
     assert summary["asymptote_fits"]["headline_max_error"]["available"]
     assert summary["asymptote_fits"]["mean_error"]["available"]
+    plateau = summary["measured_plateau"]
+    assert plateau["external_claim_rounded_mean_m"] >= plateau[
+        "measured_mean_envelope_m"
+    ]
+    assert plateau["external_claim_rounded_max_m"] >= plateau[
+        "measured_max_envelope_m"
+    ]
+    assert (
+        plateau["external_claim_rounded_mean_m"]
+        - plateau["measured_mean_envelope_m"]
+        < 1e-6
+    )
+    assert (
+        plateau["external_claim_rounded_max_m"]
+        - plateau["measured_max_envelope_m"]
+        < 1e-6
+    )
+    crossover = summary["facet_to_penetration_crossover"]
+    assert crossover["relief_below_penetration_between_n_segments"] == [16, 32]
+    assert crossover["nth_harmonic_collapse_between_n_segments"] == [32, 64]
     assert summary["config"]["canonical_n_segments_unchanged"] == 16
     assert VALIDATED_LOOSE_V1.task.n_segments == 16
 

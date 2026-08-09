@@ -60,6 +60,7 @@ N_PER_SEGMENT_COUNT = N_COARSE + N_FINE
 N_TOTAL = len(N_SEGMENTS_SWEEP) * N_PER_SEGMENT_COUNT
 GOLDEN_ANGLE_RAD = math.pi * (3.0 - math.sqrt(5.0))
 MEASURED_R_PASSIVE_M = 1.5e-3  # L2 n=16 bound; retained only as probe preflight evidence.
+FAULT_THRESHOLD_M = 0.5e-3  # Product special-cause threshold, independent of bore geometry.
 N2_SEGMENTS = 16
 N2_EVIDENCE_COMMIT = "7081111"
 
@@ -408,10 +409,40 @@ def predicted_vertex_radius_m(clearance_m: float, n_segments: int) -> float:
     return float(clearance_m / math.cos(math.pi / n_segments))
 
 
+def facet_relief_m(clearance_m: float, n_segments: int) -> float:
+    """Polygon vertex relief above its clearance-radius apothem."""
+    return predicted_vertex_radius_m(clearance_m, n_segments) - clearance_m
+
+
+def decompose_estimator_error_m(
+    estimator_error_xy_m: np.ndarray,
+    commanded_bearing_rad: float,
+) -> tuple[float, float]:
+    """Return signed radial/tangential error in the commanded-probe frame."""
+    error_xy = np.asarray(estimator_error_xy_m, dtype=float)
+    assert error_xy.shape == (2,) and np.all(np.isfinite(error_xy))
+    radial_axis = np.array([
+        math.cos(commanded_bearing_rad), math.sin(commanded_bearing_rad),
+    ])
+    tangential_axis = np.array([-radial_axis[1], radial_axis[0]])
+    return (
+        float(error_xy @ radial_axis),
+        float(error_xy @ tangential_axis),
+    )
+
+
 def _optional_distribution(values: list[float]) -> dict[str, float] | None:
     if not values:
         return None
     return distribution(np.asarray(values, dtype=float))
+
+
+def _optional_rms(values: list[float]) -> float | None:
+    if not values:
+        return None
+    vector = np.asarray(values, dtype=float)
+    assert np.all(np.isfinite(vector))
+    return float(math.sqrt(float(np.mean(vector ** 2))))
 
 
 def summarize_population(records: list[dict[str, object]]) -> dict[str, object]:
@@ -424,6 +455,24 @@ def summarize_population(records: list[dict[str, object]]) -> dict[str, object]:
     ]
     bearing = [float(record["bearing_deflection_rad"]) for record in successful]
     radius = [float(record["settled_tip_radius_m"]) for record in successful]
+    components = [
+        decompose_estimator_error_m(
+            np.asarray(record["estimator_error_xy_m"], dtype=float),
+            float(record["commanded_bearing_rad"]),
+        )
+        for record in successful
+    ]
+    radial_error = [component[0] for component in components]
+    tangential_error = [component[1] for component in components]
+    for norm, radial, tangential in zip(
+        estimator_error, radial_error, tangential_error
+    ):
+        assert math.isclose(
+            norm ** 2,
+            radial ** 2 + tangential ** 2,
+            rel_tol=2e-12,
+            abs_tol=np.finfo(float).tiny,
+        ), "radial/tangential components must reconstruct estimator error"
     time_to_seat = [float(record["time_to_seat_s"]) for record in successful]
     rollout_wall = [
         float(record["rollout_wall_time_s"])
@@ -439,6 +488,21 @@ def summarize_population(records: list[dict[str, object]]) -> dict[str, object]:
             str(record["exclusion_reason"]) for record in excluded
         ).items())),
         "estimator_error_norm_m": _optional_distribution(estimator_error),
+        "signed_radial_estimator_error_m": _optional_distribution(radial_error),
+        "absolute_radial_estimator_error_m": _optional_distribution(
+            [abs(value) for value in radial_error]
+        ),
+        "radial_estimator_error_rms_m": _optional_rms(radial_error),
+        "maximum_inward_radial_error_m": (
+            None if not radial_error else float(max(0.0, -min(radial_error)))
+        ),
+        "signed_tangential_estimator_error_m": _optional_distribution(
+            tangential_error
+        ),
+        "absolute_tangential_estimator_error_m": _optional_distribution(
+            [abs(value) for value in tangential_error]
+        ),
+        "tangential_estimator_error_rms_m": _optional_rms(tangential_error),
         "signed_bearing_deflection_rad": _optional_distribution(bearing),
         "absolute_bearing_deflection_rad": _optional_distribution(
             [abs(value) for value in bearing]
@@ -609,6 +673,7 @@ def load_n2_reference() -> dict[str, object]:
         normalized.append({
             **record,
             "estimator_error_norm_m": record["error_norm_m"],
+            "estimator_error_xy_m": record["error_xy_m"],
             "bearing_deflection_rad": record["bearing_error_rad"],
         })
     population = summarize_population(normalized)
@@ -797,6 +862,7 @@ def _full_config(worker_count: int) -> dict[str, object]:
             "spiral_enabled": False,
             "measured_R_passive_m_at_n16": MEASURED_R_PASSIVE_M,
             "measured_R_cap_dyn_m_at_n16": cfg.r_cap_dyn,
+            "fault_threshold_m": FAULT_THRESHOLD_M,
         },
         "canonical_spiral_inactive": {
             "v_t_m_per_s": cfg.v_t,
@@ -882,6 +948,40 @@ def _fit_if_complete(
     return {"available": True, **fit}
 
 
+def prepare_asymptote_fit_for_summary(
+    fit: dict[str, object],
+) -> dict[str, object]:
+    """Suppress an invalid intercept while retaining auditable fit diagnostics."""
+    if not bool(fit["available"]):
+        return fit
+    observed = np.asarray(fit["observed_error_m"], dtype=float)
+    monotonic_nonincreasing = bool(np.all(np.diff(observed) <= 0.0))
+    fit["monotonic_nonincreasing"] = monotonic_nonincreasing
+    fit["valid_for_floor_inference"] = monotonic_nonincreasing
+    if not monotonic_nonincreasing:
+        fit["invalidity_reason"] = (
+            "observed error is non-monotonic, so the A/n+B intercept is a "
+            "fitting artifact rather than a physical asymptote"
+        )
+        # Retain A, fitted values, residuals, SSE, and R² so the rejected fit
+        # remains auditable without publishing its non-physical intercept.
+        for key in (
+            "B_m",
+            "B_standard_error_m",
+            "B_confidence_interval_m",
+            "confidence_level",
+            "t_critical",
+        ):
+            fit.pop(key, None)
+    return fit
+
+
+def _round_up_to_whole_micrometer(value_m: float) -> float:
+    """Conservative external-claim rounding for a positive measured envelope."""
+    assert value_m >= 0.0 and math.isfinite(value_m)
+    return math.ceil(value_m * 1e6) * 1e-6
+
+
 def analyze(records: list[dict[str, object]], worker_count: int) -> dict[str, object]:
     ordered = _validate_records(records)
     cfg = VALIDATED_LOOSE_V1
@@ -910,7 +1010,10 @@ def analyze(records: list[dict[str, object]], worker_count: int) -> dict[str, ob
                 cfg.task.radial_clearance, float(pooled_radius["min"])
             )
         )
-        measured_vertex = None if fine_radius is None else float(fine_radius["max"])
+        measured_max_radius = (
+            None if pooled_radius is None else float(pooled_radius["max"])
+        )
+        fine_max_radius = None if fine_radius is None else float(fine_radius["max"])
 
         batch_wall_values = {
             float(record["n_batch_wall_time_s"]) for record in selected
@@ -922,11 +1025,15 @@ def analyze(records: list[dict[str, object]], worker_count: int) -> dict[str, ob
             "n_segments": n_segments,
             "populations": population_metrics,
             "penetration_m_from_pooled_minimum": penetration,
+            "facet_relief_m": facet_relief_m(
+                cfg.task.radial_clearance, n_segments
+            ),
             "predicted_vertex_radius_m": float(predicted_vertex),
-            "measured_vertex_radius_m_from_fine_maximum": measured_vertex,
-            "vertex_radius_difference_m": (
-                None if measured_vertex is None
-                else float(measured_vertex - predicted_vertex)
+            "measured_max_settled_tip_radius_m_pooled": measured_max_radius,
+            "fine_max_settled_tip_radius_m": fine_max_radius,
+            "pooled_max_minus_predicted_vertex_radius_m": (
+                None if measured_max_radius is None
+                else float(measured_max_radius - predicted_vertex)
             ),
             "coarse_nth_harmonic": _harmonic_or_unavailable(
                 coarse, n_segments
@@ -979,18 +1086,63 @@ def analyze(records: list[dict[str, object]], worker_count: int) -> dict[str, ob
             else float(pooled_error["mean"])
         )
 
-    max_fit = _fit_if_complete(
+    max_fit = prepare_asymptote_fit_for_summary(_fit_if_complete(
         max_points,
         "n=16 N2 golden-128 maximum; n>=32 N4 fine-population maximum",
-    )
-    fine_mean_fit = _fit_if_complete(
+    ))
+    fine_mean_fit = prepare_asymptote_fit_for_summary(_fit_if_complete(
         fine_mean_points,
         "n=16 N2 golden-128 mean; n>=32 N4 fine-population mean",
-    )
-    pooled_mean_fit = _fit_if_complete(
+    ))
+    pooled_mean_fit = prepare_asymptote_fit_for_summary(_fit_if_complete(
         pooled_mean_points,
         "sensitivity only: n=16 N2 golden-128 mean; n>=32 N4 pooled mean",
+    ))
+
+    plateau_n = (64, 128)
+    plateau_per_n = {}
+    for n_segments in plateau_n:
+        pooled_error = by_n[str(n_segments)]["populations"][
+            "pooled"
+        ]["estimator_error_norm_m"]
+        assert pooled_error is not None
+        plateau_per_n[str(n_segments)] = {
+            "pooled_mean_error_m": float(pooled_error["mean"]),
+            "pooled_max_error_m": float(pooled_error["max"]),
+        }
+    plateau_mean_envelope_m = max(
+        cell["pooled_mean_error_m"] for cell in plateau_per_n.values()
     )
+    plateau_max_envelope_m = max(
+        cell["pooled_max_error_m"] for cell in plateau_per_n.values()
+    )
+    rounded_plateau_mean_m = _round_up_to_whole_micrometer(
+        plateau_mean_envelope_m
+    )
+    rounded_plateau_max_m = _round_up_to_whole_micrometer(
+        plateau_max_envelope_m
+    )
+
+    crossover_by_n = {
+        str(N2_SEGMENTS): {
+            "facet_relief_m": facet_relief_m(
+                cfg.task.radial_clearance, N2_SEGMENTS
+            ),
+            "penetration_m": float(n2_reference["penetration_m"]),
+            "nth_harmonic_r_squared": float(
+                n2_reference["harmonic"]["r_squared"]
+            ),
+        },
+    }
+    for n_segments in N_SEGMENTS_SWEEP:
+        cell = by_n[str(n_segments)]
+        crossover_by_n[str(n_segments)] = {
+            "facet_relief_m": float(cell["facet_relief_m"]),
+            "penetration_m": float(cell["penetration_m_from_pooled_minimum"]),
+            "nth_harmonic_r_squared": float(
+                cell["coarse_nth_harmonic"]["r_squared"]
+            ),
+        }
 
     batch_totals = [
         float(by_n[str(n)]["wall_clock"][
@@ -1009,6 +1161,35 @@ def analyze(records: list[dict[str, object]], worker_count: int) -> dict[str, ob
             "headline_max_error": max_fit,
             "mean_error": fine_mean_fit,
             "pooled_mean_error_sensitivity": pooled_mean_fit,
+        },
+        "measured_plateau": {
+            "definition": (
+                "conservative envelope of pooled error at n_segments=64 and 128"
+            ),
+            "per_n": plateau_per_n,
+            "measured_mean_envelope_m": plateau_mean_envelope_m,
+            "measured_max_envelope_m": plateau_max_envelope_m,
+            "external_claim_rounded_mean_m": rounded_plateau_mean_m,
+            "external_claim_rounded_max_m": rounded_plateau_max_m,
+            "fault_threshold_m": FAULT_THRESHOLD_M,
+            "fault_threshold_margin_over_rounded_mean": (
+                FAULT_THRESHOLD_M / rounded_plateau_mean_m
+            ),
+            "fault_threshold_margin_over_rounded_max": (
+                FAULT_THRESHOLD_M / rounded_plateau_max_m
+            ),
+        },
+        "facet_to_penetration_crossover": {
+            "facet_relief_formula": "clearance*(sec(pi/n_segments)-1)",
+            "by_n": crossover_by_n,
+            "relief_below_penetration_between_n_segments": [16, 32],
+            "nth_harmonic_collapse_between_n_segments": [32, 64],
+            "measured_mechanism": (
+                "penetration first exceeds facet relief by n=32 while the facet "
+                "harmonic remains strong; contact-solver behavior dominates by "
+                "n=64, where the nth-harmonic fit collapses"
+            ),
+            "unresolved": "n=128 signed tangential DC offset",
         },
         "wall_clock": {
             "measurement_total_s_sum_of_n_batches": float(sum(batch_totals)),
@@ -1062,7 +1243,7 @@ def _save_facet_diagnostics(ordered: list[dict[str, object]]) -> None:
         axis.scatter(phase_deg, deflection_deg, s=28, alpha=0.85)
         axis.axhline(0.0, color="#333333", linewidth=1)
         axis.set(
-            xlabel="Facet phase (deg)",
+            xlabel="Commanded facet phase (deg)",
             title=f"n={n_segments}; seated {len(fine)}/{N_FINE}",
         )
         axis.grid(True, alpha=0.2)
@@ -1080,7 +1261,12 @@ def _save_facet_diagnostics(ordered: list[dict[str, object]]) -> None:
             and bool(record["success"])
         ]
         phase_deg = np.degrees([
-            float(record["facet_phase_centered_rad"]) for record in fine
+            facet_phase_rad(
+                float(record["measured_tip_bearing_rad"]),
+                n_segments,
+                centered=True,
+            )
+            for record in fine
         ])
         radius_um = 1e6 * np.array([
             float(record["settled_tip_radius_m"]) for record in fine
@@ -1096,7 +1282,7 @@ def _save_facet_diagnostics(ordered: list[dict[str, object]]) -> None:
             vertex_um, color="#3569A8", linestyle=":", label="c/cos(π/n)"
         )
         axis.set(
-            xlabel="Facet phase (deg)",
+            xlabel="Settled-bearing facet phase (deg)",
             title=f"n={n_segments}; seated {len(fine)}/{N_FINE}",
         )
         axis.grid(True, alpha=0.2)
@@ -1130,6 +1316,13 @@ def _save_unavailable_fit_figure(
     _save_figure(fig, stem)
 
 
+def _fit_intercept_for_plot_m(fit: dict[str, object]) -> float:
+    """Recover the rejected intercept only to draw the mandated fit overlay."""
+    n0 = float(fit["n_segments"][0])
+    fitted0 = float(fit["fitted_error_m"][0])
+    return fitted0 - float(fit["A_m"]) / n0
+
+
 def save_figures(
     records: list[dict[str, object]],
     summary: dict[str, object],
@@ -1159,20 +1352,37 @@ def save_figures(
     max_error_um = 1e6 * np.array(max_fit["observed_error_m"], dtype=float)
     mean_error_um = 1e6 * np.array(mean_fit["observed_error_m"], dtype=float)
     fit_n = np.geomspace(n_values.min(), n_values.max(), 300)
+    max_intercept_m = _fit_intercept_for_plot_m(max_fit)
+    mean_intercept_m = _fit_intercept_for_plot_m(mean_fit)
     max_curve_um = 1e6 * (
-        float(max_fit["A_m"]) / fit_n + float(max_fit["B_m"])
+        float(max_fit["A_m"]) / fit_n + max_intercept_m
     )
     mean_curve_um = 1e6 * (
-        float(mean_fit["A_m"]) / fit_n + float(mean_fit["B_m"])
+        float(mean_fit["A_m"]) / fit_n + mean_intercept_m
     )
 
     fig, ax = plt.subplots(figsize=(7.6, 5.2), constrained_layout=True)
     ax.loglog(n_values, max_error_um, "o", color="#C84A42", label="Fine maximum")
     ax.loglog(fit_n[max_curve_um > 0.0], max_curve_um[max_curve_um > 0.0],
-              color="#C84A42", linestyle="--", label="Maximum A/n + B fit")
+              color="#C84A42", linestyle="--", label="Formal maximum fit (invalid)")
     ax.loglog(n_values, mean_error_um, "s", color="#3569A8", label="Fine mean")
     ax.loglog(fit_n[mean_curve_um > 0.0], mean_curve_um[mean_curve_um > 0.0],
-              color="#3569A8", linestyle="--", label="Mean A/n + B fit")
+              color="#3569A8", linestyle="--", label="Formal mean fit (invalid)")
+    plateau = summary["measured_plateau"]
+    ax.plot(
+        [64, 128],
+        [1e6 * float(plateau["external_claim_rounded_max_m"])] * 2,
+        color="#C84A42",
+        linestyle=":",
+        label="Measured max plateau ≈7 µm",
+    )
+    ax.plot(
+        [64, 128],
+        [1e6 * float(plateau["external_claim_rounded_mean_m"])] * 2,
+        color="#3569A8",
+        linestyle=":",
+        label="Measured mean plateau ≈3 µm",
+    )
     ax.set(
         xlabel="Bore segments n",
         ylabel="Estimator error |hole_est − true_hole_xy| (µm)",
@@ -1181,7 +1391,7 @@ def save_figures(
     ax.get_xaxis().set_major_formatter(ScalarFormatter())
     ax.grid(True, which="both", alpha=0.25)
     ax.legend()
-    ax.set_title("N4 facet convergence and asymptote fits")
+    ax.set_title("N4 crossover: formal fit rejected, measured plateau retained")
     _save_figure(fig, ESTIMATOR_FIGURE_STEM)
 
     fig, ax = plt.subplots(figsize=(7.6, 4.8), constrained_layout=True)
@@ -1194,7 +1404,7 @@ def save_figures(
         xlabel="Bore segments n",
         ylabel="Observed − fitted error (µm)",
         xticks=n_values,
-        title="Residuals of N4 A/n + B fits",
+        title="Residuals of rejected N4 A/n + B fits",
     )
     ax.grid(True, alpha=0.25)
     ax.legend()
