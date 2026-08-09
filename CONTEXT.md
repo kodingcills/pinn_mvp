@@ -195,8 +195,9 @@ physics-shaped symptom that cost multiple rounds of wrong theorizing.
 3. State the full config at the top of every report.
 4. Deviate from spec only with an explicit note. Never swap silently.
 5. Stop and ask if a result looks surprisingly good.
-6. Stop and ask before changing `solref`, `solimp`, `timestep`, or `cone`. The
-   contact model is load-bearing and was validated at specific values.
+6. Stop and ask before changing `solref`, `solimp`, `timestep`, `cone`, or
+   `integrator`. The contact model is load-bearing and was validated at
+   specific values.
 7. Any geometry change ships with a permanent assert-based test **and** a
    committed cross-section render.
 8. When you fix something, delete the wrong version. No compatibility shims.
