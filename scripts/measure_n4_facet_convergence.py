@@ -982,6 +982,92 @@ def _round_up_to_whole_micrometer(value_m: float) -> float:
     return math.ceil(value_m * 1e6) * 1e-6
 
 
+def _complete_population(
+    metrics: dict[str, object],
+    expected_trials: int,
+) -> bool:
+    """A formal population claim requires every designed trial to succeed."""
+    return (
+        int(metrics["n_trials"]) == expected_trials
+        and int(metrics["n_success"]) == expected_trials
+        and int(metrics["n_excluded"]) == 0
+    )
+
+
+def _measured_plateau_or_unavailable(
+    by_n: dict[str, object],
+) -> dict[str, object]:
+    """Build the high-n envelope only from both complete designed grids."""
+    plateau_n = (64, 128)  # Accepted N4 high-resolution plateau definition.
+    per_n: dict[str, object] = {}
+    complete = True
+    for n_segments in plateau_n:
+        pooled = by_n[str(n_segments)]["populations"]["pooled"]
+        error = pooled["estimator_error_norm_m"]
+        population_complete = _complete_population(
+            pooled, N_PER_SEGMENT_COUNT
+        )
+        complete = complete and population_complete
+        per_n[str(n_segments)] = {
+            "n_trials": int(pooled["n_trials"]),
+            "n_success": int(pooled["n_success"]),
+            "complete": population_complete,
+            "pooled_mean_error_m": (
+                None if error is None else float(error["mean"])
+            ),
+            "pooled_max_error_m": (
+                None if error is None else float(error["max"])
+            ),
+        }
+
+    definition = (
+        "conservative envelope of complete pooled populations at "
+        "n_segments=64 and 128"
+    )
+    if not complete:
+        return {
+            "available": False,
+            "definition": definition,
+            "reason": (
+                "requires 96/96 successful trials at both n_segments=64 "
+                "and 128; survivor-conditioned errors are not an external floor"
+            ),
+            "per_n": per_n,
+            "fault_threshold_m": FAULT_THRESHOLD_M,
+        }
+
+    mean_envelope_m = max(
+        float(cell["pooled_mean_error_m"]) for cell in per_n.values()
+    )
+    max_envelope_m = max(
+        float(cell["pooled_max_error_m"]) for cell in per_n.values()
+    )
+    rounded_mean_m = _round_up_to_whole_micrometer(mean_envelope_m)
+    rounded_max_m = _round_up_to_whole_micrometer(max_envelope_m)
+    return {
+        "available": True,
+        "definition": definition,
+        "per_n": per_n,
+        "measured_mean_envelope_m": mean_envelope_m,
+        "measured_max_envelope_m": max_envelope_m,
+        "external_claim_rounded_mean_m": rounded_mean_m,
+        "external_claim_rounded_max_m": rounded_max_m,
+        "fault_threshold_m": FAULT_THRESHOLD_M,
+        "fault_threshold_margin_over_rounded_mean": (
+            None if rounded_mean_m == 0.0
+            else FAULT_THRESHOLD_M / rounded_mean_m
+        ),
+        "fault_threshold_margin_over_rounded_max": (
+            None if rounded_max_m == 0.0
+            else FAULT_THRESHOLD_M / rounded_max_m
+        ),
+    }
+
+
+def _optional_float(value: object) -> float | None:
+    return None if value is None else float(value)
+
+
 def analyze(records: list[dict[str, object]], worker_count: int) -> dict[str, object]:
     ordered = _validate_records(records)
     cfg = VALIDATED_LOOSE_V1
@@ -1099,29 +1185,7 @@ def analyze(records: list[dict[str, object]], worker_count: int) -> dict[str, ob
         "sensitivity only: n=16 N2 golden-128 mean; n>=32 N4 pooled mean",
     ))
 
-    plateau_n = (64, 128)
-    plateau_per_n = {}
-    for n_segments in plateau_n:
-        pooled_error = by_n[str(n_segments)]["populations"][
-            "pooled"
-        ]["estimator_error_norm_m"]
-        assert pooled_error is not None
-        plateau_per_n[str(n_segments)] = {
-            "pooled_mean_error_m": float(pooled_error["mean"]),
-            "pooled_max_error_m": float(pooled_error["max"]),
-        }
-    plateau_mean_envelope_m = max(
-        cell["pooled_mean_error_m"] for cell in plateau_per_n.values()
-    )
-    plateau_max_envelope_m = max(
-        cell["pooled_max_error_m"] for cell in plateau_per_n.values()
-    )
-    rounded_plateau_mean_m = _round_up_to_whole_micrometer(
-        plateau_mean_envelope_m
-    )
-    rounded_plateau_max_m = _round_up_to_whole_micrometer(
-        plateau_max_envelope_m
-    )
+    measured_plateau = _measured_plateau_or_unavailable(by_n)
 
     crossover_by_n = {
         str(N2_SEGMENTS): {
@@ -1129,20 +1193,43 @@ def analyze(records: list[dict[str, object]], worker_count: int) -> dict[str, ob
                 cfg.task.radial_clearance, N2_SEGMENTS
             ),
             "penetration_m": float(n2_reference["penetration_m"]),
-            "nth_harmonic_r_squared": float(
+            "nth_harmonic_r_squared": _optional_float(
                 n2_reference["harmonic"]["r_squared"]
             ),
         },
     }
     for n_segments in N_SEGMENTS_SWEEP:
         cell = by_n[str(n_segments)]
+        harmonic = cell["coarse_nth_harmonic"]
         crossover_by_n[str(n_segments)] = {
             "facet_relief_m": float(cell["facet_relief_m"]),
-            "penetration_m": float(cell["penetration_m_from_pooled_minimum"]),
-            "nth_harmonic_r_squared": float(
-                cell["coarse_nth_harmonic"]["r_squared"]
+            "penetration_m": _optional_float(
+                cell["penetration_m_from_pooled_minimum"]
+            ),
+            "nth_harmonic_r_squared": _optional_float(
+                harmonic.get("r_squared")
+                if bool(harmonic["available"])
+                else None
             ),
         }
+
+    crossover_required_n = (32, 64)
+    crossover_available = all(
+        _complete_population(
+            by_n[str(n_segments)]["populations"]["pooled"],
+            N_PER_SEGMENT_COUNT,
+        )
+        and _complete_population(
+            by_n[str(n_segments)]["populations"]["coarse"],
+            N_COARSE,
+        )
+        and crossover_by_n[str(n_segments)]["penetration_m"] is not None
+        and crossover_by_n[str(n_segments)]["nth_harmonic_r_squared"] is not None
+        for n_segments in crossover_required_n
+    )
+    n128_complete = _complete_population(
+        by_n["128"]["populations"]["pooled"], N_PER_SEGMENT_COUNT
+    )
 
     batch_totals = [
         float(by_n[str(n)]["wall_clock"][
@@ -1162,34 +1249,32 @@ def analyze(records: list[dict[str, object]], worker_count: int) -> dict[str, ob
             "mean_error": fine_mean_fit,
             "pooled_mean_error_sensitivity": pooled_mean_fit,
         },
-        "measured_plateau": {
-            "definition": (
-                "conservative envelope of pooled error at n_segments=64 and 128"
-            ),
-            "per_n": plateau_per_n,
-            "measured_mean_envelope_m": plateau_mean_envelope_m,
-            "measured_max_envelope_m": plateau_max_envelope_m,
-            "external_claim_rounded_mean_m": rounded_plateau_mean_m,
-            "external_claim_rounded_max_m": rounded_plateau_max_m,
-            "fault_threshold_m": FAULT_THRESHOLD_M,
-            "fault_threshold_margin_over_rounded_mean": (
-                FAULT_THRESHOLD_M / rounded_plateau_mean_m
-            ),
-            "fault_threshold_margin_over_rounded_max": (
-                FAULT_THRESHOLD_M / rounded_plateau_max_m
-            ),
-        },
+        "measured_plateau": measured_plateau,
         "facet_to_penetration_crossover": {
+            "available": crossover_available,
             "facet_relief_formula": "clearance*(sec(pi/n_segments)-1)",
             "by_n": crossover_by_n,
-            "relief_below_penetration_between_n_segments": [16, 32],
-            "nth_harmonic_collapse_between_n_segments": [32, 64],
-            "measured_mechanism": (
-                "penetration first exceeds facet relief by n=32 while the facet "
-                "harmonic remains strong; contact-solver behavior dominates by "
-                "n=64, where the nth-harmonic fit collapses"
+            "relief_below_penetration_between_n_segments": (
+                [16, 32] if crossover_available else None
             ),
-            "unresolved": "n=128 signed tangential DC offset",
+            "nth_harmonic_collapse_between_n_segments": (
+                [32, 64] if crossover_available else None
+            ),
+            "measured_mechanism": (
+                "penetration first exceeds facet relief by n=32 while the "
+                "facet harmonic remains strong; contact-solver behavior "
+                "dominates by n=64, where the nth-harmonic fit collapses"
+                if crossover_available else None
+            ),
+            "unavailable_reason": (
+                None if crossover_available else
+                "requires complete n=32/64 pooled and coarse populations "
+                "with defined harmonic R-squared"
+            ),
+            "unresolved": (
+                "n=128 signed tangential DC offset"
+                if n128_complete else None
+            ),
         },
         "wall_clock": {
             "measurement_total_s_sum_of_n_batches": float(sum(batch_totals)),
@@ -1381,20 +1466,29 @@ def save_figures(
     ax.loglog(fit_n[mean_curve_um > 0.0], mean_curve_um[mean_curve_um > 0.0],
               color="#3569A8", linestyle="--", label="Formal mean fit (invalid)")
     plateau = summary["measured_plateau"]
-    ax.plot(
-        [64, 128],
-        [1e6 * float(plateau["external_claim_rounded_max_m"])] * 2,
-        color="#C84A42",
-        linestyle=":",
-        label="Measured max plateau ≈7 µm",
-    )
-    ax.plot(
-        [64, 128],
-        [1e6 * float(plateau["external_claim_rounded_mean_m"])] * 2,
-        color="#3569A8",
-        linestyle=":",
-        label="Measured mean plateau ≈3 µm",
-    )
+    if bool(plateau["available"]):
+        rounded_max_um = 1e6 * float(
+            plateau["external_claim_rounded_max_m"]
+        )
+        rounded_mean_um = 1e6 * float(
+            plateau["external_claim_rounded_mean_m"]
+        )
+        if rounded_max_um > 0.0:
+            ax.plot(
+                [64, 128],
+                [rounded_max_um] * 2,
+                color="#C84A42",
+                linestyle=":",
+                label=f"Measured max plateau ≈{rounded_max_um:g} µm",
+            )
+        if rounded_mean_um > 0.0:
+            ax.plot(
+                [64, 128],
+                [rounded_mean_um] * 2,
+                color="#3569A8",
+                linestyle=":",
+                label=f"Measured mean plateau ≈{rounded_mean_um:g} µm",
+            )
     ax.set(
         xlabel="Bore segments n",
         ylabel="Estimator error |hole_est − true_hole_xy| (µm)",
@@ -1404,7 +1498,11 @@ def save_figures(
     ax.get_xaxis().set_minor_formatter(NullFormatter())
     ax.grid(True, which="both", alpha=0.25)
     ax.legend()
-    ax.set_title("N4 crossover: formal fit rejected, measured plateau retained")
+    ax.set_title(
+        "N4 crossover: formal fit rejected, measured plateau retained"
+        if bool(plateau["available"])
+        else "N4 formal fit; measured plateau unavailable after exclusions"
+    )
     _save_figure(fig, ESTIMATOR_FIGURE_STEM)
 
     fig, ax = plt.subplots(figsize=(7.6, 4.8), constrained_layout=True)

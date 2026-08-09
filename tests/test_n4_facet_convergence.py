@@ -351,8 +351,13 @@ def _synthetic_record(spec, *, success=True):
 
 def test_analysis_keys_shuffled_results_and_keeps_populations_separate():
     specs = build_trial_specs()
+    excluded_index = next(
+        spec.trial_index
+        for spec in specs
+        if spec.n_segments == 128 and spec.population == "coarse"
+    )
     records = [
-        _synthetic_record(spec, success=spec.trial_index != 0)
+        _synthetic_record(spec, success=spec.trial_index != excluded_index)
         for spec in specs
     ]
 
@@ -361,35 +366,23 @@ def test_analysis_keys_shuffled_results_and_keeps_populations_separate():
     assert summary["n_trials"] == N_TOTAL
     assert summary["n_success"] == N_TOTAL - 1
     assert summary["n_excluded"] == 1
-    n32 = summary["by_n"]["32"]
-    assert n32["populations"]["coarse"]["n_success"] == N_COARSE - 1
-    assert n32["populations"]["fine"]["n_success"] == N_FINE
-    assert n32["populations"]["coarse"]["exclusion_reasons"] == {
+    n128 = summary["by_n"]["128"]
+    assert n128["populations"]["coarse"]["n_success"] == N_COARSE - 1
+    assert n128["populations"]["fine"]["n_success"] == N_FINE
+    assert n128["populations"]["coarse"]["exclusion_reasons"] == {
         "synthetic exclusion": 1,
     }
+    n32 = summary["by_n"]["32"]
     assert n32["coarse_nth_harmonic"]["order"] == 32
     assert summary["by_n"]["64"]["coarse_nth_harmonic"]["order"] == 64
     assert summary["by_n"]["128"]["coarse_nth_harmonic"]["order"] == 128
     assert summary["asymptote_fits"]["headline_max_error"]["available"]
     assert summary["asymptote_fits"]["mean_error"]["available"]
     plateau = summary["measured_plateau"]
-    assert plateau["external_claim_rounded_mean_m"] >= plateau[
-        "measured_mean_envelope_m"
-    ]
-    assert plateau["external_claim_rounded_max_m"] >= plateau[
-        "measured_max_envelope_m"
-    ]
-    assert (
-        plateau["external_claim_rounded_mean_m"]
-        - plateau["measured_mean_envelope_m"]
-        < 1e-6
-    )
-    assert (
-        plateau["external_claim_rounded_max_m"]
-        - plateau["measured_max_envelope_m"]
-        < 1e-6
-    )
+    assert not plateau["available"]
+    assert plateau["per_n"]["128"]["n_success"] == N_PER_SEGMENT_COUNT - 1
     crossover = summary["facet_to_penetration_crossover"]
+    assert crossover["available"]
     assert crossover["relief_below_penetration_between_n_segments"] == [16, 32]
     assert crossover["nth_harmonic_collapse_between_n_segments"] == [32, 64]
     assert summary["config"]["canonical_n_segments_unchanged"] == 16
@@ -426,6 +419,78 @@ def test_fine_exclusion_invalidates_fits_but_preserves_diagnostic_figures(
         n4.RADIUS_FIGURE_STEM,
         n4.RESIDUAL_FIGURE_STEM,
     }
+
+
+def test_sparse_high_n_coarse_suppresses_plateau_without_losing_figures(
+    monkeypatch,
+):
+    specs = build_trial_specs()
+    n64_coarse_indices = [
+        spec.trial_index
+        for spec in specs
+        if spec.n_segments == 64 and spec.population == "coarse"
+    ]
+    excluded_indices = set(n64_coarse_indices[2:])
+    records = [
+        _synthetic_record(spec, success=spec.trial_index not in excluded_indices)
+        for spec in specs
+    ]
+
+    summary = analyze(records, worker_count=2)
+
+    assert summary["asymptote_fits"]["headline_max_error"]["available"]
+    assert summary["asymptote_fits"]["mean_error"]["available"]
+    plateau = summary["measured_plateau"]
+    assert not plateau["available"]
+    assert plateau["per_n"]["64"]["n_success"] == N_FINE + 2
+    assert "survivor-conditioned" in plateau["reason"]
+    harmonic = summary["by_n"]["64"]["coarse_nth_harmonic"]
+    assert not harmonic["available"]
+    crossover = summary["facet_to_penetration_crossover"]
+    assert not crossover["available"]
+    assert crossover["by_n"]["64"]["nth_harmonic_r_squared"] is None
+    assert crossover["measured_mechanism"] is None
+
+    saved_stems = []
+
+    def record_figure(fig, stem):
+        saved_stems.append(stem)
+        plt.close(fig)
+
+    monkeypatch.setattr(n4, "_save_figure", record_figure)
+    n4.save_figures(records, summary)
+
+    assert set(saved_stems) == {
+        n4.ESTIMATOR_FIGURE_STEM,
+        n4.BEARING_FIGURE_STEM,
+        n4.RADIUS_FIGURE_STEM,
+        n4.RESIDUAL_FIGURE_STEM,
+    }
+
+
+def test_constant_harmonic_preserves_null_crossover_diagnostic():
+    records = [_synthetic_record(spec) for spec in build_trial_specs()]
+    for record in records:
+        if record["n_segments"] == 64 and record["population"] == "coarse":
+            record["bearing_deflection_rad"] = 0.0
+
+    summary = analyze(records, worker_count=2)
+
+    plateau = summary["measured_plateau"]
+    assert plateau["available"]
+    assert plateau["external_claim_rounded_mean_m"] >= plateau[
+        "measured_mean_envelope_m"
+    ]
+    assert plateau["external_claim_rounded_max_m"] >= plateau[
+        "measured_max_envelope_m"
+    ]
+    harmonic = summary["by_n"]["64"]["coarse_nth_harmonic"]
+    assert harmonic["available"]
+    assert harmonic["r_squared"] is None
+    crossover = summary["facet_to_penetration_crossover"]
+    assert not crossover["available"]
+    assert crossover["by_n"]["64"]["nth_harmonic_r_squared"] is None
+    assert crossover["nth_harmonic_collapse_between_n_segments"] is None
 
 
 def test_n2_reference_is_the_exact_committed_fit_anchor():
