@@ -6,6 +6,10 @@ explain how that state was reached.
 
 ## Current engineering reports
 
+- [F1 state filter report](F1_STATE_FILTER_REPORT.md) — F1a filter core,
+  synthetic consistency evidence, and the falsified clearance-step
+  discrimination requirement; F1b/F1c are stopped pending a process-model
+  decision.
 - [N4 facet convergence report](N4_FACET_CONVERGENCE_REPORT.md) — stratified
   n=32/64/128 bore-facet sweep, radial/tangential estimator-error
   decomposition, geometry/contact crossover, and measured high-n plateau.
