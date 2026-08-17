@@ -2,93 +2,116 @@
 
 Date: 2026-08-16
 
-Repository state entering F1a: `c64dc55` (`120 passed`)
+Repository state entering F1a-rev2: `8590893` (`127 passed, 1 xfailed`)
 
-F1a implementation and synthetic evidence: `ed4f40f`
+F1a-rev2 implementation and deterministic evidence: `7ddb18c`
 
-Scope of this report: **F1a only**. F1b error injection and F1c physics wiring
-were not started because the F1a discrimination requirement was falsified.
+Scope: **F1a and F1a-rev2 only**. F1b, F1c, the SPC chart, MES/OPC UA,
+PackML transitions, recovery demo, and viewer were not started.
 
 ## 1. Outcome
 
-The state filter core is implemented without a MuJoCo import. It uses the
-specified state, penetration feedforward correction, random-walk prediction,
-99.9% two-dimensional NIS gate, solve-based Kalman gain, Joseph covariance
-update, covariance symmetrization, and recent-bearing observability diagnostic.
-An outlier returns `SALVAGE` before either persistent state or covariance is
-changed.
+F1a-rev2 replaces per-probe production updates with one standard Kalman update
+per antipodal pair while retaining the per-probe API for incomplete pairs and
+future single-channel characterization. The pair observation is rank three at
+every tested bearing, so `dc` is algebraically distinct from fixture position
+inside one pair. No weighted-least-squares reset or prior discard was added.
 
-Six requested behaviors were confirmed. Golden-angle probes converged;
-fixed-bearing probes remained rank deficient; a 200 µm fixture step gated at
-the first post-step probe with d²=99.502; a 5 µm/cycle fixture ramp produced no
-gate; covariance remained exactly symmetric and positive-definite over 5,000
-probes; and the time-averaged NEES was 2.913, inside the requested 3-DOF 95%
-interval `[0.215795, 9.348404]`.
+The simulation feedforward correction remains per probe. For direction `u`,
+the plus bias is `-penetration*u`, the minus bias is `+penetration*u`, and the
+four-vector is corrected before the batch innovation is formed. The batch uses
+`R_pair=block_diag(R,R)` because no cross-correlation has been measured.
 
-**F1a does not pass as a product discriminator.** With the specified working
-values `q_h=(20 µm/cycle)²` and `q_c=(1 nm/cycle)²`, a 10 µm clearance step at
-probe 100 moved the fixture estimate by as much as 9.925 µm. At probe 199 the
-filter estimated only 5.000 µm of the 10 µm clearance change and retained
-4.978 µm of fixture error. This falsifies T5's required less-than-2 µm fixture
-motion. The direction of the process-noise asymmetry makes newly observed
-motion cheap in `h` and extremely expensive in `dc`; rotating bearings recover
-the spatial distinction only slowly. At 1,000 probes the final fixture error
-fell to 0.990 µm and `dc` reached 9.005 µm, but the original 9.925 µm transient
-remained and therefore still failed T5.
+The two probes are not treated as simultaneous. The covariance timeline is one
+prediction before the plus observation, a second prediction between plus and
+minus, then one atomic four-row gate and update. Because the random-walk state
+transition is identity and conditioning waits for the complete pair, the code
+applies the equivalent local prior `P+2Q` at that update. If the gate rejects
+the pair, neither prediction is committed to persistent `x` or `P`.
 
-The specified `q_h/q_c` values were not reversed, inflated, or supplemented
-with special-case classification logic to manufacture a pass. F1b and F1c are
-stopped pending a decision on the process model or on a permitted multi-probe
-classification/update policy.
+The recalibrated placeholder process values are
+`q_h=(0.2 µm/prediction interval)²` and
+`q_c=(0.001 µm/prediction interval)²`. T7 remained consistent: mean NEES was
+`3.060536`, inside `[0.215795, 9.348404]`. The required stop condition was not
+triggered.
+
+A scheduled 10 µm tool change now raises `P_dc` to a caller-supplied prior
+variance. The next pair separated the step in one pair, with `dc` error below
+`0.000001 µm`, negligible fixture motion, and `d²=0.000100`, below `13.816`.
+Without that commanded event, the first-step values were `81.086976` for the
+per-probe path and `197.993340` for the pair path; both correctly gated a step
+that contradicted the low-wear prior.
+
+Repeated rejection can no longer leave the filter permanently frozen. The
+third consecutive gate emits `ABORT`, returns the last good state and all three
+gated innovations, reinitializes `h` from the current corrected observation,
+inflates `P_h`, and preserves `dc`. T10 reached `ABORT` on the fourth fast-ramp
+pair and the following synthetic pair updated normally. `ABORT` is the filter
+outcome intended to map to PackML `Aborted`; no PackML transition or external
+publisher was built here.
+
+### 1.1 Patch to the rev-2 work order
+
+The pre-edit check exposed that the original ramp tests contradicted the new
+Q values. The corrected executable specification is:
+
+| Test | Rev-2 correction |
+|---|---|
+| T4 | Fixture ramp is `0.2 µm/cycle`, the rate represented by `sqrt(q_h)` |
+| T4b | Fixture ramp at `2.0 µm/cycle`, 10× design rate, must gate |
+| T5a | `dc` ramp is `0.001 µm/cycle` for 2,000 pairs, totaling 2 µm |
+| T5d | `dc` ramp at `0.010 µm/cycle`, 10× design rate, must gate |
+| T10 | Three consecutive gates emit `ABORT`, expose diagnostics, and reinitialize fixture tracking |
+
+These rates make Q and the fixed gate an explicit silent-adaptation boundary.
+They are product placeholders, not empirical plant limits.
 
 ## 2. Full measured configuration
 
-F1a contains no physics rollout. No MuJoCo model, contact setting, solver,
-controller, spiral, PackML state, MES/OPC UA path, recovery behavior, chart, or
-viewer participates in these measurements.
+F1a-rev2 contains no physics rollout. No MuJoCo model, contact solver,
+controller, spiral, or physical trajectory participates in these measurements.
 
-| Group | F1a value |
+| Group | Value |
 |---|---|
-| State | `x=[h_x, h_y, dc]`, all entries in meters; `h` is world-frame fixture position and `dc=c_true-c_cad` |
-| Observation | `z=hole_est`; `H=[[1,0,cos(theta)],[0,1,sin(theta)]]`; known bias `b=-penetration*[cos(theta),sin(theta)]`; corrected observation `z_corr=z-b` |
-| Initial state | `[0, 0, 0] m` |
-| Initial covariance | `diag((1 mm)², (1 mm)², (1 mm)²)`; deliberately broad synthetic prior, not an empirical production prior |
-| Process model | `x[k+1]=x[k]+w`; `Q=diag(q_h,q_h,q_c)` |
-| Working `q_h` | `(20 µm/cycle)² = 4.0e-10 m²/cycle`; placeholder pending a customer drift measurement or the hardware run |
-| Working `q_c` | `(1 nm/cycle)² = 1.0e-18 m²/cycle`; no empirical basis |
-| Process variance ratio | `q_h/q_c=4.0e8`; this ratio is the only intended fixture/wear separator; no other filter logic distinguishes the states |
-| Synthetic `R` | `(1 µm)² I = diag(1.0e-12, 1.0e-12) m²`; independent Gaussian axes |
-| Simulation penetration | `2.9630093418717097e-6 m`, read from `results/n4_facet_convergence_summary.json`, `by_n["64"].penetration_m_from_pooled_minimum` |
-| Hardware penetration configuration | `0.0 m`; the same filter code accepts this value, but no hardware data were used here |
-| Gate | `d²=nuᵀ S⁻¹ nu`; threshold `13.816`, the requested 99.9th percentile for chi-square with 2 DOF; reject only when `d² > 13.816` |
-| Accepted update | Gain computed with `numpy.linalg.solve`; covariance updated in Joseph form and then symmetrized |
-| Rejected update | Outcome `SALVAGE`; returned record includes innovation, innovation covariance, d², threshold, state, and covariance; persistent `x` and `P` remain bitwise unchanged |
-| Probe schedule | `theta_k=k*pi*(3-sqrt(5))` unless T2 fixes `theta=0` |
-| Observability | Condition number of stacked recent observation matrices; explicit infinity for rank below 3; runtime warning at rank failure or condition at least `1/sqrt(float64 epsilon)` |
-| T1 | 200 probes; truth `[42,-31,11] µm`; NumPy seed 481516 |
-| T2 | 200 probes at zero bearing; truth `[50,0,-50] µm`, chosen so observed `h_x+dc=0` |
-| T3 | 200 µm step in `h_x` at zero-based probe index 100; deterministic observations |
-| T4 | `h_x=5*k µm`, k=0…199; deterministic observations |
-| T5 | 10 µm step in `dc` at zero-based probe index 100; 200-probe required measurement plus a separate 1,000-probe diagnostic; deterministic observations |
-| T6 | 5,000 golden-angle probes; deterministic static truth `[7,-9,3] µm` |
-| T7 | 100 independent runs; 200 random-walk process and observation samples generated per run; NumPy seed 8675309 |
-| Statistics | Configured Gaussian sigma is not a sample statistic. No sample standard deviation is reported, so `ddof` is not applicable. NEES is an arithmetic mean over accepted pre-latch samples. |
+| State | `x=[h_x,h_y,dc]`, meters; `h` is world-frame fixture position and `dc=c_true-c_cad` |
+| Initial state | `[0,0,0] m` |
+| Initial covariance | `diag((1 mm)²,(1 mm)²,(1 mm)²)`; broad synthetic prior |
+| Process model | Random walk, identity transition, `Q=diag(q_h,q_h,q_c)` per prediction interval |
+| `q_h` | `(0.2 µm)² = 4.0e-14 m²`; implies the placeholder rate `0.2 µm/cycle` |
+| `q_c` | `(0.001 µm)² = 1.0e-18 m²`; implies the placeholder rate `0.001 µm/cycle` |
+| Variance ratio | `q_h/q_c=40,000`; the ratio, not either absolute scale, separates slow states on the per-probe path |
+| Per-probe observation | `H=[[1,0,u_x],[0,1,u_y]]` |
+| Pair observation | `H_pair=[H(+u);H(-u)]`, four rows by three columns |
+| Synthetic `R` | `(1 µm)² I`; independent Gaussian axes |
+| Pair `R` | `block_diag(R,R)`; no measured cross-correlation is available |
+| Pair timing | predict, acquire plus, predict, acquire minus, one batch update; local prior is `P+2Q` |
+| Simulation penetration | `2.9630093418717097 µm`, from `results/n4_facet_convergence_summary.json`, `by_n["64"].penetration_m_from_pooled_minimum` |
+| Hardware penetration | `0.0 m`; accepted by the same constructor, not measured here |
+| Per-probe bias | `-penetration*u`; subtract before innovation |
+| Pair biases | plus `-penetration*u`, minus `+penetration*u`; subtract the stacked four-vector |
+| Gate | reject only when `d²=nuᵀS⁻¹nu > 13.816` |
+| Pair gate note | The work order retains the numeric threshold `13.816`; it is the 99.9% two-DOF value for a single probe, not a newly calibrated four-DOF percentile |
+| Tool-change event | Raise `P_dc` to caller-supplied prior variance; tests use the configured broad `1.0e-6 m²` prior |
+| Consecutive gate limit | 3, constructor-configurable; first two return `SALVAGE`, third returns `ABORT` |
+| Accepted covariance | Solve-based gain, Joseph update, explicit symmetrization |
+| Bearing schedule | `theta_k=k*pi*(3-sqrt(5))`, except fixed-bearing tests |
+| Statistics | Posterior/configured sigma values are not sample standard deviations; `ddof` is not applicable. NEES is an arithmetic mean over accepted pre-latch samples. |
 
-The absolute scales of `q_h` and `q_c` have no empirical basis. The design
-premise was that their ratio, rather than either absolute scale, would separate
-fixture drift from tooling wear. T5 falsifies that premise for the required
-clearance-step transient under this sequential model.
+Both Q values have no empirical basis. Their implied rates are written in
+µm/cycle so a customer discussion can replace the actual product numbers:
+how fast the fixture and tooling move in that cell, and at what rate the line
+should stop rather than silently adapt.
 
 ## 3. Evidence and reproduction
 
 Durable evidence:
 
-- Filter core: [`../pegsim/filter.py`](../pegsim/filter.py)
-- Permanent synthetic tests: [`../tests/test_filter.py`](../tests/test_filter.py)
-- Deterministic measurement driver: [`../scripts/measure_f1a_state_filter.py`](../scripts/measure_f1a_state_filter.py)
-- Derived synthetic summary: [`../results/f1a_filter_summary.json`](../results/f1a_filter_summary.json)
+- Filter: [`../pegsim/filter.py`](../pegsim/filter.py)
+- Permanent tests: [`../tests/test_filter.py`](../tests/test_filter.py)
+- Deterministic driver: [`../scripts/measure_f1a_state_filter.py`](../scripts/measure_f1a_state_filter.py)
+- Derived summary: [`../results/f1a_filter_summary.json`](../results/f1a_filter_summary.json)
 
-Exact commands from repository root:
+Commands from the repository root:
 
 ```bash
 uv run pytest -q
@@ -97,309 +120,322 @@ uv run python scripts/measure_f1a_state_filter.py
 uv run pytest -q
 ```
 
-The first full-suite command was the unmodified baseline. The driver performs
-no physics and deterministically overwrites only
-`results/f1a_filter_summary.json`. The final full-suite command is recorded in
-Section 8 after the report is complete.
-
-Commit provenance:
+The first full suite was the unmodified `8590893` baseline. The driver performs
+no physics and overwrites only `results/f1a_filter_summary.json`. The final full
+suite is recorded in Section 8.
 
 | Evidence state | Commit |
 |---|---|
-| N4 report and F1a entry state | `c64dc55` |
-| Filter, synthetic tests, measurement driver, and derived F1a summary | `ed4f40f` |
-| Exact report text | use `git log -1 --oneline -- docs/F1_STATE_FILTER_REPORT.md` |
+| F1a entry state and original T5 falsification | `8590893` |
+| Pair batching, Q recalibration, event prior, abort behavior, tests, and measurements | `7ddb18c` |
+| Exact report text | `git log -1 --oneline -- docs/F1_STATE_FILTER_REPORT.md` |
 
 ## 4. Engineering decisions
 
-### D1. Make rejection a non-mutating terminal boundary
+### D1. Batch the physical measurement unit without discarding the prior
 
-**Problem.** Applying even the random-walk prediction to persistent covariance
-after a gated measurement would mean that the rejected probe changed filter
-state. Applying the gain would silently adapt to the condition that is supposed
-to trigger salvage-and-latch.
+**Problem.** A single probe supplies two equations for three states. Updating
+each probe separately loses the antipodal structure and makes `h` versus `dc`
+allocation depend on the process prior.
 
-**Decision.** Compute `x_pred` and `P_pred` locally, calculate innovation and
-NIS, and return `SALVAGE` before constructing the Kalman gain when the threshold
-is exceeded. Neither `x` nor `P` is assigned on this path.
+**Decision.** Stack the plus and minus probes into `H_pair`, correct both known
+biases, use `block_diag(R,R)`, and perform one standard Kalman update. Retain
+the original per-probe update method for incomplete pairs and F1b channel work.
 
-**Defense.** T3 measured d²=99.501979 against 13.816 and verified bitwise
-equality of both stored arrays across the rejected call. The returned record
-retained the 200 µm innovation and complete gate diagnostics.
+**Defense.** `rank(H_pair)=3` and condition number is
+`1.0000000000000002` at 0°, 30°, 45°, and 90°. A commanded 10 µm `dc` step was
+within 1 µm after one pair while `||h||` remained below `2e-16 µm`.
 
-**Rejected alternatives.** Updating then rolling back risks missing a mutated
-field; committing `P+Q` after rejection violates “do not update x or P”; clipping
-the innovation would convert a special cause into silent adaptation.
+**Rejected alternatives.** Per-probe production updates throw away the
+rank-three batch. Measurement-only weighted least squares discards the prior
+and its noise averaging. Special-case step classification duplicates a
+scheduled cell event with weaker information.
 
-### D2. Use solve-based gain and Joseph covariance
+### D2. Represent the time between antipodal probes
 
-**Problem.** Explicit inversion is unnecessary and the simple covariance form
-can lose symmetry or positive-definiteness over long operation.
+**Problem.** Treating the two probes as simultaneous hides fixture motion that
+appears directly in the plus-minus contrast and therefore contaminates `dc`.
 
-**Decision.** Solve `S Y = H P_pred` and transpose `Y` to obtain the gain. Use
-`(I-KH)P_pred(I-KH)ᵀ + K R Kᵀ`, symmetrize, and fail immediately if a result is
-non-finite or non-positive-definite.
+**Decision.** Represent one prediction before plus and another between plus and
+minus, then condition once. Keep the filter model common-state and measure the
+unmodelled intra-pair motion explicitly in T9.
 
-**Defense.** Across 5,000 probes, maximum absolute covariance asymmetry was
-exactly `0.0 m²`; the minimum eigenvalue was `2.425634e-14 m²`.
+**Defense.** Injected along-bearing motion of 0.2, 2, and 20 µm produced `dc`
+errors of -0.100000, -1.000000, and -9.999995 µm: a measured ratio of
+`-0.49999975` at every level, confirming the predicted half-drift coupling.
 
-**Rejected alternatives.** `numpy.linalg.inv` violates the specified numerical
-method. `(I-KH)P_pred` does not provide the requested long-run numerical
-protection.
+**Rejected alternatives.** Simultaneous observations make the probe interval
+invisible. An augmented two-time-state filter is not justified until hardware
+establishes actual interval and drift statistics.
 
-### D3. Keep penetration as constructor-supplied feedforward
+### D3. Make Q the explicit adaptation-rate statement
 
-**Problem.** The n=64 simulation has a deterministic contact-solver penetration
-artifact, while hardware should use zero for this correction. Treating it as a
-state would confound `dc`; treating N4's deterministic distribution as `R`
-would invent measurement noise.
+**Problem.** The earlier `q_h=(20 µm/cycle)²` asserted roughly 20 µm fixture
+motion per cycle. Replacing it with 0.2 µm while retaining 5 µm fixture and
+0.05 µm wear ramps made the tests 25× and 50× faster than their own models.
 
-**Decision.** Require `penetration_m` at construction and subtract the known
-bias before innovation calculation. F1a uses the exact committed N4 n=64 pooled
-minimum value. Hardware will construct the identical class with zero.
+**Decision.** Keep `q_h=(0.2 µm)²` and `q_c=(0.001 µm)²`; set T4 and T5a to
+those implied design rates; add 10× mirror tests that must gate. Do not tune Q
+against NEES or the desired test outcome.
 
-**Defense.** T1 uses nonzero penetration in every synthetic observation and
-recovers `dc` to 0.000784 µm error. `pegsim/filter.py` has an AST-checked
-permanent test prohibiting a MuJoCo import.
+**Defense.** T4 had zero gates and a final `h_x` lag of -0.904999 µm. T5a had
+zero gates, maximum `dc` lag 0.481514 µm or 0.680283 innovation sigma, and
+negligible fixture leakage. T4b first gated at probe 5. T5d first gated at pair
+584. T7 independently remained inside its prescribed consistency band.
 
-**Rejected alternatives.** A module constant would make simulation and hardware
-code differ or silently use the wrong bias. Folding penetration into `R` mixes
-a known mean error with random covariance.
+**Rejected alternatives.** Keeping the old ramp rates contradicts Q. Marking
+the undecided rates as expected failures hides a product decision. Increasing
+Q solely to pass the tests is circular and broadens silent adaptation.
 
-### D4. Treat missing rank as infinite condition number
+### D4. Treat a tool change as a commanded covariance event
 
-**Problem.** A single 2×3 observation matrix has only two returned singular
-values, so a naive rectangular `numpy.linalg.cond(H)` can appear well
-conditioned while one state direction is completely absent.
+**Problem.** A 10 µm tooling step contradicts a filter that has learned very
+small `P_dc`. Algebraic observability identifies which state explains the pair,
+but it does not by itself make an improbable step pass the NIS gate.
 
-**Decision.** Stack recent matrices, test for full column rank with a tolerance
-derived from matrix size and float64 epsilon, and return infinity below rank 3.
-Warn when rank is missing or conditioning exceeds the float64 half-precision
-boundary `1/sqrt(epsilon)`.
+**Decision.** Add `inflate_clearance_variance(prior_variance_m2)`. The caller
+invokes it on the cycle after the scheduled tool change. The method can only
+raise `P_dc`; it cannot silently reduce learned uncertainty.
 
-**Defense.** The 200-bearing golden schedule measured condition number 1.00508.
-The repeated zero-bearing schedule returned infinity and emitted the runtime
-warning; its null-direction covariance retained 1.000201 times its prior value.
+**Defense.** Without the event, first-step d² was 81.086976 per probe and
+197.993340 per pair, both above 13.816. With the event it was 0.000100 on both
+paths, and the pair recovered `dc` in one update.
 
-**Rejected alternatives.** Reporting a finite rectangular condition number
-hides structural unobservability. A hard-coded condition threshold would have
-no numerical or measured basis.
+**Rejected alternatives.** Automatic step detection confuses a known schedule
+with fault inference. Raising `q_c` continuously sacrifices still-state noise
+averaging. Resetting the whole state discards valid fixture knowledge.
 
-### D5. Preserve the specified process asymmetry and expose T5
+### D5. Escalate repeated gates instead of freezing forever
 
-**Problem.** T5 predicts that `q_h >> q_c` will put a 10 µm clearance step into
-`dc` while moving `h` by less than 2 µm. Sequential Kalman allocation does the
-opposite initially: the large `q_h` replenishes fixture covariance every cycle,
-while the tiny `q_c` makes clearance nearly immutable.
+**Problem.** A persistent model mismatch previously produced endless rejected
+measurements while the last state silently became stale.
 
-**Decision.** Keep the requested working values unchanged and encode T5 as a
-strict expected failure. Measure both the required 200-probe horizon and a
-1,000-probe diagnostic.
+**Decision.** Count consecutive gates. The third returns `ABORT`, includes the
+last good state and bounded innovation history, reinitializes `h` from the
+current corrected measurement, adds the initial fixture prior covariance to
+`P_h`, zeros stale `h`/`dc` cross-covariance, and retains `dc`.
 
-**Defense.** At 200 probes the filter estimated `dc=5.000207 µm`, final
-`||h||=4.978217 µm`, and maximum `||h||=9.925217 µm`. At 1,000 probes it reached
-`dc=9.005398 µm` and final `||h||=0.990310 µm`, showing that rotating bearings
-eventually identify the state but do not prevent the disallowed transient.
+**Defense.** After a 100-pair warm-up, T10's 2 µm/pair fixture ramp emitted
+`ABORT` on pair 4. Its history contained exactly three innovations, reset
+fixture error was zero, and the next synthetic pair returned `UPDATED` with
+fixture error `0.000001 µm`.
 
-**Rejected alternatives.** Reversing the ratio contradicts the work order;
-raising `q_c`, resetting covariance at the tool change, batching a pair, or
-adding a classifier introduces a different process/update model that requires
-an explicit decision before implementation. Testing only the final 1,000-probe
-state would hide the 9.925 µm leakage.
+**Rejected alternatives.** Infinite gating is silent estimator death. Updating
+through every outlier defeats the gate. Reinitializing `dc` during a fixture
+model mismatch discards independently identifiable tooling information.
 
-### D6. Stop NEES at the salvage boundary
+### D6. Preserve the T5 falsification
 
-**Problem.** Under the null, a 99.9% per-probe gate has a nonzero false-positive
-rate. Once `SALVAGE` occurs, production is latched and `x,P` intentionally stop
-advancing. Continuing the random-walk truth against those frozen arrays makes
-all later values in that run non-filter NEES samples.
+**Problem.** Original T5 required Q asymmetry alone to assign a simultaneous
+10 µm step to `dc`. Under `q_h/q_c=4e8`, the prior correctly made movement in
+`h` much cheaper and produced a 9.925 µm fixture excursion.
 
-**Decision.** Generate all 200 process and measurement samples for each of 100
-runs, accumulate NEES only for accepted samples before the first latch, and
-terminate filtering for that run at `SALVAGE`.
+**Decision.** Keep T5 as a strict `xfail`, label it `SUPERSEDED`, and retain the
+original `8590893` measurement in this report. Pair batching, not Q tuning,
+supplies the missing state separation.
 
-**Defense.** The seeded population produced 18,176 accepted pre-latch samples,
-16 gated runs, and 84 complete runs. Mean NEES was 2.913454, close to the
-three-state expectation of 3 and within the specifically requested interval.
+**Defense.** A random-walk process-noise ratio separates slow motion from fast
+motion. It cannot separate a step from another step when both hypotheses fit
+the observation; the covariance prior chooses the state allowed to move.
 
-**Rejected alternatives.** Continuing after salvage measured divergence from a
-deliberately frozen estimator and produced mean NEES 2,065.88; disabling or
-raising the fixed production gate would test different code; discarding whole
-gated runs would censor valid pre-latch estimates.
+**Rejected alternatives.** Deleting the test loses a real model-limit finding.
+Reversing Q or manufacturing a pass changes the product statement rather than
+fixing observability.
 
 ## 5. Measurements
 
-Distances are µm unless the table labels another unit. Values are deterministic
-for the committed seeds and configuration. Configured sigma is the known input
-distribution or posterior square root, not a sample standard deviation;
-`ddof` is therefore not applicable. No measurement below comes from physics or
-hardware.
+Distances are µm unless stated otherwise. Values are deterministic for the
+committed seeds and configuration. No table reports a sample standard
+deviation, so `ddof` is not applicable.
 
-### 5.1 T1 static truth and rotating observability
+### 5.1 T1–T4 per-probe path
 
-| State | Truth (µm) | Final estimate (µm) | Error (µm) | Posterior sigma (µm) | Within 3 sigma |
-|---|---:|---:|---:|---:|---|
-| `h_x` | 42.000000 | 41.299157 | -0.700843 | 1.254312 | yes |
-| `h_y` | -31.000000 | -30.609189 | +0.390811 | 1.000128 | yes |
-| `dc` | 11.000000 | 11.000784 | +0.000784 | 0.763908 | yes |
+| Test | Measurement | Result |
+|---|---:|---|
+| T1 condition number, 200 golden-angle probes | 1.005078 | confirmed |
+| T1 final error `[h_x,h_y,dc]` | `[-0.111216,+0.073423,-0.000949] µm` | all within posterior 3 sigma |
+| T2 fixed-bearing condition | infinity | per-probe non-observability confirmed |
+| T2 unresolved state-error norm | 70.710678 µm | confirmed |
+| T3 200 µm fixture-step d² | 32732.223959 | `SALVAGE`; `x,P` unchanged |
+| T4 rate | 0.2 µm/cycle | Q-implied design rate |
+| T4 final `h_x` truth / estimate | 39.800000 / 38.895001 µm | zero gates; within 3 posterior sigma |
+| T4b rate | 2.0 µm/cycle | 10× design rate |
+| T4b first gate | probe 5 | fault boundary confirmed |
 
-| Probes | Gated | Stacked-H condition number | Prediction |
-|---:|---:|---:|---|
-| 200 | 0 | 1.005078 | **confirmed** |
+T2 applies only to the retained per-probe path. One pair is rank three.
 
-### 5.2 T2 fixed-bearing non-observability
+### 5.2 T5 falsification, wear, step, and gate behavior
+
+| Test/path | Measurement | Result |
+|---|---:|---|
+| Historical T5 at `8590893` | max `||h||=9.925217 µm` | **falsified**, now superseded |
+| T5a wear rate and horizon | 0.001 µm/cycle for 2,000 pairs | final truth 2.000000 µm |
+| T5a final / maximum `dc` lag | -0.481514 / 0.481514 µm | 0.680283 max innovation sigma |
+| T5a maximum `||h||` | `6.79e-17 µm` | below 2 µm |
+| T5a gates / aborts | 0 / 0 | design-rate adaptation confirmed |
+| T5b pairs to separation | 1 | within five-pair requirement |
+| T5b error after five pairs | `-0.000001 µm` | below 1 µm |
+| T5b maximum `||h||` | `1.85e-16 µm` | below 2 µm |
+| T5d wear rate | 0.010 µm/cycle | 10× design rate |
+| T5d first gate | pair 584 | fault boundary confirmed |
+
+| T5c path | Commanded event | d² at 10 µm step | Threshold | Outcome |
+|---|---|---:|---:|---|
+| Per probe | no | 81.086976 | 13.816 | `SALVAGE` |
+| Pair batched | no | 197.993340 | 13.816 | `SALVAGE` |
+| Per probe | yes | 0.000100 | 13.816 | `UPDATED` |
+| Pair batched | yes | 0.000100 | 13.816 | `UPDATED` |
+
+The commanded pair path satisfies the T5c stop condition. The larger
+uncommanded pair d² is not a batching defect: the antipodal contrast makes the
+unexpected `dc` change more explicit against the learned low-wear prior.
+
+### 5.3 T6–T8 numerical consistency and observability
+
+| Test | Measurement | Result |
+|---|---:|---|
+| T6 probes | 5,000 | completed |
+| T6 maximum `|P-Pᵀ|` | `0.0 m²` | symmetric |
+| T6 minimum eigenvalue | `1.005329e-15 m²` | positive-definite |
+| T7 accepted pre-latch samples | 17,462 | 21 gated runs, 79 complete runs |
+| T7 mean NEES | 3.060536 | inside `[0.215795,9.348404]` |
+
+| T8 bearing | `rank(H_pair)` | Condition number |
+|---:|---:|---:|
+| 0° | 3 | 1.0000000000000002 |
+| 30° | 3 | 1.0000000000000002 |
+| 45° | 3 | 1.0000000000000002 |
+| 90° | 3 | 1.0000000000000002 |
+
+### 5.4 T9 intra-pair drift sensitivity
+
+Drift was injected along the probe bearing between plus and minus. The true
+`dc` was zero.
+
+| Intra-pair fixture drift (µm) | Estimated `dc` error (µm) | Error/drift |
+|---:|---:|---:|
+| 0.2 | -0.100000 | -0.49999975 |
+| 2.0 | -1.000000 | -0.49999975 |
+| 20.0 | -9.999995 | -0.49999975 |
+
+Prediction that the `dc` error is approximately half the intra-pair drift:
+**confirmed**. This table quantifies sensitivity but does not set an acceptable
+probe interval; hardware drift and timing are still absent.
+
+### 5.5 T10 repeated-gate escalation
 
 | Quantity | Measurement |
 |---|---:|
-| Bearing | 0 rad |
-| Truth `[h_x,h_y,dc]` | `[50, 0, -50] µm` |
-| Final estimate | `[0, 0, 0] µm` |
-| Estimation-error norm | 70.710678 µm |
-| Stacked-H condition number | infinity |
-| Prior null-direction variance | `9.999999999999997e-7 m²` |
-| Posterior null-direction variance | `1.0002009577192307e-6 m²` |
-| Posterior/prior null variance | 1.000201 |
-| Prediction | **confirmed** |
+| Fast fixture ramp | 2.0 µm/pair |
+| `ABORT` | fourth pair after ramp start |
+| Consecutive gates at abort | 3 |
+| Returned innovation-history length | 3 |
+| Fixture error immediately after reinitialization | 0.0 µm |
+| Next pair outcome | `UPDATED` |
+| Next-pair fixture error | 0.000001 µm |
 
-The fixed observation sees `h_x+dc=0`, exactly matching the zero estimate while
-leaving both individual truth values unresolved.
-
-### 5.3 T3 gate on fixture step
-
-| Step probe index | Fixture step (µm) | Innovation (µm) | d² | Threshold | Outcome | `x` unchanged | `P` unchanged |
-|---:|---:|---|---:|---:|---|---|---|
-| 100 | 200 in `h_x` | `[200, 0]` | 99.501979 | 13.816 | `SALVAGE` | yes | yes |
-
-Prediction: **confirmed**.
-
-### 5.4 T4 slow fixture ramp
-
-| Rate | Final truth `h_x` (µm) | Final estimate `h_x` (µm) | Error (µm) | Posterior sigma (µm) | Gates | Prediction |
-|---:|---:|---:|---:|---:|---:|---|
-| 5 µm/cycle | 995.000000 | 994.987547 | -0.012453 | 1.254312 | 0 | **confirmed** |
-
-All three final state errors were inside their componentwise 3-sigma bounds.
-
-### 5.5 T5 discriminating clearance step
-
-| Total probes | Post-step probes | Final `dc` estimate (µm) | `dc` error (µm) | `dc` sigma (µm) | Final `||h||` (µm) | Maximum `||h||` (µm) | Gates |
-|---:|---:|---:|---:|---:|---:|---:|---:|
-| 200 | 100 | 5.000207 | -4.999793 | 0.763908 | 4.978217 | 9.925217 | 0 |
-| 1,000 diagnostic | 900 | 9.005398 | -0.994602 | 0.341416 | 0.990310 | 9.925217 | 0 |
-
-The required 200-probe measurement is outside the clearance 3-sigma bound and
-exceeds the fixture-motion limit by 4.96×. The longer run eventually converges,
-but does not undo the transient. Prediction: **falsified**.
-
-### 5.6 T6 Joseph-form conservation
-
-| Probes | Maximum `|P-Pᵀ|` (m²) | Minimum eigenvalue (m²) | Symmetric to `1e-15` | Positive-definite | Prediction |
-|---:|---:|---:|---|---|---|
-| 5,000 | 0.0 | `2.4256337193843492e-14` | yes | yes | **confirmed** |
-
-### 5.7 T7 NEES consistency
-
-| Runs | Samples generated/run | Accepted pre-latch samples | Gated runs | Complete runs | Mean NEES | Requested 95% interval | Prediction |
-|---:|---:|---:|---:|---:|---:|---|---|
-| 100 | 200 | 18,176 | 16 | 84 | 2.913454 | `[0.215795, 9.348404]` | **confirmed** |
-
-The 16 gates are nominal-tail latches, not injected outliers. At a 0.1% null
-tail probability per probe, latches over 200-probe runs are expected rather
-than evidence of an implementation defect. This result evaluates consistency
-before the product's terminal boundary; it does not claim that post-latch state
-would continue tracking.
+The returned `last_good_state_m` is the publication payload before reset. The
+filter does not publish it itself.
 
 ## 6. Predictions versus measurements
 
 | Prediction | Measurement | Status |
 |---|---|---|
-| Rotating golden-angle bearings identify all three states | Condition 1.005078; every T1 state within 3 sigma | **confirmed** |
-| One repeated bearing cannot separate along-bearing `h` from `dc` | Infinite condition; null variance ratio 1.000201; 70.711 µm unresolved error | **confirmed** |
-| A 200 µm fixture step gates on its first probe and cannot alter state | d²=99.501979 at index 100; stored `x,P` bitwise unchanged | **confirmed** |
-| A 5 µm/cycle fixture ramp does not gate and tracks within 3 sigma | 0 gates; final `h_x` error -0.012453 µm | **confirmed** |
-| A 10 µm `dc` step moves `h` less than 2 µm | maximum `||h||=9.925217 µm`; final at 200 probes 4.978217 µm | **falsified** |
-| Joseph form remains symmetric and positive-definite for 5,000 probes | asymmetry 0; minimum eigenvalue `2.425634e-14 m²` | **confirmed** |
-| The configured linear-Gaussian recursion is NEES-consistent | mean 2.913454 inside `[0.215795,9.348404]` | **confirmed**, before terminal latch |
+| A pair is rank three at every bearing | rank 3 and condition 1.0 at four representative bearings | **confirmed** |
+| Pair batching separates a commanded 10 µm `dc` step within five pairs | one pair; negligible `h` motion | **confirmed** |
+| Commanded pair step stays below 13.816 | d²=0.000100 | **confirmed** |
+| Q asymmetry alone separates simultaneous steps | historical max `||h||=9.925217 µm` | **falsified**, superseded |
+| Design-rate fixture drift adapts | zero gates; final lag 0.904999 µm | **confirmed** |
+| 10× fixture drift gates | first gate at probe 5 | **confirmed** |
+| Design-rate wear adapts without fixture leakage | zero gates; max lag 0.680283 innovation sigma | **confirmed** |
+| 10× wear gates | first gate at pair 584 | **confirmed** |
+| New `q_h` remains NEES-consistent | mean 3.060536 inside prescribed band | **confirmed** |
+| Intra-pair drift creates half-sized `dc` error | ratios all -0.49999975 | **confirmed** |
+| Sustained mismatch cannot gate forever | `ABORT` on fourth pair; next pair updates | **confirmed** |
 
 ## 7. What this does not establish
 
-- `q_h` and `q_c` have no empirical basis. `q_h` is a placeholder pending
-  either a customer fixture-drift measurement or the hardware run. The ratio,
-  not the absolute scale, is the only intended separator in this model, and T5
-  shows that the specified ratio fails the required clearance-step transient.
-- `R` is injected. Its 1 µm per-axis magnitude is a placeholder until the
-  borrowed-arm run. The deterministic N2/N4/N5 solver and mesh distributions
-  were not used as an `R` matrix.
-- No statistic here is a hardware measurement uncertainty. F1a uses synthetic
-  Gaussian observations and deterministic truth only.
-- TCP bias is absorbed into `h` as a constant world-frame offset, so absolute
-  fixture position is not established. A constant TCP bias does not average
-  down and does not cancel antipodally. That is compatible only with a drift
-  claim in which every cycle uses the same TCP.
-- Bore out-of-roundness at even harmonic order does not cancel antipodally:
-  `cos(k(theta+pi))=cos(k theta)` for even `k`. F1a did not inject or measure
-  this effect, and no bore-roundness requirement has been established.
-- The 2.963 µm penetration value is a deterministic n=64 simulation correction,
-  not observation noise and not a hardware correction. Hardware is configured
-  with zero pending evidence.
-- NEES was evaluated only before terminal `SALVAGE`. It does not establish a
-  restart, recovery, or continued-estimation policy after a latch.
-- The broad 1 mm prior covariance is a synthetic test configuration, not a
-  commissioned-cell prior.
-- F1b's four injected channels, per-channel residual `R` measurements, and
-  bore-roundness NEES threshold do not exist yet.
-- F1c's n=64 physics trajectory, false-positive gate count, persistent filter
-  across `run_episode` resets, and reconvergence measurement do not exist yet.
-- No SPC chart, MES/OPC UA publishing, PackML transitions, recovery demo, or
-  viewer was built.
+- `q_h` and `q_c` have no empirical basis. Their implied 0.2 and 0.001
+  µm/cycle rates are customer-facing product placeholders.
+- `R=(1 µm)²I` is a placeholder until F1b. `R_pair` assumes zero probe
+  cross-correlation only because none has been measured.
+- No statistic here is a hardware measurement uncertainty. All observations
+  and truth are synthetic.
+- Nothing in F1a-rev2 touched physics. `pegsim/filter.py` still has a permanent
+  AST test prohibiting a MuJoCo import.
+- A random-walk model tracking a ramp necessarily carries lag. Raising Q enough
+  to reduce lag also under-averages R while the fixture is still. If hardware
+  shows that lag is binding, the upgrade path is a constant-velocity state such
+  as `[h,dc,h_dot,dc_dot]`; it was not built here.
+- The fixed numeric pair gate is not a calibrated four-dimensional NIS
+  percentile. Hardware false-positive tolerance remains undecided.
+- T9 does not establish a maximum acceptable probe interval. It supplies the
+  transfer ratio needed after hardware provides drift-versus-time data.
+- The 1 mm covariance used for commanded tool changes and abort
+  reinitialization is a synthetic prior, not a commissioned-cell value.
+- Returning `ABORT` does not implement PackML `Aborted`, external publication,
+  operator clearance, or recovery transitions.
+- TCP bias, bore harmonics, long-lived observation-history retention, and
+  post-abort production policy remain uncommissioned.
+- F1b error injection, F1c physics wiring, SPC, MES/OPC UA, the recovery demo,
+  and the viewer remain unstarted.
 
-## 8. Tests added
+## 8. Tests added and verification
 
-`tests/test_filter.py` adds eight tests: one import-boundary test plus T1 through
-T7. T5 is a strict expected failure, so an unexpected pass will fail pytest and
-force review rather than silently changing the recorded conclusion.
+T5 remains a strict expected failure marked `SUPERSEDED`; an unexpected pass
+still forces review. Parameterized T8 and T9 cases count as separate pytest
+cases.
 
-| Test | Status before final suite |
+| Test | Final status |
 |---|---|
 | No MuJoCo import | pass |
 | T1 static truth | pass |
-| T2 fixed bearing | pass |
+| T2 per-probe fixed bearing | pass |
 | T3 fixture step gate | pass |
-| T4 fixture ramp | pass |
-| T5 clearance discrimination | strict expected failure |
-| T6 Joseph conservation | pass |
-| T7 NEES consistency | pass |
+| T4 design-rate fixture ramp | pass |
+| T4b 10× fixture ramp | pass |
+| T5 superseded simultaneous-step claim | strict xfail |
+| T5a design-rate wear | pass |
+| T5b commanded pair step | pass |
+| T5c commanded gate behavior | pass |
+| T5d 10× wear | pass |
+| T6 Joseph covariance | pass |
+| T7 NEES | pass |
+| T8 pair observability, four bearings | pass |
+| T9 drift sensitivity, three levels | pass |
+| T10 repeated-gate abort and recovery | pass |
 
-Baseline full suite at `c64dc55`: **120 passed** in 30.12 s.
+Baseline full suite at `8590893`: **127 passed, 1 xfailed**.
 
-Targeted F1a run after implementation: **7 passed, 1 xfailed** in 0.72 s.
+Targeted rev-2 filter suite: **20 passed, 1 xfailed**.
 
-Final full suite after report self-review: **127 passed, 1 xfailed** in 30.05 s.
-This was the only post-edit full-suite execution.
+Final full suite after report self-review: **140 passed, 1 xfailed**. This was
+the only post-edit full-suite execution.
 
 ## 9. Commit traceability
 
 | Requirement | Files | Commit |
 |---|---|---|
-| Filter state, bias correction, gate, solve-based gain, Joseph covariance | `pegsim/filter.py` | `ed4f40f` |
-| T1–T7 synthetic requirements and MuJoCo import boundary | `tests/test_filter.py` | `ed4f40f` |
-| Reproducible F1a measurements | `scripts/measure_f1a_state_filter.py`, `results/f1a_filter_summary.json` | `ed4f40f` |
-| F1a outcome, decisions, evidence, and risks | `docs/F1_STATE_FILTER_REPORT.md` | use path-specific `git log` command after commit |
+| Pair observation, feedforward, two predictions, batch update, retained per-probe path | `pegsim/filter.py` | `7ddb18c` |
+| Q recalibration and tool-change covariance event | `pegsim/filter.py`, `tests/test_filter.py` | `7ddb18c` |
+| Consecutive-gate `ABORT`, last-good state, innovation history, fixture reset | `pegsim/filter.py`, `tests/test_filter.py` | `7ddb18c` |
+| T4b, T5a–T5d, T8–T10 | `tests/test_filter.py` | `7ddb18c` |
+| Reproducible deterministic measurements | `scripts/measure_f1a_state_filter.py`, `results/f1a_filter_summary.json` | `7ddb18c` |
+| Original T5 falsification | `docs/F1_STATE_FILTER_REPORT.md` at entry | `8590893` |
+| Rev-2 report and remaining risks | `docs/F1_STATE_FILTER_REPORT.md` | use path-specific `git log` command after commit |
 
-## 10. Remaining risks and required decision
+## 10. Remaining risks
 
-1. **T5 is blocking.** The current process model cannot make a newly observed
-   clearance step cheap while simultaneously making `dc` nearly static. Decide
-   whether the intended `Q` ordering is reversed, `q_c` changes at known tool
-   boundaries, or the product may classify/batch multiple bearings before
-   committing state. Each is a different model or interface contract.
-2. The requested gate implies nominal false latches over long runs. F1a observed
-   16 latched Monte Carlo runs out of 100 200-probe sequences. Operational
-   false-positive tolerance has not been specified.
-3. The observability diagnostic retains bearing history without a production
-   retention bound. F1a's 5,000-cycle test is small, but a long-lived service
-   should define the maximum diagnostic window before deployment.
-4. `Q`, `R`, the initial covariance, TCP stability, and bore harmonics remain
-   uncommissioned. None may be presented as customer-cell performance.
-5. F1b and F1c must remain stopped until the T5 decision is explicit; otherwise
-   later physics evidence would be built on a falsified state-separation claim.
+1. The two Q-implied stop rates are guesses. Customer fixture and tool-wear
+   measurements must replace them before product claims are made.
+2. The single-probe 99.9% threshold is reused numerically for the four-row pair
+   by work-order decision; its pair false-positive rate is not commissioned.
+3. T10 prepares filter state after `ABORT`, but real production must define who
+   clears the abort and whether the reinitialized state is accepted, inspected,
+   or discarded.
+4. Pairing converts along-bearing intra-pair fixture motion into half-sized
+   `dc` error. Hardware must set the maximum probe interval from actual drift.
+5. Random-walk ramp lag may become binding after R is measured. A
+   constant-velocity model is the identified upgrade path, not current scope.
+
+F1a-rev2 is complete. Work stops here before F1b.
