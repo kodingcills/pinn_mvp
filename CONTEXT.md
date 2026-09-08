@@ -146,6 +146,10 @@ failure.
 | F1a-rev2 abort behavior | ABORT on 3rd consecutive gate (4th pair) | reinitializes fixture h from corrected observation, preserves dc; see `docs/F1_STATE_FILTER_REPORT.md` |
 | F1a-rev2 process priors | q_h=(0.2 µm/cycle)², q_c=(0.001 µm/cycle)² | placeholders with no empirical basis; customer-facing stop rates undecided |
 | Penetration bias constant | 2.963 µm | N4 n=64 `by_n["64"].penetration_m_from_pooled_minimum`; the filter's known observation bias in simulation |
+| N5 antipodal capture | 768/768 | 5 clearance DC levels × 64 pairs × 2 sides at n=64, + 128-trial half-facet control; 0 exclusions |
+| N5 pair-mean error | max 0.864 µm (dc=0) | vs single-probe max 6.246 µm; side errors anticorrelated (radial −0.86, tangential −0.98); beats the pre-registered ~2.7 µm target |
+| N5 pair-mean radial | −0.0206 µm mean | penetration+relief+DC all cancel in the pair mean; half-facet control degrades it 4× to 3.477 µm max |
+| N5 difference term | slope 2.009, intercept −2.183 µm | full difference = 2·dc + 2× population-MEAN penetration; the pre-registered 2×2.963 µm (pooled-MINIMUM) constant is refuted for the difference |
 
 ---
 
@@ -258,19 +262,22 @@ physics-shaped symptom that cost multiple rounds of wrong theorizing.
   is unresolved at 32 fine samples and is not evidence of reversal; only its
   tangential DC offset remains unexplained. See
   `docs/N4_FACET_CONVERGENCE_REPORT.md`.
-- **N5 (antipodal cancellation) has never run.** The audit at `81117a9`
-  (`docs/AUDIT_GROUND_TRUTH.md`) confirms no N5 artifact exists anywhere on any
-  ref. The locked spec lives at the end of `docs/N4_FACET_CONVERGENCE_REPORT.md`:
-  n=64, injected part-tolerance DC in {-10,-5,0,+5,+10} µm, 64 antipodal pairs
-  per level, pre-registered targets ~5 µm single-probe norm, ~2.7 µm
-  antipodal-mean error, radial penetration cancellation in the mean, and a
-  difference term of injected DC plus a constant of twice the measured n=64
-  penetration (2×2.963 µm). It gates F1c.
-- **F1b (error injection) and F1c (filter/physics wiring) are unstarted.**
-  F1b/F1c were stopped pending the process-model decision; the audit confirms
-  `pegsim/error_injection.py` does not exist and `StateFilter` is imported only
-  by tests and the synthetic F1a driver. F1c additionally requires the N5
-  result. See `docs/F1_STATE_FILTER_REPORT.md` §7.
+- **N5 (antipodal cancellation) has run and SUPPORTED the pair observation
+  model** (2026-09-08, `e31ea85`): 768/768 seated, pair-mean max error 0.864 µm
+  vs single-probe 6.246 µm, radial cancellation in the mean, difference slope
+  2.009. The pre-registered 2×2.963 µm difference constant was refuted — the
+  difference carries 2× the population-MEAN penetration (−2.18 µm); F1c's bias
+  constant must be the population-mean settled radius deviation, not the
+  pooled minimum. Half-facet control degrades the pair mean 4×, confirming
+  same-facet-phase antipodal geometry is the mechanism. See
+  `docs/N5_ANTIPODAL_CANCELLATION_REPORT.md`.
+- **F1b (error injection) is implemented; F1c (filter/physics wiring) is the
+  next open item.** `pegsim/error_injection.py` now exists with the four R03
+  channels (encoder quantization, fixed TCP calibration bias, truth-side part
+  variation, truth-side bore out-of-roundness) in explicit physical composition
+  order, with 14 tests and a no-MuJoCo guard. `StateFilter` is still imported
+  only by tests and the synthetic F1a driver; the F1a process priors remain
+  placeholders. F1c is unblocked by the N5 result.
 - **The ~135 Hz rotational-mode estimate has never been measured.** Both
   `mj_fullM` call sites (`control.py` `derived_damping`/`stability_cap`) slice
   only the diagonal; no eigenvalue decomposition of the coupled mass matrix
