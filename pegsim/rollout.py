@@ -293,6 +293,12 @@ def axis_xy_at_z(tip_pos: np.ndarray, axis_dir: np.ndarray, z_target: float) -> 
     return tip_pos[:2] + axis_dir[:2] * s
 
 
+def _geom_name(model: mujoco.MjModel, geom_id: int) -> str:
+    """Resolved name of one geom id, falling back to a stable synthetic name."""
+    name = mujoco.mj_id2name(model, mujoco.mjtObj.mjOBJ_GEOM, geom_id)
+    return name if name is not None else f"geom_{geom_id}"
+
+
 def hole_center_xy(z: float, hole_tilt_deg: float) -> np.ndarray:
     """True (x, y) of the hole's own centerline at world height z, for a
     hole tilted about world Y by hole_tilt_deg (see scene.build_mjcf's
@@ -399,6 +405,7 @@ class TrialResult:
     tilt_at_settle_rad: Optional[float] = None
     true_hole_xy: Optional[np.ndarray] = None
     nominal_xy: Optional[np.ndarray] = None
+    settled_contact_geoms: Optional[tuple[str, ...]] = None
 
 
 def build_episode_model_data(
@@ -594,6 +601,7 @@ def run_episode(
     tilt_at_settle_rad = None
     true_hole_xy = None
     settled_nominal_xy = None
+    settled_contact_geoms = None
 
     # Previous step's ACTIVE stiffness and commanded setpoint, needed to read
     # off the commanded force at the instant the phase flips (see the
@@ -733,6 +741,13 @@ def run_episode(
             )
             true_hole_xy = hole_center_xy(0.0, cfg.plate_tilt_deg)
             settled_nominal_xy = nominal_xy.copy()
+            settled_contact_geoms = tuple(
+                (
+                    _geom_name(model, data.contact[i].geom1),
+                    _geom_name(model, data.contact[i].geom2),
+                )
+                for i in range(data.ncon)
+            )
 
     return TrialResult(
         time=time_log,
@@ -784,6 +799,7 @@ def run_episode(
         tilt_at_settle_rad=tilt_at_settle_rad,
         true_hole_xy=true_hole_xy,
         nominal_xy=settled_nominal_xy,
+        settled_contact_geoms=settled_contact_geoms,
     )
 
 
