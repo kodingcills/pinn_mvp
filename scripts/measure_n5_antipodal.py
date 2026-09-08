@@ -34,7 +34,6 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 from dataclasses import dataclass
 from functools import lru_cache
 from pathlib import Path
-from typing import Optional
 
 import matplotlib
 matplotlib.use("Agg")
@@ -770,7 +769,7 @@ def main() -> None:
         )
     )
     print(
-        "difference: slope={sl:.6f} (predicted 1.0) "
+        "difference: slope={sl:.6f} (predicted 2.0) "
         "intercept={ic:+.3f}um (predicted {ip:+.3f}um)".format(
             sl=checks["difference_slope_measured"],
             ic=checks["difference_intercept_measured_m"] * 1e6,

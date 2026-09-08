@@ -10,6 +10,14 @@ explain how that state was reached.
   synthetic consistency evidence, and the falsified clearance-step
   discrimination requirement; F1b/F1c are stopped pending a process-model
   decision.
+- [N5 antipodal cancellation report](N5_ANTIPODAL_CANCELLATION_REPORT.md) —
+  768-trial antipodal-pair campaign under injected part-tolerance clearance
+  DC: pair-mean cancellation, difference-term linearity, the half-facet
+  control, and the penetration-constant revision for F1c.
+- [R4 coupled dynamics summary](../results/r4_coupled_modes_summary.json) —
+  full-mass-matrix coupled modes and the exact discrete closed-loop map at
+  2000/1000/500 Hz control periods (driver:
+  `scripts/measure_r4_coupled_modes.py`).
 - [N4 facet convergence report](N4_FACET_CONVERGENCE_REPORT.md) — stratified
   n=32/64/128 bore-facet sweep, radial/tangential estimator-error
   decomposition, geometry/contact crossover, and measured high-n plateau.
