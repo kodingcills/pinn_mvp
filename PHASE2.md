@@ -153,11 +153,14 @@ spec change (the blind-hole floor), producing a physics-shaped symptom
 physics-shaped explanation (friction/passive-engagement starvation)
 instead of the actual threshold bug.
 
-Fixed: `pegsim.rollout.DELTA_Z_TRIGGER` (0.2mm) + a live-tracked `z_flat`
-baseline (updated only while genuinely flat, not engaging), trigger fires
-on `z_flat - z_tip > DELTA_Z_TRIGGER`, independent of f_search/k_z.
-`assert_seating_trigger_reachable` catches configs that can't clear the
-trigger with margin. The deleted F_search x k_xy sweep (see git history)
+Fixed: the unified commit gate `pegsim.rollout.DEPTH_COMMIT` (0.5mm) + a
+live-tracked `z_flat` baseline (updated only while genuinely flat, not
+engaging), hysteresis release at 0.7x. This replaced the old split
+`DELTA_Z_TRIGGER` (0.2mm) / `DEPTH_ENGAGE_MARGIN` (0.05mm) pair — those symbol
+names no longer exist in `pegsim/rollout.py`; see the DEPTH_COMMIT derivation
+note there. Independent of f_search/k_z.
+`assert_commit_gate_reachable` catches configs that can't clear the
+gate with margin. The deleted F_search x k_xy sweep (see git history)
 showed capture jumped from 0/16 to
 12-13/16 across f_search=1-2N at both k_xy=500 and 1000, exactly the
 "largely f_search-independent, gated by breakaway" pattern predicted once
