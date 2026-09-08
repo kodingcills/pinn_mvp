@@ -1,0 +1,779 @@
+{
+  "config": {
+    "name": "VALIDATED_LOOSE_V1",
+    "solver_timestep_s": 0.0005,
+    "decimation_sweep": [
+      1,
+      2,
+      4
+    ],
+    "measured_axial_stiffness_n_per_m": 277000.0,
+    "operating_states": {
+      "hover_1mm": {
+        "z": 0.001,
+        "rx_deg": 0.0
+      },
+      "plate_contact": {
+        "z": 0.0,
+        "rx_deg": 0.0
+      },
+      "tilt_2deg": {
+        "z": 0.0,
+        "rx_deg": 2.0
+      }
+    },
+    "l3_measured_stability": {
+      "2000Hz": "16/16 stable",
+      "1000Hz": "0/16 (tilt guard at first plate contact)",
+      "500Hz": "0/16 (tilt guard at first plate contact)"
+    }
+  },
+  "configurations": [
+    {
+      "state": "hover_1mm",
+      "gains": {
+        "k_xy": 1000.0,
+        "k_z": 500.0,
+        "k_rx": 5.0,
+        "k_ry": 5.0,
+        "k_rz": 0.05
+      },
+      "axial_contact_stiffness_n_per_m": null,
+      "mass_diagonal": [
+        0.05,
+        0.05,
+        0.05,
+        4.197916666666668e-05,
+        4.197916666666668e-05,
+        6.25e-07
+      ],
+      "mass_coupling_x_ry": 0.0012500000000000002,
+      "mass_coupling_y_rx": -0.0012500000000000002,
+      "stiffness_condition_number": 20000.0,
+      "max_continuous_mode_hz": 547.9351793773437,
+      "continuous_modes": [
+        {
+          "natural_frequency_hz": 15.915494309189546,
+          "damping_ratio": 0.9999999999999999,
+          "eigenvalue_real": -100.00000000000006,
+          "eigenvalue_imag": 1.8715860021082974e-06
+        },
+        {
+          "natural_frequency_hz": 16.444750230314792,
+          "damping_ratio": 1.0,
+          "eigenvalue_real": -103.32541302735201,
+          "eigenvalue_imag": 0.0
+        },
+        {
+          "natural_frequency_hz": 16.444750230314842,
+          "damping_ratio": 1.0,
+          "eigenvalue_real": -103.32541302735233,
+          "eigenvalue_imag": 0.0
+        },
+        {
+          "natural_frequency_hz": 25.761967876194934,
+          "damping_ratio": 0.8067967378309333,
+          "eigenvalue_real": -130.59394347945823,
+          "eigenvalue_imag": 95.63586253965559
+        },
+        {
+          "natural_frequency_hz": 25.761967876195033,
+          "damping_ratio": 0.8067967378309329,
+          "eigenvalue_real": -130.59394347945866,
+          "eigenvalue_imag": 95.6358625396561
+        },
+        {
+          "natural_frequency_hz": 45.01581504398539,
+          "damping_ratio": 1.0,
+          "eigenvalue_real": -282.8427076750828,
+          "eigenvalue_imag": 0.0
+        },
+        {
+          "natural_frequency_hz": 45.01581657172525,
+          "damping_ratio": 1.0,
+          "eigenvalue_real": -282.84271727415546,
+          "eigenvalue_imag": 0.0
+        },
+        {
+          "natural_frequency_hz": 547.9351793773436,
+          "damping_ratio": 1.0,
+          "eigenvalue_real": -3442.778268350536,
+          "eigenvalue_imag": 0.0
+        },
+        {
+          "natural_frequency_hz": 547.9351793773437,
+          "damping_ratio": 1.0,
+          "eigenvalue_real": -3442.778268350537,
+          "eigenvalue_imag": 0.0
+        }
+      ],
+      "discrete": {
+        "hold_1": {
+          "control_rate_hz": 2000.0,
+          "spectral_radius": 0.9600000000000032
+        },
+        "hold_2": {
+          "control_rate_hz": 1000.0,
+          "spectral_radius": 2.8516257625144843
+        },
+        "hold_4": {
+          "control_rate_hz": 500.0,
+          "spectral_radius": 7.245246486842254
+        }
+      },
+      "gains_phase": "search (k_z=500, pre-commit)"
+    },
+    {
+      "state": "hover_1mm",
+      "gains": {
+        "k_xy": 1000.0,
+        "k_z": 2000.0,
+        "k_rx": 5.0,
+        "k_ry": 5.0,
+        "k_rz": 0.05
+      },
+      "axial_contact_stiffness_n_per_m": null,
+      "mass_diagonal": [
+        0.05,
+        0.05,
+        0.05,
+        4.197916666666668e-05,
+        4.197916666666668e-05,
+        6.25e-07
+      ],
+      "mass_coupling_x_ry": 0.0012500000000000002,
+      "mass_coupling_y_rx": -0.0012500000000000002,
+      "stiffness_condition_number": 40000.0,
+      "max_continuous_mode_hz": 547.935179377344,
+      "continuous_modes": [
+        {
+          "natural_frequency_hz": 16.444750230314785,
+          "damping_ratio": 1.0,
+          "eigenvalue_real": -103.32541302735198,
+          "eigenvalue_imag": 0.0
+        },
+        {
+          "natural_frequency_hz": 16.44475023031481,
+          "damping_ratio": 1.0,
+          "eigenvalue_real": -103.32541302735213,
+          "eigenvalue_imag": 0.0
+        },
+        {
+          "natural_frequency_hz": 25.76196787619499,
+          "damping_ratio": 0.8067967378309326,
+          "eigenvalue_real": -130.5939434794584,
+          "eigenvalue_imag": 95.63586253965597
+        },
+        {
+          "natural_frequency_hz": 25.761967876195033,
+          "damping_ratio": 0.8067967378309325,
+          "eigenvalue_real": -130.5939434794586,
+          "eigenvalue_imag": 95.63586253965617
+        },
+        {
+          "natural_frequency_hz": 31.830988618379063,
+          "damping_ratio": 0.9999999999999999,
+          "eigenvalue_real": -199.99999999999994,
+          "eigenvalue_imag": 3.651257043439457e-06
+        },
+        {
+          "natural_frequency_hz": 45.015815149046226,
+          "damping_ratio": 1.0,
+          "eigenvalue_real": -282.84270833519946,
+          "eigenvalue_imag": 0.0
+        },
+        {
+          "natural_frequency_hz": 45.01581646666441,
+          "damping_ratio": 1.0,
+          "eigenvalue_real": -282.8427166140387,
+          "eigenvalue_imag": 0.0
+        },
+        {
+          "natural_frequency_hz": 547.9351793773433,
+          "damping_ratio": 1.0,
+          "eigenvalue_real": -3442.7782683505343,
+          "eigenvalue_imag": 0.0
+        },
+        {
+          "natural_frequency_hz": 547.935179377344,
+          "damping_ratio": 1.0,
+          "eigenvalue_real": -3442.7782683505384,
+          "eigenvalue_imag": 0.0
+        }
+      ],
+      "discrete": {
+        "hold_1": {
+          "control_rate_hz": 2000.0,
+          "spectral_radius": 0.9520601223551205
+        },
+        "hold_2": {
+          "control_rate_hz": 1000.0,
+          "spectral_radius": 2.851625762514483
+        },
+        "hold_4": {
+          "control_rate_hz": 500.0,
+          "spectral_radius": 7.245246486842251
+        }
+      },
+      "gains_phase": "seating (k_z=2000)"
+    },
+    {
+      "state": "plate_contact",
+      "gains": {
+        "k_xy": 1000.0,
+        "k_z": 500.0,
+        "k_rx": 5.0,
+        "k_ry": 5.0,
+        "k_rz": 0.05
+      },
+      "axial_contact_stiffness_n_per_m": null,
+      "mass_diagonal": [
+        0.05,
+        0.05,
+        0.05,
+        4.197916666666668e-05,
+        4.197916666666668e-05,
+        6.25e-07
+      ],
+      "mass_coupling_x_ry": 0.0012500000000000002,
+      "mass_coupling_y_rx": -0.0012500000000000002,
+      "stiffness_condition_number": 20000.0,
+      "max_continuous_mode_hz": 547.9351793773437,
+      "continuous_modes": [
+        {
+          "natural_frequency_hz": 15.915494309189546,
+          "damping_ratio": 0.9999999999999999,
+          "eigenvalue_real": -100.00000000000006,
+          "eigenvalue_imag": 1.8715860021082974e-06
+        },
+        {
+          "natural_frequency_hz": 16.444750230314792,
+          "damping_ratio": 1.0,
+          "eigenvalue_real": -103.32541302735201,
+          "eigenvalue_imag": 0.0
+        },
+        {
+          "natural_frequency_hz": 16.444750230314842,
+          "damping_ratio": 1.0,
+          "eigenvalue_real": -103.32541302735233,
+          "eigenvalue_imag": 0.0
+        },
+        {
+          "natural_frequency_hz": 25.761967876194934,
+          "damping_ratio": 0.8067967378309333,
+          "eigenvalue_real": -130.59394347945823,
+          "eigenvalue_imag": 95.63586253965559
+        },
+        {
+          "natural_frequency_hz": 25.761967876195033,
+          "damping_ratio": 0.8067967378309329,
+          "eigenvalue_real": -130.59394347945866,
+          "eigenvalue_imag": 95.6358625396561
+        },
+        {
+          "natural_frequency_hz": 45.01581504398539,
+          "damping_ratio": 1.0,
+          "eigenvalue_real": -282.8427076750828,
+          "eigenvalue_imag": 0.0
+        },
+        {
+          "natural_frequency_hz": 45.01581657172525,
+          "damping_ratio": 1.0,
+          "eigenvalue_real": -282.84271727415546,
+          "eigenvalue_imag": 0.0
+        },
+        {
+          "natural_frequency_hz": 547.9351793773436,
+          "damping_ratio": 1.0,
+          "eigenvalue_real": -3442.778268350536,
+          "eigenvalue_imag": 0.0
+        },
+        {
+          "natural_frequency_hz": 547.9351793773437,
+          "damping_ratio": 1.0,
+          "eigenvalue_real": -3442.778268350537,
+          "eigenvalue_imag": 0.0
+        }
+      ],
+      "discrete": {
+        "hold_1": {
+          "control_rate_hz": 2000.0,
+          "spectral_radius": 0.9600000000000032
+        },
+        "hold_2": {
+          "control_rate_hz": 1000.0,
+          "spectral_radius": 2.8516257625144843
+        },
+        "hold_4": {
+          "control_rate_hz": 500.0,
+          "spectral_radius": 7.245246486842254
+        }
+      },
+      "gains_phase": "search (k_z=500, pre-commit)"
+    },
+    {
+      "state": "plate_contact",
+      "gains": {
+        "k_xy": 1000.0,
+        "k_z": 2000.0,
+        "k_rx": 5.0,
+        "k_ry": 5.0,
+        "k_rz": 0.05
+      },
+      "axial_contact_stiffness_n_per_m": null,
+      "mass_diagonal": [
+        0.05,
+        0.05,
+        0.05,
+        4.197916666666668e-05,
+        4.197916666666668e-05,
+        6.25e-07
+      ],
+      "mass_coupling_x_ry": 0.0012500000000000002,
+      "mass_coupling_y_rx": -0.0012500000000000002,
+      "stiffness_condition_number": 40000.0,
+      "max_continuous_mode_hz": 547.935179377344,
+      "continuous_modes": [
+        {
+          "natural_frequency_hz": 16.444750230314785,
+          "damping_ratio": 1.0,
+          "eigenvalue_real": -103.32541302735198,
+          "eigenvalue_imag": 0.0
+        },
+        {
+          "natural_frequency_hz": 16.44475023031481,
+          "damping_ratio": 1.0,
+          "eigenvalue_real": -103.32541302735213,
+          "eigenvalue_imag": 0.0
+        },
+        {
+          "natural_frequency_hz": 25.76196787619499,
+          "damping_ratio": 0.8067967378309326,
+          "eigenvalue_real": -130.5939434794584,
+          "eigenvalue_imag": 95.63586253965597
+        },
+        {
+          "natural_frequency_hz": 25.761967876195033,
+          "damping_ratio": 0.8067967378309325,
+          "eigenvalue_real": -130.5939434794586,
+          "eigenvalue_imag": 95.63586253965617
+        },
+        {
+          "natural_frequency_hz": 31.830988618379063,
+          "damping_ratio": 0.9999999999999999,
+          "eigenvalue_real": -199.99999999999994,
+          "eigenvalue_imag": 3.651257043439457e-06
+        },
+        {
+          "natural_frequency_hz": 45.015815149046226,
+          "damping_ratio": 1.0,
+          "eigenvalue_real": -282.84270833519946,
+          "eigenvalue_imag": 0.0
+        },
+        {
+          "natural_frequency_hz": 45.01581646666441,
+          "damping_ratio": 1.0,
+          "eigenvalue_real": -282.8427166140387,
+          "eigenvalue_imag": 0.0
+        },
+        {
+          "natural_frequency_hz": 547.9351793773433,
+          "damping_ratio": 1.0,
+          "eigenvalue_real": -3442.7782683505343,
+          "eigenvalue_imag": 0.0
+        },
+        {
+          "natural_frequency_hz": 547.935179377344,
+          "damping_ratio": 1.0,
+          "eigenvalue_real": -3442.7782683505384,
+          "eigenvalue_imag": 0.0
+        }
+      ],
+      "discrete": {
+        "hold_1": {
+          "control_rate_hz": 2000.0,
+          "spectral_radius": 0.9520601223551205
+        },
+        "hold_2": {
+          "control_rate_hz": 1000.0,
+          "spectral_radius": 2.851625762514483
+        },
+        "hold_4": {
+          "control_rate_hz": 500.0,
+          "spectral_radius": 7.245246486842251
+        }
+      },
+      "gains_phase": "seating (k_z=2000)"
+    },
+    {
+      "state": "tilt_2deg",
+      "gains": {
+        "k_xy": 1000.0,
+        "k_z": 500.0,
+        "k_rx": 5.0,
+        "k_ry": 5.0,
+        "k_rz": 0.05
+      },
+      "axial_contact_stiffness_n_per_m": null,
+      "mass_diagonal": [
+        0.05,
+        0.05,
+        0.05,
+        4.197916666666668e-05,
+        4.197916666666668e-05,
+        6.250000000000003e-07
+      ],
+      "mass_coupling_x_ry": 0.0012500000000000002,
+      "mass_coupling_y_rx": -0.00124923853377387,
+      "stiffness_condition_number": 20000.0,
+      "max_continuous_mode_hz": 554.9920285760062,
+      "continuous_modes": [
+        {
+          "natural_frequency_hz": 15.618782420093002,
+          "damping_ratio": 1.0,
+          "eigenvalue_real": -98.13570421796317,
+          "eigenvalue_imag": 0.0
+        },
+        {
+          "natural_frequency_hz": 16.295041987860248,
+          "damping_ratio": 1.0,
+          "eigenvalue_real": -102.38476839799795,
+          "eigenvalue_imag": 0.0
+        },
+        {
+          "natural_frequency_hz": 16.332960420139244,
+          "damping_ratio": 0.9998629472884565,
+          "eigenvalue_real": -102.60895217182697,
+          "eigenvalue_imag": 1.6989817396497036
+        },
+        {
+          "natural_frequency_hz": 25.39166355324437,
+          "damping_ratio": 0.7824032569165245,
+          "eigenvalue_real": -124.8250282186722,
+          "eigenvalue_imag": 99.35739630919177
+        },
+        {
+          "natural_frequency_hz": 25.759974318239546,
+          "damping_ratio": 0.8068983749820487,
+          "eigenvalue_real": -130.60028807880155,
+          "eigenvalue_imag": 95.60599418762263
+        },
+        {
+          "natural_frequency_hz": 36.718567211993836,
+          "damping_ratio": 1.0,
+          "eigenvalue_real": -230.7095620070858,
+          "eigenvalue_imag": 0.0
+        },
+        {
+          "natural_frequency_hz": 56.60235747011365,
+          "damping_ratio": 1.0,
+          "eigenvalue_real": -355.6431008079448,
+          "eigenvalue_imag": 0.0
+        },
+        {
+          "natural_frequency_hz": 547.8818992005323,
+          "damping_ratio": 1.0,
+          "eigenvalue_real": -3442.4434991264316,
+          "eigenvalue_imag": 0.0
+        },
+        {
+          "natural_frequency_hz": 554.9920285760062,
+          "damping_ratio": 1.0,
+          "eigenvalue_real": -3487.117759550555,
+          "eigenvalue_imag": 0.0
+        }
+      ],
+      "discrete": {
+        "hold_1": {
+          "control_rate_hz": 2000.0,
+          "spectral_radius": 0.9600074535955748
+        },
+        "hold_2": {
+          "control_rate_hz": 1000.0,
+          "spectral_radius": 2.903010155128844
+        },
+        "hold_4": {
+          "control_rate_hz": 500.0,
+          "spectral_radius": 7.357394917731936
+        }
+      },
+      "gains_phase": "search (k_z=500, pre-commit)"
+    },
+    {
+      "state": "tilt_2deg",
+      "gains": {
+        "k_xy": 1000.0,
+        "k_z": 2000.0,
+        "k_rx": 5.0,
+        "k_ry": 5.0,
+        "k_rz": 0.05
+      },
+      "axial_contact_stiffness_n_per_m": null,
+      "mass_diagonal": [
+        0.05,
+        0.05,
+        0.05,
+        4.197916666666668e-05,
+        4.197916666666668e-05,
+        6.250000000000003e-07
+      ],
+      "mass_coupling_x_ry": 0.0012500000000000002,
+      "mass_coupling_y_rx": -0.00124923853377387,
+      "stiffness_condition_number": 40000.0,
+      "max_continuous_mode_hz": 554.9920285760065,
+      "continuous_modes": [
+        {
+          "natural_frequency_hz": 16.29504198786024,
+          "damping_ratio": 1.0,
+          "eigenvalue_real": -102.3847683979979,
+          "eigenvalue_imag": 0.0
+        },
+        {
+          "natural_frequency_hz": 16.446397044567785,
+          "damping_ratio": 1.0,
+          "eigenvalue_real": -103.33576026647009,
+          "eigenvalue_imag": 0.0
+        },
+        {
+          "natural_frequency_hz": 25.391663553244385,
+          "damping_ratio": 0.7824032569165251,
+          "eigenvalue_real": -124.82502821867237,
+          "eigenvalue_imag": 99.35739630919167
+        },
+        {
+          "natural_frequency_hz": 25.767186462913397,
+          "damping_ratio": 0.8068242293400056,
+          "eigenvalue_real": -130.62484869349305,
+          "eigenvalue_imag": 95.6491573253594
+        },
+        {
+          "natural_frequency_hz": 31.820658794295415,
+          "damping_ratio": 0.9999444129417907,
+          "eigenvalue_real": -199.92398199728348,
+          "eigenvalue_imag": 2.1080691026733698
+        },
+        {
+          "natural_frequency_hz": 36.7185672119937,
+          "damping_ratio": 1.0,
+          "eigenvalue_real": -230.70956200708494,
+          "eigenvalue_imag": 0.0
+        },
+        {
+          "natural_frequency_hz": 56.60235747011363,
+          "damping_ratio": 1.0,
+          "eigenvalue_real": -355.6431008079447,
+          "eigenvalue_imag": 0.0
+        },
+        {
+          "natural_frequency_hz": 548.0140396603351,
+          "damping_ratio": 1.0,
+          "eigenvalue_real": -3443.2737621219485,
+          "eigenvalue_imag": 0.0
+        },
+        {
+          "natural_frequency_hz": 554.9920285760065,
+          "damping_ratio": 1.0,
+          "eigenvalue_real": -3487.1177595505574,
+          "eigenvalue_imag": 0.0
+        }
+      ],
+      "discrete": {
+        "hold_1": {
+          "control_rate_hz": 2000.0,
+          "spectral_radius": 0.9524067225107543
+        },
+        "hold_2": {
+          "control_rate_hz": 1000.0,
+          "spectral_radius": 2.9030101551288445
+        },
+        "hold_4": {
+          "control_rate_hz": 500.0,
+          "spectral_radius": 7.357394917731941
+        }
+      },
+      "gains_phase": "seating (k_z=2000)"
+    },
+    {
+      "state": "plate_contact",
+      "gains": {
+        "k_xy": 1000.0,
+        "k_z": 500.0,
+        "k_rx": 5.0,
+        "k_ry": 5.0,
+        "k_rz": 0.05
+      },
+      "axial_contact_stiffness_n_per_m": 277000.0,
+      "mass_diagonal": [
+        0.05,
+        0.05,
+        0.05,
+        4.197916666666668e-05,
+        4.197916666666668e-05,
+        6.25e-07
+      ],
+      "mass_coupling_x_ry": 0.0012500000000000002,
+      "mass_coupling_y_rx": -0.0012500000000000002,
+      "stiffness_condition_number": 5550000.0,
+      "max_continuous_mode_hz": 547.9351793773438,
+      "continuous_modes": [
+        {
+          "natural_frequency_hz": 16.444750230314806,
+          "damping_ratio": 1.0,
+          "eigenvalue_real": -103.32541302735211,
+          "eigenvalue_imag": 0.0
+        },
+        {
+          "natural_frequency_hz": 16.444750230314842,
+          "damping_ratio": 1.0,
+          "eigenvalue_real": -103.32541302735233,
+          "eigenvalue_imag": 0.0
+        },
+        {
+          "natural_frequency_hz": 25.761967876194966,
+          "damping_ratio": 0.8067967378309334,
+          "eigenvalue_real": -130.5939434794584,
+          "eigenvalue_imag": 95.63586253965568
+        },
+        {
+          "natural_frequency_hz": 25.761967876194994,
+          "damping_ratio": 0.8067967378309316,
+          "eigenvalue_real": -130.59394347945826,
+          "eigenvalue_imag": 95.63586253965619
+        },
+        {
+          "natural_frequency_hz": 45.01581580785534,
+          "damping_ratio": 0.9999999999999996,
+          "eigenvalue_real": -282.84271247461913,
+          "eigenvalue_imag": 7.67739992403008e-06
+        },
+        {
+          "natural_frequency_hz": 374.9441855846594,
+          "damping_ratio": 0.042447635997800964,
+          "eigenvalue_real": -100.00000000000013,
+          "eigenvalue_imag": 2353.7204591879627
+        },
+        {
+          "natural_frequency_hz": 547.9351793773433,
+          "damping_ratio": 1.0,
+          "eigenvalue_real": -3442.7782683505343,
+          "eigenvalue_imag": 0.0
+        },
+        {
+          "natural_frequency_hz": 547.9351793773438,
+          "damping_ratio": 1.0,
+          "eigenvalue_real": -3442.778268350538,
+          "eigenvalue_imag": 0.0
+        }
+      ],
+      "discrete": {
+        "hold_1": {
+          "control_rate_hz": 2000.0,
+          "spectral_radius": 0.95206012235512
+        },
+        "hold_2": {
+          "control_rate_hz": 1000.0,
+          "spectral_radius": 2.8516257625144865
+        },
+        "hold_4": {
+          "control_rate_hz": 500.0,
+          "spectral_radius": 11.498834372150288
+        }
+      },
+      "gains_phase": "search + measured axial contact stiffness"
+    },
+    {
+      "state": "plate_contact",
+      "gains": {
+        "k_xy": 2000.0,
+        "k_z": 2000.0,
+        "k_rx": 5.0,
+        "k_ry": 5.0,
+        "k_rz": 0.05
+      },
+      "axial_contact_stiffness_n_per_m": null,
+      "mass_diagonal": [
+        0.05,
+        0.05,
+        0.05,
+        4.197916666666668e-05,
+        4.197916666666668e-05,
+        6.25e-07
+      ],
+      "mass_coupling_x_ry": 0.0012500000000000002,
+      "mass_coupling_y_rx": -0.0012500000000000002,
+      "stiffness_condition_number": 40000.0,
+      "max_continuous_mode_hz": 611.4912035202694,
+      "continuous_modes": [
+        {
+          "natural_frequency_hz": 20.83920994852948,
+          "damping_ratio": 1.0,
+          "eigenvalue_real": -130.9366177618311,
+          "eigenvalue_imag": 0.0
+        },
+        {
+          "natural_frequency_hz": 20.83920994852955,
+          "damping_ratio": 1.0,
+          "eigenvalue_real": -130.93661776183154,
+          "eigenvalue_imag": 0.0
+        },
+        {
+          "natural_frequency_hz": 30.636315494842655,
+          "damping_ratio": 0.7601147224474482,
+          "eigenvalue_real": -146.31725535366442,
+          "eigenvalue_imag": 125.08023452449255
+        },
+        {
+          "natural_frequency_hz": 30.63631549484266,
+          "damping_ratio": 0.7601147224474469,
+          "eigenvalue_real": -146.3172553536642,
+          "eigenvalue_imag": 125.08023452449287
+        },
+        {
+          "natural_frequency_hz": 31.830987954993553,
+          "damping_ratio": 1.0,
+          "eigenvalue_real": -199.99999583182588,
+          "eigenvalue_imag": 0.0
+        },
+        {
+          "natural_frequency_hz": 31.830989281764555,
+          "damping_ratio": 1.0,
+          "eigenvalue_real": -200.00000416817394,
+          "eigenvalue_imag": 0.0
+        },
+        {
+          "natural_frequency_hz": 45.01581580785532,
+          "damping_ratio": 1.0,
+          "eigenvalue_real": -282.8427124746191,
+          "eigenvalue_imag": 2.6859685360698565e-06
+        },
+        {
+          "natural_frequency_hz": 611.4912035202692,
+          "damping_ratio": 1.0,
+          "eigenvalue_real": -3842.1125454281178,
+          "eigenvalue_imag": 0.0
+        },
+        {
+          "natural_frequency_hz": 611.4912035202694,
+          "damping_ratio": 1.0,
+          "eigenvalue_real": -3842.1125454281187,
+          "eigenvalue_imag": 0.0
+        }
+      ],
+      "discrete": {
+        "hold_1": {
+          "control_rate_hz": 2000.0,
+          "spectral_radius": 1.0738667991901347
+        },
+        "hold_2": {
+          "control_rate_hz": 1000.0,
+          "spectral_radius": 3.2999894982605595
+        },
+        "hold_4": {
+          "control_rate_hz": 500.0,
+          "spectral_radius": 8.207170733301625
+        }
+      },
+      "gains_phase": "k_xy=2000 tip-over case"
+    }
+  ]
+}
