@@ -4,11 +4,16 @@ version = "0.5.0"
 description = "pegsim research substrate + Haplous physical-execution runtime (v0.5-sim pre-hardware candidate)"
 requires-python = ">=3.12"
 dependencies = [
+    "h5py>=3.16.0",
     "matplotlib>=3.11.1",
     "mujoco>=3.11.0",
     "numpy>=2.5.1",
+    "pyarrow>=25.0.1",
     "pytest>=9.1.1",
 ]
+
+[project.scripts]
+haplous = "haplous.cli:main"
 
 [tool.pytest.ini_options]
 pythonpath = ["."]
