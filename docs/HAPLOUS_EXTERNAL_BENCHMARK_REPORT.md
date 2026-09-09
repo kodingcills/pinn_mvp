@@ -145,8 +145,27 @@ clean per-tick overhead measurement exists in this campaign.
 - O0 on REASSEMBLE precision 0.19: direct-wrench detection does not
   transfer cleanly to that dataset's segment structure.
 
-## Pending (adjudicated before finalization)
+## 20. Clean-room developer proxy (X80)
 
-- X92 independent evidence review: REVIEW PENDING
-- X93 red-team review: REVIEW PENDING
-- X80 clean-room developer proxy: REVIEW PENDING
+LABEL: CLEAN-ROOM AGENT DEVELOPER PROXY, not real customer evidence.
+Full report: results/x80_cleanroom_report.md.
+
+Independence deviation, disclosed: three subagent attempts stalled without
+output (deep x2, general x1 — the general failure was a harness model-config
+error); the orchestrator executed the scripted protocol directly against the
+SAME isolated environment (fresh venv wheel-only install + public docs).
+Attempted core modifications: 0 (no source access).
+
+Findings:
+- Wheel-only install: quickstart genuinely works (feasibility SUPPORTED,
+  outcome COMPLETE) — the core runtime path functions from the package.
+- `haplous doctor`: works, honest NOT INSTALLED rows; checked paths reveal
+  repo-layout assumptions (result dir resolves inside site-packages).
+- `haplous list` ADVERTISES benchmarks the wheel does not ship.
+- `haplous run internal-insertion` fails with an UNHANDLED
+  ModuleNotFoundError traceback (benchmarks/ not packaged) — not graceful.
+- Adding a new task from docs alone: the behavior-registration pattern is
+  demonstrated by the quickstart, but the benchmark-registry extension API
+  is undocumented.
+Usability verdict: core works, CLI benchmark surface is broken for
+wheel-only users (list/run mismatch).
