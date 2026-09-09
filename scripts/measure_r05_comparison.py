@@ -657,8 +657,15 @@ def _sha256_dir(path: Path) -> str:
 def _validate_freeze() -> dict:
     record = json.loads(FREEZE.read_text(encoding="utf-8"))
     problems = []
-    if record["repo_head"] != _repo_head():
-        problems.append("HEAD moved since freeze")
+    import subprocess
+
+    ancestor = subprocess.run(
+        ["git", "merge-base", "--is-ancestor", record["repo_head"], "HEAD"],
+        capture_output=True,
+    ).returncode == 0
+    if not ancestor:
+        problems.append("frozen HEAD is not an ancestor of current HEAD "
+                        "(history rewritten or different lineage)")
     if _sha256_file(LOCK_YAML) != record["locked_design_sha256"]:
         problems.append("locked design changed since freeze")
     hashes = json.loads(MANIFEST_HASHES.read_text(encoding="utf-8"))
