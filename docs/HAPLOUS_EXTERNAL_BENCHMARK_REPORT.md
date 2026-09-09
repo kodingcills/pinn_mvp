@@ -1,7 +1,11 @@
 # Haplous External Benchmark Report
 
-Status: DRAFT — X92/X93 review sections pending; verdicts will be
-adjudicated before this document becomes canonical.
+Status: FINAL (with independence limitation disclosed). X92/X93 reviews
+executed mechanically by the orchestrator after five subagent review
+attempts failed without output (inactivity stalls x4, harness
+model-config error x2 — infrastructure failures recorded in the review
+documents). Independent re-review remains REQUIRED before external use;
+verdict strength is limited accordingly.
 
 ## 1. Provenance
 
@@ -169,3 +173,71 @@ Findings:
   is undocumented.
 Usability verdict: core works, CLI benchmark surface is broken for
 wheel-only users (list/run mismatch).
+
+## 23. Review adjudication (X92/X93)
+
+Full records: docs/X92_EVIDENCE_REVIEW.md, docs/X93_REDTEAM_REVIEW.md
+(both labeled orchestrator-executed, independence NOT achieved).
+
+- X92 mechanical audit: seeds disjoint (0-4/5-9/10-24, zero overlap);
+  direct/strong physically identical 15/15; 25 N limit symmetric
+  (grader == intent == pegsim f_yield); peak force measured from
+  ee_force telemetry; core diff = adapter(115)+CLI(596), zero core
+  semantic changes; negatives recorded fairly. VERDICT: SUPPORTED WITH
+  CAVEATS (mechanical only).
+- X93 attacks: no methodology-invalidating defect found; strongest
+  surviving objections recorded: (1) the external comparison measures
+  constraint enforcement, not task success (0/15 all arms); (2)
+  "independent physics backend" is not demonstrated (robosuite runs
+  MuJoCo; Isaac rejected on platform grounds); (3) preregistration
+  postdates dev results (dev-informed 25 N choice and task framing);
+  (4) wheel packaging defect (list/run mismatch). No result
+  reclassified invalid; task-success-adjacent claims prohibited.
+
+## 24. Claim classification (campaign spec sec. 60)
+
+- VERIFIED FACT: adapter boundary with zero core leakage; CLI surface
+  in-repo; robosuite 1.5.2 integration; 15/15 hard-constraint
+  terminations at declared bounds vs 404-489 N unmediated; 48/48
+  capture across MuJoCo numerical variants; cone-sensitivity of
+  penetration scale; G1 negative; O2 negative on REASSEMBLE derivative;
+  Isaac/ContactBench platform dispositions; wheel-only quickstart
+  works, CLI benchmark surface broken for wheel users.
+- INTERNAL RESULT (prior campaign, still standing): mediated BSR 0.844
+  vs bare 0.789 with refusal P/R 1.0; mechanism envelope [0.1,0.5] mm
+  clearance.
+- INFERENCE: "Haplous core execution semantics transfer across a
+  third-party task + third-party controller without core changes"
+  (adapter ran unchanged; one external task family only).
+- HYPOTHESIS (still open): G01 (governor value), G02 (passivity value),
+  O01 (observer value on real telemetry — O2 negative weakens it),
+  T02 (transfer across many abstractions).
+- UNKNOWN: task-success value on external tasks; cross-engine physics
+  (no second engine integrated); hardware anything.
+- ASPIRATION: Haplous eliminates PID tuning; exact-damping guarantees
+  (unsupported, stated in the campaign spec).
+
+## 25. What this campaign proves / does not prove
+
+Proves (measured, tool-backed): the adapter boundary kept haplous/
+semantics frozen (711 LOC added, zero in guarded core) across four
+independent tracks; constraint enforcement transfers to an external
+framework's live loop on identical command streams; key insertion
+contact conclusions survive MuJoCo numerical variants; the simplest
+governor and the momentum observer did not earn their complexity.
+
+Does not prove: task-success value anywhere external; superiority over
+any incumbent supervisor (none exists in the tested stack); physics-
+engine independence; hardware anything.
+
+## 26. Remaining physical experiments (next evidence gate)
+
+1. Physical hardware per the frozen R-series requirements (500 Hz
+   sampled-loop instability, F/T ~4 N accuracy, touch-off, watchdog).
+2. Independent adversarial review of this campaign on suitable
+   infrastructure (the mechanical audits cannot substitute).
+3. Isaac Lab backend on NVIDIA hardware (Factory/FORGE/AutoMate).
+4. Official FMB/REASSEMBLE archives on adequate disk for full-rate
+   observer work.
+5. ros2_control/MoveIt Servo comparison, hardware campaign.
+6. A second real dataset with effort channels for a fair O2 retry.

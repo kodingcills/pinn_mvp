@@ -132,3 +132,15 @@ remain the visual path. Rerun stays optional-future; no campaign stall.
 - Runner got pre-qualification harness fix: --seed-start + --evidence-stage.
 - Final eval seeds: 10..24 literal per PREREGISTER.md; qual seeds 5..9 done;
   dev seeds 0..4. Governor NOT promoted (negative) -> no HAPL+GOV column.
+
+## Campaign CLOSE (2026-09-09)
+- All X-nodes complete or evidence-backed-dispositioned.
+- Subagent infrastructure failed systematically in the review phase:
+  8 recorded failures (4x 30-min inactivity stalls with zero output,
+  2x model-config errors, 1 start failure). X92/X93 executed as
+  orchestrator-run mechanical audits, independence NOT achieved,
+  disclosed in docs/X92_EVIDENCE_REVIEW.md and docs/X93_REDTEAM_REVIEW.md.
+  Independent re-review REQUIRED before external use.
+- Final report: docs/HAPLOUS_EXTERNAL_BENCHMARK_REPORT.md (FINAL with
+  disclosed limitation). Figures: docs/figures/ (5 SVGs, all data-backed).
+- Suite at close: 306 passed, 1 xfailed.
