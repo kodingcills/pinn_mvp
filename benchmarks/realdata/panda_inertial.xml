@@ -1,0 +1,41 @@
+<mujoco model="panda_inertial">
+  <compiler angle="radian" autolimits="true"/>
+  <option gravity="0 0 -9.81"/>
+  <default><joint damping="1" axis="0 0 1"/></default>
+  <worldbody>
+    <body name="link0">
+      <inertial mass="0.629769" pos="-0.041018 -0.00014 0.049974" fullinertia="0.00315 0.00388 0.004285 8.2904e-7 0.00015 8.2299e-6"/>
+      <body name="link1" pos="0 0 0.333">
+        <joint name="joint1" range="-2.8973 2.8973"/>
+        <inertial mass="4.970684" pos="0.003875 0.002081 -0.04762" fullinertia="0.70337 0.70661 0.009117 -0.000139 0.006772 0.019169"/>
+        <body name="link2" quat="1 -1 0 0">
+          <joint name="joint2" range="-1.7628 1.7628"/>
+          <inertial mass="0.646926" pos="-0.003141 -0.02872 0.003495" fullinertia="0.007962 0.02811 0.025995 -0.003925 0.010254 0.000704"/>
+          <body name="link3" pos="0 -0.316 0" quat="1 1 0 0">
+            <joint name="joint3" range="-2.8973 2.8973"/>
+            <inertial mass="3.228604" pos="0.027518 0.039253 -0.066502" fullinertia="0.037242 0.036155 0.01083 -0.004761 -0.011396 -0.012805"/>
+            <body name="link4" pos="0.0825 0 0" quat="1 1 0 0">
+              <joint name="joint4" range="-3.0718 -0.0698"/>
+              <inertial mass="3.587895" pos="-0.05317 0.104419 0.027454" fullinertia="0.025853 0.019552 0.028323 0.007796 -0.001332 0.008641"/>
+              <body name="link5" pos="-0.0825 0.384 0" quat="1 -1 0 0">
+                <joint name="joint5" range="-2.8973 2.8973"/>
+                <inertial mass="1.225946" pos="-0.011953 0.041065 -0.038437" fullinertia="0.035549 0.029474 0.008627 -0.002117 -0.004037 0.000229"/>
+                <body name="link6" quat="1 1 0 0">
+                  <joint name="joint6" range="-0.0175 3.7525"/>
+                  <inertial mass="1.666555" pos="0.060145 -0.014117 -0.010517" fullinertia="0.001964 0.004354 0.005433 0.000109 -0.001158 0.000341"/>
+                  <body name="link7" pos="0.088 0 0" quat="1 1 0 0">
+                    <joint name="joint7" range="-2.8973 2.8973"/>
+                    <inertial mass="0.735522" pos="0.010517 -0.004252 0.061597" fullinertia="0.012516 0.010027 0.004815 -0.000428 -0.001196 -0.000741"/>
+                    <body name="hand" pos="0 0 0.107" quat="0.9238795 0 0 -0.3826834">
+                      <inertial mass="0.73" pos="-0.01 0 0.03" diaginertia="0.001 0.0025 0.0017"/>
+                    </body>
+                  </body>
+                </body>
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+    </body>
+  </worldbody>
+</mujoco>
