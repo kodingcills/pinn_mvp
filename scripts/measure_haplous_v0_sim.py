@@ -11,7 +11,7 @@ without the runtime. Ground truth grades the benchmark offline only.
 
 Config: VALIDATED_LOOSE_V1 bundle (peg r 5 mm, clearance 0.5 mm, chamfer
 1 mm, plate 10 mm, n=16, dt 0.5 ms, 2000 Hz, canonical gains/forces),
-canonical spiral, observation decimation 10 (200 Hz), state_max_age 0.02 s,
+canonical spiral, live supervision at the control rate (2000 Hz), state_max_age 0.02 s,
 max_initial_offset 4.35 mm (R_spiral 2.75 + R_cap_dyn 1.6 mm).
 """
 from __future__ import annotations
@@ -32,7 +32,11 @@ from pegsim.rollout import (
 )
 
 from haplous.adapters.mujoco_adapter import MuJoCoMachine, MuJoCoMachineConfig
-from haplous.behaviors.insertion import insertion_intent, insertion_machine
+from haplous.behaviors.insertion import (
+    insertion_behavior_factory,
+    insertion_intent,
+    insertion_machine,
+)
 from haplous.runtime import HaplousRuntime
 from haplous.state import ExecutionState
 
@@ -85,14 +89,17 @@ SCENARIOS: list[ScenarioSpec] = [
                  dict(initial_offset_m=0.005)),
     ScenarioSpec("constraint_violation_tight_force", "physical", "ABORTED",
                  False, STANDARD_CONFIG, VALIDATED_LOOSE_V1,
+                 dict(initial_offset_m=0.0, max_force_n=2.0)),
+    ScenarioSpec("tight_force_enforced_live", "physical", "COMPLETE", False,
+                 STANDARD_CONFIG, VALIDATED_LOOSE_V1,
                  dict(initial_offset_m=0.0, max_force_n=12.0)),
     ScenarioSpec("measurement_dropout_small", "measurement", "COMPLETE",
                  False,
-                 MuJoCoMachineConfig(dropout_windows_s=((2.0, 2.01),)),
+                 MuJoCoMachineConfig(dropout_windows_s=((1.0, 1.005),)),
                  VALIDATED_LOOSE_V1, dict(initial_offset_m=0.001,
                                           initial_bearing_rad=1.3)),
     ScenarioSpec("measurement_dropout_large", "measurement", "ABORTED", False,
-                 MuJoCoMachineConfig(dropout_windows_s=((2.0, 2.5),)),
+                 MuJoCoMachineConfig(dropout_windows_s=((1.0, 1.2),)),
                  VALIDATED_LOOSE_V1, dict(initial_offset_m=0.001,
                                           initial_bearing_rad=3.3)),
     ScenarioSpec("stale_observation", "measurement", "REFUSED", True,
@@ -120,7 +127,10 @@ def run_mediated(spec: ScenarioSpec) -> dict:
     machine = insertion_machine(spec.bundle, **dataclasses.asdict(
         spec.machine_config))
     intent = insertion_intent(spec.bundle.task, **spec.intent_kwargs)
-    runtime = HaplousRuntime(machine)
+    behaviors = {
+        "peg_insertion": insertion_behavior_factory(spec.bundle)
+    }
+    runtime = HaplousRuntime(machine, behaviors=behaviors)
     t0 = time.perf_counter()
     feasibility = runtime.submit(intent)
     feasibility_latency_s = time.perf_counter() - t0
@@ -161,8 +171,9 @@ def run_mediated(spec: ScenarioSpec) -> dict:
         e.payload.get("to") == "degraded"
         for e in evidence.events if e.kind == "state_transition"
     )
-    observations = machine.observe()
-    peak_fz, max_tilt = _stream_stats(machine.last_motion)
+    observations_list = machine.last_session_observations
+    peak_fz, max_tilt = _stream_stats(observations_list)
+    observations = observations_list[-1] if observations_list else None
     row["peak_abs_fz_n"] = peak_fz
     row["max_tilt_deg"] = max_tilt
     row["sim_duration_s"] = (
@@ -282,7 +293,7 @@ def main() -> None:
             "bundle": VALIDATED_LOOSE_V1.name,
             "n_segments": VALIDATED_LOOSE_V1.task.n_segments,
             "dt_s": VALIDATED_LOOSE_V1.solver.timestep,
-            "observation_decimation": 10,
+            "observation_decimation": 1,
             "state_max_age_s": 0.02,
             "max_initial_offset_m": 0.00435,
             "note": "deterministic scenarios; no randomness, no seeds",

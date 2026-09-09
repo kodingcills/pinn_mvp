@@ -18,7 +18,7 @@
       "tilt"
      ],
      "state_max_age_s": 0.02,
-     "state_period_s": 0.005,
+     "state_period_s": 0.0005,
      "supports_stop": true
     },
     "outcome": "SUPPORTED",
@@ -38,29 +38,21 @@
   {
    "kind": "motion_started",
    "payload": {
-    "n_observations": 3260
+    "state_period_s": 0.0005
    },
    "seq": 2,
-   "t_s": 0.0005
+   "t_s": 0.0
   },
   {
    "kind": "constraint_violation",
    "payload": {
     "code": "process_force",
     "hard": true,
-    "limit": 12.0,
-    "value": 12.076243156910023
+    "limit": 2.0,
+    "value": 2.0001868971588066
    },
    "seq": 3,
-   "t_s": 2.1204999999998755
-  },
-  {
-   "kind": "state_transition",
-   "payload": {
-    "to": "breach_detected"
-   },
-   "seq": 4,
-   "t_s": 2.1204999999998755
+   "t_s": 1.6149999999998776
   },
   {
    "kind": "outcome",
@@ -68,8 +60,8 @@
     "reason": "hard_constraint_process_force",
     "result": "ABORTED"
    },
-   "seq": 5,
-   "t_s": 0.0
+   "seq": 4,
+   "t_s": 1.6149999999998776
   }
  ],
  "intent_behavior": "peg_insertion",
@@ -86,7 +78,7 @@
    {
     "hard": true,
     "kind": "max_process_force_n",
-    "limit": 12.0
+    "limit": 2.0
    },
    {
     "hard": true,

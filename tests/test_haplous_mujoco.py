@@ -1,9 +1,16 @@
 """Physics integration: the runtime mediates real insertions through the
-MuJoCo machine adapter over the validated research substrate."""
-from haplous.behaviors.insertion import insertion_intent, insertion_machine
+MuJoCo machine adapter's live stepping session over the validated research
+substrate primitives."""
+from haplous.behaviors.insertion import (
+    insertion_behavior_factory,
+    insertion_intent,
+    insertion_machine,
+)
 from haplous.runtime import HaplousRuntime
 from haplous.state import ExecutionState
 from pegsim.rollout import VALIDATED_LOOSE_V1
+
+BEHAVIORS = {"peg_insertion": insertion_behavior_factory(VALIDATED_LOOSE_V1)}
 
 
 def run_insertion(offset_m, bearing=0.0, **intent_kwargs):
@@ -14,7 +21,7 @@ def run_insertion(offset_m, bearing=0.0, **intent_kwargs):
         initial_bearing_rad=bearing,
         **intent_kwargs,
     )
-    runtime = HaplousRuntime(machine)
+    runtime = HaplousRuntime(machine, behaviors=BEHAVIORS)
     feasibility = runtime.submit(intent)
     if feasibility.outcome == "REFUSED":
         return feasibility, runtime, machine
@@ -33,18 +40,19 @@ def test_nominal_insertion_completes():
     ][-1].payload
     assert payload["result"] == "COMPLETE"
     assert payload["success_condition"] == "seated"
-    assert machine.execute_calls[0][1] == 16.3
+    assert machine.open_session_calls[0][1] == 16.3
 
 
 def test_recoverable_offset_recovers():
     feasibility, runtime, machine = run_insertion(0.002, bearing=1.0)
     assert feasibility.outcome == "SUPPORTED"
     assert runtime.state is ExecutionState.COMPLETE
-    start_x, start_y = machine.execute_calls[0][0][:2]
+    start_x, start_y = machine.open_session_calls[0][0][:2]
     assert (start_x**2 + start_y**2) ** 0.5 > 0.001
-    kinds = [e.kind for e in runtime.evidence.events]
-    assert "motion_completed" in kinds
-    assert "outcome" in kinds
+    payload = [
+        e for e in runtime.evidence.events if e.kind == "outcome"
+    ][-1].payload
+    assert payload["result"] == "COMPLETE"
 
 
 def test_unrecoverable_request_refuses_before_motion():
@@ -52,7 +60,7 @@ def test_unrecoverable_request_refuses_before_motion():
     assert feasibility.outcome == "REFUSED"
     assert feasibility.reasons[0].code == "unreachable_goal"
     assert runtime.state is ExecutionState.REFUSED
-    assert machine.execute_calls == []
+    assert machine.open_session_calls == []
 
 
 def test_unsensed_force_requirement_refuses():

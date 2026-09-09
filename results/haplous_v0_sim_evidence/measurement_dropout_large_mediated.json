@@ -18,7 +18,7 @@
       "tilt"
      ],
      "state_max_age_s": 0.02,
-     "state_period_s": 0.005,
+     "state_period_s": 0.0005,
      "supports_stop": true
     },
     "outcome": "SUPPORTED",
@@ -38,19 +38,27 @@
   {
    "kind": "motion_started",
    "payload": {
-    "n_observations": 3160
+    "state_period_s": 0.0005
    },
    "seq": 2,
-   "t_s": 0.0005
+   "t_s": 0.0
+  },
+  {
+   "kind": "state_transition",
+   "payload": {
+    "to": "degraded"
+   },
+   "seq": 3,
+   "t_s": 0.9994999999999453
   },
   {
    "kind": "measurement_loss",
    "payload": {
-    "gap_s": 0.5050000000001666,
+    "gap_s": 0.20099999999997797,
     "state_max_age_s": 0.02
    },
-   "seq": 3,
-   "t_s": 2.5005000000000024
+   "seq": 4,
+   "t_s": 1.2004999999999233
   },
   {
    "kind": "outcome",
@@ -58,8 +66,8 @@
     "reason": "hard_constraint_state_freshness",
     "result": "ABORTED"
    },
-   "seq": 4,
-   "t_s": 0.0
+   "seq": 5,
+   "t_s": 1.2004999999999233
   }
  ],
  "intent_behavior": "peg_insertion",

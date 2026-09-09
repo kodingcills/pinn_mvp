@@ -18,7 +18,7 @@
       "tilt"
      ],
      "state_max_age_s": 0.02,
-     "state_period_s": 0.005,
+     "state_period_s": 0.0005,
      "supports_stop": true
     },
     "outcome": "REFUSED",

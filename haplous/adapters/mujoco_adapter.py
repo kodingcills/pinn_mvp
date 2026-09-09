@@ -1,37 +1,60 @@
 """MuJoCo machine adapter: implements the haplous Machine protocol by
-wrapping the validated pegsim research substrate (run_episode). This is the
+wrapping the validated pegsim research substrate primitives. This is the
 architectural inversion: Haplous runtime logic sits above the machine
-boundary; the validated physics stays behind it, unwritten."""
+boundary; the validated physics and servo level stay behind it.
+
+The machine is a live servo: open_session() resets physics to the commanded
+start and returns a session that the runtime steps one supervision period
+at a time. The session applies the behavior's accepted servo commands
+(target pose + phase axial stiffness) through the pegsim impedance servo,
+holds the last accepted command when the runtime withholds authorization,
+and models machine-interface faults (stale delivery, dropout, command
+rejection, machine fault) from benchmark-owned schedules in its config.
+Mechanism parameters (gains, spiral geometry, decimation) are owned here
+and are never visible to the runtime as intent."""
 from __future__ import annotations
 
 import math
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from typing import Mapping, Optional
 
 import mujoco
+import numpy as np
 
+from pegsim.control import (
+    assert_gains_stable,
+    compute_and_apply_qfrc,
+    peg_contact_force_world,
+)
 from pegsim.rollout import (
     EpisodeConfig,
     ValidatedConfig,
     build_episode_model_data,
-    run_episode,
 )
 
 from haplous.capabilities import CommandMode, MachineCapabilities, SensingChannel
 from haplous.machine import (
+    CommandOutcome,
     ControlParameters,
     MachineObservation,
-    MotionRecord,
+    ServoCommand,
     Stamp,
 )
 
 
 @dataclass(frozen=True)
 class MuJoCoMachineConfig:
-    observation_decimation: int = 10
+    observation_decimation: int = 1
     state_max_age_s: float = 0.02
     receive_delay_s: float = 0.0
     dropout_windows_s: tuple[tuple[float, float], ...] = ()
+    # (start_s, end_s, extra_delay_s): observations sampled in the window
+    # are delivered late by the extra delay, on top of receive_delay_s.
+    stale_windows_s: tuple[tuple[float, float, float], ...] = ()
+    # Commands handed to the machine in the window are rejected.
+    command_rejection_windows_s: tuple[tuple[float, float], ...] = ()
+    # Modelled machine fault time: actuation dies at this sim time.
+    fault_at_s: float | None = None
     expected_duration_s: float = 4.0
     max_sensed_force_n: float = 100.0
     max_sensed_tilt_deg: float = 45.0
@@ -39,9 +62,7 @@ class MuJoCoMachineConfig:
 
 
 class MuJoCoMachine:
-    """Machine implementation over one pegsim validated bundle. Mechanism
-    parameters (gains, spiral geometry, decimation) are owned here and are
-    never visible to the runtime as intent."""
+    """Machine implementation over one pegsim validated bundle."""
 
     def __init__(
         self,
@@ -61,10 +82,15 @@ class MuJoCoMachine:
         self._tip_site_id = mujoco.mj_name2id(
             model, mujoco.mjtObj.mjOBJ_SITE, "peg_tip"
         )
-        self._last: Optional[MachineObservation] = None
-        self.last_motion: tuple[MachineObservation, ...] = ()
-        self.execute_calls: list[tuple[tuple[float, float, float], float]] = []
+        self._session: Optional[_MuJoCoSession] = None
+        self.open_session_calls: list[tuple[tuple[float, float, float], float]] = []
         self.stop_calls = 0
+
+    @property
+    def last_session_observations(self) -> tuple[MachineObservation, ...]:
+        if self._session is not None:
+            return self._session.observations
+        return ()
 
     @property
     def parameters(self) -> ControlParameters:
@@ -114,57 +140,25 @@ class MuJoCoMachine:
             supports_stop=True,
         )
 
-    def execute(
+    def open_session(
         self,
         *,
         start_position_m: tuple[float, float, float],
         horizon_s: float,
-    ) -> MotionRecord:
-        self.execute_calls.append((start_position_m, horizon_s))
-        x, y = start_position_m[0], start_position_m[1]
-        cfg = self._episode(math.hypot(x, y), math.atan2(y, x), horizon_s)
-        try:
-            tr = run_episode(
-                cfg,
-                pen_allow=self._bundle.pen_allow,
-                model=self._model,
-                data=self._data,
-            )
-        except AssertionError as exc:
-            reason = (
-                "tilt_guard" if "tilt" in str(exc).lower() else "configuration_error"
-            )
-            return MotionRecord(observations=(), ended_early=True, end_reason=reason)
-        observations: list[MachineObservation] = []
-        decim = self._config.observation_decimation
-        for i in range(0, len(tr.time), decim):
-            t = float(tr.time[i])
-            if any(lo <= t <= hi for lo, hi in self._config.dropout_windows_s):
-                continue
-            observations.append(
-                MachineObservation(
-                    stamp=Stamp(
-                        source_s=t, received_s=t + self._config.receive_delay_s
-                    ),
-                    pose_m=(
-                        float(tr.tip_pos[i, 0]),
-                        float(tr.tip_pos[i, 1]),
-                        float(tr.tip_pos[i, 2]),
-                    ),
-                    force_z_n=float(tr.contact_force[i, 2]),
-                    tilt_deg=float(tr.tilt_deg[i]),
-                )
-            )
-        self._last = observations[-1] if observations else None
-        self.last_motion = tuple(observations)
-        return MotionRecord(
-            observations=tuple(observations), ended_early=False, end_reason=None
+    ) -> "_MuJoCoSession":
+        if self._session is not None and not self._session.ended:
+            raise RuntimeError("machine already has an active session")
+        self.open_session_calls.append((start_position_m, horizon_s))
+        session = _MuJoCoSession(
+            self, start_position_m=start_position_m, horizon_s=horizon_s
         )
+        self._session = session
+        return session
 
     def observe(self) -> Optional[MachineObservation]:
-        if self._last is not None:
-            return self._last
-        # Before any motion, report the machine's actual resting state
+        if self._session is not None and not self._session.ended:
+            return self._session.observe()
+        # Outside a live session, report the machine's actual resting state
         # (freshly forwarded, zero contact, no tilt) so the runtime can
         # authorize execution against a real observation.
         pose = tuple(float(v) for v in self._data.site_xpos[self._tip_site_id])
@@ -179,6 +173,167 @@ class MuJoCoMachine:
 
     def stop(self) -> None:
         self.stop_calls += 1
+        if self._session is not None:
+            self._session.stop()
 
     def health(self) -> Mapping[str, float | str | bool]:
         return {"status": "ok", "bundle": self._bundle.name}
+
+
+_TIME_EPS = 1e-9
+
+
+class _MuJoCoSession:
+    """One live insertion session: resets physics, seeds the commanded
+    start, and steps the validated servo one supervision period per call."""
+
+    def __init__(
+        self,
+        machine: MuJoCoMachine,
+        *,
+        start_position_m: tuple[float, float, float],
+        horizon_s: float,
+    ) -> None:
+        self._machine = machine
+        self._config = machine._config
+        self._model = machine._model
+        self._data = machine._data
+        self._tip_site_id = machine._tip_site_id
+        self._horizon_s = min(horizon_s, machine._bundle.max_seconds)
+        self._period_s = (
+            machine._bundle.solver.timestep * self._config.observation_decimation
+        )
+        self._gains = machine._bundle.gains
+        self._dt = machine._bundle.solver.timestep
+        self._delay_steps = machine._bundle.control_delay_steps
+
+        b = machine._bundle
+        mujoco.mj_resetData(self._model, self._data)
+        self._data.qpos[0] = start_position_m[0]
+        self._data.qpos[1] = start_position_m[1]
+        self._data.qpos[2] = b.z_start
+        mujoco.mj_forward(self._model, self._data)
+        assert_gains_stable(self._model, self._data, self._gains, self._dt)
+        assert_gains_stable(
+            self._model,
+            self._data,
+            replace(self._gains, k_z=b.insertion.k_z_search),
+            self._dt,
+        )
+
+        self._pending: Optional[ServoCommand] = None
+        self._held = np.zeros(self._model.nv)
+        self._delayed: list[np.ndarray] = []
+        self._stopped = False
+        self._ended = False
+        self._fault: Optional[str] = None
+        self._observations: list[MachineObservation] = []
+
+    # -- session protocol ---------------------------------------------------
+
+    def observe(self) -> Optional[MachineObservation]:
+        t = float(self._data.time)
+        if any(lo - _TIME_EPS <= t <= hi + _TIME_EPS for lo, hi in self._config.dropout_windows_s):
+            return None
+        mujoco.mj_forward(self._model, self._data)
+        tip = self._data.site_xpos[self._tip_site_id]
+        axis_dir = self._data.site_xmat[self._tip_site_id].reshape(3, 3)[:, 2]
+        s = -tip[2] / axis_dir[2]
+        mouth = tip[:2] + axis_dir[:2] * s
+        force = peg_contact_force_world(self._model, self._data)
+        extra_delay = 0.0
+        for lo, hi, extra in self._config.stale_windows_s:
+            if lo - _TIME_EPS <= t <= hi + _TIME_EPS:
+                extra_delay = max(extra_delay, extra)
+        obs = MachineObservation(
+            stamp=Stamp(
+                source_s=t,
+                received_s=t + self._config.receive_delay_s + extra_delay,
+            ),
+            pose_m=(float(tip[0]), float(tip[1]), float(tip[2])),
+            force_z_n=float(force[2]),
+            tilt_deg=math.degrees(
+                math.acos(min(1.0, max(-1.0, float(axis_dir[2]))))
+            ),
+            extra=(
+                ("mouth_x", float(mouth[0])),
+                ("mouth_y", float(mouth[1])),
+                ("in_contact", 1.0 if self._data.ncon > 0 else 0.0),
+            ),
+        )
+        self._observations.append(obs)
+        return obs
+
+    def apply(self, command: ServoCommand) -> CommandOutcome:
+        if self._stopped or self._fault is not None or self._ended:
+            return CommandOutcome(accepted=False, reason="session_inactive")
+        t = float(self._data.time)
+        if any(
+            lo - _TIME_EPS <= t <= hi + _TIME_EPS
+            for lo, hi in self._config.command_rejection_windows_s
+        ):
+            return CommandOutcome(accepted=False, reason="command_rejected")
+        self._pending = command
+        return CommandOutcome(accepted=True)
+
+    def step(self) -> None:
+        if self._ended:
+            return
+        if (
+            self._config.fault_at_s is not None
+            and self._fault is None
+            and float(self._data.time) >= self._config.fault_at_s
+        ):
+            self._fault = "machine_fault"
+            self._data.qfrc_applied[:] = 0.0
+            self._ended = True
+            return
+        decim = self._config.observation_decimation
+        for sub in range(decim):
+            if sub == 0 and self._pending is not None:
+                command = self._pending
+                self._pending = None
+                gains = replace(self._gains, k_z=command.k_z_n_per_m)
+                try:
+                    compute_and_apply_qfrc(
+                        self._model,
+                        self._data,
+                        gains,
+                        np.array(command.target_pose_m),
+                    )
+                except AssertionError:
+                    self._fault = "tilt_guard"
+                    self._data.qfrc_applied[:] = 0.0
+                    self._ended = True
+                    return
+                # Zero-order hold with modelled command delay: the freshly
+                # computed wrench enters a queue and is applied only once
+                # its delay slot elapses (exact run_episode sequence).
+                self._delayed.append(self._data.qfrc_applied.copy())
+                if len(self._delayed) > self._delay_steps:
+                    self._held = self._delayed.pop(0)
+            if self._stopped or self._fault is not None:
+                self._data.qfrc_applied[:] = 0.0
+            else:
+                self._data.qfrc_applied[:] = self._held
+            mujoco.mj_step(self._model, self._data)
+        if float(self._data.time) >= self._horizon_s:
+            self._ended = True
+
+    def stop(self) -> None:
+        self._stopped = True
+        self._pending = None
+        self._ended = True
+        self._data.qfrc_applied[:] = 0.0
+
+    @property
+    def ended(self) -> bool:
+        return self._ended
+
+    @property
+    def fault(self) -> Optional[str]:
+        return self._fault
+
+    @property
+    def observations(self) -> tuple[MachineObservation, ...]:
+        return tuple(self._observations)

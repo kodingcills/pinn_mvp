@@ -1,6 +1,9 @@
-"""Runtime-semantic conformance tests. No physics: a scripted fake machine
-exercises the spine (refusal, freshness, constraints, recovery, evidence)."""
+"""Runtime-semantic conformance tests. No physics: a scripted session
+machine exercises the live spine (refusal, freshness, constraints,
+recovery, degradation, evidence) tick by tick."""
 from __future__ import annotations
+
+from dataclasses import replace
 
 import pytest
 
@@ -16,7 +19,7 @@ from haplous.intent import (
     RequirementKind,
     SuccessCondition,
 )
-from haplous.machine import MachineObservation, MotionRecord, Stamp
+from haplous.machine import CommandOutcome, MachineObservation, ServoCommand, Stamp
 from haplous.runtime import HaplousRuntime
 from haplous.state import (
     ExecutionState,
@@ -57,36 +60,16 @@ def obs(t, x=0.0, y=0.0, z=-0.010, fz=15.0, tilt=0.0, received=None):
     )
 
 
-def motion_of(samples, period=PERIOD):
-    observations = tuple(
+def stream(samples, period=PERIOD):
+    """Script entries from (x, y, z, fz, tilt) tuples, stamped at i*period."""
+    return [
         obs(i * period, x=x, y=y, z=z, fz=fz, tilt=tilt)
         for i, (x, y, z, fz, tilt) in enumerate(samples)
-    )
-    return MotionRecord(observations=observations, ended_early=False)
+    ]
 
 
 def seated_samples(n=60, z=-0.010, fz=15.0):
     return [(0.0, 0.0, z, fz, 0.0)] * n
-
-
-def lossy_motion(gap_after: float, gap_s: float, seated_n: int = 10):
-    times = [0.0, 0.005, 0.010, 0.015]
-    assert gap_after == 0.015
-    t = gap_after + gap_s
-    times.append(t)
-    for _ in range(seated_n):
-        t += PERIOD
-        times.append(t)
-    observations = tuple(
-        MachineObservation(
-            stamp=Stamp(source_s=t, received_s=t),
-            pose_m=(0.0, 0.0, -0.010),
-            force_z_n=15.0,
-            tilt_deg=0.0,
-        )
-        for t in times
-    )
-    return MotionRecord(observations=observations, ended_early=False)
 
 
 def success_condition(depth=-0.009, force=25.0):
@@ -126,14 +109,47 @@ def make_intent(**overrides):
     return ExecutionIntent(**values)
 
 
-class FakeMachine:
-    def __init__(self, caps=None, observation=None, motions=()):
+class HoldBehavior:
+    """A scripted behavior: holds the observed pose with a fixed stiffness."""
+
+    def __init__(self) -> None:
+        self.begin_calls = 0
+        self.k_z = 1000.0
+
+    def begin(self, intent, caps, observation) -> None:
+        self.begin_calls += 1
+
+    def step(self, observation) -> ServoCommand:
+        return ServoCommand(
+            target_pose_m=observation.pose_m, k_z_n_per_m=self.k_z
+        )
+
+
+class ScriptedMachine:
+    """Machine whose sessions play a per-tick script. Script items:
+    MachineObservation (content; the session owns the clock and restamps it
+    advancing by one period per tick), None (dropout tick: no observation),
+    Exception (machine fault), ("reject", n) style not needed -- use
+    reject_windows_s instead."""
+
+    def __init__(
+        self,
+        caps=None,
+        observation=None,
+        script=(),
+        hold_last=True,
+        reject_windows_s=(),
+        health_claims=None,
+    ) -> None:
         self._caps = caps or std_caps()
         self._observation = observation
-        self._motions = list(motions)
-        self.execute_calls = []
+        self._script = list(script)
+        self._hold_last = hold_last
+        self._reject_windows_s = tuple(reject_windows_s)
+        self.open_session_calls = []
         self.stop_calls = 0
-        self.health_claims = {"status": "ok"}
+        self.health_claims = health_claims or {"status": "ok"}
+        self.applied_commands: list[tuple[float, ServoCommand]] = []
 
     def capabilities(self):
         return self._caps
@@ -141,12 +157,13 @@ class FakeMachine:
     def observe(self):
         return self._observation
 
-    def execute(self, *, start_position_m, horizon_s):
-        self.execute_calls.append((start_position_m, horizon_s))
-        item = self._motions.pop(0)
-        if isinstance(item, Exception):
-            raise item
-        return item
+    def open_session(self, *, start_position_m, horizon_s):
+        self.open_session_calls.append((start_position_m, horizon_s))
+        return ScriptedSession(
+            self,
+            horizon_s=horizon_s,
+            reject_windows_s=self._reject_windows_s,
+        )
 
     def stop(self):
         self.stop_calls += 1
@@ -155,8 +172,79 @@ class FakeMachine:
         return self.health_claims
 
 
-def fresh():
-    return obs(0.0)
+class ScriptedSession:
+    def __init__(self, machine: ScriptedMachine, *, horizon_s, reject_windows_s):
+        self._machine = machine
+        self._caps = machine._caps
+        self._script = list(machine._script)
+        self._hold_last = machine._hold_last
+        self._reject_windows_s = reject_windows_s
+        self._period = self._caps.state_period_s
+        self._horizon = horizon_s
+        self._idx = 0
+        self._t = 0.0
+        self._last: MachineObservation | None = None
+        self._ended = False
+        self._fault: str | None = None
+        self.stop_t_s: float | None = None
+
+    def _next(self):
+        if self._idx < len(self._script):
+            item = self._script[self._idx]
+            self._idx += 1
+            return item
+        if self._hold_last and self._last is not None:
+            # Repeat the last content, re-stamped at the advancing session
+            # clock, so "hold forever" scripts still produce a live clock.
+            return replace(
+                self._last, stamp=Stamp(source_s=self._t, received_s=self._t)
+            )
+        return None
+
+    def observe(self) -> MachineObservation | None:
+        item = self._next()
+        if isinstance(item, BaseException):
+            self._fault = type(item).__name__
+            self._ended = True
+            return self._last
+        if item is None:
+            return None
+        self._last = item
+        return item
+
+    def apply(self, command: ServoCommand) -> CommandOutcome:
+        if self._ended or self._fault is not None:
+            return CommandOutcome(accepted=False, reason="session_inactive")
+        if any(lo <= self._t <= hi for lo, hi in self._reject_windows_s):
+            return CommandOutcome(accepted=False, reason="command_rejected")
+        self._machine.applied_commands.append((self._t, command))
+        return CommandOutcome(accepted=True)
+
+    def step(self) -> None:
+        if self._ended:
+            return
+        self._t += self._period
+        if self._t >= self._horizon:
+            self._ended = True
+
+    def stop(self) -> None:
+        self._ended = True
+        self.stop_t_s = self._t
+
+    @property
+    def ended(self) -> bool:
+        return self._ended
+
+    @property
+    def fault(self) -> str | None:
+        return self._fault
+
+
+def runtime_over(machine, **intent_kwargs):
+    behaviors = {"motion": HoldBehavior}
+    runtime = HaplousRuntime(machine, behaviors=behaviors)
+    runtime.submit(make_intent(**intent_kwargs))
+    return runtime
 
 
 def outcome_payload(evidence):
@@ -174,8 +262,8 @@ def test_refuses_unsupported_requirement():
     caps = std_caps(
         sensing=frozenset({SensingChannel.POSE, SensingChannel.TILT})
     )
-    machine = FakeMachine(caps=caps, observation=fresh())
-    runtime = HaplousRuntime(machine)
+    machine = ScriptedMachine(caps=caps, observation=obs(0.0))
+    runtime = HaplousRuntime(machine, behaviors={"motion": HoldBehavior})
     result = runtime.submit(make_intent())
     assert result.outcome == "REFUSED"
     assert result.reasons[0].code == "missing_force_measurement"
@@ -184,8 +272,8 @@ def test_refuses_unsupported_requirement():
 
 
 def test_hard_force_over_sensed_range_refuses():
-    machine = FakeMachine(observation=fresh())
-    runtime = HaplousRuntime(machine)
+    machine = ScriptedMachine(observation=obs(0.0))
+    runtime = HaplousRuntime(machine, behaviors={"motion": HoldBehavior})
     result = runtime.submit(
         make_intent(
             requirements=(
@@ -200,8 +288,8 @@ def test_hard_force_over_sensed_range_refuses():
 
 
 def test_hard_tolerance_below_resolution_refuses():
-    machine = FakeMachine(observation=fresh())
-    runtime = HaplousRuntime(machine)
+    machine = ScriptedMachine(observation=obs(0.0))
+    runtime = HaplousRuntime(machine, behaviors={"motion": HoldBehavior})
     result = runtime.submit(
         make_intent(
             requirements=(
@@ -218,8 +306,10 @@ def test_hard_tolerance_below_resolution_refuses():
 
 
 def test_soft_requirement_degrades_never_refuses():
-    machine = FakeMachine(observation=fresh(), motions=[motion_of(seated_samples())])
-    runtime = HaplousRuntime(machine)
+    machine = ScriptedMachine(
+        observation=obs(0.0), script=stream(seated_samples())
+    )
+    runtime = HaplousRuntime(machine, behaviors={"motion": HoldBehavior})
     result = runtime.submit(
         make_intent(
             requirements=(
@@ -237,8 +327,8 @@ def test_soft_requirement_degrades_never_refuses():
 
 
 def test_unreachable_goal_refuses():
-    machine = FakeMachine(observation=fresh())
-    runtime = HaplousRuntime(machine)
+    machine = ScriptedMachine(observation=obs(0.0))
+    runtime = HaplousRuntime(machine, behaviors={"motion": HoldBehavior})
     result = runtime.submit(
         make_intent(
             requirements=(
@@ -252,6 +342,15 @@ def test_unreachable_goal_refuses():
     assert result.reasons[0].code == "unreachable_goal"
 
 
+def test_unknown_behavior_refuses():
+    machine = ScriptedMachine(observation=obs(0.0), script=stream(seated_samples()))
+    runtime = HaplousRuntime(machine)  # no behaviors registered
+    result = runtime.submit(make_intent())
+    assert result.outcome == "REFUSED"
+    assert result.reasons[-1].code == "behavior_unavailable"
+    assert machine.open_session_calls == []
+
+
 # ---------------------------------------------------------------------------
 # Temporal semantics
 # ---------------------------------------------------------------------------
@@ -259,33 +358,31 @@ def test_unreachable_goal_refuses():
 
 def test_expired_state_cannot_authorize_execution():
     stale = obs(0.0, received=0.1)
-    machine = FakeMachine(observation=stale, motions=[motion_of(seated_samples())])
-    runtime = HaplousRuntime(machine)
-    runtime.submit(make_intent())
+    machine = ScriptedMachine(observation=stale, script=stream(seated_samples()))
+    runtime = runtime_over(machine)
     evidence = runtime.execute()
     assert runtime.state is ExecutionState.REFUSED
-    assert machine.execute_calls == []
+    assert machine.open_session_calls == []
     kinds = [e.kind for e in evidence.events]
     assert "pre_execution_state_invalid" in kinds
     assert evidence.feasibility_decision()["outcome"] == "SUPPORTED"
 
 
 def test_missing_observation_cannot_authorize_execution():
-    machine = FakeMachine(observation=None, motions=[motion_of(seated_samples())])
-    runtime = HaplousRuntime(machine)
-    runtime.submit(make_intent())
+    machine = ScriptedMachine(observation=None, script=stream(seated_samples()))
+    runtime = runtime_over(machine)
     evidence = runtime.execute()
     assert runtime.state is ExecutionState.REFUSED
-    assert machine.execute_calls == []
+    assert machine.open_session_calls == []
     assert evidence.feasibility_decision()["outcome"] == "SUPPORTED"
 
 
 def test_small_measurement_loss_degrades_then_completes():
-    machine = FakeMachine(
-        observation=fresh(), motions=[lossy_motion(0.015, gap_s=0.01)]
-    )
-    runtime = HaplousRuntime(machine)
-    runtime.submit(make_intent())
+    script = stream(seated_samples(4, z=-0.002, fz=1.0))
+    script += [None, None]
+    script += stream(seated_samples(30), period=PERIOD)[6:]
+    machine = ScriptedMachine(observation=obs(0.0), script=script)
+    runtime = runtime_over(machine)
     evidence = runtime.execute()
     assert runtime.state is ExecutionState.COMPLETE
     kinds = [e.kind for e in evidence.events]
@@ -298,15 +395,35 @@ def test_small_measurement_loss_degrades_then_completes():
 
 
 def test_large_measurement_loss_aborts():
-    machine = FakeMachine(
-        observation=fresh(), motions=[lossy_motion(0.015, gap_s=0.05)]
-    )
-    runtime = HaplousRuntime(machine)
-    runtime.submit(make_intent())
+    script = stream(seated_samples(4, z=-0.002, fz=1.0))
+    script += [None] * 10
+    script += stream(seated_samples(30), period=PERIOD)[14:]
+    machine = ScriptedMachine(observation=obs(0.0), script=script)
+    runtime = runtime_over(machine)
     evidence = runtime.execute()
     assert runtime.state is ExecutionState.ABORTED
-    assert len(machine.execute_calls) == 1
+    assert len(machine.open_session_calls) == 1
     assert outcome_payload(evidence)["result"] == "ABORTED"
+
+
+def test_stale_observation_mid_motion_aborts_without_command():
+    """A delivered-but-stale observation cannot authorize a command: the
+    hard freshness constraint breaches and the execution stops."""
+    script = stream(seated_samples(3, z=-0.002, fz=1.0))
+    script.append(obs(0.0, received=0.1))  # arrives 0.1 s late
+    script += stream(seated_samples(30), period=PERIOD)[6:]
+    machine = ScriptedMachine(observation=obs(0.0), script=script)
+    runtime = runtime_over(machine)
+    evidence = runtime.execute()
+    assert runtime.state is ExecutionState.ABORTED
+    payload = outcome_payload(evidence)
+    assert payload["reason"] == "condition_not_permitted_state_freshness"
+    assert machine.stop_calls == 1
+    violations = evidence.constraint_violations()
+    assert violations and violations[0]["code"] == "state_freshness"
+    # No command was authorized from the stale state.
+    stale_t = 0.1
+    assert all(t < stale_t - 1e-9 for t, _ in machine.applied_commands)
 
 
 # ---------------------------------------------------------------------------
@@ -315,77 +432,127 @@ def test_large_measurement_loss_aborts():
 
 
 def test_hard_breach_without_policy_aborts_immediately():
-    machine = FakeMachine(
-        observation=fresh(),
-        motions=[motion_of([(0.0, 0.0, -0.001, 30.0, 0.0)] * 20)],
+    machine = ScriptedMachine(
+        observation=obs(0.0),
+        script=stream([(0.0, 0.0, -0.001, 30.0, 0.0)] * 20),
     )
-    runtime = HaplousRuntime(machine)
-    runtime.submit(make_intent(recovery_policy=None))
+    runtime = runtime_over(machine, recovery_policy=None)
     evidence = runtime.execute()
     assert runtime.state is ExecutionState.ABORTED
-    assert len(machine.execute_calls) == 1
+    assert len(machine.open_session_calls) == 1
     assert machine.stop_calls == 1
     violations = evidence.constraint_violations()
     assert violations and violations[0]["code"] == "process_force"
     assert violations[0]["hard"] is True
 
 
-def test_permitted_recovery_runs_second_motion():
-    clean = motion_of(seated_samples())
-    spiky = motion_of([(0.0, 0.0, -0.001, 30.0, 0.0)] * 20)
-    machine = FakeMachine(observation=fresh(), motions=[spiky, clean])
-    runtime = HaplousRuntime(machine)
-    runtime.submit(make_intent())
+def test_permitted_recovery_rereferences_and_completes():
+    script = stream([(0.0, 0.0, -0.001, 30.0, 0.0)] * 2)
+    script += stream(seated_samples(40), period=PERIOD)[2:]
+    machine = ScriptedMachine(observation=obs(0.0), script=script)
+    runtime = runtime_over(machine)
     evidence = runtime.execute()
     assert runtime.state is ExecutionState.COMPLETE
-    assert len(machine.execute_calls) == 2
     kinds = [e.kind for e in evidence.events]
     assert "recovery_decision" in kinds
     assert "constraint_violation" in kinds
 
 
 def test_recovery_budget_exhaustion_aborts():
-    spiky = motion_of([(0.0, 0.0, -0.001, 30.0, 0.0)] * 20)
-    machine = FakeMachine(observation=fresh(), motions=[spiky, spiky])
-    runtime = HaplousRuntime(machine)
-    runtime.submit(make_intent())
+    script = stream([(0.0, 0.0, -0.001, 30.0, 0.0)] * 20)
+    machine = ScriptedMachine(observation=obs(0.0), script=script)
+    runtime = runtime_over(machine)
     evidence = runtime.execute()
     assert runtime.state is ExecutionState.ABORTED
-    assert len(machine.execute_calls) == 2
+    assert len(machine.open_session_calls) == 1
     assert outcome_payload(evidence)["reason"] == "recovery_budget_exhausted"
 
 
 def test_unpermitted_condition_does_not_recover():
-    machine = FakeMachine(
-        observation=fresh(),
-        motions=[motion_of([(0.0, 0.0, -0.001, 5.0, 20.0)] * 20)],
+    machine = ScriptedMachine(
+        observation=obs(0.0),
+        script=stream([(0.0, 0.0, -0.001, 5.0, 20.0)] * 20),
     )
-    runtime = HaplousRuntime(machine)
-    runtime.submit(make_intent())
+    runtime = runtime_over(machine)
     evidence = runtime.execute()
     assert runtime.state is ExecutionState.ABORTED
-    assert len(machine.execute_calls) == 1
+    assert len(machine.open_session_calls) == 1
     assert outcome_payload(evidence)["reason"] == "condition_not_permitted_tilt"
 
 
 def test_soft_force_breach_records_violation_but_completes():
-    machine = FakeMachine(observation=fresh(), motions=[motion_of(seated_samples())])
-    runtime = HaplousRuntime(machine)
-    runtime.submit(
-        make_intent(
-            requirements=(
-                Requirement(
-                    RequirementKind.MAX_PROCESS_FORCE_N,
-                    hard=False,
-                    limit=12.0,
-                ),
+    machine = ScriptedMachine(
+        observation=obs(0.0), script=stream(seated_samples())
+    )
+    runtime = runtime_over(
+        machine,
+        requirements=(
+            Requirement(
+                RequirementKind.MAX_PROCESS_FORCE_N,
+                hard=False,
+                limit=12.0,
             ),
-        )
+        ),
     )
     evidence = runtime.execute()
     assert runtime.state is ExecutionState.COMPLETE
     violations = evidence.constraint_violations()
     assert violations and violations[0]["hard"] is False
+
+
+def test_command_rejection_persistent_aborts():
+    script = stream([(0.0, 0.0, -0.002, 1.0, 0.0)] * 5)
+    script += stream(seated_samples(60), period=PERIOD)[5:]
+    machine = ScriptedMachine(
+        observation=obs(0.0),
+        script=script,
+        reject_windows_s=((0.005, 0.02),),
+    )
+    runtime = runtime_over(machine)
+    evidence = runtime.execute()
+    assert runtime.state is ExecutionState.ABORTED
+    payload = outcome_payload(evidence)
+    assert payload["reason"] == "command_rejection_persistent"
+    kinds = [e.kind for e in evidence.events]
+    assert "command_rejected" in kinds
+
+
+def test_transient_command_rejection_degrades_and_completes():
+    script = stream([(0.0, 0.0, -0.002, 1.0, 0.0)] * 5)
+    script += stream(seated_samples(60), period=PERIOD)[5:]
+    machine = ScriptedMachine(
+        observation=obs(0.0),
+        script=script,
+        reject_windows_s=((0.005, 0.01),),  # 2 ticks < rejection limit
+    )
+    runtime = runtime_over(machine)
+    evidence = runtime.execute()
+    assert runtime.state is ExecutionState.COMPLETE
+    kinds = [e.kind for e in evidence.events]
+    assert "command_rejected" in kinds
+
+
+def test_machine_fault_mid_motion_aborts_and_stops():
+    script = stream(seated_samples(2, z=-0.002, fz=1.0))
+    script.append(RuntimeError("actuator fault"))
+    machine = ScriptedMachine(observation=obs(0.0), script=script)
+    runtime = runtime_over(machine)
+    evidence = runtime.execute()
+    assert runtime.state is ExecutionState.ABORTED
+    payload = outcome_payload(evidence)
+    assert payload["reason"] == "machine_fault_RuntimeError"
+    assert machine.stop_calls == 1
+
+
+def test_stop_request_issued_on_hard_fault():
+    machine = ScriptedMachine(
+        observation=obs(0.0),
+        script=stream([(0.0, 0.0, -0.001, 30.0, 0.0)] * 20),
+    )
+    runtime = runtime_over(machine, recovery_policy=None)
+    runtime.execute()
+    assert runtime.state is ExecutionState.ABORTED
+    assert machine.stop_calls == 1
 
 
 # ---------------------------------------------------------------------------
@@ -394,25 +561,24 @@ def test_soft_force_breach_records_violation_but_completes():
 
 
 def test_missing_success_condition_refuses():
-    machine = FakeMachine(observation=fresh())
-    runtime = HaplousRuntime(machine)
+    machine = ScriptedMachine(observation=obs(0.0))
+    runtime = HaplousRuntime(machine, behaviors={"motion": HoldBehavior})
     result = runtime.submit(make_intent(success_condition=None))
     assert result.outcome == "REFUSED"
     assert result.reasons[0].code == "missing_success_condition"
 
 
 def test_machine_health_claim_cannot_complete():
-    machine = FakeMachine(
-        observation=fresh(),
-        motions=[motion_of([(0.0, 0.0, -0.002, 1.0, 0.0)] * 60)],
+    machine = ScriptedMachine(
+        observation=obs(0.0),
+        script=stream([(0.0, 0.0, -0.002, 1.0, 0.0)]),
     )
     machine.health_claims = {
         "status": "ok",
         "done": True,
         "pose_estimate": "aligned",
     }
-    runtime = HaplousRuntime(machine)
-    runtime.submit(make_intent())
+    runtime = runtime_over(machine)
     evidence = runtime.execute()
     assert runtime.state is ExecutionState.ABORTED
     payload = outcome_payload(evidence)
@@ -421,10 +587,10 @@ def test_machine_health_claim_cannot_complete():
 
 
 def test_nominal_flow_completes_and_records_evidence():
-    machine = FakeMachine(observation=fresh(), motions=[motion_of(seated_samples())])
-    runtime = HaplousRuntime(machine)
-    feasibility = runtime.submit(make_intent())
-    assert feasibility.outcome == "SUPPORTED"
+    machine = ScriptedMachine(
+        observation=obs(0.0), script=stream(seated_samples())
+    )
+    runtime = runtime_over(machine)
     evidence = runtime.execute()
     assert runtime.state is ExecutionState.COMPLETE
     decision = evidence.feasibility_decision()
@@ -433,7 +599,6 @@ def test_nominal_flow_completes_and_records_evidence():
     kinds = [e.kind for e in evidence.events]
     assert "execution_authorized" in kinds
     assert "motion_started" in kinds
-    assert "motion_completed" in kinds
     assert evidence.to_json()
 
 
@@ -455,12 +620,11 @@ def test_abort_is_terminal_in_transition_table():
 
 
 def test_aborted_runtime_requires_reset():
-    machine = FakeMachine(
-        observation=fresh(),
-        motions=[motion_of([(0.0, 0.0, -0.001, 30.0, 0.0)] * 20)],
+    machine = ScriptedMachine(
+        observation=obs(0.0),
+        script=stream([(0.0, 0.0, -0.001, 30.0, 0.0)] * 20),
     )
-    runtime = HaplousRuntime(machine)
-    runtime.submit(make_intent(recovery_policy=None))
+    runtime = runtime_over(machine, recovery_policy=None)
     runtime.execute()
     assert runtime.state is ExecutionState.ABORTED
     with pytest.raises(RuntimeError):
@@ -470,9 +634,10 @@ def test_aborted_runtime_requires_reset():
 
 
 def test_reset_clears_execution_state():
-    machine = FakeMachine(observation=fresh(), motions=[motion_of(seated_samples())])
-    runtime = HaplousRuntime(machine)
-    runtime.submit(make_intent())
+    machine = ScriptedMachine(
+        observation=obs(0.0), script=stream(seated_samples())
+    )
+    runtime = runtime_over(machine)
     runtime.execute()
     assert runtime.state is ExecutionState.COMPLETE
     runtime.reset()
@@ -482,7 +647,9 @@ def test_reset_clears_execution_state():
 
 
 def test_execute_requires_ready():
-    machine = FakeMachine(observation=fresh(), motions=[motion_of(seated_samples())])
-    runtime = HaplousRuntime(machine)
+    machine = ScriptedMachine(
+        observation=obs(0.0), script=stream(seated_samples())
+    )
+    runtime = HaplousRuntime(machine, behaviors={"motion": HoldBehavior})
     with pytest.raises(RuntimeError):
         runtime.execute()

@@ -36,10 +36,13 @@ class SuccessCondition:
     """Declarative, observation-derived completion test supplied by the
     behavior layer. The runtime completes only when this evaluates true over
     the observed stream; machine health() or any external claim cannot
-    complete an execution."""
+    complete an execution. window_s optionally declares how much trailing
+    observation history the condition reads, letting a live runtime bound
+    its per-tick evaluation cost; None means the full stream."""
 
     name: str
     evaluate: Callable[[Sequence[MachineObservation]], bool]
+    window_s: float | None = None
 
 
 @dataclass(frozen=True)

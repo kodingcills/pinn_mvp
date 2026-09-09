@@ -18,7 +18,7 @@
       "tilt"
      ],
      "state_max_age_s": 0.02,
-     "state_period_s": 0.005,
+     "state_period_s": 0.0005,
      "supports_stop": true
     },
     "outcome": "SUPPORTED",
@@ -38,18 +38,10 @@
   {
    "kind": "motion_started",
    "payload": {
-    "n_observations": 3260
+    "state_period_s": 0.0005
    },
    "seq": 2,
-   "t_s": 0.0005
-  },
-  {
-   "kind": "motion_completed",
-   "payload": {
-    "n_observations": 3260
-   },
-   "seq": 3,
-   "t_s": 16.295500000007372
+   "t_s": 0.0
   },
   {
    "kind": "outcome",
@@ -57,8 +49,8 @@
     "result": "COMPLETE",
     "success_condition": "seated"
    },
-   "seq": 4,
-   "t_s": 16.295500000007372
+   "seq": 3,
+   "t_s": 2.0389999999998483
   }
  ],
  "intent_behavior": "peg_insertion",

@@ -10,6 +10,7 @@ def test_core_file_set_is_expected():
     names = [p.name for p in CORE_FILES]
     assert set(names) == {
         "__init__.py",
+        "behavior.py",
         "capabilities.py",
         "constraints.py",
         "evidence.py",

@@ -1,30 +1,43 @@
 """The Haplous runtime spine: submit intent -> negotiate feasibility ->
-authorize execution on fresh state -> monitor constraints over the observed
-stream -> recover / degrade / refuse / abort / complete -> evidence."""
+authorize execution on fresh state -> supervise a live session (observe ->
+evaluate constraints -> decide -> command -> step) -> recover / degrade /
+refuse / abort / complete -> evidence.
+
+Supervision is live: on every tick the runtime observes fresh machine
+state, validates it, evaluates constraints, and only then applies the
+behavior's command and advances the machine one period. Stop, abort,
+degrade, recovery, and refusal can all occur mid-motion, before task
+completion."""
 from __future__ import annotations
 
-from typing import Optional
+from typing import Callable, Mapping, Optional
 
-from haplous.capabilities import FeasibilityResult, negotiate
+from haplous.behavior import ExecutionBehavior
+from haplous.capabilities import FeasibilityResult, MachineCapabilities, RefusalReason, negotiate
 from haplous.constraints import Constraint, build_constraints
 from haplous.evidence import ExecutionEvidence
-from haplous.intent import ExecutionIntent
-from haplous.machine import Machine, MachineObservation, MotionRecord
+from haplous.intent import ExecutionIntent, RequirementKind
+from haplous.machine import Machine, MachineObservation, MachineSession
 from haplous.state import ExecutionState, ExecutionStateTracker
 
 _GAP_TOLERANCE_FACTOR = 1.5
+_COMMAND_REJECTION_LIMIT = 3
 
 
 class HaplousRuntime:
-    def __init__(self, machine: Machine) -> None:
+    def __init__(
+        self,
+        machine: Machine,
+        behaviors: Optional[Mapping[str, Callable[[], ExecutionBehavior]]] = None,
+    ) -> None:
         self._machine = machine
+        self._behaviors = dict(behaviors or {})
         self._tracker = ExecutionStateTracker()
         self._evidence = ExecutionEvidence()
         self._archived: list[ExecutionEvidence] = []
         self._intent: Optional[ExecutionIntent] = None
         self._feasibility: Optional[FeasibilityResult] = None
         self._recoveries_used = 0
-        self._last_motion: tuple[MachineObservation, ...] = ()
 
     @property
     def state(self) -> ExecutionState:
@@ -64,6 +77,18 @@ class HaplousRuntime:
             "has_recovery_policy": intent.recovery_policy is not None,
         }
         feasibility = negotiate(intent, caps)
+        if intent.behavior not in self._behaviors:
+            feasibility = FeasibilityResult(
+                "REFUSED",
+                feasibility.reasons
+                + (
+                    RefusalReason(
+                        "behavior_unavailable",
+                        f"no execution behavior registered for "
+                        f"'{intent.behavior}'",
+                    ),
+                ),
+            )
         self._feasibility = feasibility
         self._evidence.append(
             "feasibility",
@@ -105,8 +130,8 @@ class HaplousRuntime:
                 f"execution requires READY, runtime is "
                 f"{self._tracker.state.value}"
             )
-        caps = self._machine.capabilities()
         assert self._intent is not None
+        caps = self._machine.capabilities()
         observation = self._machine.observe()
         if (
             observation is None
@@ -129,8 +154,26 @@ class HaplousRuntime:
             t_s=observation.stamp.source_s,
             observation_age_s=observation.stamp.age_s,
         )
+        try:
+            session = self._machine.open_session(
+                start_position_m=self._intent.start_position_m,
+                horizon_s=caps.execution_horizon_s,
+            )
+        except Exception as exc:
+            self._machine.stop()
+            self._tracker.transition(ExecutionState.EXECUTING)
+            self._tracker.transition(ExecutionState.ABORTED)
+            self._evidence.append(
+                "outcome",
+                t_s=0.0,
+                result="ABORTED",
+                reason=f"machine_error_{type(exc).__name__}",
+                detail=str(exc)[:200],
+            )
+            return self._evidence
+        behavior = self._behaviors[self._intent.behavior]()
         self._tracker.transition(ExecutionState.EXECUTING)
-        self._execute_monitored(caps.state_period_s, caps.state_max_age_s)
+        self._execute_live(session, behavior, caps)
         return self._evidence
 
     def reset(self) -> None:
@@ -141,207 +184,334 @@ class HaplousRuntime:
         self._recoveries_used = 0
         self._tracker.reset()
 
-    # -- monitored execution ------------------------------------------------
+    # -- live supervised execution -------------------------------------------
 
-    def _execute_monitored(self, state_period_s: float, state_max_age_s: float) -> None:
+    def _execute_live(
+        self,
+        session: MachineSession,
+        behavior: ExecutionBehavior,
+        caps: MachineCapabilities,
+    ) -> None:
         assert self._intent is not None
-        policy = self._intent.recovery_policy
-        max_attempts = 1 + (policy.max_recovery_actions if policy else 0)
-        for attempt in range(max_attempts):
-            if self._tracker.state is ExecutionState.RECOVERING:
-                self._tracker.transition(ExecutionState.EXECUTING)
-            try:
-                breach = self._run_and_replay(state_period_s, state_max_age_s)
-            except Exception as exc:
+        intent = self._intent
+        policy = intent.recovery_policy
+        constraints: tuple[Constraint, ...] = build_constraints(intent)
+        deadline_req = next(
+            (r for r in intent.requirements if r.kind is RequirementKind.DEADLINE_S),
+            None,
+        )
+        deadline_s = deadline_req.limit if deadline_req is not None else None
+        period_s = caps.state_period_s
+        state_max_age_s = caps.state_max_age_s
+        success = intent.success_condition
+        assert success is not None
+        window: list[MachineObservation] = []
+        window_span_s = 1.5 * success.window_s if success.window_s else None
+        last_source: Optional[float] = None
+        rejected_streak = 0
+        degraded_announced = False
+
+        try:
+            first = session.observe()
+            if session.fault is not None:
+                self._abort_machine_fault(session, 0.0)
+                return
+            if first is None:
                 self._machine.stop()
                 self._tracker.transition(ExecutionState.ABORTED)
                 self._evidence.append(
                     "outcome",
                     t_s=0.0,
                     result="ABORTED",
-                    reason=f"machine_error_{type(exc).__name__}",
-                    detail=str(exc)[:200],
+                    reason="state_unavailable_at_start",
                 )
                 return
-            if breach is None:
-                self._finish_on_success_condition()
-                return
-            code, hard = breach
-            if (
-                hard
-                and policy is not None
-                and code in policy.permitted_conditions
-                and self._recoveries_used < policy.max_recovery_actions
-            ):
-                self._recoveries_used += 1
-                self._evidence.append(
-                    "recovery_decision",
-                    t_s=0.0,
-                    condition=code,
-                    action=policy.action,
-                    attempt=self._recoveries_used,
-                )
-                self._tracker.transition(ExecutionState.RECOVERING)
-                continue
-            self._machine.stop()
-            reason = (
-                f"hard_constraint_{code}"
-                if hard
-                else f"soft_constraint_{code}"
-            )
-            if (
-                policy is not None
-                and code not in policy.permitted_conditions
-            ):
-                reason = f"condition_not_permitted_{code}"
-            elif policy is not None:
-                reason = "recovery_budget_exhausted"
-            self._tracker.transition(ExecutionState.ABORTED)
+            behavior.begin(intent, caps, first)
             self._evidence.append(
-                "outcome", t_s=0.0, result="ABORTED", reason=reason
+                "motion_started",
+                t_s=first.stamp.source_s,
+                state_period_s=period_s,
             )
-            return
-        self._machine.stop()
-        self._tracker.transition(ExecutionState.ABORTED)
-        self._evidence.append(
-            "outcome",
-            t_s=0.0,
-            result="ABORTED",
-            reason="recovery_budget_exhausted",
-        )
-
-    def _run_and_replay(
-        self, state_period_s: float, state_max_age_s: float
-    ) -> Optional[tuple[str, bool]]:
-        """Execute one motion and replay its observation stream through the
-        constraint monitors. Returns (condition_code, hard) for the first
-        hard breach (or an early motion termination), or None when the motion
-        ran clean to its end."""
-        assert self._intent is not None
-        caps = self._machine.capabilities()
-        constraints: tuple[Constraint, ...] = build_constraints(self._intent)
-        motion: MotionRecord = self._machine.execute(
-            start_position_m=self._intent.start_position_m,
-            horizon_s=caps.execution_horizon_s,
-        )
-        self._last_motion = motion.observations
-        self._evidence.append(
-            "motion_started",
-            t_s=(
-                motion.observations[0].stamp.source_s
-                if motion.observations
-                else 0.0
-            ),
-            n_observations=len(motion.observations),
-        )
-        if motion.ended_early:
-            self._evidence.append(
-                "motion_ended_early", t_s=0.0, reason=motion.end_reason
-            )
-            return (motion.end_reason or "motion_ended_early", True)
-        if not motion.observations:
-            self._evidence.append("motion_empty", t_s=0.0)
-            return ("motion_empty", True)
-        previous_source: Optional[float] = None
-        for observation in motion.observations:
-            if previous_source is not None:
-                gap_s = observation.stamp.source_s - previous_source
-                if gap_s > state_period_s * _GAP_TOLERANCE_FACTOR:
+            window.append(first)
+            last_source = first.stamp.source_s
+            while True:
+                obs = session.observe()
+                if session.fault is not None:
+                    self._abort_machine_fault(session, last_source)
+                    return
+                if obs is None:
+                    # No observation this tick: no fresh state, so no new
+                    # command may be authorized. The machine holds its last
+                    # accepted command while the runtime waits.
+                    if self._tracker.state is ExecutionState.EXECUTING:
+                        self._tracker.transition(ExecutionState.DEGRADED)
+                        self._evidence.append(
+                            "state_transition",
+                            t_s=last_source,
+                            to="degraded",
+                        )
+                        degraded_announced = True
+                    session.step()
+                    if session.ended:
+                        self._finish_on_session_end(session, window)
+                        return
+                    continue
+                gap_s = obs.stamp.source_s - last_source
+                last_source = obs.stamp.source_s
+                window.append(obs)
+                if window_span_s is not None:
+                    cutoff = last_source - window_span_s
+                    while window and window[0].stamp.source_s < cutoff:
+                        window.pop(0)
+                if gap_s > period_s * _GAP_TOLERANCE_FACTOR:
                     self._evidence.append(
                         "measurement_loss",
-                        t_s=observation.stamp.source_s,
+                        t_s=obs.stamp.source_s,
                         gap_s=gap_s,
                         state_max_age_s=state_max_age_s,
                     )
                     if gap_s > state_max_age_s:
-                        return ("state_freshness", True)
-                    if self._tracker.state is ExecutionState.EXECUTING:
-                        self._tracker.transition(ExecutionState.DEGRADED)
+                        if self._handle_breach(
+                            ("state_freshness", True),
+                            policy,
+                            behavior,
+                            caps,
+                            obs,
+                        ):
+                            return
+                        skip_command = True
+                    else:
+                        skip_command = False
+                else:
+                    skip_command = False
+                if degraded_announced:
+                    degraded_announced = False
+                    if self._tracker.state is ExecutionState.DEGRADED:
+                        self._tracker.transition(ExecutionState.EXECUTING)
                         self._evidence.append(
-                            "state_transition", t_s=observation.stamp.source_s,
-                            to="degraded",
+                            "state_transition",
+                            t_s=obs.stamp.source_s,
+                            to="executing",
                         )
-            previous_source = observation.stamp.source_s
-            hard_breach: Optional[tuple[str, bool]] = None
-            soft_breached = False
-            for constraint in constraints:
-                status = constraint.evaluate(observation)
-                if not status.breached:
-                    continue
-                if status.hard:
-                    hard_breach = (status.code, True)
-                    self._evidence.append(
-                        "constraint_violation",
-                        t_s=observation.stamp.source_s,
-                        code=status.code,
-                        value=status.value,
-                        limit=status.limit,
-                        hard=True,
-                    )
-                    break
-                soft_breached = True
-                if self._tracker.state is not ExecutionState.CONSTRAINED:
-                    self._evidence.append(
-                        "constraint_violation",
-                        t_s=observation.stamp.source_s,
-                        code=status.code,
-                        value=status.value,
-                        limit=status.limit,
-                        hard=False,
-                    )
-            if hard_breach is not None:
-                self._evidence.append(
-                    "state_transition",
-                    t_s=observation.stamp.source_s, to="breach_detected",
-                )
-                return hard_breach
-            if soft_breached:
-                if self._tracker.state is ExecutionState.EXECUTING:
-                    self._tracker.transition(ExecutionState.CONSTRAINED)
+
+                # Constraint evaluation on the freshest observation.
+                hard_breach: Optional[tuple[str, bool]] = None
+                soft_breached = False
+                for constraint in constraints:
+                    status = constraint.evaluate(obs)
+                    if not status.breached:
+                        continue
+                    if status.hard:
+                        hard_breach = (status.code, True)
+                        self._evidence.append(
+                            "constraint_violation",
+                            t_s=obs.stamp.source_s,
+                            code=status.code,
+                            value=status.value,
+                            limit=status.limit,
+                            hard=True,
+                        )
+                        break
+                    soft_breached = True
+                    if self._tracker.state is not ExecutionState.CONSTRAINED:
+                        self._evidence.append(
+                            "constraint_violation",
+                            t_s=obs.stamp.source_s,
+                            code=status.code,
+                            value=status.value,
+                            limit=status.limit,
+                            hard=False,
+                        )
+                if hard_breach is not None:
+                    if self._handle_breach(
+                        hard_breach, policy, behavior, caps, obs
+                    ):
+                        return
+                    skip_command = True
+                if soft_breached:
+                    if self._tracker.state is ExecutionState.EXECUTING:
+                        self._tracker.transition(ExecutionState.CONSTRAINED)
+                        self._evidence.append(
+                            "state_transition",
+                            t_s=obs.stamp.source_s,
+                            to="constrained",
+                        )
+                elif self._tracker.state is ExecutionState.CONSTRAINED:
+                    self._tracker.transition(ExecutionState.EXECUTING)
                     self._evidence.append(
                         "state_transition",
-                        t_s=observation.stamp.source_s, to="constrained",
+                        t_s=obs.stamp.source_s,
+                        to="executing",
                     )
-            elif self._tracker.state is ExecutionState.CONSTRAINED:
-                self._tracker.transition(ExecutionState.EXECUTING)
-                self._evidence.append(
-                    "state_transition",
-                    t_s=observation.stamp.source_s, to="executing",
-                )
-            elif self._tracker.state is ExecutionState.DEGRADED:
-                self._tracker.transition(ExecutionState.EXECUTING)
-                self._evidence.append(
-                    "state_transition",
-                    t_s=observation.stamp.source_s, to="executing",
-                )
-        self._evidence.append(
-            "motion_completed",
-            t_s=motion.observations[-1].stamp.source_s,
-            n_observations=len(motion.observations),
-        )
-        return None
 
-    def _finish_on_success_condition(self) -> None:
-        assert self._intent is not None and self._intent.success_condition is not None
-        condition = self._intent.success_condition
-        observations = self._last_motion
-        success = condition.evaluate(observations)
-        if success:
-            self._tracker.transition(ExecutionState.COMPLETE)
-            self._evidence.append(
-                "outcome",
-                t_s=(
-                    observations[-1].stamp.source_s if observations else 0.0
-                ),
-                result="COMPLETE",
-                success_condition=condition.name,
-            )
-        else:
+                # Deadline: an expired deadline stops the execution.
+                if deadline_s is not None and obs.stamp.source_s > deadline_s:
+                    self._machine.stop()
+                    self._tracker.transition(ExecutionState.ABORTED)
+                    self._evidence.append(
+                        "outcome",
+                        t_s=obs.stamp.source_s,
+                        result="ABORTED",
+                        reason="deadline_exceeded",
+                    )
+                    return
+
+                # Declarative completion: observations only, never machine
+                # claims. Evaluated on the trailing window the condition
+                # declared.
+                if success.evaluate(
+                    window if window_span_s is None else list(window)
+                ):
+                    self._machine.stop()
+                    self._tracker.transition(ExecutionState.COMPLETE)
+                    self._evidence.append(
+                        "outcome",
+                        t_s=obs.stamp.source_s,
+                        result="COMPLETE",
+                        success_condition=success.name,
+                    )
+                    return
+
+                # Machine health is checked live, but a health claim can
+                # never complete or succeed — only degrade or abort.
+                health = self._machine.health()
+                if str(health.get("status", "ok")) != "ok":
+                    self._machine.stop()
+                    self._tracker.transition(ExecutionState.ABORTED)
+                    self._evidence.append(
+                        "outcome",
+                        t_s=obs.stamp.source_s,
+                        result="ABORTED",
+                        reason="machine_unhealthy",
+                    )
+                    return
+
+                # Behavior decision on fresh state, then authorize.
+                if not skip_command:
+                    command = behavior.step(obs)
+                    outcome = session.apply(command)
+                    if outcome.accepted:
+                        rejected_streak = 0
+                    else:
+                        rejected_streak += 1
+                        self._evidence.append(
+                            "command_rejected",
+                            t_s=obs.stamp.source_s,
+                            reason=outcome.reason,
+                            streak=rejected_streak,
+                        )
+                        if rejected_streak >= _COMMAND_REJECTION_LIMIT:
+                            self._machine.stop()
+                            self._tracker.transition(ExecutionState.ABORTED)
+                            self._evidence.append(
+                                "outcome",
+                                t_s=obs.stamp.source_s,
+                                result="ABORTED",
+                                reason="command_rejection_persistent",
+                            )
+                            return
+                session.step()
+                if session.ended:
+                    if session.fault is not None:
+                        self._abort_machine_fault(session, last_source)
+                    else:
+                        self._finish_on_session_end(session, window)
+                    return
+        except Exception as exc:
+            self._machine.stop()
             self._tracker.transition(ExecutionState.ABORTED)
             self._evidence.append(
                 "outcome",
                 t_s=0.0,
                 result="ABORTED",
+                reason=f"machine_error_{type(exc).__name__}",
+                detail=str(exc)[:200],
+            )
+
+    def _abort_machine_fault(
+        self, session: MachineSession, last_source: float
+    ) -> None:
+        self._machine.stop()
+        self._tracker.transition(ExecutionState.ABORTED)
+        self._evidence.append(
+            "outcome",
+            t_s=last_source,
+            result="ABORTED",
+            reason=f"machine_fault_{session.fault}",
+        )
+
+    def _handle_breach(
+        self,
+        breach: tuple[str, bool],
+        policy,
+        behavior: ExecutionBehavior,
+        caps: MachineCapabilities,
+        obs: MachineObservation,
+    ) -> bool:
+        """Handle one hard breach. Returns True when the execution reached a
+        terminal state; False when execution continues (authorized recovery
+        consumed this tick's decision)."""
+        code, _hard = breach
+        if (
+            policy is not None
+            and code in policy.permitted_conditions
+            and self._recoveries_used < policy.max_recovery_actions
+        ):
+            self._recoveries_used += 1
+            self._evidence.append(
+                "recovery_decision",
+                t_s=obs.stamp.source_s,
+                condition=code,
+                action=policy.action,
+                attempt=self._recoveries_used,
+            )
+            self._tracker.transition(ExecutionState.RECOVERING)
+            # The recovery action: re-reference the behavior from the live
+            # observation (never a blind replay), then resume execution.
+            behavior.begin(self._intent, caps, obs)
+            self._tracker.transition(ExecutionState.EXECUTING)
+            self._evidence.append(
+                "state_transition",
+                t_s=obs.stamp.source_s,
+                to="executing",
+            )
+            return False
+        self._machine.stop()
+        reason = f"hard_constraint_{code}"
+        if (
+            policy is not None
+            and code not in policy.permitted_conditions
+        ):
+            reason = f"condition_not_permitted_{code}"
+        elif policy is not None:
+            reason = "recovery_budget_exhausted"
+        self._tracker.transition(ExecutionState.ABORTED)
+        self._evidence.append(
+            "outcome", t_s=obs.stamp.source_s, result="ABORTED", reason=reason
+        )
+        return True
+
+    def _finish_on_session_end(
+        self, session: MachineSession, window: list[MachineObservation]
+    ) -> None:
+        assert self._intent is not None and self._intent.success_condition
+        success = self._intent.success_condition
+        if window and success.evaluate(list(window)):
+            self._machine.stop()
+            self._tracker.transition(ExecutionState.COMPLETE)
+            self._evidence.append(
+                "outcome",
+                t_s=window[-1].stamp.source_s,
+                result="COMPLETE",
+                success_condition=success.name,
+            )
+        else:
+            self._machine.stop()
+            self._tracker.transition(ExecutionState.ABORTED)
+            self._evidence.append(
+                "outcome",
+                t_s=window[-1].stamp.source_s if window else 0.0,
+                result="ABORTED",
                 reason="success_condition_unmet",
-                success_condition=condition.name,
+                success_condition=success.name,
             )
