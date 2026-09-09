@@ -29,6 +29,9 @@ Task: peg-in-hole insertion. No RL is being trained. The deliverable is a
 | `pegsim/rollout.py` | `InsertionProfile`, `run_episode`, `TrialResult`, `VALIDATED_LOOSE_V1`, `ground_truth_seated` |
 | `pegsim/characterize.py` | `measure_settling_depths`, `run_offset_sweep` |
 | `pegsim/filter.py` | `StateFilter`, gated 3-state Kalman filter `[h_x, h_y, dc]` with antipodal pair batching, Joseph covariance, and consecutive-gate `ABORT`. Deliberately MuJoCo-free (AST-enforced by test) |
+| `pegsim/dynamics.py` | R4 coupled closed-loop analysis: full `mj_fullM` matrices, continuous modes, and the exact semi-implicit + ZOH discrete map of the implemented controller |
+| `pegsim/error_injection.py` | F1b corruption channels (encoder quantization, TCP bias, truth-side part variation, bore out-of-roundness) in explicit physical composition order. Deliberately MuJoCo-free |
+| `pegsim/probing.py` | F1c `PairProbeSession`: owns the filter + probe lifecycle, feeds N5-validated pair observations from `run_episode` to the filter with measured pair covariance and sensor-corruption hooks |
 | `scripts/` | demo steps, retained characterization tools, and the measurement drivers (`measure_l1/l2/l3_*`, `measure_n2_probe_primitive`, `measure_n4_facet_convergence`, `measure_f1a_state_filter`) |
 | `results/` | raw JSONL trials and derived summary JSON committed as evidence (`n2_probe_*`, `n4_facet_convergence_*`, `f1a_filter_summary`) |
 | `tests/` | incl. `TestCompiledSolverOptionsMatchSpec`, `TestSilhouette` |
@@ -271,13 +274,15 @@ physics-shaped symptom that cost multiple rounds of wrong theorizing.
   pooled minimum. Half-facet control degrades the pair mean 4×, confirming
   same-facet-phase antipodal geometry is the mechanism. See
   `docs/N5_ANTIPODAL_CANCELLATION_REPORT.md`.
-- **F1b (error injection) is implemented; F1c (filter/physics wiring) is the
-  next open item.** `pegsim/error_injection.py` now exists with the four R03
-  channels (encoder quantization, fixed TCP calibration bias, truth-side part
-  variation, truth-side bore out-of-roundness) in explicit physical composition
-  order, with 14 tests and a no-MuJoCo guard. `StateFilter` is still imported
-  only by tests and the synthetic F1a driver; the F1a process priors remain
-  placeholders. F1c is unblocked by the N5 result.
+- **F1b (error injection) is implemented and F1c (physics wiring) has run.**
+  `pegsim/error_injection.py` provides the four R03 channels in explicit
+  physical composition order (14 tests, no-MuJoCo guard). `pegsim/probing.py`
+  wires `run_episode` probe pairs to the filter with the N5-measured pair
+  covariance and penetration bias (1.1423 µm at n=64); clean sessions converge
+  to 24 nm with NIS O(1), and a 3 µm TCP-bias session demonstrates the
+  confidently-wrong condition (NEES 226–407, 2/6 pairs gated) on real physics.
+  See `docs/F1C_PROBE_SESSION_REPORT.md`. The F1a process priors remain
+  placeholders. R05/R06 are not started.
 - **The ~135 Hz rotational-mode estimate has never been measured.** Both
   `mj_fullM` call sites (`control.py` `derived_damping`/`stability_cap`) slice
   only the diagonal; no eigenvalue decomposition of the coupled mass matrix

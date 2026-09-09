@@ -10,6 +10,10 @@ explain how that state was reached.
   synthetic consistency evidence, and the falsified clearance-step
   discrimination requirement; F1b/F1c are stopped pending a process-model
   decision.
+- [F1c probe session report](F1C_PROBE_SESSION_REPORT.md) — physics-integrated
+  filter sessions on the N5 primitive: measured pair covariance replacing the
+  independent-side placeholder, clean-session consistency, the corrupted
+  (confidently-wrong) session, and lifecycle/reset evidence.
 - [N5 antipodal cancellation report](N5_ANTIPODAL_CANCELLATION_REPORT.md) —
   768-trial antipodal-pair campaign under injected part-tolerance clearance
   DC: pair-mean cancellation, difference-term linearity, the half-facet
