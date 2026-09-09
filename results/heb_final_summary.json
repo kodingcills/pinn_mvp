@@ -1,0 +1,55 @@
+{
+ "heb_version": "0.1.0",
+ "system_tag": "haplous-prehardware-eval-v0",
+ "seed": 9975048060650219579,
+ "manifest_sha256": "3eb33ab53bfe90f9c6cf5098fe8358eabdee702c849eb01d9591473fa0f0fe40",
+ "n_scenarios": 38,
+ "n_trials": 76,
+ "systems": {
+  "haplous_mediated": {
+   "trials": 38,
+   "coverage": 0.8421052631578947,
+   "bounded_success_rate_among_accepted": 0.84375,
+   "task_successes": 27,
+   "refusals": 6,
+   "refusal_precision": 1.0,
+   "refusal_recall": 1.0,
+   "hard_violation_trials": 0,
+   "recovery_success_rate": null,
+   "completion_percentiles_s": {
+    "p50": 2.004999999999837,
+    "p90": 3.520000000000343,
+    "p95": 4.163000000000412,
+    "max": 6.849999999998923
+   }
+  },
+  "bare_behavior": {
+   "trials": 38,
+   "coverage": 1.0,
+   "bounded_success_rate_among_accepted": 0.8157894736842105,
+   "task_successes": 36,
+   "refusals": 0,
+   "refusal_precision": null,
+   "refusal_recall": 0.0,
+   "hard_violation_trials": 5,
+   "recovery_success_rate": null,
+   "completion_percentiles_s": {
+    "p50": 1.95749999999984,
+    "p90": 3.520000000000343,
+    "p95": 4.056000000000472,
+    "max": 6.849999999998923
+   }
+  }
+ },
+ "semantic_conformance": {
+  "haplous_mediated": {
+   "match": 33,
+   "scored": 38
+  },
+  "bare_behavior": {
+   "match": 31,
+   "scored": 38
+  }
+ },
+ "wall_s": 87.23920083399935
+}

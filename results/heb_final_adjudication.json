@@ -1,0 +1,141 @@
+{
+ "heb_version": "0.1.0",
+ "system_tag": "haplous-prehardware-eval-v0",
+ "manifest_sha256": "3eb33ab53bfe90f9c6cf5098fe8358eabdee702c849eb01d9591473fa0f0fe40",
+ "seed": 9975048060650219579,
+ "protocol_note": "expected_disposition declared per scenario applies to any correct system; refusals are system capability, and timing/fault schedules whose modeled values breach declared bounds expect ABORTED",
+ "mismatches": [
+  {
+   "scenario_id": "heldout_ins_deadline_2",
+   "systems": [
+    {
+     "system": "bare_behavior",
+     "reported": "COMPLETE",
+     "reason": null
+    }
+   ],
+   "classification": "bare_cannot_refuse (expected: mediated-only capability)"
+  },
+  {
+   "scenario_id": "heldout_ins_dropout_1",
+   "systems": [
+    {
+     "system": "haplous_mediated",
+     "reported": "ABORTED",
+     "reason": "hard_constraint_state_freshness"
+    }
+   ],
+   "classification": "manifest-expectation error: schedule breach expects ABORTED; mediated abort is correct"
+  },
+  {
+   "scenario_id": "heldout_ins_infeasible_0",
+   "systems": [
+    {
+     "system": "bare_behavior",
+     "reported": "ABORTED",
+     "reason": "horizon_exhausted"
+    }
+   ],
+   "classification": "bare_cannot_refuse (expected: mediated-only capability)"
+  },
+  {
+   "scenario_id": "heldout_ins_refusal_1",
+   "systems": [
+    {
+     "system": "bare_behavior",
+     "reported": "COMPLETE",
+     "reason": null
+    }
+   ],
+   "classification": "bare_cannot_refuse (expected: mediated-only capability)"
+  },
+  {
+   "scenario_id": "heldout_ins_stale_0",
+   "systems": [
+    {
+     "system": "haplous_mediated",
+     "reported": "ABORTED",
+     "reason": "hard_constraint_state_freshness"
+    }
+   ],
+   "classification": "manifest-expectation error: schedule breach expects ABORTED; mediated abort is correct"
+  },
+  {
+   "scenario_id": "heldout_slide_07",
+   "systems": [
+    {
+     "system": "haplous_mediated",
+     "reported": "ABORTED",
+     "reason": "machine_fault_tilt_guard"
+    },
+    {
+     "system": "bare_behavior",
+     "reported": "ABORTED",
+     "reason": "machine_fault_tilt_guard"
+    }
+   ],
+   "classification": "genuine mechanism boundary: tilt guard on long arc near corridor-min radius (both systems)"
+  },
+  {
+   "scenario_id": "heldout_slide_refusal_0",
+   "systems": [
+    {
+     "system": "bare_behavior",
+     "reported": "COMPLETE",
+     "reason": null
+    }
+   ],
+   "classification": "bare_cannot_refuse (expected: mediated-only capability)"
+  },
+  {
+   "scenario_id": "heldout_slide_refusal_1",
+   "systems": [
+    {
+     "system": "bare_behavior",
+     "reported": "COMPLETE",
+     "reason": null
+    }
+   ],
+   "classification": "bare_cannot_refuse (expected: mediated-only capability)"
+  },
+  {
+   "scenario_id": "heldout_slide_refusal_2",
+   "systems": [
+    {
+     "system": "bare_behavior",
+     "reported": "COMPLETE",
+     "reason": null
+    }
+   ],
+   "classification": "bare_cannot_refuse (expected: mediated-only capability)"
+  },
+  {
+   "scenario_id": "heldout_slide_reject_1",
+   "systems": [
+    {
+     "system": "haplous_mediated",
+     "reported": "ABORTED",
+     "reason": "command_rejection_persistent"
+    }
+   ],
+   "classification": "manifest-expectation error: 40-tick rejection window exceeds the 3-rejection limit; persistent abort is correct"
+  },
+  {
+   "scenario_id": "heldout_slide_stale_0",
+   "systems": [
+    {
+     "system": "haplous_mediated",
+     "reported": "ABORTED",
+     "reason": "hard_constraint_state_freshness"
+    }
+   ],
+   "classification": "manifest-expectation error: schedule breach expects ABORTED; mediated abort is correct"
+  }
+ ],
+ "classification": {
+  "bare_cannot_refuse (expected: mediated-only capability)": 6,
+  "manifest-expectation error: schedule breach expects ABORTED; mediated abort is correct": 3,
+  "genuine mechanism boundary: tilt guard on long arc near corridor-min radius (both systems)": 1,
+  "manifest-expectation error: 40-tick rejection window exceeds the 3-rejection limit; persistent abort is correct": 1
+ }
+}
