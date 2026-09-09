@@ -40,6 +40,7 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Final, Optional
 
+import mujoco
 import numpy as np
 from numpy.typing import NDArray
 
