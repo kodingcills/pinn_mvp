@@ -39,6 +39,27 @@ from haplous.machine import MachineObservation, ServoCommand
 _SEATED_Z_SPAN_M = 10e-6
 
 
+def seated_condition(
+    goal: tuple[float, float, float],
+    tolerance_m: float,
+    target_depth_m: float,
+    max_force_n: float,
+    persistence_s: float,
+) -> SuccessCondition:
+    """The insertion task's completion truth: the tip must be stationary at
+    seating depth with contact force inside the stated limit, laterally
+    within tolerance of the commanded datum, over a persistence window.
+    Shared by the intent builder and the Haplous Execution Benchmark, so
+    every system is graded against the identical task truth."""
+    return SuccessCondition(
+        "seated",
+        _make_seated(
+            goal, tolerance_m, target_depth_m, max_force_n, persistence_s
+        ),
+        window_s=2.0 * persistence_s,
+    )
+
+
 def insertion_intent(
     task,
     *,
@@ -88,16 +109,12 @@ def insertion_intent(
         ),
     )
     condition = (
-        SuccessCondition(
-            "seated",
-            _make_seated(
-                goal,
-                position_tolerance_m,
-                target_depth_m,
-                max_force_n,
-                persistence_s,
-            ),
-            window_s=2.0 * persistence_s,
+        seated_condition(
+            goal,
+            position_tolerance_m,
+            target_depth_m,
+            max_force_n,
+            persistence_s,
         )
         if require_success_condition
         else None
