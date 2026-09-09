@@ -1,0 +1,38 @@
+{
+  "artifacts": {
+    "large_artifacts": {
+      "path": "/Users/tofuinparis/Projects/pinn_mvp/artifacts/evals/internal-insertion/20260909T203207.987828Z-858c71"
+    },
+    "summary": {
+      "path": "summary.json",
+      "sha256": "22738fc564f2a5f248f917c2bc19b21c08e2c2afaa8101a8431d184eddbf82a5"
+    },
+    "trials": {
+      "path": "trials.jsonl",
+      "sha256": "ac2eda954724f29f23b4b76c9591abe6b6c3b445e8914e98649ca1394dd85d76"
+    }
+  },
+  "benchmark": {
+    "name": "internal-insertion",
+    "version": "0.2.0"
+  },
+  "controller_config": {
+    "systems": [
+      "haplous_mediated"
+    ]
+  },
+  "controller_config_sha256": "e7a7e667b5a2a15a6c521f3437fa0f9e076e8505e76f9a304f9a49e5d633cece",
+  "framework": "internal",
+  "haplous_version": "0.5.0",
+  "metric_implementation_version": "heb-metrics-0.2.0",
+  "runtime_config": {
+    "ui": false
+  },
+  "runtime_config_sha256": "cf929e705dace463161eff01f2a6cb33220eb9208101ac6d0dfa136883a6d795",
+  "scenario_sha256": "a81c812607c6a8c4947a539c355a47154604fc09482cf79f35c79e105a6a511f",
+  "seed": 7,
+  "started_at_utc": "2026-09-09T20:32:07.708972+00:00",
+  "system_commit": "f2ea53261c5617368ca87e482f2f33e6d8d8d31e",
+  "system_variant": "haplous_mediated",
+  "task_id": "peg_insertion"
+}

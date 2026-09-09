@@ -1,0 +1,25 @@
+{
+  "benchmark_version": "0.2.0",
+  "n_scenarios": 1,
+  "n_trials": 1,
+  "systems": {
+    "haplous_mediated": {
+      "bounded_success_rate_among_accepted": 1.0,
+      "breach_trials": 0,
+      "completed_with_hard_violation_trials": 0,
+      "completion_percentiles_s": {
+        "max": 1.6239999999998767,
+        "p50": 1.6239999999998767,
+        "p90": 1.6239999999998767,
+        "p95": 1.6239999999998767
+      },
+      "coverage": 1.0,
+      "recovery_success_rate": null,
+      "refusal_precision": null,
+      "refusal_recall": null,
+      "refusals": 0,
+      "task_successes": 1,
+      "trials": 1
+    }
+  }
+}

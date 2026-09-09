@@ -1,0 +1,43 @@
+{
+  "benchmark_version": "0.2.0",
+  "n_scenarios": 4,
+  "n_trials": 8,
+  "systems": {
+    "direct_minimal": {
+      "bounded_success_rate_among_accepted": 1.0,
+      "breach_trials": 0,
+      "completed_with_hard_violation_trials": 0,
+      "completion_percentiles_s": {
+        "max": 16.299500000007363,
+        "p50": 16.299500000007363,
+        "p90": 16.299500000007363,
+        "p95": 16.299500000007363
+      },
+      "coverage": 1.0,
+      "recovery_success_rate": 1.0,
+      "refusal_precision": null,
+      "refusal_recall": null,
+      "refusals": 0,
+      "task_successes": 4,
+      "trials": 4
+    },
+    "haplous_mediated": {
+      "bounded_success_rate_among_accepted": 1.0,
+      "breach_trials": 0,
+      "completed_with_hard_violation_trials": 0,
+      "completion_percentiles_s": {
+        "max": 2.745500000000084,
+        "p50": 1.975499999999838,
+        "p90": 2.745500000000084,
+        "p95": 2.745500000000084
+      },
+      "coverage": 1.0,
+      "recovery_success_rate": 1.0,
+      "refusal_precision": null,
+      "refusal_recall": null,
+      "refusals": 0,
+      "task_successes": 4,
+      "trials": 4
+    }
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "artifacts": {
+    "large_artifacts": {
+      "path": "/Users/tofuinparis/Projects/pinn_mvp/artifacts/evals/internal-slide/20260909T203431.163953Z-1d8cf8"
+    },
+    "summary": {
+      "path": "summary.json",
+      "sha256": "4f217aad585d67384ac6a6f5953ec7227651eb708687dcdab1c3d609814be94b"
+    },
+    "trials": {
+      "path": "trials.jsonl",
+      "sha256": "7698b264725de1b076b98733956b67f70e3923bc23090e000ca9d947e6947cdb"
+    }
+  },
+  "benchmark": {
+    "name": "internal-slide",
+    "version": "0.2.0"
+  },
+  "controller_config": {
+    "systems": [
+      "haplous_mediated"
+    ]
+  },
+  "controller_config_sha256": "e7a7e667b5a2a15a6c521f3437fa0f9e076e8505e76f9a304f9a49e5d633cece",
+  "framework": "internal",
+  "haplous_version": "0.5.0",
+  "metric_implementation_version": "heb-metrics-0.2.0",
+  "runtime_config": {
+    "ui": false
+  },
+  "runtime_config_sha256": "cf929e705dace463161eff01f2a6cb33220eb9208101ac6d0dfa136883a6d795",
+  "scenario_sha256": "e65e0bbe6db093a8252c857208b5933af10bf74b76f83e4f66e7d6ef7e9ad195",
+  "seed": 11,
+  "started_at_utc": "2026-09-09T20:34:30.397882+00:00",
+  "system_commit": "f2ea53261c5617368ca87e482f2f33e6d8d8d31e",
+  "system_variant": "haplous_mediated",
+  "task_id": "constrained_slide"
+}

@@ -1,0 +1,40 @@
+{
+  "artifacts": {
+    "large_artifacts": {
+      "path": "/Users/tofuinparis/Projects/pinn_mvp/artifacts/evals/internal/20260909T203232.273138Z-d43c30"
+    },
+    "summary": {
+      "path": "summary.json",
+      "sha256": "dfc53ae740115b6c97cc4b4bc979c30091273473099b0f8d2b23c2d3f57a65e4"
+    },
+    "trials": {
+      "path": "trials.jsonl",
+      "sha256": "3e3bbd9310dc9a5e367e09bb2f72c33c5698a7aa096e8c7090eaa7ad25a00665"
+    }
+  },
+  "benchmark": {
+    "name": "internal",
+    "version": "0.2.0"
+  },
+  "controller_config": {
+    "systems": [
+      "direct_minimal",
+      "haplous_mediated"
+    ]
+  },
+  "controller_config_sha256": "99dbd056f26772876a76269c732dfeaa8def6123e06f7c6adb382049921a474a",
+  "framework": "internal",
+  "haplous_version": "0.5.0",
+  "metric_implementation_version": "heb-metrics-0.2.0",
+  "runtime_config": {
+    "headless": true,
+    "scenario_count": 4
+  },
+  "runtime_config_sha256": "7b7dc866e24ccdd648ef6d293a467982b3b0ccc31894ce1c37b07abb590bc745",
+  "scenario_sha256": "b71f972dda10f527d64cb927427a703f6712072fe096abe0c04c31b4e19c1a20",
+  "seed": 0,
+  "started_at_utc": "2026-09-09T20:32:13.799338+00:00",
+  "system_commit": "f2ea53261c5617368ca87e482f2f33e6d8d8d31e",
+  "system_variant": "direct_minimal,haplous_mediated",
+  "task_id": "heb-dev-small"
+}
