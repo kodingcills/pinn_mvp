@@ -36,6 +36,7 @@ def insertion_intent(
     state_max_age_s: float = 0.02,
     persistence_s: float = 0.1,
     recovery: Optional[RecoveryPolicy] = None,
+    require_success_condition: bool = True,
 ) -> ExecutionIntent:
     """Build the insertion intent from semantic requirements. goal_position
     is the COMMANDED nominal bore location (the CAD datum the controller is
@@ -70,11 +71,19 @@ def insertion_intent(
             RequirementKind.INITIAL_OFFSET_M, hard=True, limit=initial_offset_m
         ),
     )
-    condition = SuccessCondition(
-        "seated",
-        _make_seated(
-            goal, position_tolerance_m, target_depth_m, max_force_n, persistence_s
-        ),
+    condition = (
+        SuccessCondition(
+            "seated",
+            _make_seated(
+                goal,
+                position_tolerance_m,
+                target_depth_m,
+                max_force_n,
+                persistence_s,
+            ),
+        )
+        if require_success_condition
+        else None
     )
     return ExecutionIntent(
         behavior="peg_insertion",

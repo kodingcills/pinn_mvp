@@ -62,6 +62,7 @@ class MuJoCoMachine:
             model, mujoco.mjtObj.mjOBJ_SITE, "peg_tip"
         )
         self._last: Optional[MachineObservation] = None
+        self.last_motion: tuple[MachineObservation, ...] = ()
         self.execute_calls: list[tuple[tuple[float, float, float], float]] = []
         self.stop_calls = 0
 
@@ -155,6 +156,7 @@ class MuJoCoMachine:
                 )
             )
         self._last = observations[-1] if observations else None
+        self.last_motion = tuple(observations)
         return MotionRecord(
             observations=tuple(observations), ended_early=False, end_reason=None
         )
@@ -167,7 +169,9 @@ class MuJoCoMachine:
         # authorize execution against a real observation.
         pose = tuple(float(v) for v in self._data.site_xpos[self._tip_site_id])
         return MachineObservation(
-            stamp=Stamp(source_s=0.0, received_s=0.0),
+            stamp=Stamp(
+                source_s=0.0, received_s=self._config.receive_delay_s
+            ),
             pose_m=pose,
             force_z_n=0.0,
             tilt_deg=0.0,

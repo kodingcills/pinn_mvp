@@ -66,6 +66,13 @@ def negotiate(intent: ExecutionIntent, caps: MachineCapabilities) -> Feasibility
                 "evaluated from observations",
             )
         )
+    if not caps.command_modes:
+        refusals.append(
+            RefusalReason(
+                "unsupported_control_mode",
+                "the machine offers no supported command mode",
+            )
+        )
 
     for req in intent.requirements:
         if req.kind is RequirementKind.MAX_PROCESS_FORCE_N:

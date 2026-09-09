@@ -1,0 +1,112 @@
+{
+ "events": [
+  {
+   "kind": "feasibility",
+   "payload": {
+    "capabilities": {
+     "command_modes": [
+      "cartesian_impedance",
+      "force_controlled_descent"
+     ],
+     "execution_horizon_s": 16.3,
+     "max_initial_offset_m": 0.00435,
+     "max_sensed_force_n": 100.0,
+     "position_resolution_m": 1e-06,
+     "sensing": [
+      "force_z",
+      "pose",
+      "tilt"
+     ],
+     "state_max_age_s": 0.02,
+     "state_period_s": 0.005,
+     "supports_stop": true
+    },
+    "outcome": "SUPPORTED",
+    "reasons": []
+   },
+   "seq": 0,
+   "t_s": 0.0
+  },
+  {
+   "kind": "execution_authorized",
+   "payload": {
+    "observation_age_s": 0.0
+   },
+   "seq": 1,
+   "t_s": 0.0
+  },
+  {
+   "kind": "motion_started",
+   "payload": {
+    "n_observations": 3260
+   },
+   "seq": 2,
+   "t_s": 0.0005
+  },
+  {
+   "kind": "motion_completed",
+   "payload": {
+    "n_observations": 3260
+   },
+   "seq": 3,
+   "t_s": 16.295500000007372
+  },
+  {
+   "kind": "outcome",
+   "payload": {
+    "result": "COMPLETE",
+    "success_condition": "seated"
+   },
+   "seq": 4,
+   "t_s": 16.295500000007372
+  }
+ ],
+ "intent_behavior": "peg_insertion",
+ "intent_summary": {
+  "behavior": "peg_insertion",
+  "goal_description": "seat the peg in the bore at the commanded datum",
+  "goal_position_m": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "has_recovery_policy": false,
+  "requirements": [
+   {
+    "hard": true,
+    "kind": "max_process_force_n",
+    "limit": 25.0
+   },
+   {
+    "hard": true,
+    "kind": "max_tilt_deg",
+    "limit": 10.0
+   },
+   {
+    "hard": true,
+    "kind": "position_tolerance_m",
+    "limit": 0.000512
+   },
+   {
+    "hard": true,
+    "kind": "state_max_age_s",
+    "limit": 0.02
+   },
+   {
+    "hard": true,
+    "kind": "deadline_s",
+    "limit": 16.3
+   },
+   {
+    "hard": true,
+    "kind": "initial_offset_m",
+    "limit": 0.0
+   }
+  ],
+  "start_position_m": [
+   0.0,
+   0.0,
+   0.0
+  ]
+ }
+}

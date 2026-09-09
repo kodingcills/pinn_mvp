@@ -150,7 +150,19 @@ class HaplousRuntime:
         for attempt in range(max_attempts):
             if self._tracker.state is ExecutionState.RECOVERING:
                 self._tracker.transition(ExecutionState.EXECUTING)
-            breach = self._run_and_replay(state_period_s, state_max_age_s)
+            try:
+                breach = self._run_and_replay(state_period_s, state_max_age_s)
+            except Exception as exc:
+                self._machine.stop()
+                self._tracker.transition(ExecutionState.ABORTED)
+                self._evidence.append(
+                    "outcome",
+                    t_s=0.0,
+                    result="ABORTED",
+                    reason=f"machine_error_{type(exc).__name__}",
+                    detail=str(exc)[:200],
+                )
+                return
             if breach is None:
                 self._finish_on_success_condition()
                 return

@@ -1,0 +1,81 @@
+{
+ "config": {
+  "bundle": "VALIDATED_LOOSE_V1",
+  "n_segments": 16,
+  "dt_s": 0.0005,
+  "observation_decimation": 10,
+  "state_max_age_s": 0.02,
+  "max_initial_offset_m": 0.00435,
+  "note": "deterministic scenarios; no randomness, no seeds"
+ },
+ "conformance_pass": 12,
+ "conformance_total": 12,
+ "physical_task_success": "4/6",
+ "physical_bounded_success": "4/6",
+ "direct_task_success": {
+  "nominal": true,
+  "recoverable_lateral_1mm": true,
+  "recoverable_lateral_2mm": true,
+  "geometry_variation_dc_plus10um": true,
+  "unrecoverable_lateral_5mm": false,
+  "constraint_violation_tight_force": true
+ },
+ "refusal_recall": "5/5",
+ "refusal_precision": "5/5",
+ "constraint_violations_total": 1,
+ "measurement_loss_events": 2,
+ "max_constraint_excess": 0.07624315691002259,
+ "feasibility_latency_s": {
+  "median": 2.1354499949666206e-05,
+  "max": 3.2375000046158675e-05
+ },
+ "overhead_vs_direct": {
+  "nominal": {
+   "wall_delta_s": -0.047151292000307876,
+   "fraction": -0.014479035247367097
+  },
+  "recoverable_lateral_1mm": {
+   "wall_delta_s": 0.02974620899931324,
+   "fraction": 0.0049025509677296545
+  },
+  "recoverable_lateral_2mm": {
+   "wall_delta_s": -0.0707613329996093,
+   "fraction": -0.02089801662855128
+  },
+  "geometry_variation_dc_plus10um": {
+   "wall_delta_s": -0.008839331999297428,
+   "fraction": -0.0014208813298983189
+  },
+  "unrecoverable_lateral_5mm": {
+   "wall_delta_s": -8.885829291999471,
+   "fraction": -0.9999969051943038
+  },
+  "constraint_violation_tight_force": {
+   "wall_delta_s": -0.05578837499979272,
+   "fraction": -0.01728285799427264
+  }
+ },
+ "execution_wall_s": {
+  "nominal": 3.2093703749997076,
+  "recoverable_lateral_1mm": 6.09724233399902,
+  "recoverable_lateral_2mm": 3.3152697080004145,
+  "geometry_variation_dc_plus10um": 6.212181251000402,
+  "unrecoverable_lateral_5mm": 2.750000021478627e-05,
+  "constraint_violation_tight_force": 3.172171666000395,
+  "measurement_dropout_small": 3.2308169169991743,
+  "measurement_dropout_large": 4.281404458999532,
+  "stale_observation": 2.5750999157025944e-05,
+  "unsupported_requirement_force": 1.3790999219054356e-05,
+  "deadline_unachievable": 1.2832999345846474e-05,
+  "missing_success_condition": 1.2874999811174348e-05
+ },
+ "engineering_leverage": {
+  "core_runtime_loc": 842,
+  "behavior_loc": 126,
+  "adapter_loc": 167,
+  "scenario_count": 12,
+  "core_loc_changed_per_scenario_variant": 0,
+  "tuned_parameters_per_scenario": 0,
+  "note": "scenarios are intent data; adding variants required no core or behavior code changes"
+ }
+}
