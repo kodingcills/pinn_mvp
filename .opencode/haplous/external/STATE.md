@@ -144,3 +144,9 @@ remain the visual path. Rerun stays optional-future; no campaign stall.
 - Final report: docs/HAPLOUS_EXTERNAL_BENCHMARK_REPORT.md (FINAL with
   disclosed limitation). Figures: docs/figures/ (5 SVGs, all data-backed).
 - Suite at close: 306 passed, 1 xfailed.
+- X71 compound (multi-axis simultaneous) perturbation campaign: NOT
+  PERFORMED this campaign. Boundaries measured are single-axis families
+  (offset/clearance/facets from the prior S06 sweeps; this campaign adds
+  jitter period, bursty dropout/stale, command delay, kick magnitude,
+  force-limit cells). Compound cells remain future work, consistent with
+  the prior campaign's disclosure.
