@@ -1,12 +1,14 @@
-"""R05 locked-experiment gate tests (G1-G8 of R05-v1.yaml).
+"""R05 locked-experiment gate tests (G1-G10 of R05-v3.yaml).
 
-Synthetic-trace tests are fast; exactly one test runs real physics (the
-truth-poison regression G1 plus guidance recentering G4), with MAX_SECONDS
-shortened to keep the suite fast. The locked experiment itself always uses
-the module constants; monkeypatching here never leaks into other tests.
+Synthetic-trace tests are fast; exactly one test runs real physics per gate
+(the truth-poison regression G1 plus guidance recentering G4), with
+MAX_SECONDS shortened to keep the suite fast. The locked experiment itself
+always uses the module constants; monkeypatching here never leaks into other
+tests.
 """
 from __future__ import annotations
 
+import inspect
 import math
 from typing import Optional
 
@@ -244,16 +246,17 @@ def test_g5_unseatable_pair_leaves_filter_unchanged(monkeypatch) -> None:
     monkeypatch.setattr(r05, "run_episode", fake_run_episode)
     r05.assert_evidence_fingerprints()
     c0 = np.array([0.0006, 0.0002])
-    _, control = r05.build_tasks(0.0)
+    control = r05.build_control_task()
     fresh = r05.make_filter(c0)
     reference = r05.make_filter(c0)
-    record, events, times, peaks = r05.attempt_probe_pair(
+    record, events, times, peaks, plus_tr, minus_tr = r05.attempt_probe_pair(
         fresh, control, c0, 0.5, None, model=None, data=None
     )
     assert record is None
     assert len(events) == 1 and events[0].kind == "unseatable"
     assert times == [r05.MAX_SECONDS, r05.MAX_SECONDS]
     assert peaks == [0.0, 0.0]
+    assert plus_tr is unseatable and minus_tr is unseatable
     assert calls["count"] == 2
     assert np.array_equal(fresh.state_m, reference.state_m)
     assert np.array_equal(fresh.covariance_m2, reference.covariance_m2)
@@ -295,16 +298,22 @@ def test_g4_guided_start_equals_filter_h_estimate(monkeypatch) -> None:
     from pegsim.scene import build_mjcf
 
     scenario = _feasible_probe_scenario()
-    physical, control = r05.build_tasks(scenario.clearance_offset_m)
+    physical, _ = r05.build_tasks(scenario.clearance_offset_m)
     model = mujoco.MjModel.from_xml_string(build_mjcf(physical, r05._SOLVER, 0.0))
     data = mujoco.MjData(model)
     candidate = r05.HAPLOUS_CANDIDATES[0]  # H1: one pair, straight drop
-    execution, production, diagnostics = r05.run_haplous_arm(
-        scenario, candidate, 0.005, model=model, data=data
+    execution, production, probe_traces = r05.run_haplous_arm(
+        r05.policy_view(scenario),
+        r05.build_control_task(),
+        candidate,
+        0.005,
+        model=model,
+        data=data,
     )
-    h_final = np.array(diagnostics["final_filter_state_m"][:2])
+    h_final = np.asarray(execution.final_filter_state_m)[:2]
     assert execution.guided
     assert execution.spiral_usage == "guided_drop"
+    assert len(probe_traces) == 2
     assert np.allclose(
         execution.production_start_xy, h_final, rtol=0.0, atol=1e-15
     )
@@ -315,6 +324,32 @@ def test_g4_guided_start_equals_filter_h_estimate(monkeypatch) -> None:
     ])
     # setpoint starts at the commanded xy (the peg start) -> equals h_hat
     assert np.allclose(rebuilt, h_final, rtol=0.0, atol=1e-9)
+
+
+# ---------------------------------------------------------------------------
+# G10: the structural Rule Zero firewall
+# ---------------------------------------------------------------------------
+
+
+def test_g10_arms_receive_no_truth_or_hidden_clearance() -> None:
+    import dataclasses
+
+    policy_fields = {f.name for f in dataclasses.fields(r05.PolicyView)}
+    assert policy_fields == {
+        "c0_xy_m",
+        "first_probe_bearing_rad",
+        "corruption",
+    }
+    for arm in (r05.run_haplous_arm, r05.run_baseline_arm):
+        assert "policy" in inspect.signature(arm).parameters
+        assert "scenario" not in inspect.signature(arm).parameters
+        assert "clearance_offset_m" not in inspect.signature(arm).parameters
+    # The policy-visible task construction carries the nominal clearance only.
+    control = r05.build_control_task()
+    assert control.radial_clearance == r05.NOMINAL_CLEARANCE_M
+    # NEES is offline: it takes final state/covariance arrays, not a filter.
+    nees_params = list(inspect.signature(r05.nees_and_errors).parameters)
+    assert "filter_" not in nees_params
 
 
 # ---------------------------------------------------------------------------
@@ -334,7 +369,35 @@ def _poison_truth_fields(tr: TrialResult) -> TrialResult:
     tr.capture_step = None
     tr.capture_tip_lateral = None
     tr.capture_mouth_lateral = None
+    tr.min_contact_dist = np.full_like(tr.min_contact_dist, 123.0)
+    tr.spiral_exhausted = True
+    tr.committed = np.logical_not(tr.committed)
+    tr.z_flat_final = 999.0
     return tr
+
+
+def _records_equal(a, b) -> bool:
+    if a is None or b is None:
+        return a is b
+    return (
+        a.outcome == b.outcome
+        and a.bearing_rad == b.bearing_rad
+        and a.normalized_innovation_squared == b.normalized_innovation_squared
+        and a.consecutive_gate_count == b.consecutive_gate_count
+        and np.array_equal(a.innovation_m, b.innovation_m)
+        and np.array_equal(
+            a.innovation_covariance_m2, b.innovation_covariance_m2
+        )
+        and np.array_equal(a.last_good_state_m, b.last_good_state_m)
+        and all(
+            np.array_equal(x, y)
+            for x, y in zip(
+                a.gated_innovation_history_m, b.gated_innovation_history_m
+            )
+        )
+        and np.array_equal(a.state_m, b.state_m)
+        and np.array_equal(a.covariance_m2, b.covariance_m2)
+    )
 
 
 def test_g1_truth_poison_cannot_change_treatment(monkeypatch) -> None:
@@ -359,19 +422,28 @@ def test_g1_truth_poison_cannot_change_treatment(monkeypatch) -> None:
 
             monkeypatch.setattr(r05, "run_episode", poisoned)
         candidate = r05.HAPLOUS_CANDIDATES[0]
-        execution, production, diagnostics = r05.run_haplous_arm(
-            scenario, candidate, 0.005, model=model, data=data
+        execution, production, probe_traces = r05.run_haplous_arm(
+            r05.policy_view(scenario),
+            r05.build_control_task(),
+            candidate,
+            0.005,
+            model=model,
+            data=data,
         )
         return {
             "execution": execution,
+            "probe_traces": probe_traces,
             "production_traces": {
                 "tip_pos": production.tip_pos,
                 "setpoint_xy": production.setpoint_xy,
                 "z_flat": production.z_flat,
                 "contact_force": production.contact_force,
                 "tilt_deg": production.tilt_deg,
+                "z_des": production.z_des,
+                "f_cmd_z": production.f_cmd_z,
             },
-            "diagnostics": diagnostics,
+            "final_state_m": execution.final_filter_state_m,
+            "final_cov_m2": execution.final_filter_h_cov_m2,
         }
 
     clean = run_and_record(poison=False)
@@ -382,10 +454,24 @@ def test_g1_truth_poison_cannot_change_treatment(monkeypatch) -> None:
     assert clean_exec.spiral_usage == poison_exec.spiral_usage
     assert clean_exec.guided == poison_exec.guided
     assert clean_exec.probe_side_motions == poison_exec.probe_side_motions
-    assert [
-        (e.kind, e.nis) for e in clean_exec.probe_events
-    ] == [(e.kind, e.nis) for e in poison_exec.probe_events]
-    assert clean["diagnostics"] == poisoned["diagnostics"]
+    assert clean_exec.updated_pair_count == poison_exec.updated_pair_count
+    # reduced observations (post-corruption estimates) byte-identical
+    assert len(clean_exec.probe_events) == len(poison_exec.probe_events)
+    for ev_c, ev_p in zip(clean_exec.probe_events, poison_exec.probe_events):
+        assert ev_c.kind == ev_p.kind
+        assert ev_c.nis == ev_p.nis
+        assert np.array_equal(ev_c.plus_reduced_xy_m, ev_p.plus_reduced_xy_m)
+        assert np.array_equal(ev_c.minus_reduced_xy_m, ev_p.minus_reduced_xy_m)
+    # full filter records byte-identical
+    assert len(clean_exec.filter_records) == len(poison_exec.filter_records)
+    for rec_c, rec_p in zip(
+        clean_exec.filter_records, poison_exec.filter_records
+    ):
+        assert _records_equal(rec_c, rec_p)
+    # final estimator state and commands byte-identical
+    assert np.array_equal(clean["final_state_m"], poisoned["final_state_m"])
+    assert np.array_equal(clean["final_cov_m2"], poisoned["final_cov_m2"])
+    assert len(clean["probe_traces"]) == len(poisoned["probe_traces"])
     for key in clean["production_traces"]:
         assert np.array_equal(
             clean["production_traces"][key],

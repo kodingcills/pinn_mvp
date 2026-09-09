@@ -1,7 +1,7 @@
 schema_version: "haplous.locked-test.v1"
 test_id: "R05-v2"
 title: "Execution value of physics-integrated antipodal probing and filtered re-centering"
-status: "preregistered_not_run"
+status: "superseded_pre_confirmatory_by_R05-v3 (development phase ran and is preserved in git as the v2 lineage; none of its results are pooled with v3)"
 supersedes: "R05-v1 (never executed; superseded PRE-CONFIRMATORY by the independent runner preflight review, which found the v1 rng_streams section self-contradictory with the balanced strata clauses and identified unenforced G3/G7/G9, z_flat-relative grading, and production-only peak-force selection). Hypothesis, arms, margins, envelopes, and analysis are UNCHANGED from v1."
 runner_review: "oracle preflight returned FIX_FIRST; all blocker fixes are folded into this re-lock. v1 is preserved as the historical record of the design process."
 locked_on: "2026-09-08"

@@ -10,3 +10,8 @@ MUJOCO_LOG.TXT
 # Agent/editor configuration is machine-local. Never commit these trees.
 .agents/
 .claude/
+
+# R05 trace sidecars: full telemetry too large for git; pinned by sha256
+# digests in results/r05_freeze.json and referenced from every trial row.
+results/r05_traces_dev/
+results/r05_traces_holdout/

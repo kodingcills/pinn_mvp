@@ -150,8 +150,8 @@
   "stratum_id": 2,
   "stratum_name": "probe_feasible_f1c_hazard",
   "tcp_translation_m": [
-   -2.7716385975338603e-06,
-   1.1480502970952697e-06
+   3e-06,
+   0.0
   ],
   "tcp_yaw_rad": 0.01
  },
@@ -170,10 +170,10 @@
   "stratum_id": 2,
   "stratum_name": "probe_feasible_f1c_hazard",
   "tcp_translation_m": [
-   1.1480502970952701e-06,
-   -2.77163859753386e-06
+   3e-06,
+   0.0
   ],
-  "tcp_yaw_rad": -0.01
+  "tcp_yaw_rad": 0.01
  },
  {
   "arm_order_bit": 0,
@@ -190,10 +190,10 @@
   "stratum_id": 2,
   "stratum_name": "probe_feasible_f1c_hazard",
   "tcp_translation_m": [
-   2.7716385975338603e-06,
-   1.1480502970952695e-06
+   3e-06,
+   0.0
   ],
-  "tcp_yaw_rad": -0.01
+  "tcp_yaw_rad": 0.01
  },
  {
   "arm_order_bit": 1,
@@ -210,8 +210,8 @@
   "stratum_id": 2,
   "stratum_name": "probe_feasible_f1c_hazard",
   "tcp_translation_m": [
-   -1.148050297095271e-06,
-   -2.7716385975338595e-06
+   3e-06,
+   0.0
   ],
   "tcp_yaw_rad": 0.01
  },

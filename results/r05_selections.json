@@ -1,7 +1,7 @@
 {
- "locked_design": ".opencode/haplous/state/locked-tests/R05-v2.yaml",
- "locked_design_sha256": "e078de16c9ad99e16487031b1c5a6493ee03bc68c45329e44962ab02bf09696e",
- "repo_head": "8d514c1e0c519c7dc6d97e4e1ebcbbf8504ceb87",
+ "locked_design": ".opencode/haplous/state/locked-tests/R05-v3.yaml",
+ "locked_design_sha256": "945bea748201d7a7c1cd0de5736be5378cba0723e2510202c6343f62a374cf54",
+ "repo_head": "c96e8a7bc72d2f25931c4b4f04d165a5f5cab14b",
  "baseline_selected_v_t_m_per_s": 0.1,
  "baseline_selection_metrics": {
   "0.005": {
@@ -48,13 +48,13 @@
    "successes": 18,
    "p95_pipeline_peak_fz_n": 16.50082445178566,
    "median_total_pipeline_time_s": 59.6899999999993,
-   "total_probe_side_motions": 120
+   "total_probe_side_motions": 116
   },
   "H4": {
    "successes": 18,
    "p95_pipeline_peak_fz_n": 16.50082445178566,
    "median_total_pipeline_time_s": 59.6899999999993,
-   "total_probe_side_motions": 120
+   "total_probe_side_motions": 116
   },
   "H5": {
    "successes": 18,
@@ -63,7 +63,7 @@
    "total_probe_side_motions": 120
   }
  },
- "dev_manifest_sha256": "399a10562ead1e3325af18a6ad67264639982e2c94985be6b9e954b2ded37134",
- "g9_worst_row_steps_per_s": 847.9722146256004,
- "selection_time": "2026-09-08T23:40:02-0400"
+ "dev_manifest_sha256": "11022c42d57ec6ae214e6ee2d0d3d5d4456074db9b035e6c58f8e8cb3a5f47c5",
+ "g9_worst_row_steps_per_s": 852.1719612976675,
+ "selection_time": "2026-09-09T00:45:09-0400"
 }

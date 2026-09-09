@@ -172,11 +172,18 @@ class StratumSpec:
     """One locked challenge stratum (fixture radius range, corruption)."""
 
     id: int
+@dataclass(frozen=True)
+class StratumSpec:
+    id: int
     name: str
     fixture_radius_m: tuple[float, float]
     dc_levels_m: tuple[float, ...]
     tcp_bias: bool
     encoder_resolution_m: Optional[float]
+    # R05-v3: a stratum block may pin the exact TCP hazard realization
+    # (translation, yaw). When pinned, the balanced clause (C) permutation is
+    # still consumed but its values are unused for this stratum.
+    tcp_fixed: Optional[tuple[tuple[float, float], float]] = None
 
 
 DEV_STRATA: Final[tuple[StratumSpec, ...]] = (
@@ -185,6 +192,7 @@ DEV_STRATA: Final[tuple[StratumSpec, ...]] = (
     StratumSpec(
         2, "probe_feasible_f1c_hazard", (0.0005, 0.0010),
         (-1e-5, -5e-6, 5e-6, 1e-5), True, 2e-6,
+        tcp_fixed=((3e-6, 0.0), 0.01),
     ),
     StratumSpec(3, "probe_boundary_clean", (0.0010, 0.0015), (-1e-5, -5e-6, 5e-6, 1e-5), False, None),
     StratumSpec(4, "search_edge_clean", (0.00225, 0.00425), (-1e-5, -5e-6, 5e-6, 1e-5), False, None),
@@ -264,14 +272,16 @@ def generate_scenario(
 
     if stratum.tcp_bias:
         pair_id = int(tcp_perm[replicate_id])
-        octant = pair_id % 8
-        yaw_sign = pair_id // 8
-        phi = (2 * octant + 1) * math.pi / 8.0
-        tcp_translation: Optional[tuple[float, float]] = (
-            3e-6 * math.cos(phi),
-            3e-6 * math.sin(phi),
-        )
-        tcp_yaw: Optional[float] = 0.01 if yaw_sign == 0 else -0.01
+        if stratum.tcp_fixed is not None:
+            (tx, ty), yaw = stratum.tcp_fixed
+            tcp_translation = (tx, ty)
+            tcp_yaw = yaw
+        else:
+            octant = pair_id % 8
+            yaw_sign = pair_id // 8
+            phi = (2 * octant + 1) * math.pi / 8.0
+            tcp_translation = (3e-6 * math.cos(phi), 3e-6 * math.sin(phi))
+            tcp_yaw = 0.01 if yaw_sign == 0 else -0.01
     else:
         tcp_translation = None
         tcp_yaw = None
@@ -346,9 +356,26 @@ def canonical_manifest_json(scenarios: list[Scenario]) -> str:
 # ---------------------------------------------------------------------------
 
 
+def build_control_task() -> TaskSpec:
+    """The NOMINAL control task. This is the ONLY task construction the
+    policy-visible arm functions may receive: it carries no dc, so the
+    Rule Zero boundary is structural, not conventional (G10)."""
+    return TaskSpec(
+        peg_radius=0.005,
+        radial_clearance=NOMINAL_CLEARANCE_M,
+        chamfer_width=0.001,
+        plate_thickness=0.01,
+        peg_length=0.05,
+        peg_mass=0.05,
+        n_segments=N_SEGMENTS,
+        friction=0.4,
+    )
+
+
 def build_tasks(clearance_offset_m: float) -> tuple[TaskSpec, TaskSpec]:
     """G3: physical task (scene geometry, clearance 0.5 mm + dc) vs control
-    task (all control logic, reduction, and the filter keep nominal 0.5 mm)."""
+    task (all control logic, reduction, and the filter keep nominal 0.5 mm).
+    Offline/model-construction use only; arm functions take build_control_task()."""
     physical_task = TaskSpec(
         peg_radius=0.005,
         radial_clearance=NOMINAL_CLEARANCE_M + clearance_offset_m,
@@ -359,16 +386,7 @@ def build_tasks(clearance_offset_m: float) -> tuple[TaskSpec, TaskSpec]:
         n_segments=N_SEGMENTS,
         friction=0.4,
     )
-    control_task = TaskSpec(
-        peg_radius=0.005,
-        radial_clearance=NOMINAL_CLEARANCE_M,
-        chamfer_width=0.001,
-        plate_thickness=0.01,
-        peg_length=0.05,
-        peg_mass=0.05,
-        n_segments=N_SEGMENTS,
-        friction=0.4,
-    )
+    control_task = build_control_task()
     return physical_task, control_task
 
 
@@ -567,6 +585,29 @@ def corruption_for(scenario: Scenario) -> Optional[CorruptionModel]:
     )
 
 
+@dataclass(frozen=True)
+class PolicyView:
+    """G10: the ONLY scenario content the arm functions receive. It carries
+    no hidden physical clearance dc and no truth-side fields, so the Rule
+    Zero boundary is structural: treatment code cannot consume what it is
+    never handed."""
+
+    c0_xy_m: NDArray[np.float64]
+    first_probe_bearing_rad: float
+    corruption: Optional[CorruptionModel]
+
+
+def policy_view(scenario: Scenario) -> PolicyView:
+    """Driver-side projection of the exogenous scenario to the policy-visible
+    subset (commanded center, registered first bearing, measurement-corruption
+    channel). Everything else — dc, grading, truth — stays offline."""
+    return PolicyView(
+        c0_xy_m=scenario.c0_xy_m,
+        first_probe_bearing_rad=scenario.first_probe_bearing_rad,
+        corruption=corruption_for(scenario),
+    )
+
+
 @dataclass
 class ProbeEvent:
     attempt_index: int
@@ -575,6 +616,8 @@ class ProbeEvent:
     nis: Optional[float] = None
     plus_time_s: Optional[float] = None
     minus_time_s: Optional[float] = None
+    plus_reduced_xy_m: Optional[NDArray[np.float64]] = None
+    minus_reduced_xy_m: Optional[NDArray[np.float64]] = None
 
 
 def attempt_probe_pair(
@@ -585,12 +628,20 @@ def attempt_probe_pair(
     corruption: Optional[CorruptionModel],
     model,
     data,
-) -> tuple[Optional[FilterUpdateRecord], list[ProbeEvent], list[float], list[float]]:
+) -> tuple[
+    Optional[FilterUpdateRecord],
+    list[ProbeEvent],
+    list[float],
+    list[float],
+    TrialResult,
+    TrialResult,
+]:
     """One registered antipodal pair attempt through real physics. A side
     that fails operational completion leaves the filter untouched (G5).
     Returns the filter record (None if the pair was incomplete), the events,
-    per-side completion/timeout times, and per-side peak |F_z| for the
-    pipeline force accounting."""
+    per-side completion/timeout times, per-side peak |F_z| for pipeline force
+    accounting, and both complete side traces (evidence; never consumed by
+    any treatment decision)."""
     events: list[ProbeEvent] = []
     times: list[float] = []
     peaks: list[float] = []
@@ -618,7 +669,7 @@ def attempt_probe_pair(
                         plus_time_s=plus_out.completion_time_s,
                         minus_time_s=minus_out.completion_time_s)
         )
-        return None, events, times, peaks
+        return None, events, times, peaks, plus_tr, minus_tr
     assert plus_out.measured_tip_xy_m is not None
     assert minus_out.measured_tip_xy_m is not None
     plus_est = reduce_measurement(
@@ -642,9 +693,11 @@ def attempt_probe_pair(
         ProbeEvent(0, bearing_rad, record.outcome.value,
                    nis=record.normalized_innovation_squared,
                    plus_time_s=plus_out.completion_time_s,
-                   minus_time_s=minus_out.completion_time_s)
+                   minus_time_s=minus_out.completion_time_s,
+                   plus_reduced_xy_m=plus_est,
+                   minus_reduced_xy_m=minus_est)
     )
-    return record, events, times, peaks
+    return record, events, times, peaks, plus_tr, minus_tr
 
 
 @dataclass
@@ -658,21 +711,23 @@ class HaplousExecution:
     probe_time_s: float = 0.0
     probe_peak_fz_n: list[float] = field(default_factory=list)
     filter_records: list[FilterUpdateRecord] = field(default_factory=list)
-    nees: Optional[float] = None
-    h_error_norm_m: Optional[float] = None
-    confidently_wrong: bool = False
+    final_filter_state_m: Optional[NDArray[np.float64]] = None
+    final_filter_h_cov_m2: Optional[NDArray[np.float64]] = None
+    updated_pair_count: int = 0
 
 
 def nees_and_errors(
-    filter_: StateFilter,
+    h_state_m: NDArray[np.float64],
+    h_cov_m2: NDArray[np.float64],
     true_hole_xy: NDArray[np.float64],
     has_accepted_records: bool,
 ) -> tuple[Optional[float], float, bool]:
-    """Evaluation-only 2-DOF fixture NEES and the 3-sigma confidently-wrong
-    flag. NEES is reported only once the filter has accepted at least one
+    """Offline (G10) 2-DOF fixture NEES and the 3-sigma confidently-wrong
+    flag, computed from the filter's final state/covariance OUTSIDE the arm
+    functions. NEES is reported only once the filter accepted at least one
     pair; never consumed by any treatment decision."""
-    h_hat = filter_.state_m[:2]
-    p_hh = filter_.covariance_m2[:2, :2]
+    h_hat = np.asarray(h_state_m, dtype=float)[:2]
+    p_hh = np.asarray(h_cov_m2, dtype=float)
     err = h_hat - np.asarray(true_hole_xy, dtype=float)
     if not has_accepted_records:
         return None, float(np.linalg.norm(err)), False
@@ -712,18 +767,21 @@ def production_plan(
 
 
 def run_haplous_arm(
-    scenario: Scenario,
+    policy: PolicyView,
+    control_task: TaskSpec,
     candidate: HaplousCandidate,
     baseline_v_t_m_per_s: float,
     *,
     model,
     data,
-) -> tuple[HaplousExecution, TrialResult, dict]:
-    """The locked treatment arm. Returns the execution record, the one
-    designated production trial, and the evaluation diagnostics dict."""
-    _, control_task = build_tasks(scenario.clearance_offset_m)
-    c0 = scenario.c0_xy_m
-    corruption = corruption_for(scenario)
+) -> tuple[HaplousExecution, TrialResult, list[tuple[str, TrialResult]]]:
+    """The locked treatment arm. Inputs are policy-visible only (G10): the
+    nominal control task, the projected PolicyView, the candidate policy, and
+    the frozen baseline spiral speed. Returns the execution record, the one
+    designated production trial, and all probe side traces (evidence; never
+    consumed by any treatment decision)."""
+    c0 = policy.c0_xy_m
+    corruption = policy.corruption
     filter_ = make_filter(c0)
     execution = HaplousExecution(
         guided=False,
@@ -731,12 +789,15 @@ def run_haplous_arm(
         used_fallback=True,
         spiral_usage="baseline_fallback",
     )
+    probe_traces: list[tuple[str, TrialResult]] = []
     updated_count = 0
     for attempt in range(candidate.max_pair_attempts):
-        bearing = scenario.first_probe_bearing_rad + BEARING_OFFSETS_RAD[attempt]
-        record, events, times, peaks = attempt_probe_pair(
+        bearing = policy.first_probe_bearing_rad + BEARING_OFFSETS_RAD[attempt]
+        record, events, times, peaks, plus_tr, minus_tr = attempt_probe_pair(
             filter_, control_task, c0, bearing, corruption, model, data
         )
+        probe_traces.append(("plus", plus_tr))
+        probe_traces.append(("minus", minus_tr))
         for ev in events:
             ev.attempt_index = attempt
         execution.probe_events.extend(events)
@@ -754,12 +815,9 @@ def run_haplous_arm(
             break  # never execute from the ABORT-reinitialized h
         # SALVAGE: rejected update not used for guidance; next bearing.
 
-    nees, h_err, cw = nees_and_errors(
-        filter_, np.zeros(2), len(execution.filter_records) > 0
-    )
-    execution.nees = nees
-    execution.h_error_norm_m = h_err
-    execution.confidently_wrong = cw
+    execution.final_filter_state_m = filter_.state_m.copy()
+    execution.final_filter_h_cov_m2 = filter_.covariance_m2.copy()
+    execution.updated_pair_count = updated_count
 
     guided, prod_cfg, spiral_usage, start = production_plan(
         candidate, updated_count, filter_, c0, control_task, baseline_v_t_m_per_s
@@ -769,12 +827,7 @@ def run_haplous_arm(
     execution.spiral_usage = spiral_usage
     execution.production_start_xy = start
     production = run_episode(prod_cfg, pen_allow=PEN_ALLOW_M, model=model, data=data)
-    diagnostics: dict = {
-        "final_filter_state_m": filter_.state_m.tolist(),
-        "final_filter_h_cov_m2": filter_.covariance_m2[:2, :2].tolist(),
-        "updated_pair_count": updated_count,
-    }
-    return execution, production, diagnostics
+    return execution, production, probe_traces
 
 
 def build_physical_model(scenario: Scenario):
@@ -795,17 +848,17 @@ def build_physical_model(scenario: Scenario):
 
 
 def run_baseline_arm(
-    scenario: Scenario,
+    policy: PolicyView,
+    control_task: TaskSpec,
     v_t_m_per_s: float,
     *,
     model,
     data,
 ) -> TrialResult:
     """The locked baseline arm: one full production insertion from c0."""
-    _, control_task = build_tasks(scenario.clearance_offset_m)
     cfg = episode_from_world_start(
         control_task,
-        scenario.c0_xy_m,
+        policy.c0_xy_m,
         spiral=spiral_for(control_task, v_t_m_per_s),
     )
     return run_episode(cfg, pen_allow=PEN_ALLOW_M, model=model, data=data)

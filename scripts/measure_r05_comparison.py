@@ -1,17 +1,23 @@
-"""R05 locked comparison driver (see .opencode/haplous/state/locked-tests/R05-v2.yaml).
+"""R05 locked comparison driver (see .opencode/haplous/state/locked-tests/R05-v3.yaml).
 
 Phases:
   generate  write the locked dev/holdout manifests and record their hashes
   dev       run the development envelope for both arms' candidate sets and
             freeze the selected arm definitions
+  freeze    write the exclusive execution freeze record (hashes of the lock,
+            manifests, selections, runner sources; current clean HEAD)
   holdout   run the 80-scenario held-out evaluation with the frozen arms
             (paired jobs: one worker per scenario executes both arms in
-            arm_order_bit order on one physical model)
+            arm_order_bit order on one physical model), then analyze
   analyze   paired exact McNemar analysis over the holdout trial rows
 
+G10 firewall: arm functions receive ONLY policy-visible inputs (the nominal
+control task and a PolicyView). Hidden physical clearance dc and truth-side
+diagnostics (NEES, h error, confidently-wrong) are computed offline here.
+
 Every physics motion is an EpisodeConfig executed by pegsim.rollout.run_episode
-via pegsim.r05. Trial rows are written per scenario-arm; aggregates are only
-derived outputs. Raw rows are the evidence.
+via pegsim.r05. Trial rows and full trace sidecars are written per scenario;
+aggregates are only derived outputs. Raw rows and traces are the evidence.
 """
 from __future__ import annotations
 
@@ -35,6 +41,7 @@ from pegsim.r05 import (
     run_baseline_arm,
     run_haplous_arm,
 )
+from pegsim.rollout import TrialResult
 
 ROOT = Path(__file__).resolve().parents[1]
 RESULTS = ROOT / "results"
@@ -45,13 +52,32 @@ TRIALS_HOLDOUT = RESULTS / "r05_holdout_trials.jsonl"
 SELECTIONS = RESULTS / "r05_selections.json"
 SUMMARY = RESULTS / "r05_summary.json"
 MANIFEST_HASHES = RESULTS / "r05_manifest_hashes.json"
+FREEZE = RESULTS / "r05_freeze.json"
+TRACES_DEV = RESULTS / "r05_traces_dev"
+TRACES_HOLDOUT = RESULTS / "r05_traces_holdout"
+LOCK_YAML = ROOT / ".opencode/haplous/state/locked-tests/R05-v3.yaml"
 MAX_WORKERS = 14
 MIN_THROUGHPUT_STEPS_PER_S = 200.0
 EPISODE_STEPS = 32600
 
+_HASHED_SOURCES = (
+    LOCK_YAML,
+    Path("scripts/measure_r05_comparison.py"),
+    Path("pegsim/r05.py"),
+    Path("pegsim/filter.py"),
+    Path("pegsim/probing.py"),
+    Path("pegsim/rollout.py"),
+    Path("pegsim/error_injection.py"),
+    Path("tests/test_r05.py"),
+)
+
 
 def _sha256_text(text: str) -> str:
     return hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+
+def _sha256_file(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
 def _repo_head() -> str:
@@ -99,6 +125,121 @@ def _exclusive_write(path: Path, text: str) -> None:
     path.write_text(text, encoding="utf-8")
 
 
+def filter_record_json(record) -> dict:
+    return {
+        "outcome": record.outcome.value,
+        "bearing_rad": record.bearing_rad,
+        "innovation_m": np.asarray(record.innovation_m).tolist(),
+        "innovation_covariance_m2": np.asarray(
+            record.innovation_covariance_m2
+        ).tolist(),
+        "nis": record.normalized_innovation_squared,
+        "gate_threshold": record.gate_threshold,
+        "consecutive_gate_count": record.consecutive_gate_count,
+        "last_good_state_m": np.asarray(record.last_good_state_m).tolist(),
+        "gated_innovation_history_m": [
+            np.asarray(g).tolist() for g in record.gated_innovation_history_m
+        ],
+        "state_m": np.asarray(record.state_m).tolist(),
+        "covariance_m2": np.asarray(record.covariance_m2).tolist(),
+    }
+
+
+def probe_event_json(event) -> dict:
+    return {
+        "attempt": event.attempt_index,
+        "bearing_rad": event.bearing_rad,
+        "kind": event.kind,
+        "nis": event.nis,
+        "plus_time_s": event.plus_time_s,
+        "minus_time_s": event.minus_time_s,
+        "plus_reduced_xy_m": (
+            event.plus_reduced_xy_m.tolist()
+            if event.plus_reduced_xy_m is not None
+            else None
+        ),
+        "minus_reduced_xy_m": (
+            event.minus_reduced_xy_m.tolist()
+            if event.minus_reduced_xy_m is not None
+            else None
+        ),
+    }
+
+
+def _trace_arrays(prefix: str, tr: TrialResult) -> dict:
+    return {
+        f"{prefix}/{k}": v
+        for k, v in {
+            "time": tr.time,
+            "tip_pos": tr.tip_pos,
+            "setpoint_xy": tr.setpoint_xy,
+            "z_des": tr.z_des,
+            "z_flat": tr.z_flat,
+            "contact_force": tr.contact_force,
+            "qfrc_applied": tr.qfrc_applied,
+            "tip_lateral": tr.tip_lateral,
+            "mouth_lateral": tr.mouth_lateral,
+            "min_contact_dist": tr.min_contact_dist,
+            "tilt_deg": tr.tilt_deg,
+            "f_cmd_z": tr.f_cmd_z,
+            "committed": tr.committed,
+            "spiral_theta": tr.spiral_theta,
+            "control_tick": tr.control_tick,
+            "searching": tr.searching,
+            "spiral_advanced": tr.spiral_advanced,
+        }.items()
+    }
+
+
+def persist_sidecar(
+    trace_dir: Path,
+    scenario_id: str,
+    system: str,
+    candidate_tag: str,
+    *,
+    production_tr: TrialResult,
+    probe_traces: list[tuple[str, TrialResult]],
+    execution: Optional[object],
+) -> str:
+    """Write the complete per-cell telemetry (production trace, every probe
+    side trace, all filter records/events) to an exclusive .npz sidecar.
+    Returns the relative path recorded in the row. The candidate tag keeps
+    the per-candidate development cells distinct."""
+    trace_dir.mkdir(parents=True, exist_ok=True)
+    stem = f"{scenario_id}_{system}_{candidate_tag}"
+    path = trace_dir / f"{stem}.npz"
+    if path.exists():
+        raise RuntimeError(f"sidecar exists: {path.name}")
+    arrays: dict = {}
+    for key, val in _trace_arrays("production", production_tr).items():
+        arrays[key] = val.astype(np.float32) if val.dtype.kind == "f" else val
+    for i, (side, tr) in enumerate(probe_traces):
+        for key, val in _trace_arrays(f"probe{int(i):02d}_{side}", tr).items():
+            arrays[key] = val.astype(np.float32) if val.dtype.kind == "f" else val
+    np.savez_compressed(path, **arrays)
+    meta: dict = {"scenario_id": scenario_id, "system": system,
+                  "candidate_tag": candidate_tag}
+    if execution is not None:
+        meta["filter_records"] = [
+            filter_record_json(r) for r in execution.filter_records
+        ]
+        meta["probe_events"] = [probe_event_json(e) for e in execution.probe_events]
+        meta["final_filter_state_m"] = np.asarray(
+            execution.final_filter_state_m
+        ).tolist()
+        meta["final_filter_cov_m2"] = np.asarray(
+            execution.final_filter_h_cov_m2
+        ).tolist()
+        meta["updated_pair_count"] = execution.updated_pair_count
+        meta["spiral_usage"] = execution.spiral_usage
+        meta["guided"] = execution.guided
+    meta_path = trace_dir / f"{stem}_meta.json"
+    if meta_path.exists():
+        raise RuntimeError(f"sidecar meta exists: {meta_path.name}")
+    meta_path.write_text(json.dumps(meta, indent=1), encoding="utf-8")
+    return f"{trace_dir.name}/{path.name}"
+
+
 def phase_generate() -> None:
     r05.assert_evidence_fingerprints()
     dev = r05.generate_manifest(
@@ -134,20 +275,35 @@ def phase_generate() -> None:
 
 
 # ---------------------------------------------------------------------------
-# Worker: one paired scenario cell (both arms, one physical model)
+# Offline evaluation diagnostics (G10: computed OUTSIDE the arms)
+# ---------------------------------------------------------------------------
+
+
+def offline_estimator_diagnostics(execution) -> dict:
+    nees, h_err, cw = r05.nees_and_errors(
+        np.asarray(execution.final_filter_state_m, dtype=float)[:2],
+        np.asarray(execution.final_filter_h_cov_m2, dtype=float)[:2, :2],
+        np.zeros(2),
+        len(execution.filter_records) > 0,
+    )
+    return {"nees": nees, "h_error_norm_m": h_err, "confidently_wrong": cw}
+
+
+# ---------------------------------------------------------------------------
+# Worker: one (scenario, arm, candidate) dev cell
 # ---------------------------------------------------------------------------
 
 
 def run_cell(args: tuple) -> list[dict]:
     phase, scenario_dict, arm, spec_id, v_t = args
     scenario = scenario_from_dict(scenario_dict)
+    policy = r05.policy_view(scenario)
+    control_task = r05.build_control_task()
     t_start = time.time()
     exogenous_hash = _sha256_text(
         json.dumps(r05.scenario_to_dict(scenario), sort_keys=True)
     )
     model, data, xml_hash = r05.build_physical_model(scenario)
-    _, control_task = r05.build_tasks(scenario.clearance_offset_m)
-    del control_task
     common = {
         "phase": phase,
         "scenario_id": scenario.scenario_id,
@@ -169,9 +325,15 @@ def run_cell(args: tuple) -> list[dict]:
         ),
         "model_xml_sha256": xml_hash,
     }
+    trace_dir = TRACES_HOLDOUT  # dev rows carry no sidecars (G12)
     if arm == "baseline":
-        tr = run_baseline_arm(scenario, v_t, model=model, data=data)
+        tr = run_baseline_arm(policy, control_task, v_t, model=model, data=data)
         grade = grade_production(tr, scenario.physical_clearance_m)
+        candidate_tag = f"vt{v_t}".replace(".", "p")
+        sidecar = persist_sidecar(
+            trace_dir, scenario.scenario_id, "baseline", candidate_tag,
+            production_tr=tr, probe_traces=[], execution=None,
+        )
         return [{
             **common,
             "system": "baseline",
@@ -202,18 +364,23 @@ def run_cell(args: tuple) -> list[dict]:
             "guided": False,
             "updated_pair_count": 0,
             "probe_events": [],
-            "final_filter_state_m": None,
+            "sidecar": sidecar,
             "wall_time_s": time.time() - t_start,
             "validity": "valid",
         }]
 
     candidate = next(c for c in HAPLOUS_CANDIDATES if c.id == spec_id)
-    execution, production, diagnostics = run_haplous_arm(
-        scenario, candidate, v_t, model=model, data=data
+    execution, production, probe_traces = run_haplous_arm(
+        policy, control_task, candidate, v_t, model=model, data=data
     )
     grade = grade_production(production, scenario.physical_clearance_m)
     estimator_abort = any(e.kind == "ABORT" for e in execution.probe_events)
-    p_hh = np.array(diagnostics["final_filter_h_cov_m2"], dtype=float)
+    diag = offline_estimator_diagnostics(execution)
+    p_hh = np.asarray(execution.final_filter_h_cov_m2, dtype=float)[:2, :2]
+    sidecar = persist_sidecar(
+        trace_dir, scenario.scenario_id, "haplous", candidate.id,
+        production_tr=production, probe_traces=probe_traces, execution=execution,
+    )
     return [{
         **common,
         "system": "haplous",
@@ -237,13 +404,13 @@ def run_cell(args: tuple) -> list[dict]:
         "abort": estimator_abort,
         "failure_class": grade.failure_class,
         "failure_reason": grade.failure_class if not grade.success else None,
-        "true_state_error_m": execution.h_error_norm_m,
-        "estimated_state_error_m": execution.h_error_norm_m,
+        "true_state_error_m": diag["h_error_norm_m"],
+        "estimated_state_error_m": diag["h_error_norm_m"],
         "estimated_uncertainty_m": float(
             math.sqrt(max(float(np.trace(p_hh)), 0.0)) / 2.0
         ),
-        "nees": execution.nees,
-        "confidently_wrong": execution.confidently_wrong,
+        "nees": diag["nees"],
+        "confidently_wrong": diag["confidently_wrong"],
         "probe_count": execution.probe_side_motions,
         "probe_unseatable_count": sum(
             1 for e in execution.probe_events if e.kind == "unseatable"
@@ -251,17 +418,9 @@ def run_cell(args: tuple) -> list[dict]:
         "probe_time_s": execution.probe_time_s,
         "spiral_usage": execution.spiral_usage,
         "guided": execution.guided,
-        "updated_pair_count": diagnostics["updated_pair_count"],
-        "probe_events": [
-            {
-                "attempt": e.attempt_index,
-                "bearing_rad": e.bearing_rad,
-                "kind": e.kind,
-                "nis": e.nis,
-            }
-            for e in execution.probe_events
-        ],
-        "final_filter_state_m": diagnostics["final_filter_state_m"],
+        "updated_pair_count": execution.updated_pair_count,
+        "probe_events": [probe_event_json(e) for e in execution.probe_events],
+        "sidecar": sidecar,
         "wall_time_s": time.time() - t_start,
         "validity": "valid",
     }]
@@ -270,8 +429,8 @@ def run_cell(args: tuple) -> list[dict]:
 def run_cells(jobs: list[tuple], out_path: Path) -> tuple[int, float]:
     t0 = time.time()
     total_rows = 0
-    with out_path.open("w", encoding="utf-8") as fh, ProcessPoolExecutor(
-        max_workers=14
+    with out_path.open("x", encoding="utf-8") as fh, ProcessPoolExecutor(
+        max_workers=MAX_WORKERS
     ) as pool:
         for rows in pool.map(run_cell, jobs, chunksize=1):
             for row in rows:
@@ -291,8 +450,9 @@ def _p95(values: list[float]) -> float:
     return float(np.quantile(np.asarray(values, dtype=float), 0.95, method="linear"))
 
 
-def _median(values: list[float]) -> float:
-    return float(np.median(np.asarray(values, dtype=float)))
+def _median(values: list[Optional[float]]) -> Optional[float]:
+    present = [v for v in values if v is not None]
+    return float(np.median(present)) if present else None
 
 
 def _mean_none_safe(values: list[Optional[float]]) -> Optional[float]:
@@ -315,7 +475,7 @@ def throughput_gate(rows: list[dict]) -> float:
     if worst < MIN_THROUGHPUT_STEPS_PER_S:
         raise RuntimeError(
             f"G9 throughput gate FAILED: worst row {worst:.0f} steps/s < "
-            f"{MIN_THROUGHPUT_STEPS_PER_S:.0f}; R05-v2 is INVALID"
+            f"{MIN_THROUGHPUT_STEPS_PER_S:.0f}; R05-v3 is INVALID"
         )
     return worst
 
@@ -398,7 +558,7 @@ def phase_dev() -> None:
     assert len(baseline_jobs) == 100
     baseline_rows: list[dict] = []
     with TRIALS_DEV.open("x", encoding="utf-8") as fh, ProcessPoolExecutor(
-        max_workers=14
+        max_workers=MAX_WORKERS
     ) as pool:
         for rows in pool.map(run_cell, baseline_jobs, chunksize=1):
             for row in rows:
@@ -417,7 +577,7 @@ def phase_dev() -> None:
     assert len(haplous_jobs) == 100
     haplous_rows: list[dict] = []
     with TRIALS_DEV.open("a", encoding="utf-8") as fh, ProcessPoolExecutor(
-        max_workers=14
+        max_workers=MAX_WORKERS
     ) as pool:
         for rows in pool.map(run_cell, haplous_jobs, chunksize=1):
             for row in rows:
@@ -427,11 +587,8 @@ def phase_dev() -> None:
     selected_candidate, haplous_scores = select_haplous(haplous_rows, baseline_v_t)
     print(f"selected haplous candidate {selected_candidate}")
     selections = {
-        "locked_design": ".opencode/haplous/state/locked-tests/R05-v2.yaml",
-        "locked_design_sha256": _sha256_text(
-            (r05.ROOT / ".opencode/haplous/state/locked-tests/R05-v2.yaml")
-            .read_text(encoding="utf-8")
-        ),
+        "locked_design": str(LOCK_YAML.relative_to(ROOT)),
+        "locked_design_sha256": _sha256_file(LOCK_YAML),
         "repo_head": _repo_head(),
         "baseline_selected_v_t_m_per_s": baseline_v_t,
         "baseline_selection_metrics": {
@@ -447,20 +604,97 @@ def phase_dev() -> None:
     print(json.dumps(selections, indent=1))
 
 
-def phase_holdout() -> None:
+def phase_freeze() -> None:
+    """Exclusive execution freeze record: the exact provenance hash set that
+    phase_holdout validates before starting any held-out physics (G11)."""
     r05.assert_evidence_fingerprints()
     if not SELECTIONS.exists():
         raise RuntimeError("frozen selections missing; run the dev phase first")
-    selections = json.loads(SELECTIONS.read_text(encoding="utf-8"))
+    if TRIALS_HOLDOUT.exists():
+        raise RuntimeError("holdout already ran; freeze record is pre-holdout only")
+    selections_text = SELECTIONS.read_text(encoding="utf-8")
+    selections = json.loads(selections_text)
     hashes = json.loads(MANIFEST_HASHES.read_text(encoding="utf-8"))
+    dev_hash = _sha256_text(MANIFEST_DEV.read_text(encoding="utf-8"))
     holdout_hash = _sha256_text(MANIFEST_HOLDOUT.read_text(encoding="utf-8"))
+    if dev_hash != hashes["dev_manifest_sha256"]:
+        raise RuntimeError("dev manifest changed since generation")
     if holdout_hash != hashes["holdout_manifest_sha256"]:
         raise RuntimeError("holdout manifest changed since generation")
-    if (
-        selections.get("g9_worst_row_steps_per_s", 0.0)
-        < MIN_THROUGHPUT_STEPS_PER_S
-    ):
-        raise RuntimeError("G9 throughput gate not passed in dev; holdout refused")
+    if selections["dev_manifest_sha256"] != dev_hash:
+        raise RuntimeError("selections reference a different dev manifest")
+    record = {
+        "locked_design": str(LOCK_YAML.relative_to(ROOT)),
+        "locked_design_sha256": _sha256_file(LOCK_YAML),
+        "repo_head": _repo_head(),
+        "dev_manifest_sha256": dev_hash,
+        "holdout_manifest_sha256": holdout_hash,
+        "n5_raw_sha256": r05.N5_RAW_SHA256,
+        "n5_summary_sha256": r05.N5_SUMMARY_SHA256,
+        "selections_sha256": _sha256_text(selections_text),
+        "dev_trials_sha256": _sha256_file(TRIALS_DEV),
+        "baseline_selected_v_t_m_per_s": selections[
+            "baseline_selected_v_t_m_per_s"
+        ],
+        "haplous_selected_candidate": selections["haplous_selected_candidate"],
+        "source_sha256": {str(p): _sha256_file(p) for p in _HASHED_SOURCES},
+        "frozen_at": time.strftime("%Y-%m-%dT%H:%M:%S%z"),
+    }
+    _exclusive_write(FREEZE, json.dumps(record, indent=1))
+    print(json.dumps(record, indent=1))
+
+
+def _sha256_dir(path: Path) -> str:
+    import hashlib as _h
+
+    digest = _h.sha256()
+    for member in sorted(path.iterdir()):
+        digest.update(member.name.encode("utf-8"))
+        digest.update(member.read_bytes())
+    return digest.hexdigest()
+
+
+def _validate_freeze() -> dict:
+    record = json.loads(FREEZE.read_text(encoding="utf-8"))
+    problems = []
+    if record["repo_head"] != _repo_head():
+        problems.append("HEAD moved since freeze")
+    if _sha256_file(LOCK_YAML) != record["locked_design_sha256"]:
+        problems.append("locked design changed since freeze")
+    hashes = json.loads(MANIFEST_HASHES.read_text(encoding="utf-8"))
+    if _sha256_text(MANIFEST_DEV.read_text(encoding="utf-8")) != hashes[
+        "dev_manifest_sha256"
+    ]:
+        problems.append("dev manifest changed since generation")
+    if _sha256_text(MANIFEST_HOLDOUT.read_text(encoding="utf-8")) != hashes[
+        "holdout_manifest_sha256"
+    ]:
+        problems.append("holdout manifest changed since generation")
+    if _sha256_text(SELECTIONS.read_text(encoding="utf-8")) != record[
+        "selections_sha256"
+    ]:
+        problems.append("selections changed since freeze")
+    if _sha256_file(TRIALS_DEV) != record["dev_trials_sha256"]:
+        problems.append("dev trials changed since freeze")
+    for rel, digest in record["source_sha256"].items():
+        if _sha256_file(ROOT / rel) != digest:
+            problems.append(f"source changed since freeze: {rel}")
+    if r05.N5_RAW_SHA256 != record["n5_raw_sha256"]:
+        problems.append("N5 raw evidence changed since freeze")
+    if r05.N5_SUMMARY_SHA256 != record["n5_summary_sha256"]:
+        problems.append("N5 summary evidence changed since freeze")
+    if problems:
+        raise RuntimeError(
+            "freeze validation failed: " + "; ".join(problems)
+        )
+    return record
+
+
+def phase_holdout() -> None:
+    r05.assert_evidence_fingerprints()
+    freeze = _validate_freeze()
+    print("freeze record validated:", freeze["repo_head"])
+    selections = json.loads(SELECTIONS.read_text(encoding="utf-8"))
     if TRIALS_HOLDOUT.exists():
         raise RuntimeError(f"{TRIALS_HOLDOUT.name} exists; holdout is one-shot.")
     scenarios = load_manifest(MANIFEST_HOLDOUT)
@@ -471,7 +705,7 @@ def phase_holdout() -> None:
         ("holdout", s, candidate_id, baseline_v_t) for s in scenarios
     ]
     with TRIALS_HOLDOUT.open("x", encoding="utf-8") as fh, ProcessPoolExecutor(
-        max_workers=14
+        max_workers=MAX_WORKERS
     ) as pool:
         n_rows = 0
         for rows in pool.map(run_cell_paired, jobs, chunksize=1):
@@ -490,35 +724,46 @@ def run_cell_paired(args: tuple) -> list[dict]:
     order cannot leak state."""
     phase, scenario_dict, candidate_id, baseline_v_t = args
     scenario = scenario_from_dict(scenario_dict)
+    policy = r05.policy_view(scenario)
+    control_task = r05.build_control_task()
     t_start = time.time()
     exogenous_hash = _sha256_text(
         json.dumps(r05.scenario_to_dict(scenario), sort_keys=True)
     )
     candidate = next(c for c in HAPLOUS_CANDIDATES if c.id == candidate_id)
     model, data, xml_hash = r05.build_physical_model(scenario)
-    _, control_task = r05.build_tasks(scenario.clearance_offset_m)
-    del control_task
 
     if scenario.arm_order_bit == 0:
         baseline_tr = run_baseline_arm(
-            scenario, baseline_v_t, model=model, data=data
+            policy, control_task, baseline_v_t, model=model, data=data
         )
         baseline_grade = grade_production(baseline_tr, scenario.physical_clearance_m)
-        execution, production, diagnostics = run_haplous_arm(
-            scenario, candidate, baseline_v_t, model=model, data=data
+        execution, production, probe_traces = run_haplous_arm(
+            policy, control_task, candidate, baseline_v_t, model=model, data=data
         )
     else:
-        execution, production, diagnostics = run_haplous_arm(
-            scenario, candidate, baseline_v_t, model=model, data=data
+        execution, production, probe_traces = run_haplous_arm(
+            policy, control_task, candidate, baseline_v_t, model=model, data=data
         )
         baseline_tr = run_baseline_arm(
-            scenario, baseline_v_t, model=model, data=data
+            policy, control_task, baseline_v_t, model=model, data=data
         )
         baseline_grade = grade_production(baseline_tr, scenario.physical_clearance_m)
     production_grade = grade_production(production, scenario.physical_clearance_m)
     estimator_abort = any(e.kind == "ABORT" for e in execution.probe_events)
-    p_hh = np.array(diagnostics["final_filter_h_cov_m2"], dtype=float)
+    diag = offline_estimator_diagnostics(execution)
+    p_hh = np.asarray(execution.final_filter_h_cov_m2, dtype=float)[:2, :2]
     t_end = time.time() - t_start
+
+    baseline_sidecar = persist_sidecar(
+        TRACES_HOLDOUT, scenario.scenario_id, "baseline",
+        f"vt{baseline_v_t}".replace(".", "p"),
+        production_tr=baseline_tr, probe_traces=[], execution=None,
+    )
+    haplous_sidecar = persist_sidecar(
+        TRACES_HOLDOUT, scenario.scenario_id, "haplous", candidate.id,
+        production_tr=production, probe_traces=probe_traces, execution=execution,
+    )
 
     def base_common() -> dict:
         return {
@@ -575,7 +820,7 @@ def run_cell_paired(args: tuple) -> list[dict]:
         "guided": False,
         "updated_pair_count": 0,
         "probe_events": [],
-        "final_filter_state_m": None,
+        "sidecar": baseline_sidecar,
         "wall_time_s": t_end,
         "validity": "valid",
     }
@@ -608,13 +853,13 @@ def run_cell_paired(args: tuple) -> list[dict]:
         "failure_reason": (
             production_grade.failure_class if not production_grade.success else None
         ),
-        "true_state_error_m": execution.h_error_norm_m,
-        "estimated_state_error_m": execution.h_error_norm_m,
+        "true_state_error_m": diag["h_error_norm_m"],
+        "estimated_state_error_m": diag["h_error_norm_m"],
         "estimated_uncertainty_m": float(
             math.sqrt(max(float(np.trace(p_hh)), 0.0)) / 2.0
         ),
-        "nees": execution.nees,
-        "confidently_wrong": execution.confidently_wrong,
+        "nees": diag["nees"],
+        "confidently_wrong": diag["confidently_wrong"],
         "probe_count": execution.probe_side_motions,
         "probe_unseatable_count": sum(
             1 for e in execution.probe_events if e.kind == "unseatable"
@@ -622,17 +867,9 @@ def run_cell_paired(args: tuple) -> list[dict]:
         "probe_time_s": execution.probe_time_s,
         "spiral_usage": execution.spiral_usage,
         "guided": execution.guided,
-        "updated_pair_count": diagnostics["updated_pair_count"],
-        "probe_events": [
-            {
-                "attempt": e.attempt_index,
-                "bearing_rad": e.bearing_rad,
-                "kind": e.kind,
-                "nis": e.nis,
-            }
-            for e in execution.probe_events
-        ],
-        "final_filter_state_m": diagnostics["final_filter_state_m"],
+        "updated_pair_count": execution.updated_pair_count,
+        "probe_events": [probe_event_json(e) for e in execution.probe_events],
+        "sidecar": haplous_sidecar,
         "wall_time_s": t_end,
         "validity": "valid",
     }
@@ -652,7 +889,7 @@ def analyze_holdout(selections: dict) -> dict:
     invalid = [r for r in rows if r.get("validity") != "valid"]
     if invalid:
         raise RuntimeError(
-            f"{len(invalid)} invalid rows; R05-v2 is INVALID per the locked rules"
+            f"{len(invalid)} invalid rows; R05-v3 is INVALID per the locked rules"
         )
     baseline = {r["scenario_id"]: r for r in rows if r["system"] == "baseline"}
     haplous = {r["scenario_id"]: r for r in rows if r["system"] == "haplous"}
@@ -686,7 +923,11 @@ def analyze_holdout(selections: dict) -> dict:
         label = "WEAKENED"
     summary = {
         "phase": "holdout",
-        "locked_design": ".opencode/haplous/state/locked-tests/R05-v2.yaml",
+        "locked_design": str(LOCK_YAML.relative_to(ROOT)),
+        "locked_design_sha256": _sha256_file(LOCK_YAML),
+        "freeze_repo_head": json.loads(FREEZE.read_text(encoding="utf-8"))[
+            "repo_head"
+        ],
         "baseline_selected_v_t_m_per_s": selections["baseline_selected_v_t_m_per_s"],
         "haplous_selected_candidate": selections["haplous_selected_candidate"],
         "primary_table": table,
@@ -723,9 +964,10 @@ def analyze_holdout(selections: dict) -> dict:
                 1 for i in ids if haplous[i]["confidently_wrong"]
             ),
             "mean_nees": _mean_none_safe([haplous[i]["nees"] for i in ids]),
+            "traces_holdout_sha256": _sha256_dir(TRACES_HOLDOUT),
         },
     }
-    SUMMARY.write_text(json.dumps(summary, indent=1), encoding="utf-8")
+    _exclusive_write(SUMMARY, json.dumps(summary, indent=1))
     print(json.dumps(summary, indent=1))
     return summary
 
@@ -740,13 +982,15 @@ def phase_analyze() -> None:
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
-        "phase", choices=["generate", "dev", "holdout", "analyze"]
+        "phase", choices=["generate", "dev", "freeze", "holdout", "analyze"]
     )
     args = parser.parse_args()
     if args.phase == "generate":
         phase_generate()
     elif args.phase == "dev":
         phase_dev()
+    elif args.phase == "freeze":
+        phase_freeze()
     elif args.phase == "holdout":
         phase_holdout()
     else:
