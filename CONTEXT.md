@@ -275,19 +275,29 @@ physics-shaped symptom that cost multiple rounds of wrong theorizing.
   same-facet-phase antipodal geometry is the mechanism. See
   `docs/N5_ANTIPODAL_CANCELLATION_REPORT.md`.
 - **F1b (error injection) is implemented and F1c (physics wiring) has run.**
-  `pegsim/error_injection.py` provides the four R03 channels in explicit
-  physical composition order (14 tests, no-MuJoCo guard). `pegsim/probing.py`
-  wires `run_episode` probe pairs to the filter with the N5-measured pair
-  covariance and penetration bias (1.1423 µm at n=64); clean sessions converge
-  to 24 nm with NIS O(1), and a 3 µm TCP-bias session demonstrates the
-  confidently-wrong condition (NEES 226–407, 2/6 pairs gated) on real physics.
-  See `docs/F1C_PROBE_SESSION_REPORT.md`. The F1a process priors remain
-  placeholders. R05/R06 are not started.
-- **The ~135 Hz rotational-mode estimate has never been measured.** Both
-  `mj_fullM` call sites (`control.py` `derived_damping`/`stability_cap`) slice
-  only the diagonal; no eigenvalue decomposition of the coupled mass matrix
-  exists anywhere. The x/ry off-diagonal coupling (1.25e-3) is flagged in
-  `assert_gains_stable` as necessary-not-sufficient, unquantified.
+  Epistemic status: **WEAKENED** — the modeled channels behave as specified,
+  but the demonstrated confidently-wrong estimator mode is adverse evidence
+  against broad robustness, and no sweep across corruption ranges has been
+  run. `pegsim/error_injection.py` provides the four corruption channels in
+  explicit physical composition order (14 tests, no-MuJoCo guard).
+  `pegsim/probing.py` wires `run_episode` probe pairs to the filter with the
+  N5-measured pair covariance and penetration bias (1.1423 µm at n=64); clean
+  sessions converge to 24 nm with NIS O(1), and a 3 µm TCP-bias session
+  demonstrates the confidently-wrong condition (NEES 226–407, 2/6 pairs
+  gated) on real physics. See `docs/F1C_PROBE_SESSION_REPORT.md`. The F1a
+  process priors remain placeholders. R05/R06 are not started.
+- **R04 (coupled sampled-loop instability) is RESOLVED; the ~135 Hz
+  rotational-mode explanation is REFUTED.** `pegsim/dynamics.py` (commit
+  `ff48f8b`) now performs the full `mj_fullM` eigenvalue decomposition at
+  hover/plate-contact/tilted operating states. The relevant modes are
+  approximately 548 Hz OVERDAMPED branches (ζ = 1.0, |λ| ≈ 3443 /s), not a
+  lightly damped ~135 Hz rotational mode; the x/ry coupling (1.25e-3) is
+  quantified and included. The exact semi-implicit + ZOH discrete closed-loop
+  map reproduces the measured stability boundary: spectral radius ≈ 0.95–0.96
+  at 2000Hz (16/16 stable), ≈ 2.85 at 1000Hz and ≈ 7.25 at 500Hz (0/16),
+  matching the L3 control-rate cells. Diagonal/per-DOF reasoning was
+  insufficient; evidence: `results/r4_coupled_modes_summary.json` and
+  `scripts/measure_r4_coupled_modes.py`.
 
 ---
 
