@@ -244,19 +244,27 @@ def generate_scenario(
     replicate_id: int,
     n_per_stratum: int,
 ) -> Scenario:
-    """Locked RNG stream order: (1) offset bearing, (2) radius permutation,
-    (3) dc permutation, (4) first probe bearing, (5) tcp octant + yaw sign,
-    (6) arm-order bit. No other draws."""
+    """Locked generation (R05-v2): one stratum-level balanced assignment
+    (radii each used once; dc levels balanced; tcp octants twice each) plus
+    exactly three per-scenario draws: offset bearing, first probe bearing,
+    arm-order bit. No other draws."""
+    assign_seq = np.random.SeedSequence([master_seed, stratum.id, 0xFFFFFFFF])
+    assign_rng = np.random.Generator(np.random.PCG64(assign_seq))
+    radius_perm = assign_rng.permutation(n_per_stratum)
+    dc_slots = stratum.dc_levels_m * (n_per_stratum // len(stratum.dc_levels_m))
+    dc_perm = assign_rng.permutation(n_per_stratum)
+    tcp_perm = assign_rng.permutation(16)
+
     seed_seq = np.random.SeedSequence([master_seed, stratum.id, replicate_id])
     rng = np.random.Generator(np.random.PCG64(seed_seq))
-
     theta_e = float(rng.random() * 2.0 * math.pi)
-    radius_perm = rng.permutation(n_per_stratum)
-    dc_perm = rng.permutation(len(stratum.dc_levels_m))
     theta_p0 = float(rng.random() * 2.0 * math.pi)
+    arm_order_bit = int(rng.integers(0, 2))
+
     if stratum.tcp_bias:
-        octant = int(rng.integers(0, 8))
-        yaw_sign = int(rng.integers(0, 2))
+        pair_id = int(tcp_perm[replicate_id])
+        octant = pair_id % 8
+        yaw_sign = pair_id // 8
         phi = (2 * octant + 1) * math.pi / 8.0
         tcp_translation: Optional[tuple[float, float]] = (
             3e-6 * math.cos(phi),
@@ -266,12 +274,9 @@ def generate_scenario(
     else:
         tcp_translation = None
         tcp_yaw = None
-    arm_order_bit = int(rng.integers(0, 2))
 
-    radius = _radial_quantile(
-        stratum, int(radius_perm[replicate_id % n_per_stratum]), n_per_stratum
-    )
-    dc = stratum.dc_levels_m[int(dc_perm[replicate_id % len(stratum.dc_levels_m)])]
+    radius = _radial_quantile(stratum, int(radius_perm[replicate_id]), n_per_stratum)
+    dc = dc_slots[int(dc_perm[replicate_id])]
     return Scenario(
         scenario_id=f"s{stratum.id:02d}-r{replicate_id:02d}",
         stratum_id=stratum.id,
@@ -374,6 +379,11 @@ _INSERTION: Final[InsertionProfile] = InsertionProfile(k_z_search=500.0, f_searc
 
 
 def _base_episode(control_task: TaskSpec) -> dict:
+    if control_task.radial_clearance != NOMINAL_CLEARANCE_M:
+        raise RuntimeError(
+            "G3 fail-closed: control episodes must use the NOMINAL clearance "
+            f"({NOMINAL_CLEARANCE_M} m), got {control_task.radial_clearance}"
+        )
     return dict(
         task=control_task,
         solver=_SOLVER,
@@ -452,40 +462,57 @@ class ProbeSideOutcome:
     measured_tip_xy_m: Optional[NDArray[np.float64]]
     completion_time_s: Optional[float]
     reason: Optional[str]
+    prefix_peak_abs_fz_n: Optional[float] = None
 
 
 def operational_complete(tr: TrialResult) -> ProbeSideOutcome:
     """Earliest trace index k whose trailing 200-sample window all satisfy
     z_flat - tip_z >= 9.86 mm, with |F_z| <= 25 N and tilt < 10 deg over the
-    ENTIRE prefix 0..k. Uses only robot-observable telemetry; samples after k
-    are never inspected."""
+    ENTIRE prefix 0..k. Chronological scan: returns at the FIRST valid k and
+    never inspects samples after it. Uses only robot-observable telemetry."""
     depth = tr.z_flat - tr.tip_pos[:, 2]
     window = DEPTH_PERSIST_SAMPLES
     if depth.size < window:
-        return ProbeSideOutcome(False, None, None, None, "trace shorter than persistence window")
+        return ProbeSideOutcome(
+            False, None, None, None, "trace shorter than persistence window"
+        )
     depth_ok = depth >= TARGET_DEPTH_M
-    false_cum = np.concatenate(([0], np.cumsum(~depth_ok)))
-    starts = np.arange(0, depth.size - window + 1)
-    falses_in_window = false_cum[starts + window] - false_cum[starts]
-    candidate_ks = starts[falses_in_window == 0] + window - 1
-    for k in candidate_ks:
-        k_int = int(k)
-        prefix_force_ok = bool(np.all(np.abs(tr.contact_force[: k_int + 1, 2]) <= MAX_ABS_FZ_N))
-        prefix_tilt_ok = bool(np.all(tr.tilt_deg[: k_int + 1] < MAX_TILT_DEG))
-        if prefix_force_ok and prefix_tilt_ok:
+    abs_fz = np.abs(tr.contact_force[:, 2])
+    prefix_fz_max = np.maximum.accumulate(abs_fz)
+    prefix_tilt_max = np.maximum.accumulate(tr.tilt_deg)
+    window_falses = int(np.count_nonzero(~depth_ok[: window - 1]))
+    for k in range(window - 1, depth.size):
+        window_falses += int(not depth_ok[k])
+        if k >= window:
+            window_falses -= int(not depth_ok[k - window])
+        if window_falses == 0:
+            if (
+                prefix_fz_max[k] <= MAX_ABS_FZ_N
+                and prefix_tilt_max[k] < MAX_TILT_DEG
+            ):
+                return ProbeSideOutcome(
+                    True,
+                    k,
+                    np.array(tr.tip_pos[k, :2], dtype=float, copy=True),
+                    float(tr.time[k]),
+                    None,
+                    float(prefix_fz_max[k]),
+                )
             return ProbeSideOutcome(
-                True,
-                k_int,
-                np.array(tr.tip_pos[k_int, :2], dtype=float, copy=True),
-                float(tr.time[k_int]),
-                None,
+                False, None, None, None,
+                "prefix force/tilt bound violated",
+                float(prefix_fz_max[k]),
             )
-    # classify why the earliest geometry never completed
-    if candidate_ks.size > 0:
-        return ProbeSideOutcome(False, None, None, None, "prefix force/tilt bound violated")
     if not np.any(depth_ok):
-        return ProbeSideOutcome(False, None, None, None, "FK depth persistence never reached")
-    return ProbeSideOutcome(False, None, None, None, "depth persistence never held for 0.1 s")
+        return ProbeSideOutcome(
+            False, None, None, None,
+            "FK depth persistence never reached",
+            float(prefix_fz_max[-1]),
+        )
+    return ProbeSideOutcome(
+        False, None, None, None, "depth persistence never held for 0.1 s",
+        float(prefix_fz_max[-1]),
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -557,12 +584,15 @@ def attempt_probe_pair(
     corruption: Optional[CorruptionModel],
     model,
     data,
-) -> tuple[Optional[FilterUpdateRecord], list[ProbeEvent], list[float]]:
+) -> tuple[Optional[FilterUpdateRecord], list[ProbeEvent], list[float], list[float]]:
     """One registered antipodal pair attempt through real physics. A side
-    that fails operational completion leaves the filter untouched (G5)."""
+    that fails operational completion leaves the filter untouched (G5).
+    Returns the filter record (None if the pair was incomplete), the events,
+    per-side completion/timeout times, and per-side peak |F_z| for the
+    pipeline force accounting."""
     events: list[ProbeEvent] = []
     times: list[float] = []
-    u = np.array([math.cos(bearing_rad), math.sin(bearing_rad)])
+    peaks: list[float] = []
     plus_cfg = probe_episode_at(control_task, c0, bearing_rad)
     minus_cfg = probe_episode_at(control_task, c0, bearing_rad + math.pi)
     plus_tr = run_episode(plus_cfg, pen_allow=PEN_ALLOW_M, model=model, data=data)
@@ -573,13 +603,21 @@ def attempt_probe_pair(
         plus_out.completion_time_s if plus_out.complete else MAX_SECONDS,
         minus_out.completion_time_s if minus_out.complete else MAX_SECONDS,
     ])
+    peaks.extend([
+        plus_out.prefix_peak_abs_fz_n
+        if plus_out.prefix_peak_abs_fz_n is not None
+        else float(np.max(np.abs(plus_tr.contact_force[:, 2]))),
+        minus_out.prefix_peak_abs_fz_n
+        if minus_out.prefix_peak_abs_fz_n is not None
+        else float(np.max(np.abs(minus_tr.contact_force[:, 2]))),
+    ])
     if not (plus_out.complete and minus_out.complete):
         events.append(
             ProbeEvent(0, bearing_rad, "unseatable",
                         plus_time_s=plus_out.completion_time_s,
                         minus_time_s=minus_out.completion_time_s)
         )
-        return None, events, times
+        return None, events, times, peaks
     assert plus_out.measured_tip_xy_m is not None
     assert minus_out.measured_tip_xy_m is not None
     plus_est = reduce_measurement(
@@ -605,7 +643,7 @@ def attempt_probe_pair(
                    plus_time_s=plus_out.completion_time_s,
                    minus_time_s=minus_out.completion_time_s)
     )
-    return record, events, times
+    return record, events, times, peaks
 
 
 @dataclass
@@ -617,6 +655,7 @@ class HaplousExecution:
     probe_events: list[ProbeEvent] = field(default_factory=list)
     probe_side_motions: int = 0
     probe_time_s: float = 0.0
+    probe_peak_fz_n: list[float] = field(default_factory=list)
     filter_records: list[FilterUpdateRecord] = field(default_factory=list)
     nees: Optional[float] = None
     h_error_norm_m: Optional[float] = None
@@ -624,20 +663,51 @@ class HaplousExecution:
 
 
 def nees_and_errors(
-    filter_: StateFilter, true_hole_xy: NDArray[np.float64]
-) -> tuple[Optional[float], Optional[float], bool]:
+    filter_: StateFilter,
+    true_hole_xy: NDArray[np.float64],
+    has_accepted_records: bool,
+) -> tuple[Optional[float], float, bool]:
+    """Evaluation-only 2-DOF fixture NEES and the 3-sigma confidently-wrong
+    flag. NEES is reported only once the filter has accepted at least one
+    pair; never consumed by any treatment decision."""
     h_hat = filter_.state_m[:2]
     p_hh = filter_.covariance_m2[:2, :2]
     err = h_hat - np.asarray(true_hole_xy, dtype=float)
-    if filter_._observation_history:  # noqa: SLF001 - evaluation-only read
-        solved = np.linalg.solve(p_hh, err)
-        nees = float(err @ solved)
-        sigma = np.sqrt(np.diag(p_hh))
-        confidently_wrong = bool(np.any(np.abs(err) > 3.0 * sigma))
-    else:
-        nees = None
-        confidently_wrong = False
+    if not has_accepted_records:
+        return None, float(np.linalg.norm(err)), False
+    solved = np.linalg.solve(p_hh, err)
+    nees = float(err @ solved)
+    sigma = np.sqrt(np.diag(p_hh))
+    confidently_wrong = bool(np.any(np.abs(err) > 3.0 * sigma))
     return nees, float(np.linalg.norm(err)), confidently_wrong
+
+
+def production_plan(
+    candidate: HaplousCandidate,
+    updated_count: int,
+    filter_: StateFilter,
+    c0: NDArray[np.float64],
+    control_task: TaskSpec,
+    baseline_v_t_m_per_s: float,
+) -> tuple[bool, EpisodeConfig, str, NDArray[np.float64]]:
+    """G4: the single designated production decision. Guided execution
+    centers at the filter's h estimate exactly; fallback re-runs the frozen
+    baseline from c0. There is never a second production episode."""
+    if updated_count >= candidate.required_updated_pairs:
+        h_hat = filter_.state_m[:2].copy()
+        if candidate.guided_execution == "straight_drop":
+            cfg = episode_from_world_start(control_task, h_hat, spiral=None)
+            return True, cfg, "guided_drop", h_hat
+        cfg = episode_from_world_start(
+            control_task, h_hat,
+            spiral=spiral_for(control_task, baseline_v_t_m_per_s),
+        )
+        return True, cfg, "guided_spiral", h_hat
+    cfg = episode_from_world_start(
+        control_task, c0,
+        spiral=spiral_for(control_task, baseline_v_t_m_per_s),
+    )
+    return False, cfg, "baseline_fallback", c0.copy()
 
 
 def run_haplous_arm(
@@ -663,7 +733,7 @@ def run_haplous_arm(
     updated_count = 0
     for attempt in range(candidate.max_pair_attempts):
         bearing = scenario.first_probe_bearing_rad + BEARING_OFFSETS_RAD[attempt]
-        record, events, times = attempt_probe_pair(
+        record, events, times, peaks = attempt_probe_pair(
             filter_, control_task, c0, bearing, corruption, model, data
         )
         for ev in events:
@@ -671,6 +741,7 @@ def run_haplous_arm(
         execution.probe_events.extend(events)
         execution.probe_side_motions += 2
         execution.probe_time_s += sum(times)
+        execution.probe_peak_fz_n.extend(peaks)
         if record is None:
             continue  # unseatable pair: filter untouched, next bearing
         execution.filter_records.append(record)
@@ -682,30 +753,20 @@ def run_haplous_arm(
             break  # never execute from the ABORT-reinitialized h
         # SALVAGE: rejected update not used for guidance; next bearing.
 
-    nees, h_err, cw = nees_and_errors(filter_, np.zeros(2))
+    nees, h_err, cw = nees_and_errors(
+        filter_, np.zeros(2), len(execution.filter_records) > 0
+    )
     execution.nees = nees
     execution.h_error_norm_m = h_err
     execution.confidently_wrong = cw
 
-    if updated_count >= candidate.required_updated_pairs:
-        execution.guided = True
-        execution.used_fallback = False
-        h_hat = filter_.state_m[:2]
-        execution.production_start_xy = h_hat.copy()
-        if candidate.guided_execution == "straight_drop":
-            execution.spiral_usage = "guided_drop"
-            prod_cfg = episode_from_world_start(control_task, h_hat, spiral=None)
-        else:
-            execution.spiral_usage = "guided_spiral"
-            prod_cfg = episode_from_world_start(
-                control_task, h_hat,
-                spiral=spiral_for(control_task, baseline_v_t_m_per_s),
-            )
-    else:
-        prod_cfg = episode_from_world_start(
-            control_task, c0,
-            spiral=spiral_for(control_task, baseline_v_t_m_per_s),
-        )
+    guided, prod_cfg, spiral_usage, start = production_plan(
+        candidate, updated_count, filter_, c0, control_task, baseline_v_t_m_per_s
+    )
+    execution.guided = guided
+    execution.used_fallback = not guided
+    execution.spiral_usage = spiral_usage
+    execution.production_start_xy = start
     production = run_episode(prod_cfg, pen_allow=PEN_ALLOW_M, model=model, data=data)
     diagnostics: dict = {
         "final_filter_state_m": filter_.state_m.tolist(),
@@ -713,6 +774,23 @@ def run_haplous_arm(
         "updated_pair_count": updated_count,
     }
     return execution, production, diagnostics
+
+
+def build_physical_model(scenario: Scenario):
+    """G3 fail-closed: the single MuJoCo construction site. The compiled scene
+    ALWAYS uses the physical task (clearance 0.5 mm + dc); control logic keeps
+    the nominal task. Returns (model, data, xml_sha256) so rows can record the
+    exact geometry identity."""
+    import hashlib as _hashlib
+
+    from pegsim.scene import build_mjcf
+
+    physical, control = build_tasks(scenario.clearance_offset_m)
+    assert physical.radial_clearance == NOMINAL_CLEARANCE_M + scenario.clearance_offset_m
+    assert control.radial_clearance == NOMINAL_CLEARANCE_M
+    xml = build_mjcf(physical, _SOLVER, PLATE_TILT_DEG)
+    model = mujoco.MjModel.from_xml_string(xml)
+    return model, mujoco.MjData(model), _hashlib.sha256(xml.encode("utf-8")).hexdigest()
 
 
 def run_baseline_arm(
@@ -745,20 +823,22 @@ class Grade:
     force_integral_n_s: float
     max_tilt_deg: float
     failure_class: str
+    completion_index: Optional[int] = None
 
 
 def grade_production(tr: TrialResult, physical_clearance_m: float) -> Grade:
     """Primary outcome recomputed from the full trace with the PHYSICAL
-    task: geometry persisted 0.1 s by 16.3 s, |F_z| <= 25 N and tilt < 10 deg
-    over the whole episode."""
+    task: ABSOLUTE tip_z <= -9.86 mm in world coordinates (the z_flat-relative
+    criterion is reserved for probe-side completion), tip/mouth lateral
+    <= physical clearance + 12 um, geometry persisted 0.1 s by 16.3 s,
+    |F_z| <= 25 N and tilt < 10 deg over the whole episode."""
     tol = physical_clearance_m + PEN_ALLOW_M
     tip_z = tr.tip_pos[:, 2]
     tip_lat = np.linalg.norm(tr.tip_pos[:, :2], axis=1)
     mouth_lat = tr.mouth_lateral  # peg axis crossing z=0 vs world origin (true hole)
-    depth = tr.z_flat - tip_z
     window = DEPTH_PERSIST_SAMPLES
     geometry_ok = (
-        (depth >= TARGET_DEPTH_M)
+        (tip_z <= -TARGET_DEPTH_M)
         & (tip_lat <= tol)
         & (mouth_lat <= tol)
     )
@@ -771,7 +851,12 @@ def grade_production(tr: TrialResult, physical_clearance_m: float) -> Grade:
             break
     peak_fz = float(np.max(np.abs(tr.contact_force[:, 2])))
     max_tilt = float(np.max(tr.tilt_deg))
-    force_integral = float(np.trapezoid(np.abs(tr.contact_force[:, 2]), tr.time))
+    integral_end = (seat_index + 1) if seat_index is not None else tr.time.size
+    force_integral = float(
+        np.trapezoid(
+            np.abs(tr.contact_force[:integral_end, 2]), tr.time[:integral_end]
+        )
+    )
     envelope_ok = peak_fz <= MAX_ABS_FZ_N and max_tilt < MAX_TILT_DEG
     success = seat_index is not None and envelope_ok
     if success:
@@ -792,6 +877,7 @@ def grade_production(tr: TrialResult, physical_clearance_m: float) -> Grade:
         force_integral_n_s=force_integral,
         max_tilt_deg=max_tilt,
         failure_class=failure_class,
+        completion_index=seat_index,
     )
 
 

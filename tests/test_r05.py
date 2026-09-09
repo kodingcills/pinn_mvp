@@ -247,12 +247,13 @@ def test_g5_unseatable_pair_leaves_filter_unchanged(monkeypatch) -> None:
     _, control = r05.build_tasks(0.0)
     fresh = r05.make_filter(c0)
     reference = r05.make_filter(c0)
-    record, events, times = r05.attempt_probe_pair(
+    record, events, times, peaks = r05.attempt_probe_pair(
         fresh, control, c0, 0.5, None, model=None, data=None
     )
     assert record is None
     assert len(events) == 1 and events[0].kind == "unseatable"
     assert times == [r05.MAX_SECONDS, r05.MAX_SECONDS]
+    assert peaks == [0.0, 0.0]
     assert calls["count"] == 2
     assert np.array_equal(fresh.state_m, reference.state_m)
     assert np.array_equal(fresh.covariance_m2, reference.covariance_m2)

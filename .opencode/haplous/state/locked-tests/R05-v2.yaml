@@ -1,0 +1,983 @@
+schema_version: "haplous.locked-test.v1"
+test_id: "R05-v2"
+title: "Execution value of physics-integrated antipodal probing and filtered re-centering"
+status: "preregistered_not_run"
+supersedes: "R05-v1 (never executed; superseded PRE-CONFIRMATORY by the independent runner preflight review, which found the v1 rng_streams section self-contradictory with the balanced strata clauses and identified unenforced G3/G7/G9, z_flat-relative grading, and production-only peak-force selection). Hypothesis, arms, margins, envelopes, and analysis are UNCHANGED from v1."
+runner_review: "oracle preflight returned FIX_FIRST; all blocker fixes are folded into this re-lock. v1 is preserved as the historical record of the design process."
+locked_on: "2026-09-08"
+red_team_review: "oracle red-team returned REDESIGN; blocking fixes were applied PRE-LOCK in this file (statistics wording, sacrificial-insertion estimand, quantitative K1, new K5/K6 risks, budget caps, operational-completion spec, G8 evidence fingerprints, G9 throughput gate, RNG stream spec). The unfixable design-level findings (off-center observation model, shared truth-triggered capture) are registered as preregistered predictions/risks K5 and K6 and deferred findings, not repaired under R05-v1."
+repository: "/Users/tofuinparis/Projects/pinn_mvp"
+
+lock_contract:
+  immutable_after_first_confirmatory_result: true
+  allowed_post_lock_edits: []
+  replacement_rule: >-
+    Any change to the hypothesis, arms, scenario generator, primary outcome,
+    margin, or analysis requires a new R05-v2 file. Results produced under this
+    file must not be pooled with a later version.
+  evidence_state_rule: >-
+    Record the repository commit and hashes of this YAML, the generated
+    development manifest, the frozen selected-arm configuration, and the
+    held-out manifest in the execution report before running confirmatory arms.
+  no_simulation_was_run_to_create_this_design: true
+
+research_question: >-
+  Does the current pegsim probing/filter execution path create material
+  production-insertion value over the strongest simpler practical spiral
+  baseline under the locked variation challenge set?
+
+hypothesis:
+  primary_claim: >-
+    On the 80 paired held-out scenarios defined below, Haplous will produce at
+    least 0.10 absolute MORE observed paired seating successes than the tuned
+    VALIDATED_LOOSE_V1 spiral baseline (n10 - n01 >= 8 of 80), and the
+    direction of the paired discordances will reject equal success probability
+    by a one-sided exact McNemar test at alpha=0.05. This is a claim about the
+    locked benchmark result, not an inference that the underlying effect
+    exceeds 0.10 in a sampling population (see statistical_analysis.estimand_note).
+  null_for_test: >-
+    Conditional on a discordant scenario, Haplous is no more likely than the
+    baseline to be the successful arm: P(Haplous-only success) <= 0.5.
+  estimand: >-
+    Intent-to-treat paired risk difference over the fixed 80-scenario challenge
+    mixture: mean(H_i - B_i), where each arm receives the same exogenous
+    scenario. Haplous executes up to six registered sacrificial full-insertion
+    probe cycles before its one designated production insertion; the baseline
+    executes its one designated production insertion directly. The estimand is
+    the yield of the designated production insertion under each arm's
+    registered procedure, NOT a physically attempt-matched comparison.
+  material_margin_absolute: 0.10
+  required_net_paired_successes_at_n_80: 8
+  alpha_one_sided: 0.05
+
+scope:
+  claimed:
+    - >-
+      Comparative execution performance in deterministic MuJoCo at 2000 Hz for
+      the locked n=64 blind-hole scene family and the exact fixture-offset,
+      part-clearance, and sensor-corruption ranges below.
+    - >-
+      Added value, if any, of deliberate antipodal probes, the N5-measured pair
+      covariance and bias, StateFilter gating/abort semantics, and re-centering
+      one production insertion at the filter's fixture-position estimate.
+    - >-
+      A challenge-set result, not an estimate of customer or factory prevalence.
+  not_claimed:
+    - "Hardware performance, hardware safety, or 500/1000 Hz plausibility."
+    - "Learning, natural-search observations, or end-to-end policy comparison."
+    - "Angular fixture estimation, plate-tilt robustness, or bore-axis correction."
+    - "General out-of-round bore robustness or odd-n facet behavior."
+    - "Intra-pair fixture drift, batch adaptation, or multi-cycle production yield."
+    - "Throughput superiority; probe and cycle-time costs are secondary outcomes."
+  deliberate_exclusions:
+    plate_tilt_deg: 0.0
+    plate_tilt_reason: >-
+      EpisodeConfig supports plate tilt, but the current three-state filter has
+      no angular state and no measured execution envelope for tilt. Adding it
+      would test a mechanism Haplous does not claim to correct.
+    out_of_roundness: null
+    out_of_roundness_reason: >-
+      BoreOutOfRoundness exists in error_injection.py's analytic observation
+      model, but scene.build_mjcf does not apply that harmonic to real MuJoCo
+      bore geometry and no measured physical range is registered. It is not
+      simulated or approximated here.
+
+repository_evidence_basis:
+  - path: "CONTEXT.md"
+    facts:
+      - "VALIDATED_LOOSE_V1 seats 16/16 at 2.0 mm; prior 96/96 spans 1.0-2.25 mm."
+      - "R_passive is 1.5 mm; 0/8 at 1.75 mm."
+      - "Spiral reach is 4.35 mm; 4.5 and 5.0 mm fail correctly."
+      - "Canonical control is dt=0.0005 s, 2000 Hz, max_seconds=16.3 s."
+  - path: "docs/N2_PROBE_PRIMITIVE_REPORT.md"
+    facts:
+      - "The search-disabled probe radius is exactly 2*0.5 mm=1.0 mm."
+      - "128/128 probes seated when the probe itself was 1.0 mm from the true hole."
+  - path: "docs/N5_ANTIPODAL_CANCELLATION_REPORT.md"
+    facts:
+      - "n=64 pair population: 768/768 seated and pair-mean max error 0.864 um at dc=0."
+      - "Physical clearance offsets -10,-5,0,+5,+10 um were exercised."
+      - "Pair error is strongly side-anticorrelated; the pair bias is a population mean."
+  - path: "docs/F1C_PROBE_SESSION_REPORT.md"
+    facts:
+      - "Clean six-pair session ended at 0.024 um fixture error."
+      - "3 um TCP translation +0.01 rad yaw and 2 um quantization tracked the bias exactly."
+      - "The corrupted session produced NEES 226-407 and 2/6 gated pairs."
+  - path: "pegsim/search.py"
+    facts:
+      - "DELTA_MAX_SPEC_M=0.002; canonical pitch=0.75 mm and R_spiral=2.75 mm."
+  - path: "pegsim/filter.py"
+    facts:
+      - "Gate=13.816; ABORT occurs on the third consecutive gated pair."
+  - path: "pegsim/probing.py"
+    facts:
+      - "Pair covariance and 1.1423 um n=64 pair bias are loaded from committed N5 evidence."
+      - "An incomplete/unseated pair leaves the filter untouched."
+
+common_configuration:
+  scene:
+    base_bundle: "VALIDATED_LOOSE_V1"
+    nominal_task:
+      peg_radius_m: 0.005
+      radial_clearance_m: 0.0005
+      chamfer_width_m: 0.001
+      plate_thickness_m: 0.01
+      peg_length_m: 0.05
+      peg_mass_kg: 0.05
+      friction: 0.4
+      n_segments: 64
+      blind_hole: true
+    common_deviation_from_bundle: >-
+      n_segments is 64 rather than canonical 16 because the required pair
+      covariance and 1.1423 um pair bias were measured at n=64. Both arms use
+      the same n=64 physical scene. All other nominal task values are unchanged.
+  solver_locked_no_tuning:
+    timestep_s: 0.0005
+    cone: "elliptic"
+    integrator: "implicitfast"
+    solref: [0.002, 1.0]
+    solimp: [0.9, 0.95, 0.0001]
+  controller_locked_no_tuning:
+    k_xy_N_per_m: 1000.0
+    k_z_search_N_per_m: 500.0
+    k_z_seating_N_per_m: 2000.0
+    k_rx_Nm_per_rad: 5.0
+    k_ry_Nm_per_rad: 5.0
+    k_rz_Nm_per_rad: 0.05
+    f_search_N: 1.0
+    f_target_N: 15.0
+    f_yield_N: 25.0
+    v_descent_m_per_s: 0.01
+    depth_commit_m: 0.0005
+    seed_z_flat_from_cad: true
+    force_continuous_handoff: true
+    control_decimation: 1
+    control_delay_steps: 0
+  episode_locked:
+    z_start_m: 0.005
+    max_seconds: 16.3
+    seat_persist_s: 0.1
+    target_depth_m: 0.00986
+    pen_allow_m: 0.000012
+    plate_tilt_deg: 0.0
+  spiral_geometry_locked:
+    delta_max_m: 0.002
+    pitch_safety: 0.5
+    pitch_m: 0.00075
+    r_spiral_m: 0.00275
+    max_seconds: 16.3
+  physics_path_rule: >-
+    Every probe and production motion must be an EpisodeConfig executed by
+    pegsim.rollout.run_episode. No R05 driver may call mj_step directly.
+
+coordinate_and_variation_semantics:
+  true_hole_mouth_world_xy_m: [0.0, 0.0]
+  commanded_nominal_center: >-
+    For scenario i, c0_i is the wrong nominal command in world coordinates.
+    Its radius and bearing are the fixture-offset scenario. The baseline starts
+    and centers its spiral at c0_i.
+  fixture_error_definition: >-
+    e_i=c0_i-true_hole_xy. A probe at commanded bearing u starts at
+    c0_i + 0.001*u, so its true radial offset is |e_i + 0.001*u|. This exact
+    geometry, rather than the N2 origin-centered special case, governs whether
+    each probe can seat.
+  filter_state_frame: >-
+    StateFilter h=[h_x,h_y] is the estimated true hole center in world
+    coordinates. Its prior mean is c0_i, never the simulator's world origin;
+    its posterior execution command is h_hat. dc is estimated but is not used
+    to change controller geometry or acceptance thresholds in R05.
+  physical_part_variation: >-
+    CorruptionModel.part_variation=PartDimensionalVariation(dc) defines the
+    hidden physical clearance. Build the MuJoCo model with
+    radial_clearance=0.0005+dc, while EpisodeConfig control logic, probe
+    reduction, and StateFilter retain nominal 0.0005 m. Offline grading uses
+    the physical clearance.
+  sensor_corruption: >-
+    TcpCalibrationBias then encoder quantization are applied only to measured
+    probe tip xy, in the order implemented by apply_sensor_corruption. The same
+    fixed calibration object is held across all probes in one scenario. The
+    baseline has no estimator observation to corrupt; this asymmetry is the
+    intrinsic cost of adding the estimator, not a difference in physical scene.
+
+rule_zero:
+  treatment_may_consume:
+    - "Known commanded center c0 and commanded probe bearing."
+    - "Peg FK tip position, z_flat/depth, measured orientation/tilt, wrench, and time."
+    - "Reduced, sensor-corrupted probe estimates and StateFilter records."
+  treatment_must_not_consume:
+    - "TrialResult.success or any ground_truth_seated result."
+    - "true_hole_xy, tip_lateral-to-truth, mouth_lateral-to-truth, or evaluation_error_xy."
+    - "The physical clearance offset dc or any truth-side out-of-roundness value."
+    - "Offline primary success, NEES truth error, or failure classification."
+  operational_probe_completion: >-
+    A probe side is operationally complete at the EARLIEST trace index k whose
+    trailing window of 200 consecutive 0.5 ms samples all satisfy
+    (z_flat at that sample) - tip_z >= 9.86 mm; the observed-trace conditions
+    |F_z| <= 25 N and tilt < 10 deg must hold over the ENTIRE prefix 0..k,
+    not only the window. The measured tip xy at index k is the reduced
+    quantity; samples after k are not inspected for this treatment decision.
+    If no such k exists by 16.3 s, the side is operationally failed and
+    supplies no estimate.
+  required_regression_test: >-
+    Poison every evaluation-only truth field, including TrialResult.success,
+    true_hole_xy, and evaluation errors, and assert byte-identical treatment
+    decisions, reduced observations, filter records, and final commands.
+  current_code_blocker: >-
+    PairProbeSession.probe_pair currently branches on TrialResult.success and
+    obtains settled telemetry only through success-gated fields. R05 is INVALID
+    unless the execution path is separated from that offline ground-truth gate
+    using the operational criterion above before confirmatory evaluation.
+  shared_infrastructure_caveat: >-
+    PRE-LOCK AUDIT FINDING (red team, verified at rollout.py:626): the
+    run_episode capture branch triggers when the peg mouth's distance to the
+    WORLD ORIGIN (the true hole) falls within radial clearance, then snaps the
+    lateral setpoint to the measured tip. This is a ground-truth-triggered
+    control event present in BOTH arms and in all prior capture evidence. It
+    does not differ across arms, so the paired comparison remains internally
+    fair, but absolute capture evidence is partially attributable to it. The
+    repair (an observable capture trigger and re-characterization) is deferred
+    to the next lineage and is NOT performed under R05-v1; the same caveat is
+    recorded in the freeze report.
+
+arms:
+  baseline:
+    name: "tuned_spiral_baseline"
+    definition: >-
+      One production insertion from c0 using the full VALIDATED_LOOSE_V1
+      Archimedean spiral, canonical controller, full 16.3 s budget, canonical
+      CAD z_flat initialization, and all existing pause/commit/snap recovery
+      behavior. Only constant tangential speed may be selected on development
+      cases. There are no probes, filter, learned state, or weakened settings.
+    allowed_development_candidates:
+      source_note: >-
+        5 mm/s is canonical; 10, 25, 50, and 100 mm/s are the explicit values
+        already present in scripts/measure_b0b_max_speed.py. Their presence is
+        not treated as evidence that they are validated.
+      v_t_m_per_s: [0.005, 0.010, 0.025, 0.050, 0.100]
+    frozen_across_candidates:
+      - "Spiral delta_max, pitch_safety, radius, timeout, and start construction."
+      - "All gains, force targets, commit logic, z_flat initialization, solver, and grading."
+    production_attempts_per_scenario: 1
+    fallback_or_repeat_attempts: 0
+
+  haplous:
+    name: "pair_probe_filter_recenter"
+    only_added_mechanisms:
+      - "PairProbeSession lifecycle with scenario-centered antipodal probe commands."
+      - "N5 n=64 measured 4x4 pair covariance rotated at each bearing."
+      - "N5 n=64 evidence-loaded pair penetration bias."
+      - "StateFilter [h_x,h_y,dc], Joseph covariance update, gate, SALVAGE, and ABORT."
+      - "Estimator-guided production execution by re-centering at h_hat."
+    explicitly_not_added:
+      - "No gain, solver, force, geometry, or commit-gate improvement."
+      - "No learned model, natural-search measurement, oracle retry, or truth-aware bearing."
+      - "No use of estimated dc to change the controller, spiral, or success tolerance."
+      - "No second production attempt after an estimator-guided production failure."
+    filter_fixed_no_tuning:
+      initial_state_m: "[c0_x, c0_y, 0.0]"
+      initial_covariance_m2: "diag((1 mm)^2, (1 mm)^2, (1 mm)^2)"
+      q_h_m2_per_cycle: 4.0e-14
+      q_c_m2_per_cycle: 1.0e-18
+      placeholder_single_side_measurement_variance_m2: 1.0e-12
+      pair_covariance_loader: "pegsim.probing.load_n5_pair_measurement_model"
+      penetration_bias_loader: "pegsim.probing.load_n5_n64_pair_bias_m"
+      expected_loaded_penetration_bias_m: 1.1423e-06
+      gate_threshold: 13.816
+      consecutive_gate_limit: 3
+      note: >-
+        The 13.816 value is the existing 2-DOF 99.9% number reused by current
+        code for a four-row pair batch; it is intentionally not recalibrated in R05.
+    probe_fixed:
+      radius_m: 0.001
+      radius_derivation: "2 * nominal radial clearance"
+      spiral_spec: null
+      pair_is_antipodal: true
+      attempt_bearing_offsets_rad:
+        - 0.0
+        - 1.5707963267948966
+        - 2.399963229728653
+      first_bearing: "theta_probe0_i from the locked scenario seed"
+      physical_commands: "c0 + radius*u(theta), then c0 - radius*u(theta)"
+      behavior_after_unseatable_pair: >-
+        Leave the filter untouched and try the next registered bearing if the
+        selected policy has attempts remaining; otherwise use the baseline fallback.
+      behavior_after_salvage: >-
+        Do not use the rejected update for guidance. Try the next registered
+        bearing if attempts remain; otherwise use the baseline fallback.
+      behavior_after_abort: >-
+        Log estimator_abort and use the baseline fallback. Do not execute from
+        the ABORT reinitialized h, even though StateFilter preserves dc and
+        reinitializes fixture h internally.
+      behavior_after_updated: >-
+        Count the accepted update. Stop probing when the selected policy's
+        required_updated_pairs is reached; otherwise continue the registered schedule.
+    allowed_development_candidates:
+      - id: "H1"
+        max_pair_attempts: 1
+        required_updated_pairs: 1
+        guided_execution: "straight_drop"
+      - id: "H2"
+        max_pair_attempts: 1
+        required_updated_pairs: 1
+        guided_execution: "recentered_full_spiral"
+      - id: "H3"
+        max_pair_attempts: 3
+        required_updated_pairs: 1
+        guided_execution: "straight_drop"
+      - id: "H4"
+        max_pair_attempts: 3
+        required_updated_pairs: 1
+        guided_execution: "recentered_full_spiral"
+      - id: "H5"
+        max_pair_attempts: 3
+        required_updated_pairs: 2
+        guided_execution: "recentered_full_spiral"
+    execution_after_valid_estimate:
+      center_xy: "StateFilter.state_m[:2]"
+      straight_drop: >-
+        One production EpisodeConfig centered at h_hat with spiral_spec=None.
+      recentered_full_spiral: >-
+        One production EpisodeConfig centered at h_hat with the selected
+        baseline spiral speed and otherwise identical full spiral geometry.
+    fallback_before_production: >-
+      If the registered probe budget ends without the required UPDATED count,
+      or if ABORT occurs, run exactly one production insertion using the frozen
+      baseline arm from original c0. Probe failure is not allowed to shorten or
+      weaken this fallback.
+    fairness_constraint: >-
+      Each arm executes exactly one designated production insertion whose
+      seating is graded by the primary outcome. Haplous may additionally spend
+      registered probe motions before it; every probe side is physically a
+      complete insertion cycle (it seats and bottoms the peg), and this
+      sacrificial-calibration structure is part of the treatment being tested,
+      not an attempt-parity claim. Haplous receives no extra designated
+      production retry after a guided insertion fails.
+    production_attempts_per_scenario: 1
+    maximum_pair_attempts: 3
+    maximum_probe_side_episodes: 6
+    maximum_total_run_episode_calls_per_scenario: 7
+
+implementation_gates_before_any_confirmatory_run:
+  - id: "G1_rule_zero"
+    requirement: "The truth-poison regression test in rule_zero passes."
+  - id: "G2_probe_center"
+    requirement: >-
+      Probe construction accepts c0 and asserts the two commanded world points
+      are c0 +/- 0.001*u; it must not silently use the origin-centered F1c special case.
+  - id: "G3_nominal_vs_physical_clearance"
+    requirement: >-
+      Model geometry uses 0.0005+dc while control, reduction, and filter use
+      0.0005. Offline grading is recomputed with the physical task. Assertions
+      must fail if either arm is handed the other definition.
+  - id: "G4_execution_recenter"
+    requirement: >-
+      A synthetic reduced estimate moves the final commanded center by exactly
+      the filter h estimate; replacing truth fields while holding observations
+      fixed cannot move it.
+  - id: "G5_pair_failure_atomicity"
+    requirement: >-
+      Either missing side produces no StateFilter update and leaves state and
+      covariance exactly unchanged.
+  - id: "G6_one_production_attempt"
+    requirement: >-
+      Every arm-scenario record contains exactly one production episode; guided
+      failure cannot trigger a second production attempt.
+  - id: "G7_manifest_pairing"
+    requirement: >-
+      Scenario id, physical model inputs, c0, zero initial velocity/orientation,
+      part variation, and corruption object hashes match across arms before execution.
+  - id: "G8_evidence_loaders"
+    requirement: >-
+      Missing or changed N5 evidence, non-positive pair covariance, or a
+      pair-bias mismatch fails closed before physics begins. Locked
+      fingerprints, checked at load time with the comparison tolerances below:
+      n5_raw_sha256: f3c5fa7304a545531863f9df7498b3d03f271d01e5365eff8b5c1edb5a6e506c
+      n5_summary_sha256: 87d254728736c137f29149d8411a00864f5ce0a0857d6aac962573a8734a66bf
+      radial_variance_m2: 5.639250829400083e-13
+      tangential_variance_m2: 2.8422632826887354e-12
+      radial_side_covariance_m2: -4.844441351432012e-13
+      tangential_side_covariance_m2: -2.788102814967945e-12
+      penetration_bias_m: 1.1423122550128134e-06
+      covariance comparison tolerance: exact equality to float64 repr;
+      bias comparison tolerance: relative 1e-12.
+  - id: "G9_throughput_gate"
+    requirement: >-
+      Before held-out execution begins, the development phase must demonstrate
+      a measured wall-clock throughput of at least 200 physics steps/s per
+      active worker sustained across a full 16.3 s episode, and the confirmatory
+      scheduler must assign complete scenarios (not shared MjData) to workers.
+      If the measured throughput cannot sustain the registered budget within
+      four wall-clock hours, R05-v1 is INVALID and a revised budget is locked
+      before any held-out physics.
+
+parameter_ranges_and_justification:
+  fixture_offset:
+    overall_eval_radius_m: [0.0005, 0.00425]
+    evidence: >-
+      0.5-1.0 mm gives the fixed probe its best honest feasibility region under
+      R_passive=1.5 mm; 1.0-2.25 mm overlaps existing baseline capture evidence;
+      2.25-4.25 mm extends beyond the 2 mm specification/validation region but
+      remains just inside the measured 4.35 mm search reach. Known 4.5/5.0 mm
+      failures are not added because they would be predetermined failures for
+      both the fixed-radius probe and baseline rather than discrimination.
+  part_clearance_offset:
+    values_m: [-0.000010, -0.000005, 0.000005, 0.000010]
+    canonical_value_m: 0.0
+    evidence: >-
+      These are exactly the truth-side N5 levels, excluding zero in variation
+      strata because a dedicated canonical stratum supplies dc=0. Physical
+      clearances therefore remain 490-510 um.
+  tcp_bias_hazard:
+    translation_magnitude_m: 0.000003
+    translation_direction: "locked per scenario"
+    yaw_magnitude_rad: 0.01
+    yaw_sign: "locked per scenario"
+    encoder_resolution_m: 0.000002
+    evidence: >-
+      These are the exact F1c corruption magnitudes that produced 3 um fixture
+      error, shrinking uncertainty, NEES 226-407, and 2/6 gated pairs. Direction
+      and yaw sign are symmetry-held-out while magnitudes are not extrapolated.
+  probe_radius:
+    value_m: 0.001
+    evidence: >-
+      Exactly the N2/N5 2*nominal-clearance primitive. It is not enlarged in
+      hard-offset cases because that would add an unvalidated mechanism.
+  contact_and_tilt:
+    max_abs_axial_contact_force_N: 25.0
+    max_tilt_deg_exclusive: 10.0
+    evidence: >-
+      25 N is VALIDATED_LOOSE_V1 f_yield and 10 deg is the existing tilt-guard
+      boundary reported by the control-rate campaign. They are grading bounds,
+      not an independent runtime safety layer.
+
+scenario_generation:
+  coordinate_units: "SI internally; ranges below are inclusive"
+  simulator_randomness: "none; seeds generate the fixed challenge manifest only"
+  stratum_level_assignment: >-
+    For each stratum, a single seeded assignment generator
+    Generator(PCG64(SeedSequence([master_seed, stratum_id, 0xFFFFFFFF])))
+    produces the stratum-wide BALANCED assignments, resolving v1's ambiguity
+    in favor of the balanced strata clauses: (A) radius_perm =
+    rng.permutation(n_per_stratum) assigns each of the n radial quantiles
+    u_j=(j+0.5)/n, j=0..n-1 (area-uniform r_j=sqrt(r_min^2+u_j*(r_max^2-r_min^2)))
+    to exactly one replicate: replicate r gets quantile index radius_perm[r];
+    (B) for strata with part variation, dc_slots = dc_levels repeated
+    n/len(levels) times, dc_perm = rng.permutation(n), replicate r gets
+    dc_levels_m = dc_levels[dc_perm[r] % len(levels)] so each level appears
+    exactly n/len(levels) times; (C) for tcp strata, tcp_perm =
+    rng.permutation(16), replicate r gets octant tcp_perm[r] % 8 and yaw sign
+    tcp_perm[r] // 8, so each of the eight octants phi_k=(2k+1)*pi/8 appears
+    exactly twice and each yaw sign exactly eight times. For strata without
+    variation the corresponding draw still occurs (consumed and unused) so
+    stream order is stratum-invariant.
+  per_scenario_streams: >-
+    Each scenario then uses Generator(PCG64(SeedSequence(
+    [master_seed, stratum_id, replicate_id]))) for exactly three draws, in
+    order: (1) offset bearing rng.random()*2*pi; (2) first probe bearing
+    rng.random()*2*pi; (3) arm-order bit rng.integers(0,2).
+    No other draws. The generator source implementing this order is hashed
+    into the execution report and compared at load time.
+  offset_bearing_sampling: "per-scenario stream (1)"
+  first_probe_bearing_sampling: "per-scenario stream (2)"
+  per_scenario_seed: >-
+    NumPy SeedSequence([master_seed, stratum_id, replicate_id]) with PCG64;
+    record the generated uint64 seed in every arm record.
+  manifest_serialization: >-
+    Scenarios serialize to canonical JSON (sorted keys, float repr via
+    json.dumps(..., sort_keys=True) of a dict of plain Python types); the
+    manifest file is written once and its sha256 recorded in the execution
+    report before the first scored physics. Both arms load the same file.
+  paired_initial_state: >-
+    Both arms receive the same pre-policy c0, z_start=5 mm, vertical peg,
+    zero qvel, physical task/model, and corruption realization. A Haplous final
+    xy start that differs after probing is the registered treatment action, not
+    an unpaired exogenous initial condition. run_episode resets physics before
+    every motion.
+  arm_order: >-
+    Within each scenario, choose baseline-first versus Haplous-first from one
+    additional bit of the scenario seed. Arm order cannot change any model or
+    corruption value.
+
+  development_envelope:
+    access: "Both arms may inspect and tune only on these cases."
+    master_seed: 50501
+    n_scenarios: 20
+    strata:
+      - id: 0
+        name: "validated_core_clean"
+        n: 4
+        fixture_radius_m: [0.0015, 0.00225]
+        dc_assignment_m: [0.0, 0.0, 0.0, 0.0]
+        tcp_bias: null
+        encoder_resolution_m: null
+      - id: 1
+        name: "probe_feasible_clean"
+        n: 4
+        fixture_radius_m: [0.0005, 0.0010]
+        dc_assignment_m: [-0.000010, -0.000005, 0.000005, 0.000010]
+        tcp_bias: null
+        encoder_resolution_m: null
+      - id: 2
+        name: "probe_feasible_f1c_hazard"
+        n: 4
+        fixture_radius_m: [0.0005, 0.0010]
+        dc_assignment_m: [-0.000010, -0.000005, 0.000005, 0.000010]
+        tcp_translation_xy_m: [0.000003, 0.0]
+        tcp_yaw_rad: 0.01
+        encoder_resolution_m: 0.000002
+      - id: 3
+        name: "probe_boundary_clean"
+        n: 4
+        fixture_radius_m: [0.0010, 0.0015]
+        dc_assignment_m: [-0.000010, -0.000005, 0.000005, 0.000010]
+        tcp_bias: null
+        encoder_resolution_m: null
+      - id: 4
+        name: "search_edge_clean"
+        n: 4
+        fixture_radius_m: [0.00225, 0.00425]
+        dc_assignment_m: [-0.000010, -0.000005, 0.000005, 0.000010]
+        tcp_bias: null
+        encoder_resolution_m: null
+    radial_quantiles: [0.125, 0.375, 0.625, 0.875]
+    prohibition: >-
+      No held-out manifest, aggregate, trace, screenshot, or per-trial result
+      may be read before both selected arm definitions are frozen and hashed.
+
+  held_out_evaluation_envelope:
+    access: "Never used for parameter choice, debugging, or candidate selection."
+    master_seed: 50502
+    n_scenarios: 80
+    n_per_stratum: 16
+    strata:
+      - id: 0
+        name: "validated_core_clean"
+        fixture_radius_m: [0.0015, 0.00225]
+        dc_assignment_m: "all 16 are 0"
+        tcp_bias: null
+        encoder_resolution_m: null
+        role: "Checks regression and ceiling in the previously successful offset region."
+      - id: 1
+        name: "probe_feasible_clean_part_variation"
+        fixture_radius_m: [0.0005, 0.0010]
+        dc_assignment_m: "[-10,-5,+5,+10] um repeated four times then seed-permuted"
+        tcp_bias: null
+        encoder_resolution_m: null
+        role: "Gives the current fixed-radius pair its fairest physically supported opportunity."
+      - id: 2
+        name: "probe_feasible_tcp_hazard"
+        fixture_radius_m: [0.0005, 0.0010]
+        dc_assignment_m: "[-10,-5,+5,+10] um repeated four times then seed-permuted"
+        tcp_translation_magnitude_m: 0.000003
+        tcp_translation_bearings_rad: >-
+          The eight half-step octant bearings phi_k=(2*k+1)*pi/8, k=0..7,
+          each used twice and seed-permuted.
+        tcp_yaw_rad: "+0.01 and -0.01, eight scenarios each, seed-permuted"
+        encoder_resolution_m: 0.000002
+        role: "Required R03/F1c confidently-wrong calibration-bias stratum."
+      - id: 3
+        name: "probe_feasibility_boundary_clean"
+        fixture_radius_m: [0.0010, 0.0015]
+        dc_assignment_m: "[-10,-5,+5,+10] um repeated four times then seed-permuted"
+        tcp_bias: null
+        encoder_resolution_m: null
+        role: "Measures the predicted loss of antipodal seating as |c0+/-1 mm*u| approaches R_passive."
+      - id: 4
+        name: "beyond_validated_search_edge_clean"
+        fixture_radius_m: [0.00225, 0.00425]
+        dc_assignment_m: "[-10,-5,+5,+10] um repeated four times then seed-permuted"
+        tcp_bias: null
+        encoder_resolution_m: null
+        role: "Challenges the baseline near measured search reach while honestly exposing probe infeasibility."
+    radial_quantiles: >-
+      u_j=(j+0.5)/16 for j=0..15 within each stratum, seed-permuted.
+    weighting_note: >-
+      This intentionally overweights probe-feasible cases to give the treatment
+      a fair chance and includes a separate hard-offset stratum. It is not a
+      field-frequency model; the primary estimand is only this fixed 80-case mix.
+
+per_scenario_execution:
+  manifest_first: >-
+    Generate and hash all 80 scenarios before running either confirmatory arm.
+    Do not print parameter values beyond the hash until selected arms are frozen.
+  baseline_steps:
+    - "Reset physics; execute the frozen one-episode baseline from c0."
+    - "Write complete telemetry and offline grades for every scenario, including failures."
+  haplous_steps:
+    - "Reset PairProbeSession to prior [c0_x,c0_y,0] and the registered covariance."
+    - >-
+      Attempt registered antipodal pairs in order, each through run_episode and
+      operational completion only; apply fixed TCP bias then encoder quantization,
+      reduce with nominal 0.5 mm, and call StateFilter.update_pair with measured covariance.
+    - >-
+      Stop according to UPDATED/SALVAGE/ABORT and the frozen candidate policy;
+      unseatable pairs remain outcomes and never become exclusions.
+    - >-
+      Execute exactly one production insertion: from h_hat if the required
+      accepted-update count exists, otherwise the full frozen baseline from c0.
+    - "Write all probe/filter records and the complete production telemetry."
+  no_early_truth_stop: >-
+    Ground-truth seating may be computed only after a motion trace is complete;
+    it cannot choose a bearing, stop probing, select fallback, or move the final command.
+  no_survivor_filtering: >-
+    Every manifest scenario enters the primary table. Probe-unseatable, ABORT,
+    spiral exhaustion, tilt, force, and timeout remain intent-to-treat records.
+
+primary_outcome:
+  count: 1
+  name: "production_seated_within_envelope"
+  type: "binary per scenario-arm"
+  evaluated_on: "the one production-insertion episode only; probe seating never counts"
+  definition: >-
+    1 iff offline ground_truth_seated-equivalent geometry using the physical
+    task is true continuously for 0.1 s by 16.3 s, and over the production
+    episode max(abs(contact_force_z)) <=25 N and max_tilt_deg <10 deg.
+    Otherwise 0.
+  geometry_detail: >-
+    At plate_tilt_deg=0 this requires ABSOLUTE tip_z<=-9.86 mm in world
+    coordinates (not the z_flat-relative operational-probe criterion, which
+    remains reserved for probe-side completion detection) and both tip and
+    mouth lateral norms <= physical radial clearance +12 um. The success
+    calculation is recomputed from the full trace with the physical task;
+    TrialResult.success generated with a nominal control task is not the
+    confirmatory grade.
+  contact_note: >-
+    The 25 N criterion is an offline operating-envelope grade. pegsim has no
+    independent watchdog or runtime wrench clamp, so this is not a safety claim.
+
+secondary_outcomes_no_claim_upgrading:
+  metrics:
+    - name: "production_time_to_seat_s"
+      definition: "Offline seating onset; failures assigned the fixed 16.3 s cap for paired summaries."
+    - name: "total_pipeline_time_s"
+      definition: >-
+        Sum each completed probe's operational completion time, 16.3 s for each
+        operationally failed probe side, and the production capped time. Report
+        raw and paired differences; do not hide probe overhead.
+    - name: "peak_abs_axial_contact_force_N"
+      definition: >-
+        Production-only and maximum across the entire Haplous pipeline (the
+        prefix peak of every operationally completed or failed probe side
+        plus the production episode), both reported. CANDIDATE SELECTION uses
+        the pipeline maximum, not the production-only value.
+    - name: "max_tilt_deg"
+      definition: "Production-only and maximum across the entire Haplous pipeline, both reported."
+    - name: "absolute_axial_force_time_integral_Ns"
+      definition: >-
+        Sum integral |F_z(t)| dt through each motion's operational completion or
+        full timeout, separately for production and total pipeline.
+    - name: "probe_motion_count"
+      definition: "Pair attempts and side episodes, including failed sides."
+    - name: "probe_unseatable_count"
+      definition: "Operational failures and offline ground-truth probe failures reported separately."
+    - name: "estimator_abort_count"
+      definition: "Number of FilterOutcome.ABORT records and scenarios falling back because of ABORT."
+    - name: "estimator_consistency"
+      definition: >-
+        Per accepted pair report NIS and evaluation-only 2-DOF fixture NEES
+        (h_error^T P_h^-1 h_error), plus the 3-sigma confidently-wrong flag.
+    - name: "estimator_state_error"
+      definition: >-
+        Evaluation-only norm(h_hat-true_hole_xy), signed dc error relative to the
+        hidden part offset, and posterior standard deviations.
+    - name: "spiral_usage"
+      definition: "Whether final execution used straight drop, re-centered spiral, or baseline fallback."
+  inference_rule: >-
+    Secondary outcomes are descriptive diagnostics. They cannot change
+    SUPPORTED/WEAKENED/REFUTED status and receive no confirmatory p-values.
+
+failure_classification:
+  mechanism_events_nonexclusive:
+    probe_unseatable: >-
+      At least one side of an attempted pair lacks operational depth persistence;
+      offline ground-truth probe seating is recorded separately. Filter remains untouched.
+    estimator_abort: >-
+      StateFilter returns ABORT on the third consecutive gated complete pair;
+      policy falls back and never uses the reinitialized h for guidance.
+    estimator_salvage: "StateFilter returns SALVAGE; rejected state is not used for guidance."
+    confidently_wrong: >-
+      Evaluation-only actual h error exceeds 3 times posterior h standard
+      deviation in at least one component; never available to the policy.
+  final_production_failure_priority:
+    - code: "contact_envelope"
+      condition: "peak abs axial contact force >25 N"
+    - code: "tilt_guard"
+      condition: "max tilt >=10 deg, if contact_envelope did not already classify it"
+    - code: "spiral_exhausted"
+      condition: >-
+        primary=0 and TrialResult.spiral_exhausted is true, if no higher-priority
+        contact/tilt classification applies
+    - code: "timeout"
+      condition: >-
+        primary=0 by 16.3 s and spiral is absent or not exhausted, if no
+        higher-priority classification applies
+  reporting_rule: >-
+    Report one prioritized final-production failure code plus all nonexclusive
+    mechanism events. A successful fallback can coexist with probe_unseatable
+    or estimator_abort and remains a primary success.
+
+fair_tuning_budget:
+  development_scenario_exposure:
+    baseline: 20
+    haplous: 20
+    note: "Both use the identical 20-case development manifest."
+  baseline_budget:
+    candidates: 5
+    scenario_candidate_evaluations: 100
+    maximum_run_episode_calls: 100
+    tuned_parameters_count: 1
+    tuned_parameters: ["v_t"]
+  haplous_budget:
+    candidates: 5
+    scenario_candidate_evaluations: 540
+    maximum_run_episode_calls: 540
+    budget_arithmetic: "H1/H2: 2 x 20 x 3 = 120; H3/H4/H5: 3 x 20 x 7 = 420; total 540."
+    development_tuned_dimensions: 3
+    development_tuned_dimensions_detail:
+      - "max_pair_attempts"
+      - "required_updated_pairs"
+      - "guided_execution straight_drop vs recentered_full_spiral"
+    fixed_not_tuned:
+      - "Pair radius and bearing-offset schedule."
+      - "StateFilter initial covariance, q_h, q_c, gate, abort limit, R_pair, and penetration bias."
+      - "Selected baseline controller, spiral geometry/speed for fallback, and timeout."
+  infrastructure_debug_phase:
+    symmetric: true
+    rule: >-
+      Crashes or infrastructure defects discovered during development may be
+      fixed in a DISCARDABLE debug phase with a symmetric budget of 50
+      run_episode calls per arm, phase-tracked and logged. All candidate
+      scenario cells affected by a behavior-affecting fix are re-scored and
+      the affected candidates' previous scores are discarded in full for BOTH
+      arms. Debug-phase outcomes never enter selection. A behavior-affecting
+      fix after the first held-out physics begins invalidates R05-v1.
+  counting_rule: >-
+    Every physics-bearing scored candidate execution after this lock counts
+    against the caps above, including crashes after physics starts. Pure unit
+    tests with no MuJoCo stepping do not. The debug phase has its own
+    symmetric cap and never contributes to selection.
+  selection_procedure:
+    - >-
+      Evaluate all baseline candidates on all 20 development scenarios. Select
+      lexicographically: most primary successes; lowest p95 peak |F_z| (numpy
+      linear-interpolation quantile, method 'linear'); lowest median capped
+      production time; lowest v_t.
+    - >-
+      Freeze that baseline. Evaluate all five Haplous candidates on the same 20
+      scenarios. Select lexicographically: most primary successes; lowest p95
+      pipeline peak |F_z| (numpy linear-interpolation quantile, method
+      'linear'); lowest median total pipeline time; fewer total probe side
+      motions summed over all 20 development scenarios; lower candidate id.
+    - >-
+      Freeze and hash both selected definitions before generating or exposing
+      any held-out result. No hand-tuned sixth candidate or trace-driven patch
+      is allowed under R05-v1.
+  implementation_bug_rule: >-
+    A bug found with development data may be fixed within the stated budgets.
+    A bug found after any held-out outcome is exposed invalidates R05-v1; fix it
+    only under a newly locked version and rerun from a fresh manifest.
+
+statistical_analysis:
+  population: "All 80 paired held-out scenarios, intent-to-treat."
+  estimand_note: >-
+    The 80 scenarios are a locked deterministic benchmark. delta_hat is the
+    exact paired difference ON this benchmark; the exact McNemar p-value tests
+    the null of discordance-direction symmetry for this fixed mixture
+    interpreted as drawn from the registered scenario generator, not a
+    superpopulation effect-size claim. The support rule therefore asserts an
+    observed benchmark difference of at least 0.10 with symmetry rejected,
+    not that any population effect exceeds 0.10.
+  table:
+    h_only_success: "n10 = count(H_i=1, B_i=0)"
+    baseline_only_success: "n01 = count(H_i=0, B_i=1)"
+    both_success: "n11"
+    neither_success: "n00"
+  effect: "delta_hat=(n10-n01)/80"
+  exact_test: >-
+    One-sided exact McNemar/sign test. With m=n10+n01 discordant pairs,
+    p=P[X>=n10] for X~Binomial(m,0.5). If m=0, p=1.0.
+  support_requires_both:
+    - "delta_hat >=0.10, equivalently n10-n01 >=8"
+    - "one-sided exact p <0.05"
+  multiplicity: >-
+    There is one primary outcome and one overall test. Strata and secondary
+    outcomes are descriptive only; no post-hoc composite score, subgroup gate,
+    or multiplicity-adjusted rescue claim is permitted.
+  descriptive_reporting:
+    - "Arm success counts/rates and the full n00/n01/n10/n11 table."
+    - "Per-stratum success counts with exact binomial intervals, without subgroup p-values."
+    - "Paired raw differences and median/IQR/p95 for predeclared secondary metrics."
+    - "All 80 scenario records, including every mechanism event and failure code."
+
+interpretation_labels:
+  precedence: "INVALID first; otherwise apply SUPPORTED, REFUTED, WEAKENED, then INCONCLUSIVE."
+  SUPPORTED: >-
+    The valid experiment satisfies both preregistered superiority conditions:
+    delta_hat>=0.10 and one-sided exact McNemar p<0.05. Secondary costs and the
+    TCP stratum must still be reported but cannot erase or create this label.
+  REFUTED: >-
+    Baseline superiority reaches the symmetric material and exact-test bar:
+    delta_hat<=-0.10 and the one-sided exact McNemar test in the baseline
+    direction has p<0.05.
+  WEAKENED: >-
+    The experiment is valid and delta_hat is nonzero but neither SUPPORTED nor
+    REFUTED. This includes a positive effect below 10 points or without enough
+    discordant pairs, and a negative effect that misses the symmetric
+    refutation bar. Secondary-only speed or estimator gains cannot upgrade it.
+  INCONCLUSIVE: >-
+    The experiment is valid, delta_hat=0, and neither directional special case
+    applies. Explicit examples are 80/80 saturation in both arms, equal numbers
+    of opposite discordances, or universal failure. State whether the cause was
+    ceiling, floor, or mixed cancellation.
+  INVALID: >-
+    Any invalid-experiment condition below occurs. No scientific label is
+    assigned; retain raw records for audit but do not combine them with a rerun.
+
+invalid_experiment_conditions:
+  - "Any treatment decision consumes simulator truth or TrialResult.success."
+  - "Any probe, production, or diagnostic physics motion bypasses run_episode."
+  - "Either arm sees held-out outcomes before both selected arms are frozen and hashed."
+  - "The development physics budget or registered candidate set is exceeded."
+  - "The two arms differ in exogenous scenario, solver, controller gains, physical task, or corruption realization."
+  - "Control/reduction uses hidden physical clearance, or offline grading uses nominal rather than physical clearance."
+  - "n_segments differs across arms or the N5 n=64 covariance/bias evidence fails its loader checks."
+  - "Haplous receives a second production attempt after guided failure, or baseline fallback is shortened/weakened."
+  - "Any manifest scenario is dropped, replaced, resampled, or survivor-filtered because a probe or insertion failed."
+  - "The primary definition, 10-point margin, alpha, or pairing test changes after a held-out result exists."
+  - "An unresolved infrastructure/code failure prevents a primary result for any of the 80 pairs."
+  - "Any solver contact setting, timestep, cone, integrator, geometry channel, or plate tilt changes from this lock."
+
+confirmatory_compute_budget:
+  held_out_scenarios_per_arm: 80
+  baseline_max_run_episode_calls: 80
+  haplous_max_run_episode_calls: 560
+  combined_max_run_episode_calls: 640
+  maximum_simulated_seconds_if_every_call_times_out: 10432.0
+  maximum_physics_steps_at_dt_0_0005: 20864000
+  workers_max: 14
+  justification: >-
+    The maximum is below the 768 run_episode calls already completed for N5 and
+    is intended to remain within roughly 1-2 wall-clock hours with parallel
+    workers. The 83 s full test suite is a separate pre/post verification cost.
+  overrun_rule: >-
+    Do not reduce N, drop hard cases, or shorten one arm after seeing results.
+    If the registered budget is operationally infeasible, label R05-v1 INVALID
+    and lock a new design before running a smaller campaign.
+
+complexity_accounting:
+  baseline:
+    tuned_parameters_added_to_canonical: 1
+    estimator_state_dimension: 0
+    probe_pair_attempts_per_scenario: 0
+    probe_side_motions_per_scenario: 0
+    production_motions_per_scenario: 1
+    maximum_run_episode_calls_per_scenario: 1
+  haplous_increment_over_baseline:
+    tuned_policy_parameters: 3
+    fixed_estimator_state_dimension: 3
+    fixed_evidence_models: 2
+    maximum_probe_pair_attempts: 3
+    maximum_probe_side_motions: 6
+    production_motions_per_scenario: 1
+    maximum_run_episode_calls_per_scenario: 7
+    added_runtime_branches:
+      - "probe operational failure"
+      - "SALVAGE"
+      - "ABORT"
+      - "UPDATED-count satisfied"
+      - "baseline fallback"
+  required_report_fields:
+    - "Selected candidate ids and all fixed/tuned parameter values."
+    - "Per scenario: pair attempts, side motions, successful operational completions, gates, SALVAGE, ABORT."
+    - "Probe simulated/effective time and force-time integral."
+    - "Production simulated/effective time and force-time integral."
+    - "Total pipeline time overhead Haplous minus baseline."
+    - "Fraction of Haplous scenarios using guided drop, guided spiral, and baseline fallback."
+    - "Primary success gained and lost per added probe pair and per added simulated second, descriptive only."
+
+known_risks_and_expected_discrimination:
+  - id: "K1_nested_feasibility"
+    severity: "critical"
+    statement: >-
+      QUANTITATIVE (red-team bounds, pre-registered): with fixture error |e| in
+      mm and probe radius 1 mm, a side seats only within the measured ~1.5 mm
+      passive envelope, so a complete pair requires
+      |e|^2 + 1 + 2|e||cos(phi)| <= 2.25, impossible for |e| > 1.118 mm.
+      Therefore complete-pair feasibility is EXACTLY 0% in stratum 0
+      (1.5-2.25 mm) and stratum 4 (2.25-4.25 mm); in stratum 3 (1.0-1.5 mm)
+      only roughly the first 3 of 16 radii admit any feasible bearing at all,
+      with complete-pair probability of order 1-3% across the three registered
+      bearing offsets; in strata 1-2 (0.5-1.0 mm) feasibility falls from
+      always-feasible at 0.5 mm to ~8% of bearings at 1.0 mm (about 31% of
+      scenarios with one attempt, ~70% with three attempts, optimistic).
+      Consequence: in every stratum where the baseline could plausibly fail,
+      the treatment's probes are geometrically infeasible and the treatment
+      degenerates to its baseline fallback (identical outcomes, zero
+      discordance). Gains can only arise in strata 1-2, where the baseline is
+      already at or near ceiling. This is registered as a designed-in
+      possibility of INCONCLUSIVE, not a defect to be repaired post hoc.
+  - id: "K2_easy_ceiling"
+    severity: "high"
+    statement: >-
+      In probe-feasible strata both arms may saturate at 100%; then probing adds
+      time/contact without changing the sole primary outcome. This is
+      preregistered as INCONCLUSIVE, not evidence of material value.
+  - id: "K3_tcp_primary_insensitivity"
+    severity: "medium"
+    statement: >-
+      The measured 3 um TCP hazard is tiny relative to 0.5 mm clearance, so it
+      may produce severe NEES inconsistency without changing seating success.
+      It remains required and visible in secondary estimator diagnostics.
+  - id: "K4_n64_common_deviation"
+    severity: "medium"
+    statement: >-
+      The pair model requires n=64, whereas canonical spiral capture evidence
+      is primarily n=16. Applying n=64 to both arms removes arm confounding but
+      moves the comparison outside the exact canonical geometry validation;
+      development tuning is the mitigation.
+  - id: "K5_offcenter_observation_bias"
+    severity: "critical"
+    statement: >-
+      PREREGISTERED PREDICTION (red-team, pre-registered): the N5 pair
+      observation model (reduce_measurement with the commanded bearing u;
+      StateFilter H = [I, +-u]) was validated only when the probe center equaled
+      the true hole. Under fixture error e, a probe side's settled tip is
+      approximately hole + clearance*normalize(e + r*u), so the reduced
+      estimate carries a bias of approximately clearance*|normalize(e+r*u) - u|,
+      which is largest near bearings PERPENDICULAR to e (e.g. ~0.3 mm at
+      |e|=0.75 mm, u perpendicular) -- exactly the bearings where complete
+      pairs remain seatable. PREDICTION: accepted pairs will pull the filter's
+      h_hat TOWARD the commanded center c0 (confidently wrong), guided
+      insertions from h_hat will be no better or worse than the baseline
+      fallback, and secondary diagnostics will show per-pair evaluation error
+      growing with |e| and concentrated near perpendicular bearings. If the
+      prediction fails and accepted pairs are in fact accurate at |e|~0.5-1.0
+      mm, that is a genuine positive discovery recorded in the report.
+  - id: "K6_truth_triggered_capture"
+    severity: "high"
+    statement: >-
+      The shared run_episode capture branch (rollout.py:626) triggers on the
+      peg mouth's distance to the true hole (world origin) and snaps the
+      setpoint to the measured tip. Both arms use the identical controller, so
+      the paired comparison is internally fair; absolute capture evidence and
+      both arms' absolute success rates are partially attributable to this
+      oracle event. Repair is deferred to the next lineage (see
+      rule_zero.shared_infrastructure_caveat).
+
+outcome_examples:
+  SUPPORTED: >-
+    Example: n10=10, n01=1 gives delta=0.1125 and must also satisfy the exact
+    one-sided p<0.05; report where gains occurred without using strata to rescue
+    an overall failure.
+  WEAKENED: >-
+    Example: n10=6, n01=1 gives a positive 6.25-point effect, below the locked
+    10-point material margin even if the paired direction looks favorable.
+  REFUTED: >-
+    Example: n10=0, n01=8 gives delta=-0.10 and strong exact evidence for the
+    baseline; guided failures or calibration-bias losses must remain counted.
+  INCONCLUSIVE: >-
+    Example: both arms seat 80/80, or n10=n01, so the challenge set does not
+    identify material execution value despite any secondary timing difference.
+  INVALID: >-
+    Example: the driver uses TrialResult.success to decide whether to feed a
+    probe, or silently grades the +/-10 um physical parts at nominal clearance.
