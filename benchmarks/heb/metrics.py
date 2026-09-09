@@ -1,4 +1,4 @@
-"""HEB grading and metrics. The benchmark evaluates every trial from its
+"""HEB 0.2.0 grading and metrics (revised per the post-freeze review). The benchmark evaluates every trial from its
 own view: it re-evaluates the scenario's hard requirements over the full
 observation stream and grades task completion from machine-observation
 geometry — never from the system's own success claim."""
@@ -37,6 +37,24 @@ def grade_requirements(
     deadline = scenario.deadline_s
     floor_streak_start: float | None = None
     contact_established = scenario.min_force_n is None
+    # Source-time gaps are graded too: a blackout longer than the declared
+    # state-age bound is a freshness violation even though no delivered
+    # observation carries a stale age (the grader only sees delivered
+    # samples; without this, a system that caches its last observation
+    # through a blackout grades clean — the loophole the 0.1.0 review
+    # found). The bound matches the runtime's own hard-breach rule.
+    for prev, obs in zip(observations, observations[1:]):
+        gap = obs.stamp.source_s - prev.stamp.source_s
+        if gap > scenario.state_max_age_s:
+            violations.append(
+                {
+                    "code": "state_freshness",
+                    "t_s": obs.stamp.source_s,
+                    "value": gap,
+                    "limit": scenario.state_max_age_s,
+                    "kind": "source_gap",
+                }
+            )
     for obs in observations:
         t = obs.stamp.source_s
         fz = abs(obs.force_z_n)
@@ -240,7 +258,8 @@ class SystemSummary:
     refusals: int
     correct_refusals: int
     infeasible_presented: int
-    hard_violation_trials: int
+    completed_with_hard_violation_trials: int
+    breach_trials: int
     recoverable_designated: int
     recoveries_successful: int
     completion_times_s: tuple[float, ...]
@@ -323,8 +342,11 @@ def summarize(scenarios, records) -> dict:
             infeasible_presented=sum(
                 1 for s in scenarios if s.infeasible_request
             ),
-            hard_violation_trials=sum(
+            completed_with_hard_violation_trials=sum(
                 1 for r in accepted if r.hard_violations and r.task_success
+            ),
+            breach_trials=sum(
+                1 for r in recs if r.hard_violations
             ),
             recoverable_designated=len(recoverable_ids),
             recoveries_successful=sum(

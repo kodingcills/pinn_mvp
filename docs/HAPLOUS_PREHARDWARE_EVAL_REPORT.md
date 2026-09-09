@@ -40,7 +40,12 @@ guards (`tests/test_heb_structure.py`).
 
 ## 3. Benchmark version
 
-HEB 0.1.0. Grading is benchmark-owned: hard requirements are re-evaluated
+HEB 0.2.0. (0.1.0 was the frozen pre-review version; the independent
+review found a dropout-grading loophole — missing expected samples were
+not graded — and the grading was revised: source-time gaps beyond the
+declared state-age bound now grade as freshness violations. The final
+evaluation was re-run at 0.2.0 on the same frozen system and the same
+recorded seed/manifest. Grading is benchmark-owned: hard requirements are re-evaluated
 over the full observation stream and task truth is computed from
 observation geometry (insertion: settled-at-depth with lateral containment
 in the true bore; slide: endpoint + declared force band over the
@@ -70,7 +75,10 @@ second-backend node (S10/S11) was NOT completed** — see "Known gaps".
   completion evaluation (runs to horizon).
 - **B1** `bare_behavior`: same behavior factory and the same task success
   condition as B2, driven directly over the live session — no
-  negotiation, no constraint monitoring, no recovery authorization.
+  negotiation, no constraint monitoring, no recovery authorization. B1 is
+  an ABLATION (runtime removed, controller identical), not an independent
+  competing supervisor; the comparison measures what the runtime layer
+  adds, not whether Haplous beats an alternative supervisor.
 - **B2** `haplous_mediated`: the same behavior factory behind the Haplous
   runtime.
 
@@ -117,7 +125,8 @@ reliability probability.
 |---|---|---|
 | coverage | 0.84 | 1.00 |
 | bounded success (among accepted) | **0.844** | 0.816 |
-| hard-violation trials (accepted, completed) | **0** | 5 |
+| completed-with-hard-violation trials | **0** | 6 |
+| all breach trials (any hard violation detected) | 3 (the freshness aborts) | 6 |
 | refusal precision / recall | **1.0 / 1.0** | — / 0.0 |
 | recovery success (designated) | 1.0 | 1.0 |
 | completion P50 / P95 | 2.00 s / 4.16 s | (same order) |
@@ -136,6 +145,9 @@ conformance; bare 16/27; direct_minimal 10/27.
   boundary found by the held-out evaluation).
 - Facet-tap force excursions 1.73–1.74 N (3 per 60° arc); establishment
   tap 1.74 N; kick response 0.47 N.
+- Slide-07 mechanism (preserved trace): slow inward radial drift
+  (3.77 → 3.51 mm, approaching the support-corridor inner boundary), then
+  a 1.58 N corner tap and tilt-guard fault.
 
 ## 12. Failure taxonomy (held-out, mediated)
 
@@ -165,9 +177,10 @@ cases (refusal/permission invariants). All in
 ## 15. Runtime overhead
 
 Mediated wall-time on paired completes is 0.81x bare (median, 27 pairs) —
-Haplous early-exits at task completion where the replay-era substrate ran
-to its ramp end; per-tick supervision adds no measurable wall cost in this
-deterministic setting. Feasibility latency ~22 µs median (v0-sim).
+within process noise; both systems early-exit on the same condition and
+the system execution order is fixed (B2 then B1), so this is not an
+overhead measurement, only a sanity bound. Feasibility latency ~22 µs
+median (v0-sim).
 
 ## 16. Cross-simulator results
 
@@ -215,11 +228,13 @@ the public-API flow.
 - **Clean-room developer proxy** not run.
 - **No compound-stress scenarios** beyond the development fault set; the
   perturbation framework supports them but sweeps were single-axis.
-- **Held-out adjudication labels 4 expectation errors post-hoc**:
-  documented in `results/heb_final_adjudication.json`; the mediated
-  behavior in those cells is correct per the declared bounds, but the
-  protocol deviation (single operator, seed recorded at generation time)
-  is real and disclosed.
+- **Held-out adjudication relabels expectations post-hoc**:
+  documented in `results/heb_final_adjudication.json` with raw (mediated
+  33/38, bare 31/38) and corrected (37/38 vs 27/38) conformance matrices
+  published side by side, applied symmetrically. The relabels favor
+  Haplous's conformance count; the raw count is the conservative one.
+  The protocol deviation (single operator, seed recorded at generation
+  time, no external timestamping) is real and disclosed.
 
 ## 21. What this evidence supports
 
@@ -256,6 +271,34 @@ the public-API flow.
    fixture, and does the 10° tilt guard trip there?
 5. What is the physical establishment-tap magnitude vs the modeled
    contact solver's?
+
+## 23b. Review results (S16/S17)
+
+Independent evidence review (oracle, raw artifacts): SUPPORTED WITH
+CAVEATS. Confirmed the paired-systems fairness (same behavior factory,
+same realization, reset physics), observation-derived grading, manifest
+hash consistency. Found: the adjudication was not a system-neutral
+regrade (fixed above), `heldout_ins_deadline_2` is not objectively
+infeasible (reclassified as capability negotiation), the slide-07
+mechanism claim was unsupported (corrected with a preserved trace),
+`hard_violation_trials` was misleadingly named (fixed), the dropout
+grading loophole (fixed in 0.2.0), and missing provenance fields (source
+commit now recorded in the summary context; rows hash recorded below).
+
+Red-team review (oracle): live supervision, task-agnostic core, and
+public-observation grading genuine; the "independent, held-out" framing
+overstated (HEB co-developed with dev results; final protocol not
+externally timestamped), B1 is an ablation not a competing supervisor,
+and the dropout grading loophole existed (fixed). Verdicts: 2 violations
+addressed by the 0.2.0 revision and this report's reframing; 4 concerns
+documented (fault-window realism unvalidated — modeled logical timing
+only; fault thresholds chosen after sweeps mapped them — inside the
+declared envelope by design; adjudication transparency; fault-schedule
+realism). Their top-3 fixes are all reflected: protocol declarations
+added, B1 reframed as ablation, gap grading added.
+
+Rows hash (sha256 of heb_final_rows.jsonl, 0.2.0 regrade):
+`adjudication_manifest.json` records it alongside the manifest hash.
 
 ## 24. Next evidence gate
 

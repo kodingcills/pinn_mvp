@@ -22,6 +22,7 @@ import json
 import math
 import os
 import random
+import sys
 import time
 from pathlib import Path
 
@@ -145,7 +146,13 @@ def generate_manifest(seed: int) -> list:
 
 
 def main() -> None:
-    seed = int.from_bytes(os.urandom(8), "big")
+    # The 0.2.0 regrade reuses the 0.1.0 recorded seed (same manifest, new
+    # grading); a fresh evaluation draws a new seed.
+    seed = (
+        9975048060650219579
+        if "--regrade" in sys.argv
+        else int.from_bytes(os.urandom(8), "big")
+    )
     scenarios = generate_manifest(seed)
     manifest_json = json.dumps(
         [dataclasses.asdict(s) for s in scenarios], sort_keys=True
@@ -209,7 +216,8 @@ def main() -> None:
                 "refusals": s.refusals,
                 "refusal_precision": s.refusal_precision,
                 "refusal_recall": s.refusal_recall,
-                "hard_violation_trials": s.hard_violation_trials,
+                "completed_with_hard_violation_trials": s.completed_with_hard_violation_trials,
+                "breach_trials": s.breach_trials,
                 "recovery_success_rate": s.recovery_success_rate,
                 "completion_percentiles_s": s.completion_percentiles(),
             }

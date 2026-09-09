@@ -1,141 +1,115 @@
 {
- "heb_version": "0.1.0",
+ "heb_version": "0.2.0",
  "system_tag": "haplous-prehardware-eval-v0",
  "manifest_sha256": "3eb33ab53bfe90f9c6cf5098fe8358eabdee702c849eb01d9591473fa0f0fe40",
  "seed": 9975048060650219579,
- "protocol_note": "expected_disposition declared per scenario applies to any correct system; refusals are system capability, and timing/fault schedules whose modeled values breach declared bounds expect ABORTED",
+ "protocol_notes": [
+  "expected_disposition applies to any correct system; raw and corrected conformance are both published, applied symmetrically",
+  "deadline cells (1.0-2.0s) are capability-negotiation refusals (the machine declares 2.5-4.0s expected duration), not objectively infeasible requests: bare completes them within the stated deadline; they are excluded from the refusal-recall denominator",
+  "command-rejection tolerance (3 consecutive rejections) is now declared in the protocol; it was implicit in 0.1.0",
+  "heldout_slide_07 mechanism corrected per preserved trace: slow inward radial drift (3.77->3.51mm, approaching the support-corridor inner boundary) + facet taps, then a 1.58N corner tap at t=1.484s and a tilt-guard fault. The 0.1.0 adjudication's 'long arc near corridor-min radius' claim was unsupported (scenario: r=3.772mm, 47.4deg arc) and is withdrawn"
+ ],
+ "raw_conformance": {
+  "haplous_mediated": "33/38",
+  "bare_behavior": "31/38"
+ },
+ "corrected_conformance": {
+  "haplous_mediated": "37/38",
+  "bare_behavior": "27/38"
+ },
  "mismatches": [
   {
-   "scenario_id": "heldout_ins_deadline_2",
-   "systems": [
-    {
-     "system": "bare_behavior",
-     "reported": "COMPLETE",
-     "reason": null
-    }
-   ],
-   "classification": "bare_cannot_refuse (expected: mediated-only capability)"
-  },
-  {
-   "scenario_id": "heldout_ins_dropout_1",
-   "systems": [
-    {
-     "system": "haplous_mediated",
-     "reported": "ABORTED",
-     "reason": "hard_constraint_state_freshness"
-    }
-   ],
-   "classification": "manifest-expectation error: schedule breach expects ABORTED; mediated abort is correct"
-  },
-  {
    "scenario_id": "heldout_ins_infeasible_0",
-   "systems": [
-    {
-     "system": "bare_behavior",
-     "reported": "ABORTED",
-     "reason": "horizon_exhausted"
-    }
-   ],
-   "classification": "bare_cannot_refuse (expected: mediated-only capability)"
+   "system": "bare_behavior",
+   "reported": "ABORTED",
+   "reason": "horizon_exhausted",
+   "classification": "bare-cannot-refuse (capability gap)"
   },
   {
    "scenario_id": "heldout_ins_refusal_1",
-   "systems": [
-    {
-     "system": "bare_behavior",
-     "reported": "COMPLETE",
-     "reason": null
-    }
-   ],
-   "classification": "bare_cannot_refuse (expected: mediated-only capability)"
+   "system": "bare_behavior",
+   "reported": "COMPLETE",
+   "reason": null,
+   "classification": "bare-cannot-refuse (capability gap)"
+  },
+  {
+   "scenario_id": "heldout_ins_deadline_2",
+   "system": "bare_behavior",
+   "reported": "COMPLETE",
+   "reason": null,
+   "classification": "bare-completes-capability-negotiation-refusal"
   },
   {
    "scenario_id": "heldout_ins_stale_0",
-   "systems": [
-    {
-     "system": "haplous_mediated",
-     "reported": "ABORTED",
-     "reason": "hard_constraint_state_freshness"
-    }
-   ],
-   "classification": "manifest-expectation error: schedule breach expects ABORTED; mediated abort is correct"
+   "system": "haplous_mediated",
+   "reported": "ABORTED",
+   "reason": "hard_constraint_state_freshness",
+   "classification": "manifest-expectation error (corrected: ABORTED per declared freshness bound)"
+  },
+  {
+   "scenario_id": "heldout_ins_dropout_1",
+   "system": "haplous_mediated",
+   "reported": "ABORTED",
+   "reason": "hard_constraint_state_freshness",
+   "classification": "manifest-expectation error (corrected: ABORTED per declared freshness bound)"
   },
   {
    "scenario_id": "heldout_slide_07",
-   "systems": [
-    {
-     "system": "haplous_mediated",
-     "reported": "ABORTED",
-     "reason": "machine_fault_tilt_guard"
-    },
-    {
-     "system": "bare_behavior",
-     "reported": "ABORTED",
-     "reason": "machine_fault_tilt_guard"
-    }
-   ],
-   "classification": "genuine mechanism boundary: tilt guard on long arc near corridor-min radius (both systems)"
+   "system": "haplous_mediated",
+   "reported": "ABORTED",
+   "reason": "machine_fault_tilt_guard",
+   "classification": "genuine mechanism failure (inward drift + corner tap -> tilt guard; both systems)"
+  },
+  {
+   "scenario_id": "heldout_slide_07",
+   "system": "bare_behavior",
+   "reported": "ABORTED",
+   "reason": "machine_fault_tilt_guard",
+   "classification": "genuine mechanism failure (inward drift + corner tap -> tilt guard; both systems)"
   },
   {
    "scenario_id": "heldout_slide_refusal_0",
-   "systems": [
-    {
-     "system": "bare_behavior",
-     "reported": "COMPLETE",
-     "reason": null
-    }
-   ],
-   "classification": "bare_cannot_refuse (expected: mediated-only capability)"
+   "system": "bare_behavior",
+   "reported": "COMPLETE",
+   "reason": null,
+   "classification": "bare-cannot-refuse (capability gap)"
   },
   {
    "scenario_id": "heldout_slide_refusal_1",
-   "systems": [
-    {
-     "system": "bare_behavior",
-     "reported": "COMPLETE",
-     "reason": null
-    }
-   ],
-   "classification": "bare_cannot_refuse (expected: mediated-only capability)"
+   "system": "bare_behavior",
+   "reported": "COMPLETE",
+   "reason": null,
+   "classification": "bare-cannot-refuse (capability gap)"
   },
   {
    "scenario_id": "heldout_slide_refusal_2",
-   "systems": [
-    {
-     "system": "bare_behavior",
-     "reported": "COMPLETE",
-     "reason": null
-    }
-   ],
-   "classification": "bare_cannot_refuse (expected: mediated-only capability)"
-  },
-  {
-   "scenario_id": "heldout_slide_reject_1",
-   "systems": [
-    {
-     "system": "haplous_mediated",
-     "reported": "ABORTED",
-     "reason": "command_rejection_persistent"
-    }
-   ],
-   "classification": "manifest-expectation error: 40-tick rejection window exceeds the 3-rejection limit; persistent abort is correct"
+   "system": "bare_behavior",
+   "reported": "COMPLETE",
+   "reason": null,
+   "classification": "bare-cannot-refuse (capability gap)"
   },
   {
    "scenario_id": "heldout_slide_stale_0",
-   "systems": [
-    {
-     "system": "haplous_mediated",
-     "reported": "ABORTED",
-     "reason": "hard_constraint_state_freshness"
-    }
-   ],
-   "classification": "manifest-expectation error: schedule breach expects ABORTED; mediated abort is correct"
+   "system": "haplous_mediated",
+   "reported": "ABORTED",
+   "reason": "hard_constraint_state_freshness",
+   "classification": "manifest-expectation error (corrected: ABORTED per declared freshness bound)"
+  },
+  {
+   "scenario_id": "heldout_slide_reject_1",
+   "system": "haplous_mediated",
+   "reported": "ABORTED",
+   "reason": "command_rejection_persistent",
+   "classification": "manifest-expectation error (corrected: ABORTED; window exceeds rejection limit)"
   }
  ],
  "classification": {
-  "bare_cannot_refuse (expected: mediated-only capability)": 6,
-  "manifest-expectation error: schedule breach expects ABORTED; mediated abort is correct": 3,
-  "genuine mechanism boundary: tilt guard on long arc near corridor-min radius (both systems)": 1,
-  "manifest-expectation error: 40-tick rejection window exceeds the 3-rejection limit; persistent abort is correct": 1
- }
+  "bare-cannot-refuse (capability gap)": 5,
+  "bare-completes-capability-negotiation-refusal": 1,
+  "manifest-expectation error (corrected: ABORTED per declared freshness bound)": 3,
+  "genuine mechanism failure (inward drift + corner tap -> tilt guard; both systems)": 2,
+  "manifest-expectation error (corrected: ABORTED; window exceeds rejection limit)": 1
+ },
+ "rows_sha256": "ceb43c83ccbf91427c5e2d725b192c3644e42bf6a544375eb6daf453a4e35b05",
+ "system_commit": "5ae48fb (haplous-prehardware-eval-v0)"
 }
