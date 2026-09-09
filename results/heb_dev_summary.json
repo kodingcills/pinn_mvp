@@ -1,0 +1,61 @@
+{
+ "heb_version": "0.1.0",
+ "task_family": "insertion",
+ "n_scenarios": 18,
+ "systems": {
+  "haplous_mediated": {
+   "trials": 18,
+   "coverage": 0.7777777777777778,
+   "bounded_success_rate_among_accepted": 0.6428571428571429,
+   "task_successes": 9,
+   "refusals": 4,
+   "refusal_precision": 1.0,
+   "refusal_recall": 1.0,
+   "hard_violation_trials": 0,
+   "completion_percentiles_s": {
+    "p50": 1.665999999999872,
+    "p90": 2.0389999999998483,
+    "p95": 2.6235000000000435,
+    "max": 2.6235000000000435
+   }
+  },
+  "bare_behavior": {
+   "trials": 18,
+   "coverage": 1.0,
+   "bounded_success_rate_among_accepted": 0.7222222222222222,
+   "task_successes": 15,
+   "refusals": 0,
+   "refusal_precision": null,
+   "refusal_recall": 0.0,
+   "hard_violation_trials": 2,
+   "completion_percentiles_s": {
+    "p50": 1.6239999999998767,
+    "p90": 2.0389999999998483,
+    "p95": 2.0389999999998483,
+    "max": 2.6235000000000435
+   }
+  },
+  "direct_minimal": {
+   "trials": 18,
+   "coverage": 1.0,
+   "bounded_success_rate_among_accepted": 0.6111111111111112,
+   "task_successes": 14,
+   "refusals": 0,
+   "refusal_precision": null,
+   "refusal_recall": 0.0,
+   "hard_violation_trials": 3,
+   "completion_percentiles_s": {
+    "p50": 16.299500000007363,
+    "p90": 16.299500000007363,
+    "p95": 16.299500000007363,
+    "max": 16.299500000007363
+   }
+  }
+ },
+ "semantic_conformance": {
+  "haplous_mediated": "18/18",
+  "bare_behavior": "11/18",
+  "direct_minimal": "5/18"
+ },
+ "wall_s": 114.80919675000041
+}
