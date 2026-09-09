@@ -1,0 +1,69 @@
+{
+ "locked_design": ".opencode/haplous/state/locked-tests/R05-v2.yaml",
+ "locked_design_sha256": "e078de16c9ad99e16487031b1c5a6493ee03bc68c45329e44962ab02bf09696e",
+ "repo_head": "8d514c1e0c519c7dc6d97e4e1ebcbbf8504ceb87",
+ "baseline_selected_v_t_m_per_s": 0.1,
+ "baseline_selection_metrics": {
+  "0.005": {
+   "successes": 17,
+   "p95_peak_fz_n": 93.40923672475512,
+   "median_capped_time_s": 1.7889999999998585
+  },
+  "0.01": {
+   "successes": 16,
+   "p95_peak_fz_n": 90.48819143169273,
+   "median_capped_time_s": 1.7339999999998645
+  },
+  "0.025": {
+   "successes": 17,
+   "p95_peak_fz_n": 92.2186357512771,
+   "median_capped_time_s": 1.6464999999998742
+  },
+  "0.05": {
+   "successes": 18,
+   "p95_peak_fz_n": 25.894009341063654,
+   "median_capped_time_s": 1.6177499999998775
+  },
+  "0.1": {
+   "successes": 18,
+   "p95_peak_fz_n": 15.007585941460754,
+   "median_capped_time_s": 1.6364999999998753
+  }
+ },
+ "haplous_selected_candidate": "H1",
+ "haplous_selection_metrics": {
+  "H1": {
+   "successes": 18,
+   "p95_pipeline_peak_fz_n": 15.007585941460754,
+   "median_total_pipeline_time_s": 19.56049999999975,
+   "total_probe_side_motions": 40
+  },
+  "H2": {
+   "successes": 18,
+   "p95_pipeline_peak_fz_n": 15.007585941460754,
+   "median_total_pipeline_time_s": 19.56049999999975,
+   "total_probe_side_motions": 40
+  },
+  "H3": {
+   "successes": 18,
+   "p95_pipeline_peak_fz_n": 16.50082445178566,
+   "median_total_pipeline_time_s": 59.6899999999993,
+   "total_probe_side_motions": 120
+  },
+  "H4": {
+   "successes": 18,
+   "p95_pipeline_peak_fz_n": 16.50082445178566,
+   "median_total_pipeline_time_s": 59.6899999999993,
+   "total_probe_side_motions": 120
+  },
+  "H5": {
+   "successes": 18,
+   "p95_pipeline_peak_fz_n": 16.50082445178566,
+   "median_total_pipeline_time_s": 59.6899999999993,
+   "total_probe_side_motions": 120
+  }
+ },
+ "dev_manifest_sha256": "399a10562ead1e3325af18a6ad67264639982e2c94985be6b9e954b2ded37134",
+ "g9_worst_row_steps_per_s": 847.9722146256004,
+ "selection_time": "2026-09-08T23:40:02-0400"
+}
