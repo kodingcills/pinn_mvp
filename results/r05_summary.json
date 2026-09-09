@@ -1,0 +1,61 @@
+{
+ "phase": "holdout",
+ "locked_design": ".opencode/haplous/state/locked-tests/R05-v3.yaml",
+ "locked_design_sha256": "945bea748201d7a7c1cd0de5736be5378cba0723e2510202c6343f62a374cf54",
+ "freeze_repo_head": "abedb9ba19c4186fa994488e6ee402fa3b544e5f",
+ "baseline_selected_v_t_m_per_s": 0.1,
+ "haplous_selected_candidate": "H1",
+ "primary_table": {
+  "n": 80,
+  "n10_haplous_only": 0,
+  "n01_baseline_only": 0,
+  "n11_both": 70,
+  "n00_neither": 10,
+  "delta_hat": 0.0,
+  "p_haplous_superior": 1.0,
+  "p_baseline_superior": 1.0
+ },
+ "preregistered_label": "INCONCLUSIVE",
+ "per_stratum": {
+  "0": {
+   "n": 16,
+   "baseline_successes": 16,
+   "haplous_successes": 16
+  },
+  "1": {
+   "n": 16,
+   "baseline_successes": 16,
+   "haplous_successes": 16
+  },
+  "2": {
+   "n": 16,
+   "baseline_successes": 16,
+   "haplous_successes": 16
+  },
+  "3": {
+   "n": 16,
+   "baseline_successes": 16,
+   "haplous_successes": 16
+  },
+  "4": {
+   "n": 16,
+   "baseline_successes": 6,
+   "haplous_successes": 6
+  }
+ },
+ "secondary": {
+  "baseline_median_completion_s": 1.6277499999998764,
+  "haplous_median_completion_s": 1.6277499999998764,
+  "haplous_median_probe_time_s": 17.91574999999988,
+  "haplous_median_pipeline_time_s": 19.551249999999754,
+  "baseline_median_pipeline_peak_fz_n": 14.950592670648522,
+  "haplous_median_pipeline_peak_fz_n": 14.95059309248969,
+  "guided_fraction": 0.0125,
+  "fallback_fraction": 0.9875,
+  "estimator_abort_count": 0,
+  "probe_unseatable_total": 70,
+  "confidently_wrong_count": 1,
+  "mean_nees": 205229.50943908922,
+  "traces_holdout_sha256": "cfc6fd419eb863691bd1bc61e6a73d4f5250c861f3e278ced1b6d5af34175395"
+ }
+}
