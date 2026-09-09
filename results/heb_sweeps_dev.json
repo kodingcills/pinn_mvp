@@ -1,0 +1,1007 @@
+{
+ "heb_version": "0.1.0",
+ "sweeps": {
+  "insertion_offset_m": {
+   "cells": {
+    "sw_offset_0.5mm": {
+     "haplous_mediated": {
+      "reported": "COMPLETE",
+      "graded": "COMPLETE",
+      "bounded": true,
+      "task_success": true,
+      "reason": null,
+      "violations": 0,
+      "seating_time_s": 1.6239999999998767
+     },
+     "bare_behavior": {
+      "reported": "COMPLETE",
+      "graded": "COMPLETE",
+      "bounded": true,
+      "task_success": true,
+      "reason": null,
+      "violations": 0,
+      "seating_time_s": 1.6239999999998767
+     }
+    },
+    "sw_offset_1.0mm": {
+     "haplous_mediated": {
+      "reported": "COMPLETE",
+      "graded": "COMPLETE",
+      "bounded": true,
+      "task_success": true,
+      "reason": null,
+      "violations": 0,
+      "seating_time_s": 1.6794999999998705
+     },
+     "bare_behavior": {
+      "reported": "COMPLETE",
+      "graded": "COMPLETE",
+      "bounded": true,
+      "task_success": true,
+      "reason": null,
+      "violations": 0,
+      "seating_time_s": 1.6794999999998705
+     }
+    },
+    "sw_offset_1.5mm": {
+     "haplous_mediated": {
+      "reported": "COMPLETE",
+      "graded": "COMPLETE",
+      "bounded": true,
+      "task_success": true,
+      "reason": null,
+      "violations": 0,
+      "seating_time_s": 1.766499999999861
+     },
+     "bare_behavior": {
+      "reported": "COMPLETE",
+      "graded": "COMPLETE",
+      "bounded": true,
+      "task_success": true,
+      "reason": null,
+      "violations": 0,
+      "seating_time_s": 1.766499999999861
+     }
+    },
+    "sw_offset_2.0mm": {
+     "haplous_mediated": {
+      "reported": "COMPLETE",
+      "graded": "COMPLETE",
+      "bounded": true,
+      "task_success": true,
+      "reason": null,
+      "violations": 0,
+      "seating_time_s": 2.940000000000149
+     },
+     "bare_behavior": {
+      "reported": "COMPLETE",
+      "graded": "COMPLETE",
+      "bounded": true,
+      "task_success": true,
+      "reason": null,
+      "violations": 0,
+      "seating_time_s": 2.940000000000149
+     }
+    },
+    "sw_offset_2.5mm": {
+     "haplous_mediated": {
+      "reported": "COMPLETE",
+      "graded": "COMPLETE",
+      "bounded": true,
+      "task_success": true,
+      "reason": null,
+      "violations": 0,
+      "seating_time_s": 3.035500000000181
+     },
+     "bare_behavior": {
+      "reported": "COMPLETE",
+      "graded": "COMPLETE",
+      "bounded": true,
+      "task_success": true,
+      "reason": null,
+      "violations": 0,
+      "seating_time_s": 3.035500000000181
+     }
+    },
+    "sw_offset_3.0mm": {
+     "haplous_mediated": {
+      "reported": "COMPLETE",
+      "graded": "COMPLETE",
+      "bounded": true,
+      "task_success": true,
+      "reason": null,
+      "violations": 0,
+      "seating_time_s": 5.155999999999862
+     },
+     "bare_behavior": {
+      "reported": "COMPLETE",
+      "graded": "COMPLETE",
+      "bounded": true,
+      "task_success": true,
+      "reason": null,
+      "violations": 0,
+      "seating_time_s": 5.155999999999862
+     }
+    },
+    "sw_offset_3.5mm": {
+     "haplous_mediated": {
+      "reported": "ABORTED",
+      "graded": "ABORTED",
+      "bounded": false,
+      "task_success": false,
+      "reason": "success_condition_unmet",
+      "violations": 0,
+      "seating_time_s": 16.299500000007363
+     },
+     "bare_behavior": {
+      "reported": "ABORTED",
+      "graded": "ABORTED",
+      "bounded": false,
+      "task_success": false,
+      "reason": "horizon_exhausted",
+      "violations": 0,
+      "seating_time_s": 16.299500000007363
+     }
+    },
+    "sw_offset_4.0mm": {
+     "haplous_mediated": {
+      "reported": "ABORTED",
+      "graded": "ABORTED",
+      "bounded": false,
+      "task_success": false,
+      "reason": "success_condition_unmet",
+      "violations": 0,
+      "seating_time_s": 16.299500000007363
+     },
+     "bare_behavior": {
+      "reported": "ABORTED",
+      "graded": "ABORTED",
+      "bounded": false,
+      "task_success": false,
+      "reason": "horizon_exhausted",
+      "violations": 0,
+      "seating_time_s": 16.299500000007363
+     }
+    },
+    "sw_offset_4.3mm": {
+     "haplous_mediated": {
+      "reported": "ABORTED",
+      "graded": "ABORTED",
+      "bounded": false,
+      "task_success": false,
+      "reason": "success_condition_unmet",
+      "violations": 0,
+      "seating_time_s": 16.299500000007363
+     },
+     "bare_behavior": {
+      "reported": "ABORTED",
+      "graded": "ABORTED",
+      "bounded": false,
+      "task_success": false,
+      "reason": "horizon_exhausted",
+      "violations": 0,
+      "seating_time_s": 16.299500000007363
+     }
+    }
+   },
+   "mediated_bounded": "SystemSummary(system='haplous_mediated', trials=9, accepted=9, bounded_successes=6, task_successes=6, refusals=0, correct_refusals=0, infeasible_presented=0, hard_violation_trials=0, recoverable_designated=0, recoveries_successful=0, completion_times_s=(1.6239999999998767, 1.6794999999998705, 1.766499999999861, 2.940000000000149, 3.035500000000181, 5.155999999999862))",
+   "bare_bounded": "SystemSummary(system='bare_behavior', trials=9, accepted=9, bounded_successes=6, task_successes=6, refusals=0, correct_refusals=0, infeasible_presented=0, hard_violation_trials=0, recoverable_designated=0, recoveries_successful=0, completion_times_s=(1.6239999999998767, 1.6794999999998705, 1.766499999999861, 2.940000000000149, 3.035500000000181, 5.155999999999862))"
+  },
+  "insertion_clearance_delta_m": {
+   "cells": {
+    "sw_clearance_-0.4mm": {
+     "haplous_mediated": {
+      "reported": "COMPLETE",
+      "graded": "COMPLETE",
+      "bounded": true,
+      "task_success": true,
+      "reason": null,
+      "violations": 0,
+      "seating_time_s": 1.6814999999998703
+     },
+     "bare_behavior": {
+      "reported": "COMPLETE",
+      "graded": "COMPLETE",
+      "bounded": true,
+      "task_success": true,
+      "reason": null,
+      "violations": 0,
+      "seating_time_s": 1.6814999999998703
+     }
+    },
+    "sw_clearance_-0.3mm": {
+     "haplous_mediated": {
+      "reported": "COMPLETE",
+      "graded": "COMPLETE",
+      "bounded": true,
+      "task_success": true,
+      "reason": null,
+      "violations": 0,
+      "seating_time_s": 1.6764999999998709
+     },
+     "bare_behavior": {
+      "reported": "COMPLETE",
+      "graded": "COMPLETE",
+      "bounded": true,
+      "task_success": true,
+      "reason": null,
+      "violations": 0,
+      "seating_time_s": 1.6764999999998709
+     }
+    },
+    "sw_clearance_-0.2mm": {
+     "haplous_mediated": {
+      "reported": "COMPLETE",
+      "graded": "COMPLETE",
+      "bounded": true,
+      "task_success": true,
+      "reason": null,
+      "violations": 0,
+      "seating_time_s": 1.6709999999998715
+     },
+     "bare_behavior": {
+      "reported": "COMPLETE",
+      "graded": "COMPLETE",
+      "bounded": true,
+      "task_success": true,
+      "reason": null,
+      "violations": 0,
+      "seating_time_s": 1.6709999999998715
+     }
+    },
+    "sw_clearance_-0.1mm": {
+     "haplous_mediated": {
+      "reported": "COMPLETE",
+      "graded": "COMPLETE",
+      "bounded": true,
+      "task_success": true,
+      "reason": null,
+      "violations": 0,
+      "seating_time_s": 1.6644999999998722
+     },
+     "bare_behavior": {
+      "reported": "COMPLETE",
+      "graded": "COMPLETE",
+      "bounded": true,
+      "task_success": true,
+      "reason": null,
+      "violations": 0,
+      "seating_time_s": 1.6644999999998722
+     }
+    },
+    "sw_clearance_+0.0mm": {
+     "haplous_mediated": {
+      "reported": "COMPLETE",
+      "graded": "COMPLETE",
+      "bounded": true,
+      "task_success": true,
+      "reason": null,
+      "violations": 0,
+      "seating_time_s": 1.665999999999872
+     },
+     "bare_behavior": {
+      "reported": "COMPLETE",
+      "graded": "COMPLETE",
+      "bounded": true,
+      "task_success": true,
+      "reason": null,
+      "violations": 0,
+      "seating_time_s": 1.665999999999872
+     }
+    },
+    "sw_clearance_+0.1mm": {
+     "haplous_mediated": {
+      "reported": "ABORTED",
+      "graded": "ABORTED",
+      "bounded": false,
+      "task_success": false,
+      "reason": "success_condition_unmet",
+      "violations": 0,
+      "seating_time_s": 16.299500000007363
+     },
+     "bare_behavior": {
+      "reported": "ABORTED",
+      "graded": "ABORTED",
+      "bounded": false,
+      "task_success": false,
+      "reason": "horizon_exhausted",
+      "violations": 0,
+      "seating_time_s": 16.299500000007363
+     }
+    },
+    "sw_clearance_+0.2mm": {
+     "haplous_mediated": {
+      "reported": "ABORTED",
+      "graded": "ABORTED",
+      "bounded": false,
+      "task_success": false,
+      "reason": "success_condition_unmet",
+      "violations": 0,
+      "seating_time_s": 16.299500000007363
+     },
+     "bare_behavior": {
+      "reported": "ABORTED",
+      "graded": "ABORTED",
+      "bounded": false,
+      "task_success": false,
+      "reason": "horizon_exhausted",
+      "violations": 0,
+      "seating_time_s": 16.299500000007363
+     }
+    }
+   },
+   "mediated_bounded": "SystemSummary(system='haplous_mediated', trials=7, accepted=7, bounded_successes=5, task_successes=5, refusals=0, correct_refusals=0, infeasible_presented=0, hard_violation_trials=0, recoverable_designated=0, recoveries_successful=0, completion_times_s=(1.6814999999998703, 1.6764999999998709, 1.6709999999998715, 1.6644999999998722, 1.665999999999872))",
+   "bare_bounded": "SystemSummary(system='bare_behavior', trials=7, accepted=7, bounded_successes=5, task_successes=5, refusals=0, correct_refusals=0, infeasible_presented=0, hard_violation_trials=0, recoverable_designated=0, recoveries_successful=0, completion_times_s=(1.6814999999998703, 1.6764999999998709, 1.6709999999998715, 1.6644999999998722, 1.665999999999872))"
+  },
+  "insertion_facet_count": {
+   "cells": {
+    "sw_facets_8": {
+     "haplous_mediated": {
+      "reported": "ABORTED",
+      "graded": "ABORTED",
+      "bounded": false,
+      "task_success": false,
+      "reason": "success_condition_unmet",
+      "violations": 0,
+      "seating_time_s": 16.299500000007363
+     },
+     "bare_behavior": {
+      "reported": "ABORTED",
+      "graded": "ABORTED",
+      "bounded": false,
+      "task_success": false,
+      "reason": "horizon_exhausted",
+      "violations": 0,
+      "seating_time_s": 16.299500000007363
+     }
+    },
+    "sw_facets_16": {
+     "haplous_mediated": {
+      "reported": "COMPLETE",
+      "graded": "COMPLETE",
+      "bounded": true,
+      "task_success": true,
+      "reason": null,
+      "violations": 0,
+      "seating_time_s": 1.665999999999872
+     },
+     "bare_behavior": {
+      "reported": "COMPLETE",
+      "graded": "COMPLETE",
+      "bounded": true,
+      "task_success": true,
+      "reason": null,
+      "violations": 0,
+      "seating_time_s": 1.665999999999872
+     }
+    },
+    "sw_facets_32": {
+     "haplous_mediated": {
+      "reported": "COMPLETE",
+      "graded": "COMPLETE",
+      "bounded": true,
+      "task_success": true,
+      "reason": null,
+      "violations": 0,
+      "seating_time_s": 1.656499999999873
+     },
+     "bare_behavior": {
+      "reported": "COMPLETE",
+      "graded": "COMPLETE",
+      "bounded": true,
+      "task_success": true,
+      "reason": null,
+      "violations": 0,
+      "seating_time_s": 1.656499999999873
+     }
+    },
+    "sw_facets_64": {
+     "haplous_mediated": {
+      "reported": "COMPLETE",
+      "graded": "COMPLETE",
+      "bounded": true,
+      "task_success": true,
+      "reason": null,
+      "violations": 0,
+      "seating_time_s": 1.657999999999873
+     },
+     "bare_behavior": {
+      "reported": "COMPLETE",
+      "graded": "COMPLETE",
+      "bounded": true,
+      "task_success": true,
+      "reason": null,
+      "violations": 0,
+      "seating_time_s": 1.657999999999873
+     }
+    },
+    "sw_facets_128": {
+     "haplous_mediated": {
+      "reported": "COMPLETE",
+      "graded": "COMPLETE",
+      "bounded": true,
+      "task_success": true,
+      "reason": null,
+      "violations": 0,
+      "seating_time_s": 1.657499999999873
+     },
+     "bare_behavior": {
+      "reported": "COMPLETE",
+      "graded": "COMPLETE",
+      "bounded": true,
+      "task_success": true,
+      "reason": null,
+      "violations": 0,
+      "seating_time_s": 1.657499999999873
+     }
+    }
+   },
+   "mediated_bounded": "SystemSummary(system='haplous_mediated', trials=5, accepted=5, bounded_successes=4, task_successes=4, refusals=0, correct_refusals=0, infeasible_presented=0, hard_violation_trials=0, recoverable_designated=0, recoveries_successful=0, completion_times_s=(1.665999999999872, 1.656499999999873, 1.657999999999873, 1.657499999999873))",
+   "bare_bounded": "SystemSummary(system='bare_behavior', trials=5, accepted=5, bounded_successes=4, task_successes=4, refusals=0, correct_refusals=0, infeasible_presented=0, hard_violation_trials=0, recoverable_designated=0, recoveries_successful=0, completion_times_s=(1.665999999999872, 1.656499999999873, 1.657999999999873, 1.657499999999873))"
+  },
+  "insertion_mid_motion_stale_delay_s": {
+   "cells": {
+    "sw_stale_5ms": {
+     "haplous_mediated": {
+      "reported": "COMPLETE",
+      "graded": "COMPLETE",
+      "bounded": true,
+      "task_success": true,
+      "reason": null,
+      "violations": 0,
+      "seating_time_s": 1.665999999999872
+     },
+     "bare_behavior": {
+      "reported": "COMPLETE",
+      "graded": "COMPLETE",
+      "bounded": true,
+      "task_success": true,
+      "reason": null,
+      "violations": 0,
+      "seating_time_s": 1.665999999999872
+     }
+    },
+    "sw_stale_10ms": {
+     "haplous_mediated": {
+      "reported": "COMPLETE",
+      "graded": "COMPLETE",
+      "bounded": true,
+      "task_success": true,
+      "reason": null,
+      "violations": 0,
+      "seating_time_s": 1.665999999999872
+     },
+     "bare_behavior": {
+      "reported": "COMPLETE",
+      "graded": "COMPLETE",
+      "bounded": true,
+      "task_success": true,
+      "reason": null,
+      "violations": 0,
+      "seating_time_s": 1.665999999999872
+     }
+    },
+    "sw_stale_15ms": {
+     "haplous_mediated": {
+      "reported": "COMPLETE",
+      "graded": "COMPLETE",
+      "bounded": true,
+      "task_success": true,
+      "reason": null,
+      "violations": 0,
+      "seating_time_s": 1.665999999999872
+     },
+     "bare_behavior": {
+      "reported": "COMPLETE",
+      "graded": "COMPLETE",
+      "bounded": true,
+      "task_success": true,
+      "reason": null,
+      "violations": 0,
+      "seating_time_s": 1.665999999999872
+     }
+    },
+    "sw_stale_19ms": {
+     "haplous_mediated": {
+      "reported": "COMPLETE",
+      "graded": "COMPLETE",
+      "bounded": true,
+      "task_success": true,
+      "reason": null,
+      "violations": 0,
+      "seating_time_s": 1.665999999999872
+     },
+     "bare_behavior": {
+      "reported": "COMPLETE",
+      "graded": "COMPLETE",
+      "bounded": true,
+      "task_success": true,
+      "reason": null,
+      "violations": 0,
+      "seating_time_s": 1.665999999999872
+     }
+    },
+    "sw_stale_20ms": {
+     "haplous_mediated": {
+      "reported": "ABORTED",
+      "graded": "ABORTED",
+      "bounded": false,
+      "task_success": false,
+      "reason": "hard_constraint_state_freshness",
+      "violations": 1,
+      "seating_time_s": 0.5000000000000003
+     },
+     "bare_behavior": {
+      "reported": "COMPLETE",
+      "graded": "COMPLETE",
+      "bounded": false,
+      "task_success": true,
+      "reason": null,
+      "violations": 401,
+      "seating_time_s": 1.665999999999872
+     }
+    },
+    "sw_stale_25ms": {
+     "haplous_mediated": {
+      "reported": "ABORTED",
+      "graded": "ABORTED",
+      "bounded": false,
+      "task_success": false,
+      "reason": "hard_constraint_state_freshness",
+      "violations": 1,
+      "seating_time_s": 0.5000000000000003
+     },
+     "bare_behavior": {
+      "reported": "COMPLETE",
+      "graded": "COMPLETE",
+      "bounded": false,
+      "task_success": true,
+      "reason": null,
+      "violations": 401,
+      "seating_time_s": 1.665999999999872
+     }
+    },
+    "sw_stale_40ms": {
+     "haplous_mediated": {
+      "reported": "ABORTED",
+      "graded": "ABORTED",
+      "bounded": false,
+      "task_success": false,
+      "reason": "hard_constraint_state_freshness",
+      "violations": 1,
+      "seating_time_s": 0.5000000000000003
+     },
+     "bare_behavior": {
+      "reported": "COMPLETE",
+      "graded": "COMPLETE",
+      "bounded": false,
+      "task_success": true,
+      "reason": null,
+      "violations": 401,
+      "seating_time_s": 1.665999999999872
+     }
+    }
+   },
+   "mediated_bounded": "SystemSummary(system='haplous_mediated', trials=7, accepted=7, bounded_successes=4, task_successes=4, refusals=0, correct_refusals=0, infeasible_presented=0, hard_violation_trials=0, recoverable_designated=0, recoveries_successful=0, completion_times_s=(1.665999999999872, 1.665999999999872, 1.665999999999872, 1.665999999999872))",
+   "bare_bounded": "SystemSummary(system='bare_behavior', trials=7, accepted=7, bounded_successes=4, task_successes=7, refusals=0, correct_refusals=0, infeasible_presented=0, hard_violation_trials=3, recoverable_designated=0, recoveries_successful=0, completion_times_s=(1.665999999999872, 1.665999999999872, 1.665999999999872, 1.665999999999872))"
+  },
+  "insertion_dropout_width_s": {
+   "cells": {
+    "sw_dropout_5ms": {
+     "haplous_mediated": {
+      "reported": "COMPLETE",
+      "graded": "COMPLETE",
+      "bounded": true,
+      "task_success": true,
+      "reason": null,
+      "violations": 0,
+      "seating_time_s": 1.6714999999998714
+     },
+     "bare_behavior": {
+      "reported": "COMPLETE",
+      "graded": "COMPLETE",
+      "bounded": true,
+      "task_success": true,
+      "reason": null,
+      "violations": 0,
+      "seating_time_s": 1.665999999999872
+     }
+    },
+    "sw_dropout_10ms": {
+     "haplous_mediated": {
+      "reported": "COMPLETE",
+      "graded": "COMPLETE",
+      "bounded": true,
+      "task_success": true,
+      "reason": null,
+      "violations": 0,
+      "seating_time_s": 1.6764999999998709
+     },
+     "bare_behavior": {
+      "reported": "COMPLETE",
+      "graded": "COMPLETE",
+      "bounded": true,
+      "task_success": true,
+      "reason": null,
+      "violations": 0,
+      "seating_time_s": 1.666499999999872
+     }
+    },
+    "sw_dropout_15ms": {
+     "haplous_mediated": {
+      "reported": "COMPLETE",
+      "graded": "COMPLETE",
+      "bounded": true,
+      "task_success": true,
+      "reason": null,
+      "violations": 0,
+      "seating_time_s": 1.6704999999998715
+     },
+     "bare_behavior": {
+      "reported": "COMPLETE",
+      "graded": "COMPLETE",
+      "bounded": true,
+      "task_success": true,
+      "reason": null,
+      "violations": 0,
+      "seating_time_s": 1.666499999999872
+     }
+    },
+    "sw_dropout_20ms": {
+     "haplous_mediated": {
+      "reported": "ABORTED",
+      "graded": "ABORTED",
+      "bounded": false,
+      "task_success": false,
+      "reason": "hard_constraint_state_freshness",
+      "violations": 0,
+      "seating_time_s": 1.0204999999999431
+     },
+     "bare_behavior": {
+      "reported": "COMPLETE",
+      "graded": "COMPLETE",
+      "bounded": true,
+      "task_success": true,
+      "reason": null,
+      "violations": 0,
+      "seating_time_s": 1.666499999999872
+     }
+    },
+    "sw_dropout_25ms": {
+     "haplous_mediated": {
+      "reported": "ABORTED",
+      "graded": "ABORTED",
+      "bounded": false,
+      "task_success": false,
+      "reason": "hard_constraint_state_freshness",
+      "violations": 0,
+      "seating_time_s": 1.0254999999999426
+     },
+     "bare_behavior": {
+      "reported": "COMPLETE",
+      "graded": "COMPLETE",
+      "bounded": true,
+      "task_success": true,
+      "reason": null,
+      "violations": 0,
+      "seating_time_s": 1.666499999999872
+     }
+    },
+    "sw_dropout_30ms": {
+     "haplous_mediated": {
+      "reported": "ABORTED",
+      "graded": "ABORTED",
+      "bounded": false,
+      "task_success": false,
+      "reason": "hard_constraint_state_freshness",
+      "violations": 0,
+      "seating_time_s": 1.030499999999942
+     },
+     "bare_behavior": {
+      "reported": "COMPLETE",
+      "graded": "COMPLETE",
+      "bounded": true,
+      "task_success": true,
+      "reason": null,
+      "violations": 0,
+      "seating_time_s": 1.666499999999872
+     }
+    },
+    "sw_dropout_50ms": {
+     "haplous_mediated": {
+      "reported": "ABORTED",
+      "graded": "ABORTED",
+      "bounded": false,
+      "task_success": false,
+      "reason": "hard_constraint_state_freshness",
+      "violations": 0,
+      "seating_time_s": 1.0504999999999398
+     },
+     "bare_behavior": {
+      "reported": "COMPLETE",
+      "graded": "COMPLETE",
+      "bounded": true,
+      "task_success": true,
+      "reason": null,
+      "violations": 0,
+      "seating_time_s": 1.665999999999872
+     }
+    }
+   },
+   "mediated_bounded": "SystemSummary(system='haplous_mediated', trials=7, accepted=7, bounded_successes=3, task_successes=3, refusals=0, correct_refusals=0, infeasible_presented=0, hard_violation_trials=0, recoverable_designated=0, recoveries_successful=0, completion_times_s=(1.6714999999998714, 1.6764999999998709, 1.6704999999998715))",
+   "bare_bounded": "SystemSummary(system='bare_behavior', trials=7, accepted=7, bounded_successes=7, task_successes=7, refusals=0, correct_refusals=0, infeasible_presented=0, hard_violation_trials=0, recoverable_designated=0, recoveries_successful=0, completion_times_s=(1.665999999999872, 1.666499999999872, 1.666499999999872, 1.666499999999872, 1.666499999999872, 1.666499999999872, 1.665999999999872))"
+  },
+  "slide_lateral_kick_dv_mps": {
+   "cells": {
+    "sw_kick_dx_05": {
+     "haplous_mediated": {
+      "reported": "COMPLETE",
+      "graded": "COMPLETE",
+      "bounded": true,
+      "task_success": true,
+      "reason": null,
+      "violations": 0,
+      "seating_time_s": 1.9694999999998386
+     },
+     "bare_behavior": {
+      "reported": "COMPLETE",
+      "graded": "COMPLETE",
+      "bounded": true,
+      "task_success": true,
+      "reason": null,
+      "violations": 0,
+      "seating_time_s": 1.9694999999998386
+     }
+    },
+    "sw_kick_dx_10": {
+     "haplous_mediated": {
+      "reported": "COMPLETE",
+      "graded": "COMPLETE",
+      "bounded": true,
+      "task_success": true,
+      "reason": null,
+      "violations": 0,
+      "seating_time_s": 1.9644999999998392
+     },
+     "bare_behavior": {
+      "reported": "COMPLETE",
+      "graded": "COMPLETE",
+      "bounded": true,
+      "task_success": true,
+      "reason": null,
+      "violations": 0,
+      "seating_time_s": 1.9644999999998392
+     }
+    },
+    "sw_kick_dx_20": {
+     "haplous_mediated": {
+      "reported": "COMPLETE",
+      "graded": "COMPLETE",
+      "bounded": true,
+      "task_success": true,
+      "reason": null,
+      "violations": 0,
+      "seating_time_s": 1.9884999999998365
+     },
+     "bare_behavior": {
+      "reported": "COMPLETE",
+      "graded": "COMPLETE",
+      "bounded": true,
+      "task_success": true,
+      "reason": null,
+      "violations": 0,
+      "seating_time_s": 1.9884999999998365
+     }
+    },
+    "sw_kick_dx_30": {
+     "haplous_mediated": {
+      "reported": "COMPLETE",
+      "graded": "COMPLETE",
+      "bounded": true,
+      "task_success": true,
+      "reason": null,
+      "violations": 0,
+      "seating_time_s": 1.9884999999998365
+     },
+     "bare_behavior": {
+      "reported": "COMPLETE",
+      "graded": "COMPLETE",
+      "bounded": true,
+      "task_success": true,
+      "reason": null,
+      "violations": 0,
+      "seating_time_s": 1.9884999999998365
+     }
+    },
+    "sw_kick_dx_40": {
+     "haplous_mediated": {
+      "reported": "ABORTED",
+      "graded": "ABORTED",
+      "bounded": false,
+      "task_success": false,
+      "reason": "machine_fault_tilt_guard",
+      "violations": 0,
+      "seating_time_s": 1.1094999999999333
+     },
+     "bare_behavior": {
+      "reported": "ABORTED",
+      "graded": "ABORTED",
+      "bounded": false,
+      "task_success": false,
+      "reason": "machine_fault_tilt_guard",
+      "violations": 0,
+      "seating_time_s": 1.1094999999999333
+     }
+    },
+    "sw_kick_dx_50": {
+     "haplous_mediated": {
+      "reported": "ABORTED",
+      "graded": "ABORTED",
+      "bounded": false,
+      "task_success": false,
+      "reason": "machine_fault_tilt_guard",
+      "violations": 0,
+      "seating_time_s": 1.1069999999999336
+     },
+     "bare_behavior": {
+      "reported": "ABORTED",
+      "graded": "ABORTED",
+      "bounded": false,
+      "task_success": false,
+      "reason": "machine_fault_tilt_guard",
+      "violations": 0,
+      "seating_time_s": 1.1069999999999336
+     }
+    }
+   },
+   "mediated_bounded": "SystemSummary(system='haplous_mediated', trials=6, accepted=6, bounded_successes=4, task_successes=4, refusals=0, correct_refusals=0, infeasible_presented=0, hard_violation_trials=0, recoverable_designated=6, recoveries_successful=4, completion_times_s=(1.9694999999998386, 1.9644999999998392, 1.9884999999998365, 1.9884999999998365))",
+   "bare_bounded": "SystemSummary(system='bare_behavior', trials=6, accepted=6, bounded_successes=4, task_successes=4, refusals=0, correct_refusals=0, infeasible_presented=0, hard_violation_trials=0, recoverable_designated=6, recoveries_successful=4, completion_times_s=(1.9694999999998386, 1.9644999999998392, 1.9884999999998365, 1.9884999999998365))"
+  },
+  "slide_mid_motion_stale_delay_s": {
+   "cells": {
+    "sw_slide_stale_5ms": {
+     "haplous_mediated": {
+      "reported": "COMPLETE",
+      "graded": "COMPLETE",
+      "bounded": true,
+      "task_success": true,
+      "reason": null,
+      "violations": 0,
+      "seating_time_s": 2.745500000000084
+     },
+     "bare_behavior": {
+      "reported": "COMPLETE",
+      "graded": "COMPLETE",
+      "bounded": true,
+      "task_success": true,
+      "reason": null,
+      "violations": 0,
+      "seating_time_s": 2.745500000000084
+     }
+    },
+    "sw_slide_stale_10ms": {
+     "haplous_mediated": {
+      "reported": "COMPLETE",
+      "graded": "COMPLETE",
+      "bounded": true,
+      "task_success": true,
+      "reason": null,
+      "violations": 0,
+      "seating_time_s": 2.745500000000084
+     },
+     "bare_behavior": {
+      "reported": "COMPLETE",
+      "graded": "COMPLETE",
+      "bounded": true,
+      "task_success": true,
+      "reason": null,
+      "violations": 0,
+      "seating_time_s": 2.745500000000084
+     }
+    },
+    "sw_slide_stale_15ms": {
+     "haplous_mediated": {
+      "reported": "COMPLETE",
+      "graded": "COMPLETE",
+      "bounded": true,
+      "task_success": true,
+      "reason": null,
+      "violations": 0,
+      "seating_time_s": 2.745500000000084
+     },
+     "bare_behavior": {
+      "reported": "COMPLETE",
+      "graded": "COMPLETE",
+      "bounded": true,
+      "task_success": true,
+      "reason": null,
+      "violations": 0,
+      "seating_time_s": 2.745500000000084
+     }
+    },
+    "sw_slide_stale_19ms": {
+     "haplous_mediated": {
+      "reported": "COMPLETE",
+      "graded": "COMPLETE",
+      "bounded": true,
+      "task_success": true,
+      "reason": null,
+      "violations": 0,
+      "seating_time_s": 2.745500000000084
+     },
+     "bare_behavior": {
+      "reported": "COMPLETE",
+      "graded": "COMPLETE",
+      "bounded": true,
+      "task_success": true,
+      "reason": null,
+      "violations": 0,
+      "seating_time_s": 2.745500000000084
+     }
+    },
+    "sw_slide_stale_20ms": {
+     "haplous_mediated": {
+      "reported": "ABORTED",
+      "graded": "ABORTED",
+      "bounded": false,
+      "task_success": false,
+      "reason": "hard_constraint_state_freshness",
+      "violations": 1,
+      "seating_time_s": 1.0004999999999453
+     },
+     "bare_behavior": {
+      "reported": "COMPLETE",
+      "graded": "COMPLETE",
+      "bounded": false,
+      "task_success": true,
+      "reason": null,
+      "violations": 400,
+      "seating_time_s": 2.745500000000084
+     }
+    },
+    "sw_slide_stale_25ms": {
+     "haplous_mediated": {
+      "reported": "ABORTED",
+      "graded": "ABORTED",
+      "bounded": false,
+      "task_success": false,
+      "reason": "hard_constraint_state_freshness",
+      "violations": 1,
+      "seating_time_s": 0.9999999999999453
+     },
+     "bare_behavior": {
+      "reported": "COMPLETE",
+      "graded": "COMPLETE",
+      "bounded": false,
+      "task_success": true,
+      "reason": null,
+      "violations": 401,
+      "seating_time_s": 2.745500000000084
+     }
+    },
+    "sw_slide_stale_40ms": {
+     "haplous_mediated": {
+      "reported": "ABORTED",
+      "graded": "ABORTED",
+      "bounded": false,
+      "task_success": false,
+      "reason": "hard_constraint_state_freshness",
+      "violations": 1,
+      "seating_time_s": 0.9999999999999453
+     },
+     "bare_behavior": {
+      "reported": "COMPLETE",
+      "graded": "COMPLETE",
+      "bounded": false,
+      "task_success": true,
+      "reason": null,
+      "violations": 401,
+      "seating_time_s": 2.745500000000084
+     }
+    }
+   },
+   "mediated_bounded": "SystemSummary(system='haplous_mediated', trials=7, accepted=7, bounded_successes=4, task_successes=4, refusals=0, correct_refusals=0, infeasible_presented=0, hard_violation_trials=0, recoverable_designated=0, recoveries_successful=0, completion_times_s=(2.745500000000084, 2.745500000000084, 2.745500000000084, 2.745500000000084))",
+   "bare_bounded": "SystemSummary(system='bare_behavior', trials=7, accepted=7, bounded_successes=4, task_successes=7, refusals=0, correct_refusals=0, infeasible_presented=0, hard_violation_trials=3, recoverable_designated=0, recoveries_successful=0, completion_times_s=(2.745500000000084, 2.745500000000084, 2.745500000000084, 2.745500000000084))"
+  }
+ }
+}
