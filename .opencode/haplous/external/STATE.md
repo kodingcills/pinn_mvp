@@ -150,3 +150,8 @@ remain the visual path. Rerun stays optional-future; no campaign stall.
   jitter period, bursty dropout/stale, command delay, kick magnitude,
   force-limit cells). Compound cells remain future work, consistent with
   the prior campaign's disclosure.
+- X52 registry resolution (post-close audit): results/external_eval/realdata/
+  20260909T204553Z verified byte-identical to the committed canonical
+  x52_observer_summary.json (canonical run); 20260909T204030Z is the
+  earlier dev pass with superseded observer parameters (prec 0.993/0.0 —
+  dev numbers, not evidence). Both committed; no inconsistency found.
