@@ -1,0 +1,214 @@
+{
+  "campaign": "X20/X21 external robosuite campaign",
+  "evidence_status": "FINAL external evaluation, frozen tag haplous-external-eval-v0, seeds 10-24",
+  "haplous_version": "0.5.0",
+  "system_commit": "af485e922ad6b3c27cb56a17f6eee049e157d842",
+  "benchmark": "robosuite/1.5.2/NutAssemblySquare",
+  "system_variants": [
+    "direct_minimal",
+    "strong_osc",
+    "haplous_mediated"
+  ],
+  "controller_config_sha256": "f20257ccf22700c3fd5e5d5404503a657404b55613f76b22f184c33f4c1228ef",
+  "seeds": [
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24
+  ],
+  "started_at": "2026-09-09T21:38:50.762093+00:00",
+  "completed_at": "2026-09-09T21:39:52.138123+00:00",
+  "trials": [
+    {
+      "seed": 10,
+      "system_variant": "direct_minimal"
+    },
+    {
+      "seed": 10,
+      "system_variant": "strong_osc"
+    },
+    {
+      "seed": 10,
+      "system_variant": "haplous_mediated"
+    },
+    {
+      "seed": 11,
+      "system_variant": "direct_minimal"
+    },
+    {
+      "seed": 11,
+      "system_variant": "strong_osc"
+    },
+    {
+      "seed": 11,
+      "system_variant": "haplous_mediated"
+    },
+    {
+      "seed": 12,
+      "system_variant": "direct_minimal"
+    },
+    {
+      "seed": 12,
+      "system_variant": "strong_osc"
+    },
+    {
+      "seed": 12,
+      "system_variant": "haplous_mediated"
+    },
+    {
+      "seed": 13,
+      "system_variant": "direct_minimal"
+    },
+    {
+      "seed": 13,
+      "system_variant": "strong_osc"
+    },
+    {
+      "seed": 13,
+      "system_variant": "haplous_mediated"
+    },
+    {
+      "seed": 14,
+      "system_variant": "direct_minimal"
+    },
+    {
+      "seed": 14,
+      "system_variant": "strong_osc"
+    },
+    {
+      "seed": 14,
+      "system_variant": "haplous_mediated"
+    },
+    {
+      "seed": 15,
+      "system_variant": "direct_minimal"
+    },
+    {
+      "seed": 15,
+      "system_variant": "strong_osc"
+    },
+    {
+      "seed": 15,
+      "system_variant": "haplous_mediated"
+    },
+    {
+      "seed": 16,
+      "system_variant": "direct_minimal"
+    },
+    {
+      "seed": 16,
+      "system_variant": "strong_osc"
+    },
+    {
+      "seed": 16,
+      "system_variant": "haplous_mediated"
+    },
+    {
+      "seed": 17,
+      "system_variant": "direct_minimal"
+    },
+    {
+      "seed": 17,
+      "system_variant": "strong_osc"
+    },
+    {
+      "seed": 17,
+      "system_variant": "haplous_mediated"
+    },
+    {
+      "seed": 18,
+      "system_variant": "direct_minimal"
+    },
+    {
+      "seed": 18,
+      "system_variant": "strong_osc"
+    },
+    {
+      "seed": 18,
+      "system_variant": "haplous_mediated"
+    },
+    {
+      "seed": 19,
+      "system_variant": "direct_minimal"
+    },
+    {
+      "seed": 19,
+      "system_variant": "strong_osc"
+    },
+    {
+      "seed": 19,
+      "system_variant": "haplous_mediated"
+    },
+    {
+      "seed": 20,
+      "system_variant": "direct_minimal"
+    },
+    {
+      "seed": 20,
+      "system_variant": "strong_osc"
+    },
+    {
+      "seed": 20,
+      "system_variant": "haplous_mediated"
+    },
+    {
+      "seed": 21,
+      "system_variant": "direct_minimal"
+    },
+    {
+      "seed": 21,
+      "system_variant": "strong_osc"
+    },
+    {
+      "seed": 21,
+      "system_variant": "haplous_mediated"
+    },
+    {
+      "seed": 22,
+      "system_variant": "direct_minimal"
+    },
+    {
+      "seed": 22,
+      "system_variant": "strong_osc"
+    },
+    {
+      "seed": 22,
+      "system_variant": "haplous_mediated"
+    },
+    {
+      "seed": 23,
+      "system_variant": "direct_minimal"
+    },
+    {
+      "seed": 23,
+      "system_variant": "strong_osc"
+    },
+    {
+      "seed": 23,
+      "system_variant": "haplous_mediated"
+    },
+    {
+      "seed": 24,
+      "system_variant": "direct_minimal"
+    },
+    {
+      "seed": 24,
+      "system_variant": "strong_osc"
+    },
+    {
+      "seed": 24,
+      "system_variant": "haplous_mediated"
+    }
+  ]
+}
