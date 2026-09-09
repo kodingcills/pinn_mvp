@@ -1,0 +1,26 @@
+{
+  "node": "X10",
+  "component": "Isaac Lab (isaacsim 6.1.0.0 / isaaclab 2.3.2.post1)",
+  "decision": "REJECTED",
+  "date": "2026-09-09",
+  "evidence": {
+    "pypi_wheels_isaacsim_6.1.0.0": [
+      "isaacsim-6.1.0.0-cp312-none-manylinux_2_35_aarch64.whl",
+      "isaacsim-6.1.0.0-cp312-none-manylinux_2_35_x86_64.whl",
+      "isaacsim-6.1.0.0-cp312-none-win_amd64.whl"
+    ],
+    "pypi_wheels_isaaclab_2.3.2.post1": [
+      "isaaclab-2.3.2.post1-cp311-none-manylinux_2_35_aarch64.whl",
+      "isaaclab-2.3.2.post1-cp311-none-manylinux_2_35_x86_64.whl",
+      "isaaclab-2.3.2.post1-cp311-none-win_amd64.whl"
+    ],
+    "uv_resolution_failure_on_darwin": "No solution found when resolving dependencies: because all versions of isaaclab have no wheels with a matching Python ABI tag (e.g., cp312) and you require isaaclab, we can conclude that your requirements are unsatisfiable.",
+    "platform": "Apple M4 Pro (darwin arm64), 24 GB RAM, no NVIDIA GPU",
+    "docker_path": "Docker on macOS cannot pass an NVIDIA GPU to a Linux VM (CUDA passthrough unsupported on darwin); the M4 Pro has no NVIDIA GPU regardless."
+  },
+  "rationale": "Isaac Sim/Lab publishes no macOS wheels and requires an NVIDIA GPU. No feasible install path exists on this platform without new hardware or an external Linux GPU host.",
+  "what_would_unblock": "x86_64 Linux machine or VM with NVIDIA RTX GPU, or CI-based remote runner for Isaac Lab cells.",
+  "downstream_nodes_affected": ["X11 Factory peg", "X12 FORGE", "X13 gear/nut", "X14 AutoMate generalization"],
+  "value_of_component": "Independent PhysX physics backend, Factory/FORGE contact-rich assembly envs, AutoMate geometry-generalization assets — remains the top desired second backend on suitable hardware.",
+  "alternative_in_campaign": "robosuite 1.5.2 (official OSC_POSE incumbent controllers, contact-rich NutAssembly/PegInHole envs) serves the independent-backend + incumbent-controller comparison on macOS CPU; MuJoCo solver-variation + optional Drake hydroelastic microbench covers the contact-formulation axis."
+}
