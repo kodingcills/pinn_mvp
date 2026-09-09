@@ -6,6 +6,10 @@ explain how that state was reached.
 
 ## Current engineering reports
 
+- [Haplous v0-sim report](HAPLOUS_V0_SIM_REPORT.md) — the clean runtime
+  (Phase III), the 12-scenario semantic benchmark (Phase IV, 12/12
+  conformance), fault simulation (Phase V), and the physical gate with
+  hardware requirements.
 - [R-series freeze](research/R_SERIES_FREEZE.md) — the frozen pre-runtime
   research lineage: R01-R06 conclusions, refuted beliefs, known simulator
   limitations, migration classification, and reproduction commands. The

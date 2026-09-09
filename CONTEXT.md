@@ -310,6 +310,38 @@ physics-shaped symptom that cost multiple rounds of wrong theorizing.
   `docs/research/R_SERIES_FREEZE.md` (R01-R06 conclusions, refuted beliefs,
   migration classification, reproduction commands). The clean Haplous
   runtime (Phase III) starts from this tag.
+- **Haplous v0 runtime (Phase III) EXISTS: clean package `haplous/`.**
+  Product spine: ExecutionIntent with semantic Requirements (hard/soft,
+  typed) distinct from machine-owned ControlParameters; MachineCapabilities
+  + negotiate() -> SUPPORTED/DEGRADED/REFUSED with structured reason codes;
+  explicit ExecutionState table with exhaustive legal transitions;
+  constraint monitoring (force/tilt/freshness) with value/limit/margin;
+  first-class refusal; permission-gated bounded recovery; temporal
+  semantics (source/received stamps, staleness, measurement-loss windows);
+  append-only reconstructable ExecutionEvidence. MuJoCo sits behind the
+  Machine protocol adapter (`haplous/adapters/mujoco_adapter.py`) wrapping
+  the validated `run_episode` substrate unwritten; insertion-specific
+  knowledge lives in `haplous/behaviors/insertion.py`. Core is AST-guarded
+  simulator-free and behavior-free. Commit `3d550f9`.
+- **Haplous v0-sim benchmark (Phase IV) PASSED: 12/12 semantic conformance.**
+  Driver `scripts/measure_haplous_v0_sim.py` (one-shot, deterministic);
+  rows `results/haplous_v0_sim_rows.jsonl`, summary
+  `results/haplous_v0_sim_summary.json`, evidence
+  `results/haplous_v0_sim_evidence/`. Mediated runtime matches direct
+  physics on every physical scenario; refusal recall 5/5 and precision 5/5
+  (infeasible requests refused in ~30 us; the 5 mm request saves 8.9 s wall
+  vs direct failure); end-to-end overhead vs direct within +-2% wall noise;
+  feasibility latency median 21 us; scenarios are pure intent data (0 core
+  LOC per variant). See `docs/HAPLOUS_V0_SIM_REPORT.md`.
+- **Haplous fault simulation (Phase V) DONE: physical gate reached.**
+  `tests/test_haplous_faults.py`: state latency, command rejection
+  (`machine_error_*` + stop), machine fault, limited control mode,
+  adapter-level latency/packet-loss (DEGRADED small window, ABORTED large).
+  These establish software behavior under modeled interface faults only.
+  **HAPLOUS V0-SIM COMPLETE; NEXT BLOCKER: FIRST PHYSICAL MACHINE** —
+  requirements (500 Hz sampled-loop instability per R04, F/T sensor ~4 N
+  accuracy, touch-off calibration, safety watchdog, evidence
+  instrumentation) listed in the v0-sim report.
 - **R04 (coupled sampled-loop instability) is RESOLVED; the ~135 Hz
   rotational-mode explanation is REFUTED.** `pegsim/dynamics.py` (commit
   `ff48f8b`) now performs the full `mj_fullM` eigenvalue decomposition at
