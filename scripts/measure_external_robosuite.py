@@ -182,8 +182,14 @@ def _summarize(trials: list[Trial]) -> dict[str, dict[str, float | int]]:
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--seeds", type=int, default=5)
+    parser.add_argument("--seed-start", type=int, default=0)
     parser.add_argument("--systems", default="direct,strong,haplous")
+    parser.add_argument(
+        "--evidence-stage",
+        default="development numbers, not qualification evidence",
+    )
     args = parser.parse_args()
+    seeds = range(args.seed_start, args.seed_start + args.seeds)
     selected = tuple(item.strip() for item in args.systems.split(","))
     unknown = set(selected) - SYSTEM_NAMES.keys()
     if unknown:
@@ -195,7 +201,7 @@ def main() -> None:
     trials: list[Trial] = []
     config_json = ""
     started_at = datetime.now(UTC).isoformat()
-    for seed in range(args.seeds):
+    for seed in seeds:
         for system in selected:
             if system == "haplous":
                 trial, config_json = _haplous_trial(seed)
@@ -209,19 +215,19 @@ def main() -> None:
         ["git", "rev-parse", "HEAD"], cwd=ROOT, check=True, capture_output=True, text=True
     ).stdout.strip()
     manifest = {
-        "campaign": "X20/X21 development",
-        "evidence_status": "development numbers, not qualification evidence",
+        "campaign": "X20/X21 external robosuite campaign",
+        "evidence_status": args.evidence_stage,
         "haplous_version": haplous_version,
         "system_commit": commit,
         "benchmark": "robosuite/1.5.2/NutAssemblySquare",
         "system_variants": [SYSTEM_NAMES[name] for name in selected],
         "controller_config_sha256": controller_hash,
-        "seeds": list(range(args.seeds)),
+        "seeds": list(seeds),
         "started_at": started_at,
         "completed_at": datetime.now(UTC).isoformat(),
         "trials": [
             {"seed": seed, "system_variant": SYSTEM_NAMES[name]}
-            for seed in range(args.seeds)
+            for seed in seeds
             for name in selected
         ],
     }

@@ -1,0 +1,116 @@
+{
+  "manifest": {
+    "campaign": "X20/X21 external robosuite campaign",
+    "evidence_status": "qualification, seed block 5-9, frozen semantics",
+    "haplous_version": "0.5.0",
+    "system_commit": "216dbc8cd60747b51fbfe05569129c84b43b4dca",
+    "benchmark": "robosuite/1.5.2/NutAssemblySquare",
+    "system_variants": [
+      "direct_minimal",
+      "strong_osc",
+      "haplous_mediated"
+    ],
+    "controller_config_sha256": "f20257ccf22700c3fd5e5d5404503a657404b55613f76b22f184c33f4c1228ef",
+    "seeds": [
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "started_at": "2026-09-09T21:36:21.236786+00:00",
+    "completed_at": "2026-09-09T21:36:42.194627+00:00",
+    "trials": [
+      {
+        "seed": 5,
+        "system_variant": "direct_minimal"
+      },
+      {
+        "seed": 5,
+        "system_variant": "strong_osc"
+      },
+      {
+        "seed": 5,
+        "system_variant": "haplous_mediated"
+      },
+      {
+        "seed": 6,
+        "system_variant": "direct_minimal"
+      },
+      {
+        "seed": 6,
+        "system_variant": "strong_osc"
+      },
+      {
+        "seed": 6,
+        "system_variant": "haplous_mediated"
+      },
+      {
+        "seed": 7,
+        "system_variant": "direct_minimal"
+      },
+      {
+        "seed": 7,
+        "system_variant": "strong_osc"
+      },
+      {
+        "seed": 7,
+        "system_variant": "haplous_mediated"
+      },
+      {
+        "seed": 8,
+        "system_variant": "direct_minimal"
+      },
+      {
+        "seed": 8,
+        "system_variant": "strong_osc"
+      },
+      {
+        "seed": 8,
+        "system_variant": "haplous_mediated"
+      },
+      {
+        "seed": 9,
+        "system_variant": "direct_minimal"
+      },
+      {
+        "seed": 9,
+        "system_variant": "strong_osc"
+      },
+      {
+        "seed": 9,
+        "system_variant": "haplous_mediated"
+      }
+    ]
+  },
+  "systems": {
+    "direct_minimal": {
+      "trials": 5,
+      "successes": 0,
+      "bounded_successes": 0,
+      "refusals": 0,
+      "mean_peak_force_n": 436.8013269685616,
+      "max_peak_force_n": 461.7912008456506,
+      "mean_wall_s": 2.1519924749998607
+    },
+    "strong_osc": {
+      "trials": 5,
+      "successes": 0,
+      "bounded_successes": 0,
+      "refusals": 0,
+      "mean_peak_force_n": 436.8013269685616,
+      "max_peak_force_n": 461.7912008456506,
+      "mean_wall_s": 1.8386022917999072
+    },
+    "haplous_mediated": {
+      "trials": 5,
+      "successes": 0,
+      "bounded_successes": 0,
+      "refusals": 0,
+      "mean_peak_force_n": 24.238323748603126,
+      "max_peak_force_n": 28.853321567301982,
+      "mean_wall_s": 0.15040427500061923
+    }
+  },
+  "paired_r2_minus_r1_mean_wall_s": -1.6881980167992878
+}

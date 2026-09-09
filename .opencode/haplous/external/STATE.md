@@ -93,4 +93,42 @@ Rerun NOT adopted as a campaign deliverable: structured evidence traces +
 JSONL rows are already produced per run; native MuJoCo/robosuite viewers
 remain the visual path. Rerun stays optional-future; no campaign stall.
 
-## Findings appended per node below as work completes.
+## Parallel campaign tracks — RESULTS (verified 2026-09-09)
+
+- **X02 CLI**: COMPLETE (commit 9318c3f). haplous/cli/ 596 LOC, 13 tests;
+  doctor/list/run/eval/compare/envelope/replay/report all verified on the
+  real surface; registry+manifests with sha256 conventions verified.
+- **X20/X21 robosuite**: COMPLETE (commit 676170a). Adapter+policy+runner,
+  651 LOC, haplous core delta 0. Verified conventions: 20 Hz control
+  period, eef quat exported xyzw, compressive contact = positive force_z,
+  OSC kp=150 machine-owned (k_z not mapped — documented deviation).
+  Dev 5 seeds: policy 0/5 success after 2 permitted redesigns; mediation
+  distinction measured: direct/strong identical 396-500N peaks, Haplous
+  aborts 26-32N. Qualification block seeds 5-9: same pattern (437-462N
+  vs 24-29N). Artifacts: results/external_eval/robosuite-1.5.2/*.
+- **X30/X31/X70 governor + jitter**: COMPLETE (commit 0f962c3). G1 =
+  NEGATIVE result, no promotion: BSR 11/22 -> 10/22, P95 2.48 -> 3.90 s,
+  force integral 0.271 -> 0.421 N.s, jitter peak 5.56 -> 6.63 N, +1
+  deadline invalidation; only gain = avoided one jitter tilt-guard fault.
+  Timing/jitter stress delivered: random-period jitter +-10-100%, bursty
+  dropout/stale, command delay 1/4/16/40 steps. haplous+HEB delta 0.
+- **X41 solver sensitivity**: COMPLETE (commit 88e2bd9). 48/48 seat across
+  6 numerical variants. N01: capture/force-plateau/settling/oscillation
+  SURVIVE; penetration scale SOLVER-SENSITIVE to cone (elliptic 24.7um vs
+  pyramidal 2.5um). ContactBench REJECTED with dry-run evidence; Drake
+  1.46.0 PROBED_NOT_ADOPTED (hydroelastic sphere-plane: 744um penetration
+  at 15N — formulations not apples-to-apples, documented).
+- **X50/X51/X52 realdata**: COMPLETE (commit 216dbc8). Derivative HF
+  subsets only (49 MB; official archives disk-BLOCKED 7.8GiB). O0 direct
+  wrench: FMB precision 0.74 / recall 1.0, REASSEMBLE precision 0.19;
+  O2 momentum residual on REASSEMBLE: precision 0.056 (model-mismatch
+  negative); O1 N/A (no probe geometry); O3 not run. GT limitation:
+  primitive-phase labels + force threshold, not physical contact truth.
+- 4 subagent "failures" were reporting-stage failures only (X41 timeout,
+  X52 usage-limit); all measurements verified present and complete.
+
+## Freeze (X90)
+- Tag haplous-external-eval-v0 = this commit (after qual run 20260909T213621Z).
+- Runner got pre-qualification harness fix: --seed-start + --evidence-stage.
+- Final eval seeds: 10..24 literal per PREREGISTER.md; qual seeds 5..9 done;
+  dev seeds 0..4. Governor NOT promoted (negative) -> no HAPL+GOV column.
