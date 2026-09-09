@@ -838,6 +838,11 @@ class ValidatedConfig:
     depth_commit: float  # m, FK depth below z_flat that commits to seating
     control_decimation: int
     control_delay_steps: int
+    # False for bundles whose mechanism excludes the spiral search (e.g.
+    # constrained-contact tasks on geometry too small to host the search
+    # envelope). Capability reporting and episode templates consult this
+    # instead of constructing a SpiralSpec that cannot validate.
+    use_spiral: bool = True
 
     def __post_init__(self) -> None:
         assert self.z_start > 0, "z_start must be above the plate (z=0)"
@@ -849,6 +854,17 @@ class ValidatedConfig:
         product spec (fixture/vision tolerance), not a geometry derivative,
         so it comes from DELTA_MAX_SPEC_M, not from the task."""
         return SpiralSpec(task=self.task, delta_max=DELTA_MAX_SPEC_M, v_t=self.v_t)
+
+    @property
+    def max_initial_offset_m(self) -> float:
+        """Machine-level placement reach reported to the runtime: how far
+        from the commanded datum the mechanism can place the part at
+        execution start. Search-based mechanisms are bounded by their
+        search envelope; non-search mechanisms by the supported plate
+        geometry (the part center must stay fully on the plate)."""
+        if self.use_spiral:
+            return self.spiral.r_spiral + self.r_cap_dyn
+        return self.task.plate_outer_radius - self.task.peg_radius
 
 
 VALIDATED_LOOSE_V1 = ValidatedConfig(
@@ -881,4 +897,50 @@ VALIDATED_LOOSE_V1 = ValidatedConfig(
     depth_commit=DEPTH_COMMIT,
     control_decimation=1,
     control_delay_steps=0,
+)
+
+# Task-B substrate: a 1 mm-radius, 2 g part for constrained-contact
+# sliding on the flat annulus. Geometry check (derived from the scene
+# formulas, not measured): chamfer rim at hole_radius+chamfer = 2.5mm,
+# plate edge at 5.375mm, so a fully-supported part-center corridor is
+# r in (3.5mm, 4.375mm); task paths use r=3.9mm. Servo behavior on this
+# bundle is validated by the Task B development evaluation — these
+# constants carry no measurement claims of their own.
+SLIDE_F_CONTACT_N = 0.196
+SLIDE_F_MIN_N = 0.06
+VALIDATED_SLIDE_V1 = ValidatedConfig(
+    task=TaskSpec(
+        peg_radius=0.001, radial_clearance=0.0005, chamfer_width=0.001,
+        plate_thickness=0.01, peg_length=0.04, peg_mass=0.002, n_segments=16,
+        friction=0.4,
+    ),
+    solver=SolverSpec(timestep=0.0005),
+    # Gains scaled to the insertion bundle's validated per-DOF margins
+    # (natural frequency omega*dt <= ~0.2 at dt=0.5ms; the per-DOF
+    # stability cap alone is known-insufficient for the coupled chain):
+    #   k_xy: insertion 1000/0.05 -> omega=141 -> 141^2*0.002 = 40
+    #   k_z:  insertion 2000/0.05 -> omega=200 -> 200^2*0.002 = 80
+    #   k_rx/ry: insertion 5/4.2e-5 -> omega=345 -> 345^2*1.07e-6 = 0.127
+    #   k_rz: insertion 0.05/6.25e-7 -> omega=283 -> 283^2*1e-9 = 8e-5
+    # The first attempt (k_xy=200, k_z=2000, k_rx=1.0) ran omega*dt up to
+    # 0.5 and diverged in tilt at 0.6s in the dev smoke (0.45deg -> 31.7deg
+    # in 1.5ms) — the R4 coupled-instability signature, reproduced.
+    gains=ImpedanceGains(k_xy=40.0, k_z=80.0, k_rx=0.12, k_ry=0.12, k_rz=8e-5),
+    insertion=InsertionProfile(k_z_search=80.0, f_search=1.0),
+    name="VALIDATED_SLIDE_V1",
+    validated_by=(
+        "S04 constrained-contact task development: 1mm/2g peg sliding "
+        "tangentially on the flat annulus (path corridor verified against "
+        "the compiled scene geometry); see the HEB task-B development "
+        "evaluation for per-scenario results."
+    ),
+    v_t=0.005,
+    r_cap_dyn=0.0016,
+    pen_allow=1.5 * 8e-6,
+    max_seconds=16.3,
+    z_start=0.005,
+    depth_commit=DEPTH_COMMIT,
+    control_decimation=1,
+    control_delay_steps=0,
+    use_spiral=False,
 )

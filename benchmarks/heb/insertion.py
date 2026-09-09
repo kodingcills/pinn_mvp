@@ -7,6 +7,10 @@ family's success condition is benchmark truth shared by every system;
 graders never read Haplous state."""
 from __future__ import annotations
 
+import dataclasses
+
+from pegsim.rollout import VALIDATED_LOOSE_V1, ValidatedConfig
+
 from benchmarks.heb.protocol import Scenario
 from benchmarks.heb.metrics import PEN_ALLOW_M
 
@@ -200,3 +204,32 @@ def insertion_condition_factory(scenario, bundle):
         max_force_n=scenario.max_force_n if scenario.max_force_n is not None else 25.0,
         persistence_s=scenario.persistence_s,
     )
+
+
+def realize_insertion_bundle(scenario: Scenario) -> ValidatedConfig:
+    """Base validated bundle with the scenario's geometry deltas applied."""
+    bundle = VALIDATED_LOOSE_V1
+    if scenario.clearance_delta_m:
+        bundle = dataclasses.replace(
+            bundle,
+            task=dataclasses.replace(
+                bundle.task,
+                radial_clearance=bundle.task.radial_clearance
+                + scenario.clearance_delta_m,
+            ),
+        )
+    if scenario.facet_count is not None:
+        bundle = dataclasses.replace(
+            bundle,
+            task=dataclasses.replace(
+                bundle.task, n_segments=scenario.facet_count
+            ),
+        )
+    if scenario.plate_thickness_m is not None:
+        bundle = dataclasses.replace(
+            bundle,
+            task=dataclasses.replace(
+                bundle.task, plate_thickness=scenario.plate_thickness_m
+            ),
+        )
+    return bundle

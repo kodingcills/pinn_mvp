@@ -38,6 +38,7 @@ class HaplousRuntime:
         self._intent: Optional[ExecutionIntent] = None
         self._feasibility: Optional[FeasibilityResult] = None
         self._recoveries_used = 0
+        self._recovery_episode_open_t: dict[str, float] = {}
 
     @property
     def state(self) -> ExecutionState:
@@ -182,6 +183,7 @@ class HaplousRuntime:
         self._intent = None
         self._feasibility = None
         self._recoveries_used = 0
+        self._recovery_episode_open_t = {}
         self._tracker.reset()
 
     # -- live supervised execution -------------------------------------------
@@ -210,6 +212,8 @@ class HaplousRuntime:
         last_source: Optional[float] = None
         rejected_streak = 0
         degraded_announced = False
+        recovery_episode: set[str] = set()
+        breached_codes: set[str] = set()
 
         try:
             first = session.observe()
@@ -271,15 +275,17 @@ class HaplousRuntime:
                         state_max_age_s=state_max_age_s,
                     )
                     if gap_s > state_max_age_s:
-                        if self._handle_breach(
+                        terminal, skip = self._handle_breach(
                             ("state_freshness", True),
                             policy,
                             behavior,
                             caps,
                             obs,
-                        ):
+                            recovery_episode,
+                        )
+                        if terminal:
                             return
-                        skip_command = True
+                        skip_command = skip
                     else:
                         skip_command = False
                 else:
@@ -299,35 +305,81 @@ class HaplousRuntime:
                 soft_breached = False
                 for constraint in constraints:
                     status = constraint.evaluate(obs)
+                    if status.breached:
+                        breached_codes.add(status.code)
+                    elif (
+                        constraint.code in recovery_episode
+                        and self._tracker.state is ExecutionState.RECOVERING
+                    ):
+                        # The recovered condition holds again: the recovery
+                        # episode succeeded, execution resumes.
+                        recovery_episode.discard(constraint.code)
+                        self._recovery_episode_open_t.pop(constraint.code, None)
+                        self._tracker.transition(ExecutionState.EXECUTING)
+                        self._evidence.append(
+                            "state_transition",
+                            t_s=obs.stamp.source_s,
+                            to="executing",
+                        )
                     if not status.breached:
                         continue
                     if status.hard:
-                        hard_breach = (status.code, True)
-                        self._evidence.append(
-                            "constraint_violation",
-                            t_s=obs.stamp.source_s,
-                            code=status.code,
-                            value=status.value,
-                            limit=status.limit,
-                            hard=True,
-                        )
-                        break
-                    soft_breached = True
-                    if self._tracker.state is not ExecutionState.CONSTRAINED:
-                        self._evidence.append(
-                            "constraint_violation",
-                            t_s=obs.stamp.source_s,
-                            code=status.code,
-                            value=status.value,
-                            limit=status.limit,
-                            hard=False,
-                        )
+                        if hard_breach is None:
+                            hard_breach = (status.code, True)
+                            self._evidence.append(
+                                "constraint_violation",
+                                t_s=obs.stamp.source_s,
+                                code=status.code,
+                                value=status.value,
+                                limit=status.limit,
+                                hard=True,
+                            )
+                    else:
+                        soft_breached = True
+                        if self._tracker.state is not ExecutionState.CONSTRAINED:
+                            self._evidence.append(
+                                "constraint_violation",
+                                t_s=obs.stamp.source_s,
+                                code=status.code,
+                                value=status.value,
+                                limit=status.limit,
+                                hard=False,
+                            )
+                # A failed recovery attempt is bounded: an episode that
+                # outlives its declared settle window aborts instead of
+                # continuing to violate.
+                if (
+                    policy is not None
+                    and policy.settle_s > 0.0
+                    and recovery_episode
+                ):
+                    for code in sorted(recovery_episode):
+                        open_t = self._recovery_episode_open_t.get(code)
+                        if open_t is None:
+                            continue
+                        if obs.stamp.source_s - open_t > policy.settle_s:
+                            self._machine.stop()
+                            self._tracker.transition(ExecutionState.ABORTED)
+                            self._evidence.append(
+                                "outcome",
+                                t_s=obs.stamp.source_s,
+                                result="ABORTED",
+                                reason="recovery_timeout",
+                                condition=code,
+                            )
+                            return
                 if hard_breach is not None:
-                    if self._handle_breach(
-                        hard_breach, policy, behavior, caps, obs
-                    ):
+                    terminal, skip = self._handle_breach(
+                        hard_breach,
+                        policy,
+                        behavior,
+                        caps,
+                        obs,
+                        recovery_episode,
+                    )
+                    if terminal:
                         return
-                    skip_command = True
+                    skip_command = skip
                 if soft_breached:
                     if self._tracker.state is ExecutionState.EXECUTING:
                         self._tracker.transition(ExecutionState.CONSTRAINED)
@@ -358,9 +410,16 @@ class HaplousRuntime:
 
                 # Declarative completion: observations only, never machine
                 # claims. Evaluated on the trailing window the condition
-                # declared.
-                if success.evaluate(
-                    window if window_span_s is None else list(window)
+                # declared. Completion is an action like any other: it can
+                # only be authorized from fresh state, and never while a
+                # recovery episode is still open (the execution resumes
+                # first and completes on a clean tick).
+                if (
+                    self._tracker.state is not ExecutionState.RECOVERING
+                    and obs.stamp.age_s <= state_max_age_s
+                    and success.evaluate(
+                        window if window_span_s is None else list(window)
+                    )
                 ):
                     self._machine.stop()
                     self._tracker.transition(ExecutionState.COMPLETE)
@@ -447,35 +506,50 @@ class HaplousRuntime:
         behavior: ExecutionBehavior,
         caps: MachineCapabilities,
         obs: MachineObservation,
-    ) -> bool:
-        """Handle one hard breach. Returns True when the execution reached a
-        terminal state; False when execution continues (authorized recovery
-        consumed this tick's decision)."""
+        recovery_episode: set[str],
+    ) -> tuple[bool, bool]:
+        """Handle one hard breach. Returns (terminal, skip_command).
+
+        Recovery is episode-based: the first breach of a condition opens a
+        recovery episode (one budgeted re-reference of the behavior) and
+        the runtime stays in RECOVERING while the condition persists,
+        letting the re-referenced behavior work the problem without
+        draining the action budget per tick. The episode closes when the
+        condition's constraint evaluates clean; a later breach of the same
+        condition opens a NEW episode and consumes budget again."""
         code, _hard = breach
-        if (
-            policy is not None
-            and code in policy.permitted_conditions
-            and self._recoveries_used < policy.max_recovery_actions
+        in_episode = code in recovery_episode
+        permitted = (
+            policy is not None and code in policy.permitted_conditions
+        )
+        if permitted and (
+            in_episode or self._recoveries_used < policy.max_recovery_actions
         ):
-            self._recoveries_used += 1
-            self._evidence.append(
-                "recovery_decision",
-                t_s=obs.stamp.source_s,
-                condition=code,
-                action=policy.action,
-                attempt=self._recoveries_used,
-            )
-            self._tracker.transition(ExecutionState.RECOVERING)
-            # The recovery action: re-reference the behavior from the live
-            # observation (never a blind replay), then resume execution.
-            behavior.begin(self._intent, caps, obs)
-            self._tracker.transition(ExecutionState.EXECUTING)
-            self._evidence.append(
-                "state_transition",
-                t_s=obs.stamp.source_s,
-                to="executing",
-            )
-            return False
+            if not in_episode:
+                recovery_episode.add(code)
+                self._recoveries_used += 1
+                self._recovery_episode_open_t[code] = obs.stamp.source_s
+                self._evidence.append(
+                    "recovery_decision",
+                    t_s=obs.stamp.source_s,
+                    condition=code,
+                    action=policy.action,
+                    attempt=self._recoveries_used,
+                )
+                if self._tracker.state is not ExecutionState.RECOVERING:
+                    self._tracker.transition(ExecutionState.RECOVERING)
+                    self._evidence.append(
+                        "state_transition",
+                        t_s=obs.stamp.source_s,
+                        to="recovering",
+                    )
+                # The recovery action: re-reference the behavior from the
+                # live observation (never a blind replay). Execution
+                # resumes next tick with commands flowing from the
+                # re-referenced behavior.
+                behavior.begin(self._intent, caps, obs)
+                return False, True
+            return False, code == "state_freshness"
         self._machine.stop()
         reason = f"hard_constraint_{code}"
         if (
@@ -489,7 +563,7 @@ class HaplousRuntime:
         self._evidence.append(
             "outcome", t_s=obs.stamp.source_s, result="ABORTED", reason=reason
         )
-        return True
+        return True, True
 
     def _finish_on_session_end(
         self, session: MachineSession, window: list[MachineObservation]

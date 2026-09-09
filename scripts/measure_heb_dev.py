@@ -11,11 +11,8 @@ import time
 from pathlib import Path
 
 from benchmarks.heb import HEB_VERSION
-from benchmarks.heb.insertion import (
-    BEHAVIOR_NAME,
-    insertion_condition_factory,
-    insertion_scenarios,
-)
+from benchmarks.heb.insertion import insertion_scenarios
+from benchmarks.heb.sliding import sliding_scenarios
 from benchmarks.heb.metrics import summarize
 from benchmarks.heb.runner import evaluate
 from benchmarks.heb.systems import BareSystem, HaplousSystem
@@ -25,13 +22,11 @@ RESULTS = ROOT / "results"
 
 
 def main() -> None:
-    scenarios = insertion_scenarios()
+    scenarios = insertion_scenarios() + sliding_scenarios()
     systems = [
-        HaplousSystem(BEHAVIOR_NAME, insertion_condition_factory),
-        BareSystem(BEHAVIOR_NAME, insertion_condition_factory),
-        BareSystem(
-            BEHAVIOR_NAME, insertion_condition_factory, evaluate_success=False
-        ),
+        HaplousSystem(),
+        BareSystem(),
+        BareSystem(evaluate_success=False),
     ]
     t0 = time.perf_counter()
     records = evaluate(scenarios, systems)
@@ -54,7 +49,7 @@ def main() -> None:
         )
     summary = {
         "heb_version": HEB_VERSION,
-        "task_family": "insertion",
+        "task_families": ["peg_insertion", "constrained_slide"],
         "n_scenarios": len(scenarios),
         "systems": {
             name: {
@@ -66,6 +61,7 @@ def main() -> None:
                 "refusal_precision": s.refusal_precision,
                 "refusal_recall": s.refusal_recall,
                 "hard_violation_trials": s.hard_violation_trials,
+                "recovery_success_rate": s.recovery_success_rate,
                 "completion_percentiles_s": s.completion_percentiles(),
             }
             for name, s in summaries.items()

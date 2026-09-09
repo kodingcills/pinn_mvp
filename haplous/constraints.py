@@ -55,6 +55,19 @@ def build_constraints(intent: ExecutionIntent) -> tuple[Constraint, ...]:
                     measure=lambda obs: abs(obs.force_z_n),
                 )
             )
+        elif req.kind is RequirementKind.MIN_PROCESS_FORCE_N:
+            # Breached when the measured magnitude falls BELOW the floor:
+            # the constraint model is one-sided (breach when measure >
+            # limit), so the contact-force floor is monitored as the
+            # negated magnitude against the negated limit.
+            constraints.append(
+                Constraint(
+                    code="process_force_floor",
+                    limit=-req.limit,
+                    hard=req.hard,
+                    measure=lambda obs: -abs(obs.force_z_n),
+                )
+            )
         elif req.kind is RequirementKind.MAX_TILT_DEG:
             constraints.append(
                 Constraint(

@@ -26,9 +26,16 @@ class Scenario:
     facet_count: int | None = None
     clearance_delta_m: float = 0.0
     plate_thickness_m: float | None = None
-    # initial state
+    peg_radius_m: float | None = None
+    # initial state (start_position_m overrides offset/bearing)
+    start_position_m: tuple[float, float, float] | None = None
     initial_offset_m: float = 0.0
     initial_bearing_rad: float = 0.0
+    # constrained-path task (Task B): slide from path_start to path_end
+    # while maintaining the declared contact-force band
+    path_start_m: tuple[float, float, float] | None = None
+    path_end_m: tuple[float, float, float] | None = None
+    min_force_n: float | None = None
     # hard requirements (None -> not stated)
     max_force_n: float | None = None
     max_tilt_deg: float | None = None
@@ -44,6 +51,17 @@ class Scenario:
     stale_windows_s: tuple[tuple[float, float, float], ...] = ()
     command_rejection_windows_s: tuple[tuple[float, float], ...] = ()
     fault_at_s: float | None = None
+    # benchmark-owned physical disturbances: (t_s, dv per machine dof),
+    # applied once each at the first supervision step at or after t_s.
+    disturbances: tuple[
+        tuple[float, tuple[float, float, float, float, float, float]], ...
+    ] = ()
+    # recovery-policy bound for one recovery attempt (seconds); 0 = bounded
+    # only by the execution horizon
+    recovery_settle_s: float = 0.0
+    # True when the scenario's disturbance is benchmark-designated as a
+    # recoverable disturbance (feeds the recovery-success metric).
+    recoverable: bool = False
     # semantics
     expected_disposition: str | None = None  # COMPLETE | ABORTED | REFUSED
     infeasible_request: bool = False
@@ -69,11 +87,13 @@ class SystemRun:
 class Realization:
     """One shared machine realization for a scenario: the machine (physics
     + measurement corruption + fault schedule), the task behavior factory
-    for the same realization, and the backend bundle the grader reads for
-    geometry truth. Systems treat bundle as opaque geometry input."""
+    for the same realization, the task's success-condition factory, and
+    the backend bundle the grader reads for geometry truth. Systems treat
+    bundle as opaque geometry input."""
 
     machine: Machine
     behavior_factory: object
+    condition_factory: object
     bundle: object
 
 

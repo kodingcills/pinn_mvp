@@ -12,6 +12,7 @@ from haplous.machine import MachineObservation
 
 class RequirementKind(Enum):
     MAX_PROCESS_FORCE_N = "max_process_force_n"
+    MIN_PROCESS_FORCE_N = "min_process_force_n"
     MAX_TILT_DEG = "max_tilt_deg"
     POSITION_TOLERANCE_M = "position_tolerance_m"
     STATE_MAX_AGE_S = "state_max_age_s"
@@ -48,11 +49,15 @@ class SuccessCondition:
 @dataclass(frozen=True)
 class RecoveryPolicy:
     """Recovery is not retry-by-default: it requires a permitted condition,
-    a bounded action budget, and a named action."""
+    a bounded action budget, and a named action. settle_s bounds one
+    recovery attempt: an open episode that outlives it aborts instead of
+    continuing to violate; 0 means the attempt is bounded only by the
+    execution horizon."""
 
     action: str
     permitted_conditions: frozenset[str]
     max_recovery_actions: int
+    settle_s: float = 0.0
 
 
 @dataclass(frozen=True)

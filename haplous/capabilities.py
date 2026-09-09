@@ -101,6 +101,32 @@ def negotiate(intent: ExecutionIntent, caps: MachineCapabilities) -> Feasibility
                             "be verified during execution",
                         )
                     )
+        elif req.kind is RequirementKind.MIN_PROCESS_FORCE_N:
+            if SensingChannel.FORCE_Z not in caps.sensing:
+                refusals.append(
+                    RefusalReason(
+                        "missing_force_measurement",
+                        "force floor required but no axial force sensing",
+                    )
+                )
+            elif req.limit > caps.max_sensed_force_n:
+                if req.hard:
+                    refusals.append(
+                        RefusalReason(
+                            "force_floor_unsensed",
+                            f"hard force floor {req.limit} N exceeds sensed "
+                            f"range {caps.max_sensed_force_n} N",
+                        )
+                    )
+                else:
+                    degradations.append(
+                        RefusalReason(
+                            "force_floor_unverified",
+                            f"soft force floor {req.limit} N exceeds sensed "
+                            f"range {caps.max_sensed_force_n} N; it cannot "
+                            "be verified during execution",
+                        )
+                    )
         elif req.kind is RequirementKind.MAX_TILT_DEG:
             if SensingChannel.TILT not in caps.sensing:
                 refusals.append(

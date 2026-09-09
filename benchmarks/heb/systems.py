@@ -23,12 +23,13 @@ from benchmarks.heb.protocol import Realization, Scenario, SystemRun
 
 def build_intent(
     scenario: Scenario,
-    behavior_name: str,
-    success_condition: SuccessCondition,
+    success_condition: SuccessCondition | None,
 ) -> ExecutionIntent:
     """Scenario requirements -> ExecutionIntent. Requirements stated as
     None are omitted. The success condition is task-family truth supplied
-    by the task layer, identical for every system."""
+    by the task registry, identical for every system. The initial-offset
+    requirement states the true commanded start distance so the runtime's
+    reach check stays meaningful for both task families."""
     requirements: list[Requirement] = []
     if scenario.max_force_n is not None:
         requirements.append(
@@ -36,6 +37,17 @@ def build_intent(
                 RequirementKind.MAX_PROCESS_FORCE_N,
                 hard=True,
                 limit=scenario.max_force_n,
+            )
+        )
+    if scenario.min_force_n is not None:
+        # Soft: the interaction floor cannot hold before contact is
+        # established; the runtime records the degradation, the task
+        # condition and the benchmark grading enforce the band.
+        requirements.append(
+            Requirement(
+                RequirementKind.MIN_PROCESS_FORCE_N,
+                hard=False,
+                limit=scenario.min_force_n,
             )
         )
     if scenario.max_tilt_deg is not None:
@@ -64,29 +76,35 @@ def build_intent(
                 RequirementKind.DEADLINE_S, hard=True, limit=scenario.deadline_s
             )
         )
-    requirements.append(
-        Requirement(
-            RequirementKind.INITIAL_OFFSET_M,
-            hard=True,
-            limit=scenario.initial_offset_m,
-        )
-    )
     recovery = None
     if scenario.recovery_permitted_conditions:
         recovery = RecoveryPolicy(
             action="re_reference",
             permitted_conditions=frozenset(scenario.recovery_permitted_conditions),
             max_recovery_actions=scenario.max_recovery_actions,
+            settle_s=scenario.recovery_settle_s,
         )
-    start = (
-        scenario.initial_offset_m * math.cos(scenario.initial_bearing_rad),
-        scenario.initial_offset_m * math.sin(scenario.initial_bearing_rad),
-        0.0,
+    if scenario.path_start_m is not None:
+        start = scenario.path_start_m
+        goal = scenario.path_end_m or (0.0, 0.0, 0.0)
+    else:
+        start = (
+            scenario.initial_offset_m * math.cos(scenario.initial_bearing_rad),
+            scenario.initial_offset_m * math.sin(scenario.initial_bearing_rad),
+            0.0,
+        )
+        goal = (0.0, 0.0, 0.0)
+    requirements.append(
+        Requirement(
+            RequirementKind.INITIAL_OFFSET_M,
+            hard=True,
+            limit=math.hypot(start[0], start[1]),
+        )
     )
     return ExecutionIntent(
-        behavior=behavior_name,
+        behavior=scenario.task_family,
         goal_description=f"HEB scenario {scenario.id}",
-        goal_position_m=(0.0, 0.0, 0.0),
+        goal_position_m=goal,
         start_position_m=start,
         requirements=tuple(requirements),
         success_condition=success_condition,
@@ -95,23 +113,19 @@ def build_intent(
 
 
 class HaplousSystem:
-    """B2: the task behavior executed behind the Haplous runtime."""
+    """B2: the task behavior executed behind the Haplous runtime. Task
+    specifics (behavior factory, condition factory) come from the
+    realization's task-registry entry."""
 
-    def __init__(
-        self,
-        behavior_name: str,
-        condition_factory,
-    ) -> None:
+    def __init__(self) -> None:
         self.name = "haplous_mediated"
-        self._behavior_name = behavior_name
-        self._condition_factory = condition_factory
 
     def run(self, realization: Realization, scenario: Scenario) -> SystemRun:
-        condition = self._condition_factory(scenario, realization.bundle)
-        intent = build_intent(scenario, self._behavior_name, condition)
+        condition = realization.condition_factory(scenario, realization.bundle)
+        intent = build_intent(scenario, condition)
         runtime = HaplousRuntime(
             realization.machine,
-            behaviors={self._behavior_name: realization.behavior_factory},
+            behaviors={scenario.task_family: realization.behavior_factory},
         )
         t0 = time.perf_counter()
         feasibility = runtime.submit(intent)
@@ -142,26 +156,18 @@ class BareSystem:
     semantics (no negotiation, no constraint monitoring, no recovery
     authorization)."""
 
-    def __init__(
-        self,
-        behavior_name: str,
-        condition_factory,
-        *,
-        evaluate_success: bool = True,
-    ) -> None:
+    def __init__(self, *, evaluate_success: bool = True) -> None:
         self.name = "bare_behavior" if evaluate_success else "direct_minimal"
-        self._behavior_name = behavior_name
-        self._condition_factory = condition_factory
         self._evaluate_success = evaluate_success
 
     def run(self, realization: Realization, scenario: Scenario) -> SystemRun:
         machine = realization.machine
         condition = (
-            self._condition_factory(scenario, realization.bundle)
+            realization.condition_factory(scenario, realization.bundle)
             if self._evaluate_success
             else None
         )
-        intent = build_intent(scenario, self._behavior_name, condition)
+        intent = build_intent(scenario, condition)
         t0 = time.perf_counter()
         caps = machine.capabilities()
         try:

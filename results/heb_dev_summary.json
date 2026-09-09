@@ -1,49 +1,55 @@
 {
  "heb_version": "0.1.0",
- "task_family": "insertion",
- "n_scenarios": 18,
+ "task_families": [
+  "peg_insertion",
+  "constrained_slide"
+ ],
+ "n_scenarios": 27,
  "systems": {
   "haplous_mediated": {
-   "trials": 18,
-   "coverage": 0.7777777777777778,
-   "bounded_success_rate_among_accepted": 0.6428571428571429,
-   "task_successes": 9,
-   "refusals": 4,
+   "trials": 27,
+   "coverage": 0.8148148148148148,
+   "bounded_success_rate_among_accepted": 0.5,
+   "task_successes": 12,
+   "refusals": 5,
    "refusal_precision": 1.0,
    "refusal_recall": 1.0,
-   "hard_violation_trials": 0,
+   "hard_violation_trials": 1,
+   "recovery_success_rate": 1.0,
    "completion_percentiles_s": {
-    "p50": 1.665999999999872,
-    "p90": 2.0389999999998483,
-    "p95": 2.6235000000000435,
-    "max": 2.6235000000000435
+    "p50": 1.6814999999998703,
+    "p90": 2.6235000000000435,
+    "p95": 2.745500000000084,
+    "max": 2.745500000000084
    }
   },
   "bare_behavior": {
-   "trials": 18,
+   "trials": 27,
    "coverage": 1.0,
-   "bounded_success_rate_among_accepted": 0.7222222222222222,
-   "task_successes": 15,
+   "bounded_success_rate_among_accepted": 0.5925925925925926,
+   "task_successes": 22,
    "refusals": 0,
    "refusal_precision": null,
    "refusal_recall": 0.0,
-   "hard_violation_trials": 2,
+   "hard_violation_trials": 6,
+   "recovery_success_rate": 1.0,
    "completion_percentiles_s": {
-    "p50": 1.6239999999998767,
-    "p90": 2.0389999999998483,
-    "p95": 2.0389999999998483,
-    "max": 2.6235000000000435
+    "p50": 1.665999999999872,
+    "p90": 2.745500000000084,
+    "p95": 2.745500000000084,
+    "max": 6.108499999999334
    }
   },
   "direct_minimal": {
-   "trials": 18,
+   "trials": 27,
    "coverage": 1.0,
-   "bounded_success_rate_among_accepted": 0.6111111111111112,
-   "task_successes": 14,
+   "bounded_success_rate_among_accepted": 0.5185185185185185,
+   "task_successes": 21,
    "refusals": 0,
    "refusal_precision": null,
    "refusal_recall": 0.0,
-   "hard_violation_trials": 3,
+   "hard_violation_trials": 7,
+   "recovery_success_rate": 1.0,
    "completion_percentiles_s": {
     "p50": 16.299500000007363,
     "p90": 16.299500000007363,
@@ -53,9 +59,9 @@
   }
  },
  "semantic_conformance": {
-  "haplous_mediated": "18/18",
-  "bare_behavior": "11/18",
-  "direct_minimal": "5/18"
+  "haplous_mediated": "27/27",
+  "bare_behavior": "16/27",
+  "direct_minimal": "10/27"
  },
- "wall_s": 114.80919675000041
+ "wall_s": 157.1975920420009
 }

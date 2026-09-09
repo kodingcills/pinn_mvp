@@ -17,7 +17,9 @@ def test_heb_file_set_is_expected():
         "mujoco_backend.py",
         "protocol.py",
         "runner.py",
+        "sliding.py",
         "systems.py",
+        "tasks.py",
     }
 
 

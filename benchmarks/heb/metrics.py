@@ -18,26 +18,37 @@ from benchmarks.heb.protocol import Scenario, SystemRun
 PEN_ALLOW_M = 12e-6
 SEAT_DEPTH_MARGIN_M = 140e-6
 SEATED_Z_SPAN_M = 10e-6
+# A declared interaction floor is graded as a sustained condition: below
+# floor for longer than this grace (counted from the first establishment
+# of contact) is a hard violation; transients during contact re-acquisition
+# after a disturbance are not.
+FLOOR_GRACE_S = 0.05
 
 
 def grade_requirements(
     scenario: Scenario, observations: tuple[MachineObservation, ...]
 ) -> tuple[dict, ...]:
-    """Benchmark-owned hard-requirement check over the observed stream."""
+    """Benchmark-owned hard-requirement check over the observed stream.
+    The max-force ceiling is per-observation; the declared force floor is
+    graded as a sustained condition (see FLOOR_GRACE_S)."""
     if not observations:
         return ()
     violations: list[dict] = []
     deadline = scenario.deadline_s
+    floor_streak_start: float | None = None
+    contact_established = scenario.min_force_n is None
     for obs in observations:
+        t = obs.stamp.source_s
+        fz = abs(obs.force_z_n)
         if (
             scenario.max_force_n is not None
-            and abs(obs.force_z_n) > scenario.max_force_n
+            and fz > scenario.max_force_n
         ):
             violations.append(
                 {
                     "code": "process_force",
-                    "t_s": obs.stamp.source_s,
-                    "value": abs(obs.force_z_n),
+                    "t_s": t,
+                    "value": fz,
                     "limit": scenario.max_force_n,
                 }
             )
@@ -45,7 +56,7 @@ def grade_requirements(
             violations.append(
                 {
                     "code": "tilt",
-                    "t_s": obs.stamp.source_s,
+                    "t_s": t,
                     "value": obs.tilt_deg,
                     "limit": scenario.max_tilt_deg,
                 }
@@ -54,11 +65,29 @@ def grade_requirements(
             violations.append(
                 {
                     "code": "state_freshness",
-                    "t_s": obs.stamp.source_s,
+                    "t_s": t,
                     "value": obs.stamp.age_s,
                     "limit": scenario.state_max_age_s,
                 }
             )
+        if scenario.min_force_n is not None:
+            if not contact_established:
+                if fz >= scenario.min_force_n:
+                    contact_established = True
+            elif fz < scenario.min_force_n:
+                if floor_streak_start is None:
+                    floor_streak_start = t
+                elif t - floor_streak_start > FLOOR_GRACE_S:
+                    violations.append(
+                        {
+                            "code": "process_force_floor",
+                            "t_s": t,
+                            "value": fz,
+                            "limit": scenario.min_force_n,
+                        }
+                    )
+            else:
+                floor_streak_start = None
     if deadline is not None and observations[-1].stamp.source_s > deadline:
         violations.append(
             {
@@ -124,12 +153,69 @@ def grade_insertion_task(
     return ok, metrics
 
 
+def grade_slide_task(
+    scenario: Scenario, bundle, observations: tuple[MachineObservation, ...]
+) -> tuple[bool, dict]:
+    """Constrained-contact task truth from observation geometry: the part
+    is at the path end (within tolerance), stayed there through the
+    persistence window, and the declared force band held over that window.
+    This never reads Haplous state or its success decision."""
+    empty = {
+        "peak_abs_force_n": None,
+        "max_tilt_deg": None,
+        "seating_time_s": None,
+        "endpoint_lateral_m": None,
+        "min_post_contact_force_n": None,
+    }
+    if not observations or scenario.path_end_m is None:
+        return False, empty
+    end = scenario.path_end_m[:2]
+    tolerance = scenario.position_tolerance_m or 6e-4
+    window = [
+        o
+        for o in observations
+        if o.stamp.source_s > observations[-1].stamp.source_s - scenario.persistence_s
+    ]
+    last = observations[-1]
+    lateral = math.hypot(last.pose_m[0] - end[0], last.pose_m[1] - end[1])
+    zs = [o.pose_m[2] for o in window]
+    fzs = [abs(o.force_z_n) for o in window]
+    ok = (
+        lateral <= tolerance
+        and max(zs) - min(zs) <= 30e-6
+    )
+    if scenario.min_force_n is not None:
+        ok = ok and min(fzs) >= 0.5 * scenario.min_force_n
+    if scenario.max_force_n is not None:
+        ok = ok and max(fzs) <= scenario.max_force_n
+    min_floor = scenario.min_force_n or 0.0
+    post_contact = [
+        f
+        for f in (abs(o.force_z_n) for o in observations)
+        if f >= min_floor
+    ]
+    metrics = {
+        "endpoint_lateral_m": lateral,
+        "seating_time_s": last.stamp.source_s,
+        "peak_abs_force_n": max(abs(o.force_z_n) for o in observations),
+        "max_tilt_deg": max(o.tilt_deg for o in observations),
+        "min_post_contact_force_n": min(post_contact) if post_contact else 0.0,
+    }
+    return ok, metrics
+
+
 def grade_run(scenario: Scenario, bundle, run: SystemRun, task_grader=None):
     """Returns (graded_disposition, task_success, bounded_success,
     hard_violations, task_metrics). REFUSED trials are graded as refusals;
-    everything else is graded from the observation stream."""
+    everything else is graded from the observation stream. The task
+    grader dispatches on the scenario's declared shape (a path defines the
+    constrained-contact task), not on task-family names."""
     if task_grader is None:
-        task_grader = grade_insertion_task
+        task_grader = (
+            grade_slide_task
+            if scenario.path_end_m is not None
+            else grade_insertion_task
+        )
     if run.disposition == "REFUSED":
         return "REFUSED", False, False, (), {"system": run.system}
     violations = grade_requirements(scenario, run.observations)
@@ -155,6 +241,8 @@ class SystemSummary:
     correct_refusals: int
     infeasible_presented: int
     hard_violation_trials: int
+    recoverable_designated: int
+    recoveries_successful: int
     completion_times_s: tuple[float, ...]
 
     @property
@@ -179,6 +267,17 @@ class SystemSummary:
             else None
         )
 
+    @property
+    def recovery_success_rate(self) -> float | None:
+        """Successful recoveries / benchmark-designated recoverable
+        disturbances. A designated disturbance counts as recovered for a
+        system iff the task completed with bounded success on it."""
+        return (
+            self.recoveries_successful / self.recoverable_designated
+            if self.recoverable_designated
+            else None
+        )
+
     def completion_percentiles(self) -> dict:
         s = sorted(self.completion_times_s)
         if not s:
@@ -196,6 +295,7 @@ def summarize(scenarios, records) -> dict:
     refusals from execution: bounded success is scored only over accepted
     (non-refused) requests, so refusing everything cannot score well."""
     infeasible_ids = {s.id for s in scenarios if s.infeasible_request}
+    recoverable_ids = {s.id for s in scenarios if s.recoverable}
     by_system: dict[str, list] = {}
     for record in records:
         by_system.setdefault(record.system, []).append(record)
@@ -225,6 +325,14 @@ def summarize(scenarios, records) -> dict:
             ),
             hard_violation_trials=sum(
                 1 for r in accepted if r.hard_violations and r.task_success
+            ),
+            recoverable_designated=len(recoverable_ids),
+            recoveries_successful=sum(
+                1
+                for r in accepted
+                if r.scenario_id in recoverable_ids
+                and r.bounded_success
+                and r.task_success
             ),
             completion_times_s=completion_times,
         )

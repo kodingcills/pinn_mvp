@@ -25,6 +25,7 @@ from pegsim.control import (
     assert_gains_stable,
     compute_and_apply_qfrc,
     peg_contact_force_world,
+    peg_dof_ids,
 )
 from pegsim.rollout import (
     EpisodeConfig,
@@ -55,6 +56,10 @@ class MuJoCoMachineConfig:
     command_rejection_windows_s: tuple[tuple[float, float], ...] = ()
     # Modelled machine fault time: actuation dies at this sim time.
     fault_at_s: float | None = None
+    # Benchmark-owned physical disturbances: (t_s, dv_per_peg_dof). At the
+    # first step at or after t_s the peg's joint velocities jump by dv —
+    # a modelled impulsive disturbance (a bump/jolt), not a control input.
+    disturbances: tuple[tuple[float, tuple[float, float, float, float, float, float]], ...] = ()
     expected_duration_s: float = 4.0
     max_sensed_force_n: float = 100.0
     max_sensed_tilt_deg: float = 45.0
@@ -111,7 +116,7 @@ class MuJoCoMachine:
             initial_offset_r=offset_r,
             initial_offset_theta=offset_theta,
             max_seconds=min(horizon_s, b.max_seconds),
-            spiral_spec=b.spiral,
+            spiral_spec=b.spiral if b.use_spiral else None,
             control_decimation=b.control_decimation,
             control_delay_steps=b.control_delay_steps,
         )
@@ -134,7 +139,7 @@ class MuJoCoMachine:
             position_resolution_m=c.position_resolution_m,
             state_period_s=b.solver.timestep * c.observation_decimation,
             state_max_age_s=c.state_max_age_s,
-            max_initial_offset_m=b.spiral.r_spiral + b.r_cap_dyn,
+            max_initial_offset_m=b.max_initial_offset_m,
             execution_horizon_s=b.max_seconds,
             expected_duration_s=c.expected_duration_s,
             supports_stop=True,
@@ -228,6 +233,7 @@ class _MuJoCoSession:
         self._ended = False
         self._fault: Optional[str] = None
         self._observations: list[MachineObservation] = []
+        self._applied_disturbances: set[float] = set()
 
     # -- session protocol ---------------------------------------------------
 
@@ -288,6 +294,10 @@ class _MuJoCoSession:
             self._data.qfrc_applied[:] = 0.0
             self._ended = True
             return
+        for t_s, dv in self._config.disturbances:
+            if t_s not in self._applied_disturbances and float(self._data.time) >= t_s:
+                self._applied_disturbances.add(t_s)
+                self._data.qvel[peg_dof_ids(self._model)] += np.array(dv)
         decim = self._config.observation_decimation
         for sub in range(decim):
             if sub == 0 and self._pending is not None:

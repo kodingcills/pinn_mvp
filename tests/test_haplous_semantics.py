@@ -458,14 +458,71 @@ def test_permitted_recovery_rereferences_and_completes():
     assert "constraint_violation" in kinds
 
 
-def test_recovery_budget_exhaustion_aborts():
-    script = stream([(0.0, 0.0, -0.001, 30.0, 0.0)] * 20)
-    machine = ScriptedMachine(observation=obs(0.0), script=script)
-    runtime = runtime_over(machine)
+def test_recovery_timeout_aborts_failed_recovery():
+    """A recovery episode that outlives its declared settle window aborts
+    with recovery_timeout instead of continuing to violate."""
+    from haplous.intent import SuccessCondition as SC
+
+    machine = ScriptedMachine(
+        observation=obs(0.0),
+        script=stream([(0.0, 0.0, -0.001, 30.0, 0.0)] * 20),
+    )
+    runtime = runtime_over(
+        machine,
+        recovery_policy=RecoveryPolicy(
+            action="retry_motion",
+            permitted_conditions=frozenset({"process_force"}),
+            max_recovery_actions=1,
+            settle_s=0.05,
+        ),
+        success_condition=SC(
+            "unreachable", lambda observations: False
+        ),
+    )
     evidence = runtime.execute()
     assert runtime.state is ExecutionState.ABORTED
-    assert len(machine.open_session_calls) == 1
-    assert outcome_payload(evidence)["reason"] == "recovery_budget_exhausted"
+    payload = outcome_payload(evidence)
+    assert payload["reason"] == "recovery_timeout"
+    assert payload["condition"] == "process_force"
+    # one budgeted action for the whole episode, not one per tick
+    decisions = [
+        e for e in evidence.events if e.kind == "recovery_decision"
+    ]
+    assert len(decisions) == 1
+
+
+def test_recovery_second_episode_exhausts_budget():
+    """A cleared-and-rebreached condition opens a NEW recovery episode;
+    with the budget spent, that episode aborts with
+    recovery_budget_exhausted."""
+    from haplous.intent import SuccessCondition as SC
+
+    script = stream([(0.0, 0.0, -0.001, 30.0, 0.0)] * 2)
+    script += stream([(0.0, 0.0, -0.010, 15.0, 0.0)] * 3, period=PERIOD)[2:]
+    script += [
+        obs(0.025, fz=30.0),
+        obs(0.030, fz=30.0),
+    ]
+    machine = ScriptedMachine(observation=obs(0.0), script=script)
+    runtime = runtime_over(
+        machine,
+        recovery_policy=RecoveryPolicy(
+            action="retry_motion",
+            permitted_conditions=frozenset({"process_force"}),
+            max_recovery_actions=1,
+        ),
+        success_condition=SC(
+            "unreachable", lambda observations: False
+        ),
+    )
+    evidence = runtime.execute()
+    assert runtime.state is ExecutionState.ABORTED
+    payload = outcome_payload(evidence)
+    assert payload["reason"] == "recovery_budget_exhausted"
+    decisions = [
+        e for e in evidence.events if e.kind == "recovery_decision"
+    ]
+    assert len(decisions) == 1
 
 
 def test_unpermitted_condition_does_not_recover():
