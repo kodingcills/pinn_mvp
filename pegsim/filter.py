@@ -263,12 +263,20 @@ class StateFilter:
         hole_estimate_plus_xy_m: ArrayLike,
         hole_estimate_minus_xy_m: ArrayLike,
         bearing_rad: float,
+        pair_measurement_covariance_m2: ArrayLike | None = None,
     ) -> FilterUpdateRecord:
         """Predict twice, then condition once on an antipodal probe pair.
 
         The first process step precedes the plus probe and the second lies
         between the plus and minus probes. The observations are conditioned in
         one four-row batch; an incomplete pair must use :meth:`update`.
+
+        ``pair_measurement_covariance_m2`` is the optional full 4x4
+        measurement covariance for this pair, overriding the default
+        ``block_diag(R, R)``. The default encodes the F1a independent-side
+        assumption, made because no side cross-correlation had been
+        measured; N5 measured a strong anticorrelation, so evidence-backed
+        callers supply the measured covariance instead.
         """
 
         plus_m = _finite_vector(
@@ -288,9 +296,21 @@ class StateFilter:
             self._penetration_m * direction,
         ))
         z_corrected_m = np.concatenate((plus_m, minus_m)) - known_bias_m
-        pair_measurement_covariance_m2 = np.zeros((4, 4), dtype=float)
-        pair_measurement_covariance_m2[:2, :2] = self._r
-        pair_measurement_covariance_m2[2:, 2:] = self._r
+        if pair_measurement_covariance_m2 is None:
+            pair_covariance = np.zeros((4, 4), dtype=float)
+            pair_covariance[:2, :2] = self._r
+            pair_covariance[2:, 2:] = self._r
+        else:
+            pair_covariance = _finite_vector(
+                pair_measurement_covariance_m2,
+                shape=(4, 4),
+                name="pair_measurement_covariance_m2",
+            )
+            if np.min(np.linalg.eigvalsh(pair_covariance)) <= 0.0:
+                raise ValueError(
+                    "the supplied pair measurement covariance is not "
+                    "positive-definite"
+                )
         fixture_reinitialization_m = (
             z_corrected_m[:2] + z_corrected_m[2:]
         ) / PAIR_PROBE_COUNT
@@ -298,7 +318,7 @@ class StateFilter:
         return self._conditionally_update(
             z_corrected_m=z_corrected_m,
             h_matrix=h_matrix,
-            measurement_covariance_m2=pair_measurement_covariance_m2,
+            measurement_covariance_m2=pair_covariance,
             bearing_rad=float(bearing_rad),
             process_step_count=PAIR_PROBE_COUNT,
             fixture_reinitialization_m=fixture_reinitialization_m,
