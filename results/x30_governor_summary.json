@@ -1,0 +1,203 @@
+{
+  "campaign": "X30",
+  "cells": {
+    "x30_baseline": {
+      "g0_fixed": {
+        "bounded_success_rate": 1.0,
+        "bounded_successes": 4,
+        "completion_p50_s": 1.9299999999998902,
+        "completion_p95_s": 2.665625000000057,
+        "mean_contact_force_std_n": 0.3718801486932664,
+        "mean_force_integral_n_s": 0.4508488943009629,
+        "peak_abs_force_n": 2.8980089903226385,
+        "task_success_rate": 1.0,
+        "task_successes": 4,
+        "trials": 4
+      },
+      "g1_configuration": {
+        "force_limits_n": {
+          "constrained_slide": 2.0,
+          "peg_insertion": 25.0
+        },
+        "parameters": {
+          "activation_fraction": 0.8,
+          "minimum_stiffness_scale": 0.25,
+          "window_samples": 20
+        }
+      },
+      "g1_force_governor": {
+        "bounded_success_rate": 0.75,
+        "bounded_successes": 3,
+        "completion_p50_s": 1.6469999999998741,
+        "completion_p95_s": 2.1563999999999033,
+        "mean_contact_force_std_n": 0.3632336508359859,
+        "mean_force_integral_n_s": 1.1148595948142528,
+        "peak_abs_force_n": 2.8980089903226385,
+        "task_success_rate": 0.75,
+        "task_successes": 3,
+        "trials": 4
+      }
+    },
+    "x30_dropout": {
+      "g0_fixed": {
+        "bounded_success_rate": 0.3333333333333333,
+        "bounded_successes": 2,
+        "completion_p50_s": 1.6734999999998712,
+        "completion_p95_s": 1.676199999999871,
+        "mean_contact_force_std_n": 0.41439951281248716,
+        "mean_force_integral_n_s": 0.23502980621344616,
+        "peak_abs_force_n": 2.396978221484315,
+        "task_success_rate": 0.3333333333333333,
+        "task_successes": 2,
+        "trials": 6
+      },
+      "g1_configuration": {
+        "force_limits_n": {
+          "constrained_slide": 2.0,
+          "peg_insertion": 25.0
+        },
+        "parameters": {
+          "activation_fraction": 0.8,
+          "minimum_stiffness_scale": 0.25,
+          "window_samples": 20
+        }
+      },
+      "g1_force_governor": {
+        "bounded_success_rate": 0.3333333333333333,
+        "bounded_successes": 2,
+        "completion_p50_s": 1.6734999999998712,
+        "completion_p95_s": 1.676199999999871,
+        "mean_contact_force_std_n": 0.41439951281248716,
+        "mean_force_integral_n_s": 0.23502980621344616,
+        "peak_abs_force_n": 2.396978221484315,
+        "task_success_rate": 0.3333333333333333,
+        "task_successes": 2,
+        "trials": 6
+      }
+    },
+    "x30_slide_kick": {
+      "g0_fixed": {
+        "bounded_success_rate": 0.5,
+        "bounded_successes": 3,
+        "completion_p50_s": 1.9884999999998365,
+        "completion_p95_s": 1.9893999999998364,
+        "mean_contact_force_std_n": 0.04275724561729402,
+        "mean_force_integral_n_s": 0.20064826542341127,
+        "peak_abs_force_n": 1.7766943612189081,
+        "task_success_rate": 0.5,
+        "task_successes": 3,
+        "trials": 6
+      },
+      "g1_configuration": {
+        "force_limits_n": {
+          "constrained_slide": 2.0,
+          "peg_insertion": 25.0
+        },
+        "parameters": {
+          "activation_fraction": 0.8,
+          "minimum_stiffness_scale": 0.25,
+          "window_samples": 20
+        }
+      },
+      "g1_force_governor": {
+        "bounded_success_rate": 0.5,
+        "bounded_successes": 3,
+        "completion_p50_s": 1.9894999999998364,
+        "completion_p95_s": 4.955899999999795,
+        "mean_contact_force_std_n": 0.039714396628316516,
+        "mean_force_integral_n_s": 0.30775380597644403,
+        "peak_abs_force_n": 1.7766943612189081,
+        "task_success_rate": 0.5,
+        "task_successes": 3,
+        "trials": 6
+      }
+    },
+    "x30_stale": {
+      "g0_fixed": {
+        "bounded_success_rate": 0.3333333333333333,
+        "bounded_successes": 2,
+        "completion_p50_s": 1.665999999999872,
+        "completion_p95_s": 1.665999999999872,
+        "mean_contact_force_std_n": 0.40381889050895503,
+        "mean_force_integral_n_s": 0.258812147793034,
+        "peak_abs_force_n": 2.3969782214843125,
+        "task_success_rate": 0.3333333333333333,
+        "task_successes": 2,
+        "trials": 6
+      },
+      "g1_configuration": {
+        "force_limits_n": {
+          "constrained_slide": 2.0,
+          "peg_insertion": 25.0
+        },
+        "parameters": {
+          "activation_fraction": 0.8,
+          "minimum_stiffness_scale": 0.25,
+          "window_samples": 20
+        }
+      },
+      "g1_force_governor": {
+        "bounded_success_rate": 0.3333333333333333,
+        "bounded_successes": 2,
+        "completion_p50_s": 1.665999999999872,
+        "completion_p95_s": 1.665999999999872,
+        "mean_contact_force_std_n": 0.40381889050895503,
+        "mean_force_integral_n_s": 0.258812147793034,
+        "peak_abs_force_n": 2.3969782214843125,
+        "task_success_rate": 0.3333333333333333,
+        "task_successes": 2,
+        "trials": 6
+      }
+    }
+  },
+  "force_limits_n": {
+    "constrained_slide": 2.0,
+    "peg_insertion": 25.0
+  },
+  "g1_parameters": {
+    "activation_fraction": 0.8,
+    "minimum_stiffness_scale": 0.25,
+    "window_samples": 20
+  },
+  "hypothesis": "G01: G1 enlarges bounded success without unacceptable task-success cost",
+  "n_scenarios": 22,
+  "n_trials": 44,
+  "pairing": "same HEB scenarios, seeds, behavior factories, and machine realization",
+  "promotion_candidate": false,
+  "promotion_rule": "more bounded successes and no loss of task successes versus G0",
+  "provenance": {
+    "config_sha256": "e12d8252029d8654944fa277eeabe1ceb902fba93e6f8b0bb0729525f5f7fd60",
+    "haplous_version": "0.5.0",
+    "heb_version": "0.2.0",
+    "rows_sha256": "7298e8596fdf3f108f817298e189b45253fa9bcbb609b727f5216f352428123e",
+    "seed": 30031,
+    "system_commit": "f2ea53261c5617368ca87e482f2f33e6d8d8d31e"
+  },
+  "totals": {
+    "g0_fixed": {
+      "bounded_success_rate": 0.5,
+      "bounded_successes": 11,
+      "completion_p50_s": 1.6764999999998709,
+      "completion_p95_s": 2.479249999999995,
+      "mean_contact_force_std_n": 0.30242611310934014,
+      "mean_force_integral_n_s": 0.27137894971741827,
+      "peak_abs_force_n": 2.8980089903226385,
+      "task_success_rate": 0.5,
+      "task_successes": 11,
+      "trials": 22
+    },
+    "g1_force_governor": {
+      "bounded_success_rate": 0.45454545454545453,
+      "bounded_successes": 10,
+      "completion_p50_s": 1.6734999999998712,
+      "completion_p95_s": 3.902874999999839,
+      "mean_contact_force_std_n": 0.3000241546837498,
+      "mean_force_integral_n_s": 0.4213187699615707,
+      "peak_abs_force_n": 2.8980089903226385,
+      "task_success_rate": 0.45454545454545453,
+      "task_successes": 10,
+      "trials": 22
+    }
+  },
+  "wall_s": 20.361755540994636
+}
