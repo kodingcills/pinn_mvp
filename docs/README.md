@@ -6,6 +6,10 @@ explain how that state was reached.
 
 ## Current engineering reports
 
+- [R-series freeze](research/R_SERIES_FREEZE.md) — the frozen pre-runtime
+  research lineage: R01-R06 conclusions, refuted beliefs, known simulator
+  limitations, migration classification, and reproduction commands. The
+  clean Haplous runtime starts from the `research-rseries-complete` tag.
 - [F1 state filter report](F1_STATE_FILTER_REPORT.md) — F1a filter core,
   synthetic consistency evidence, and the falsified clearance-step
   discrimination requirement; F1b/F1c are stopped pending a process-model

@@ -285,7 +285,31 @@ physics-shaped symptom that cost multiple rounds of wrong theorizing.
   sessions converge to 24 nm with NIS O(1), and a 3 µm TCP-bias session
   demonstrates the confidently-wrong condition (NEES 226–407, 2/6 pairs
   gated) on real physics. See `docs/F1C_PROBE_SESSION_REPORT.md`. The F1a
-  process priors remain placeholders. R05/R06 are not started.
+  process priors remain placeholders.
+- **R05 (execution value of probing/filtering) is CLOSED: INCONCLUSIVE
+  under the preregistered K6 waiver; no material execution value
+  demonstrated.** Locked design `.opencode/haplous/state/locked-tests/R05-v3.yaml`
+  (commits `64fe02c`→`777ae40`), 20-scenario dev envelope + 80-scenario
+  paired held-out evaluation, all intent-to-treat. Primary table: n10=0,
+  n01=0, n11=70, n00=10; delta_hat=0, exact McNemar p=1.0. Mixed ceiling
+  (strata 0-3: both arms 16/16) and floor (stratum 4: both 6/16). The
+  Haplous treatment (1 antipodal probe pair + N5 covariance/bias + filter +
+  recentered drop) produced guided execution in 1/80 scenarios — from a
+  confidently-wrong estimate (h_err 0.236 mm, NEES 2.05e6) — and ran the
+  bit-identical baseline fallback in 79/80; median probe overhead +17.9 s
+  for zero discordance. Preregistered K1 confirmed (complete-pair
+  feasibility 0% for |e|>1.118 mm: the 1 mm probe cannot reach the only
+  stratum with failures); K2 confirmed (probe-feasible strata saturate);
+  K5 directionally confirmed. Adjudication, the red-team Rule-Zero
+  objection, and corrected NEES denominators: `results/r05_adjudication.json`.
+- **R06 (probing necessity) is RETIRED.** No surviving Haplous execution
+  advantage exists to isolate; both independent reviewers recommend
+  retirement. Reconsideration requires a newly preregistered probe geometry
+  or a corrected off-center observation model.
+- **Research lineage FROZEN** at tag `research-rseries-complete`:
+  `docs/research/R_SERIES_FREEZE.md` (R01-R06 conclusions, refuted beliefs,
+  migration classification, reproduction commands). The clean Haplous
+  runtime (Phase III) starts from this tag.
 - **R04 (coupled sampled-loop instability) is RESOLVED; the ~135 Hz
   rotational-mode explanation is REFUTED.** `pegsim/dynamics.py` (commit
   `ff48f8b`) now performs the full `mj_fullM` eigenvalue decomposition at

@@ -1,0 +1,62 @@
+{
+  "experiment": "R05-v3",
+  "locked_design": ".opencode/haplous/state/locked-tests/R05-v3.yaml",
+  "locked_design_sha256": "945bea748201d7a7c1cd0de5736be5378cba0723e2510202c6343f62a374cf54",
+  "freeze_repo_head": "abedb9ba19c4186fa994488e6ee402fa3b544e5f",
+  "holdout_commit": "337376b",
+  "adjudicated_at": "2026-09-09",
+
+  "preregistered_label": "INCONCLUSIVE",
+  "primary_table": {
+    "n": 80,
+    "n10_haplous_only": 0,
+    "n01_baseline_only": 0,
+    "n11_both": 70,
+    "n00_neither": 10,
+    "delta_hat": 0.0,
+    "p_haplous_superior": 1.0,
+    "p_baseline_superior": 1.0
+  },
+  "inconclusive_cause": "mixed ceiling and floor (strata 0-3: both arms 64/64 concordant successes; stratum 4: 6 concordant successes + 10 concordant failures; zero discordant pairs)",
+
+  "adjudication_disagreement_and_resolution": {
+    "evidence_reviewer": "AGREE with INCONCLUSIVE; all twelve invalid-experiment conditions PASS when the preregistered K6 shared-infrastructure caveat is applied as the lock directs; RETIRE_R06; high confidence.",
+    "red_team": "RESULT_ATTACKED: the unqualified Rule Zero clause ('any treatment decision consumes simulator truth') fires at the procedure level because Haplous-only probe episodes receive extra exposure to the K6 truth-triggered capture event (61/70 completed probe sides crossed it; a side of the single accepted pair was oracle-captured); formally INVALID under the literal clause, INCONCLUSIVE only conditional on the K6 waiver.",
+    "resolution": "The lock contains both an unqualified invalidity clause and an explicit preregistered K6 caveat that declares the shared capture event internally fair with repair deferred to the next lineage; this contradiction is recorded as a preregistration defect. The experiment is recorded as INCONCLUSIVE UNDER THE PREREGISTERED K6 WAIVER, with the red team objection preserved verbatim in this file. Both readings terminate the probing question identically for campaign purposes: no material execution value was demonstrated, and R06 is retired. The campaign does not pool, rerun, or redesign on this benchmark (anti-thrash rule).",
+    "decisive_facts_both_reviewers_agree_on": [
+      "All 79 fallback production traces are bit-identical to their paired baseline traces (treatment had zero effect in 79/80 scenarios).",
+      "Both arms reach the K6 capture threshold in 69/80 production traces; production-side K6 exposure is arm-symmetric.",
+      "The single guided scenario (s01-r13) succeeded under BOTH arms, from a confidently-wrong estimate (h_err 0.2358 mm, posterior sigma ~0.18 um, NEES 2052290.29, cos-alignment with c0 0.9994).",
+      "79/80 scenarios received zero accepted pair updates; 9 complete pairs were gated SALVAGE (NEES 0.273-1.117).",
+      "K1 confirmed: complete-pair counts by stratum 0,4,3,1,2 = 0,0,1,4,5; unseatable pair counts 16,16,15,12,11."
+    ]
+  },
+
+  "corrected_secondary_diagnostics": {
+    "nees_denominator_correction": "The reported mean NEES 205229.51 averages all 10 non-null rows: 9 SALVAGE-rejected records (NEES 0.273-1.117) and 1 UPDATED record (NEES 2052290.29). The function comment 'accepted' is imprecise; SALVAGE records are rejected updates.",
+    "nees_updated_only": 2052290.29,
+    "nees_salvage_rows": "9 rows, 0.273-1.117",
+    "guided_scenario": "s01-r13 (stratum 1); both arms succeeded; guided drop from a confidently-wrong h_hat (0.236 mm error) still seated because the error is far inside the passive capture envelope.",
+    "k1_status": "CONFIRMED (directly observed): complete-pair feasibility 0% in strata 0 and 4 per the |e|>1.118 mm bound; one complete pair in stratum 3 at 1.057 mm.",
+    "k5_status": "PARTIAL/directional: the only accepted update matches the predicted confidently-wrong, c0-aligned bias (cos=0.9994) at a near-perpendicular bearing (87.2 deg from fixture error); nine other complete pairs were gated SALVAGE, so the preregistered error-growth trend is untested (one accepted update is insufficient).",
+    "k2_status": "CONFIRMED: both arms 16/16 in every probe-feasible stratum (and throughout strata 0-3).",
+    "wording_correction": "No failing holdout scenario exhausted three registered bearings: the selected candidate H1 has max_pair_attempts=1, so the defensible statement is 'H1's sole registered pair attempt was exhausted', not 'all three bearings were exhausted'."
+  },
+
+  "provenance_defects_recorded_not_repaired": [
+    "All 200 frozen development rows contain stale 'r05_traces_holdout/...' sidecar references (160 missing, 40 resolving to unrelated files) because the v3 dev rerun ran before the G12 rows-only amendment took effect. Frozen rows are immutable evidence; this note is the correction of record. Selection metrics are unaffected (independently recomputed by the evidence reviewer).",
+    "Lock text conflict G11 vs G12 (G11 originally requested development-sidecar hashes; the G12 amendment mandates rows-only development evidence). The executed freeze follows G12. To be corrected in any future lock.",
+    "The K6 waiver vs unqualified Rule Zero contradiction described above."
+  ],
+
+  "r06_disposition": {
+    "decision": "RETIRED",
+    "justification": "R06 compares the same surviving Haplous execution system with vs without explicit probing. R05-v3 demonstrated zero net execution value of the probing/filter treatment on the locked challenge set: 79/80 scenarios executed the bit-identical baseline fallback, the sole guided execution came from a confidently-wrong estimate in an already-successful scenario, and the K1 geometric bound (complete-pair feasibility impossible for |e|>1.118 mm with the locked 1 mm probe radius and measured R_passive=1.5 mm) structurally removes probing from the only stratum containing production failures. There is no surviving Haplous execution advantage for R06 to isolate. Both independent reviewers recommend retirement. Reconsideration requires a newly preregistered probe geometry or a corrected off-center observation model, not an isolation study."
+  },
+
+  "campaign_consequence": [
+    "The current online estimation/probing machinery does not earn product execution status on R05-v3 evidence.",
+    "Estimator/probing remain preserved as research and commissioning tooling (N2/N5 metrology mode, F1c session driver).",
+    "The strongest simpler execution system is the tuned VALIDATED_LOOSE_V1 spiral baseline (v_t=0.1 m/s on the R05 challenge set; canonical 5 mm/s elsewhere)."
+  ]
+}
