@@ -1,0 +1,24 @@
+{
+ "locked_design": ".opencode/haplous/state/locked-tests/R05-v3.yaml",
+ "locked_design_sha256": "945bea748201d7a7c1cd0de5736be5378cba0723e2510202c6343f62a374cf54",
+ "repo_head": "777ae40b89ca0d937e16cb649ae816372d30bdd7",
+ "dev_manifest_sha256": "11022c42d57ec6ae214e6ee2d0d3d5d4456074db9b035e6c58f8e8cb3a5f47c5",
+ "holdout_manifest_sha256": "32e6c917ad1e6e97d5b25c6231cbc188cd7963df80eed286cbd87d25b247e3ed",
+ "n5_raw_sha256": "f3c5fa7304a545531863f9df7498b3d03f271d01e5365eff8b5c1edb5a6e506c",
+ "n5_summary_sha256": "87d254728736c137f29149d8411a00864f5ce0a0857d6aac962573a8734a66bf",
+ "selections_sha256": "066032a629078a1a519e151f607b3d74e0fa1e74858da3bb59283fe16e060037",
+ "dev_trials_sha256": "b393a6a407ccedff0a6cd373c1e8d063172adf73c05e421e5d22254662f5085c",
+ "baseline_selected_v_t_m_per_s": 0.1,
+ "haplous_selected_candidate": "H1",
+ "source_sha256": {
+  "/Users/tofuinparis/Projects/pinn_mvp/.opencode/haplous/state/locked-tests/R05-v3.yaml": "945bea748201d7a7c1cd0de5736be5378cba0723e2510202c6343f62a374cf54",
+  "scripts/measure_r05_comparison.py": "0c28228bfcb1af3235f17fb974ebd891323f2c04af9229bc33927c7e76ebd70d",
+  "pegsim/r05.py": "e414261ed6296871cc69c36c89eebd83e23570e7d4cc0b256beeb3efaa3d9b4e",
+  "pegsim/filter.py": "a89e2d890145ec00c09146722d96058225e7a5168edd25fb029c567c6cb635cc",
+  "pegsim/probing.py": "e88a6cde8f893f8344782470e59cda0b27fb2c19f355ce85bd3f852fa1138b3a",
+  "pegsim/rollout.py": "12e51ba0294a671ed250117d13d8a24583e5b14c007c40627f2661422a92dbfa",
+  "pegsim/error_injection.py": "c753ca4b9f97d86e315025d1e05360c88036f20997756c1b2aa4a60217ab5fca",
+  "tests/test_r05.py": "dc73aac0fc20993caf251cfa27f600f18db61b792f6319d7b7950f3151fd2c2c"
+ },
+ "frozen_at": "2026-09-09T00:50:18-0400"
+}
