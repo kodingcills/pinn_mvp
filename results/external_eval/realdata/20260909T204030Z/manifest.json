@@ -1,0 +1,63 @@
+{
+  "artifacts": {
+    "summary_sha256": "5341b2868d7ee2a47e13894b7f818abbec80011ce4569583cbcd429df7cdb2ae",
+    "trials_sha256": "064f662d0a189533764b573236b1fe490d1e57e1759de0178c560a7a2d1ff02d"
+  },
+  "created_at_utc": "2026-09-09T20:40:30.737610+00:00",
+  "data_label": "DERIVATIVE DATA (robot-lev/DAVIAN HF conversion) - resampled, not official archives",
+  "datasets": {
+    "fmb": {
+      "conversion": "LeRobot v3; 10 Hz assumed; depth omitted; insert-only single-peg subset",
+      "file_bytes": 1874789,
+      "hf_repo": "DAVIAN-Robotics/fmb-insert-1MS-4cam",
+      "hf_total_bytes": 42521834,
+      "license": "CC-BY-4.0",
+      "official_archive": "BLOCKED: official archives are 70-545 GB",
+      "selected_episodes": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ],
+      "sha256": "008e30fdfa04dfc17627a4d1645624b048e39d9c719e11d56f2d34f5e569abbb"
+    },
+    "reassemble": {
+      "conversion": "LeRobot v3; hand-camera 30 Hz nearest-neighbour; modality omissions/sidecars",
+      "file_bytes": 46848105,
+      "hf_repo": "robot-lev/reassemble",
+      "hf_total_bytes": 86334690716,
+      "license": "CC-BY-4.0",
+      "official_archive": "BLOCKED: 54.8 GiB data.zip exceeds measured 7.5 GiB free",
+      "selected_episodes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "sha256": "310dddd1802a032374ae16e6f7adbaefc7b7f82d05212a475e2fba6b20b3fceb"
+    }
+  },
+  "disk_evidence": "Filesystem      Size    Used   Avail Capacity iused ifree %iused  Mounted on\n/dev/disk3s5   460Gi   426Gi   7.2Gi    99%    3.3M   76M    4%   /System/Volumes/Data",
+  "download_budget_bytes": 2500000000,
+  "downloaded_bytes": 51094787,
+  "git_commit": "f2ea53261c5617368ca87e482f2f33e6d8d8d31e",
+  "panda_model": {
+    "local_sha256": "59e68894f661d4ab7f710356237a873b140cc28932c1a2cba5c7a03e36f4a113",
+    "mapping": "dataset q[0:7]/dq[0:7]/effort[0:7] -> joint1..joint7; radians, rad/s, N m",
+    "source": "MuJoCo Menagerie franka_emika_panda/panda.xml",
+    "upstream_commit": "8161bba264d7fa7c99ca301e91e7fb44737676ad"
+  },
+  "run_id": "20260909T204030Z"
+}

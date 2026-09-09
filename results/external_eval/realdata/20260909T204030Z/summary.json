@@ -1,0 +1,48 @@
+{
+  "claim_scope": "offline phase-proxy correspondence only; no closed-loop or physical contact-ground-truth claim",
+  "cross_dataset": "FMB force is Franka-model-estimated wrist wrench, not a separate F/T sensor; REASSEMBLE force is wrist F/T downsampled from about 1.7 kHz to 30 Hz",
+  "data_label": "DERIVATIVE DATA (robot-lev/DAVIAN HF conversion) - resampled, not official archives",
+  "dispositions": {
+    "O1": "NOT APPLICABLE: pegsim StateFilter observations require peg/hole probe geometry absent here",
+    "O3": "NOT RUN: no preregistered evidence of complementary O0/O2 value",
+    "fmb": "DERIVATIVE OK; O2 IMPOSSIBLE (no joint-effort channel)",
+    "reassemble": "DERIVATIVE OK"
+  },
+  "ground_truth_limit": "Labels are task/primitive phases; positives additionally require baseline-centered force above 8 N, not independent contact truth",
+  "metrics": {
+    "fmb_derivative/O0_direct_wrench": {
+      "agreement_with_force_onset": 1.0,
+      "episodes": 5,
+      "false_contact_rate_free_space": 0.0,
+      "onset_delay_ms": 125.0,
+      "precision": 0.8,
+      "recall": 0.4663398692810457,
+      "residual_variance": 12.591262668437837
+    },
+    "reassemble_derivative/O0_direct_wrench": {
+      "agreement_with_force_onset": 1.0,
+      "episodes": 3,
+      "false_contact_rate_free_space": 0.00011299435028248589,
+      "onset_delay_ms": 95822.22255071004,
+      "precision": 0.9931972789115647,
+      "recall": 0.1289293495175848,
+      "residual_variance": 6.417484403534061
+    },
+    "reassemble_derivative/O2_momentum_residual": {
+      "agreement_with_force_onset": 0.99225944740389,
+      "episodes": 3,
+      "false_contact_rate_free_space": 0.0,
+      "onset_delay_ms": null,
+      "precision": 0.0,
+      "recall": 0.0,
+      "residual_variance": 2.806833839177495
+    }
+  },
+  "o2_model_error": "Residual includes payload, friction, effort semantics, inertial mismatch, numerical differentiation, and 30 Hz nearest-neighbour aliasing; it is not a calibrated external torque",
+  "observer_parameters": {
+    "direct_threshold_n": 14.53278816609224,
+    "momentum_alpha": 0.2,
+    "momentum_threshold_nm": 17.85024377832656,
+    "reference_force_threshold_n": 8.0
+  }
+}
