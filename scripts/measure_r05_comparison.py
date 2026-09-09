@@ -325,15 +325,16 @@ def run_cell(args: tuple) -> list[dict]:
         ),
         "model_xml_sha256": xml_hash,
     }
-    trace_dir = TRACES_HOLDOUT  # dev rows carry no sidecars (G12)
     if arm == "baseline":
         tr = run_baseline_arm(policy, control_task, v_t, model=model, data=data)
         grade = grade_production(tr, scenario.physical_clearance_m)
-        candidate_tag = f"vt{v_t}".replace(".", "p")
-        sidecar = persist_sidecar(
-            trace_dir, scenario.scenario_id, "baseline", candidate_tag,
-            production_tr=tr, probe_traces=[], execution=None,
-        )
+        sidecar = None
+        if phase == "holdout":
+            sidecar = persist_sidecar(
+                TRACES_HOLDOUT, scenario.scenario_id, "baseline",
+                f"vt{v_t}".replace(".", "p"),
+                production_tr=tr, probe_traces=[], execution=None,
+            )
         return [{
             **common,
             "system": "baseline",
@@ -377,10 +378,13 @@ def run_cell(args: tuple) -> list[dict]:
     estimator_abort = any(e.kind == "ABORT" for e in execution.probe_events)
     diag = offline_estimator_diagnostics(execution)
     p_hh = np.asarray(execution.final_filter_h_cov_m2, dtype=float)[:2, :2]
-    sidecar = persist_sidecar(
-        trace_dir, scenario.scenario_id, "haplous", candidate.id,
-        production_tr=production, probe_traces=probe_traces, execution=execution,
-    )
+    sidecar = None
+    if phase == "holdout":
+        sidecar = persist_sidecar(
+            TRACES_HOLDOUT, scenario.scenario_id, "haplous", candidate.id,
+            production_tr=production, probe_traces=probe_traces,
+            execution=execution,
+        )
     return [{
         **common,
         "system": "haplous",
