@@ -1,0 +1,32 @@
+{
+  "campaign_node": "X41",
+  "tool": "ContactBench",
+  "repository": "https://github.com/Simple-Robotics/ContactBench",
+  "decision": "REJECTED",
+  "evidence": {
+    "pypi_dry_run": {
+      "command": "uv pip install --dry-run contactbench",
+      "exit_code": 1,
+      "error": "contactbench was not found in the package registry; requirements are unsatisfiable"
+    },
+    "git_dry_run": {
+      "command": "uv pip install --dry-run git+https://github.com/Simple-Robotics/ContactBench",
+      "exit_code": 1,
+      "resolved_commit": "76fd04b8149fbc9360ff3a4fd2454c0fc7011c02",
+      "error": "setuptools build_wheel failed during egg_info: package directory 'pycontact' does not exist"
+    },
+    "repository_facts": [
+      "C++/Python clone-and-build project requiring CMake, Pinocchio, ProxSuite, eigenpy, Boost, and HPP-FCL",
+      "No PyPI release",
+      "No peg-in-hole insertion scenario or reusable insertion harness",
+      "No verified macOS build path found for this campaign"
+    ]
+  },
+  "rationale": "Integration would require repairing or bypassing Python packaging, establishing the native dependency toolchain, and authoring a new Pinocchio insertion scenario. That is disproportionate to X41's remaining campaign budget and would not be a microbenchmark.",
+  "would_unblock": [
+    "A working packaged wheel or reproducible macOS arm64 build with all native dependencies",
+    "An upstream insertion/contact scenario at approximately 5 mm part scale",
+    "A pre-registered cross-solver metric mapping and additional campaign budget"
+  ],
+  "installation_limit": "No dependencies were installed and no vendoring was attempted. Two bounded dry runs completed within the 10-minute cap."
+}

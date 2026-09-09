@@ -1,0 +1,51 @@
+{
+  "campaign_node": "X41",
+  "tool": "Drake",
+  "version": "1.46.0",
+  "platform": "macOS arm64, CPython 3.12.13",
+  "decision": "PROBED_NOT_ADOPTED",
+  "availability_evidence": {
+    "dry_run": "uv pip install --python <temp-venv>/bin/python --dry-run drake",
+    "resolved_packages": 15,
+    "wheel_downloads": 6,
+    "install_wall_s_approx": 10,
+    "installed_only_in_temporary_venv": true
+  },
+  "deviation": "DEVIATION: X41 external-tool microprobe; not canonical and not a validation transfer",
+  "drake_probe": {
+    "formulation": "discrete MultibodyPlant hydroelastic contact, rigid sphere on compliant box",
+    "contact_model": "ContactModel.kHydroelastic",
+    "time_step_s": 0.0001,
+    "duration_s": 1.0,
+    "sphere_radius_m": 0.005,
+    "sphere_mass_kg": 1.529051987767584,
+    "gravity_load_n": 15.0,
+    "plane_hydroelastic_modulus_pa": 10000000.0,
+    "hunt_crossley_dissipation_s_per_m": 1.0,
+    "friction": 0.4,
+    "final_center_z_m": 0.004256188243268634,
+    "penetration_um": 743.8117567313664,
+    "final_normal_force_n": 15.000013562010682,
+    "normal_impulse_ns_over_1s": 14.999999192156308,
+    "final_contact_area_m2": 0.000022184211721486666,
+    "hydroelastic_contacts": 1
+  },
+  "mujoco_reference": {
+    "source": "results/x41_solver_sensitivity.json canonical_numerics_reference, 8 insertion episodes",
+    "formulation": "MuJoCo convex soft constraints, 5 mm-radius cylinder against the blind-hole floor under the validated insertion controller",
+    "time_step_s": 0.0005,
+    "solref": [0.002, 1.0],
+    "solimp": [0.9, 0.95, 0.0001],
+    "axial_floor_penetration_um_median": 24.71182977229012,
+    "settled_normal_force_n_median": 14.950576340657683,
+    "normal_impulse_ns_median_over_16p3s_episode": 211.48671174670642
+  },
+  "metric_definitions": {
+    "drake_penetration": "sphere radius minus final sphere-center height above the undeformed plane",
+    "drake_normal_impulse": "sum(abs(hydroelastic spatial-force z))*0.0001 s over the 1.0 s simulation",
+    "mujoco_penetration": "max(0, -tip_z - plate_thickness) at the final episode sample",
+    "mujoco_normal_impulse": "sum(abs(contact_force_z))*0.0005 s over the full 16.3 s episode"
+  },
+  "caveat": "These values are not apples-to-apples. Drake uses a user-selected volumetric hydroelastic modulus, a rigid sphere, gravity loading, and a 1 s horizon; MuJoCo uses convex soft constraints, a cylinder in the insertion fixture, controller loading, and a 16.3 s horizon. The 744 um versus 24.7 um penetration difference primarily demonstrates formulation and parameter dependence, not that either engine is more accurate.",
+  "rationale": "Drake is cheaply available and can reproduce a stable 15 N contact, but a decision-quality insertion comparison would require calibrated hydroelastic material properties and a dedicated insertion model. X41 therefore records availability and the microprobe without adopting Drake as a replacement benchmark."
+}

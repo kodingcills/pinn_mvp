@@ -112,6 +112,20 @@ class TestCompiledSolverOptionsMatchSpec:
         model, _ = _compiled_model_data()
         assert model.opt.timestep == pytest.approx(SOLVER.timestep)
 
+    def test_benchmark_solver_options_compile_unchanged(self):
+        solver = SolverSpec(
+            timestep=0.001,
+            solver="PGS",
+            impratio=3.0,
+            cone="pyramidal",
+            benchmark_deviation=True,
+        )
+        model = mujoco.MjModel.from_xml_string(build_mjcf(TASK, solver))
+
+        assert model.opt.solver == mujoco.mjtSolver.mjSOL_PGS
+        assert model.opt.impratio == pytest.approx(solver.impratio)
+        assert model.opt.cone == mujoco.mjtCone.mjCONE_PYRAMIDAL
+
     def test_geom_solref_solimp_compile_unchanged(self):
         """Checks EVERY geom, not just one -- the default block in
         scene.py applies to all of them, so any per-geom divergence would

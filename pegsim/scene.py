@@ -80,12 +80,24 @@ class SolverSpec:
     solimp: tuple[float, float, float] = (0.9, 0.95, 0.0001)
     cone: str = "elliptic"
     integrator: str = "implicitfast"
+    solver: str = "Newton"
+    impratio: float = 1.0
+    benchmark_deviation: bool = False
 
     def __post_init__(self) -> None:
-        assert self.cone == "elliptic", (
-            "pyramidal cone approximates the friction circle with a square, "
-            "making sliding friction magnitude direction-dependent relative to "
-            "world X/Y -- this silently breaks spiral-search angular symmetry"
+        assert self.solver in {"Newton", "PGS", "CG"}, (
+            "solver must be one of MuJoCo's Newton, PGS, or CG algorithms"
+        )
+        assert self.impratio > 0, "impratio must be positive"
+        assert self.benchmark_deviation or self.cone == "elliptic", (
+            "pyramidal cone is allowed only for an explicitly labeled benchmark "
+            "deviation because it makes friction direction-dependent"
+        )
+        assert self.benchmark_deviation or self.solver == "Newton", (
+            "non-Newton solvers are allowed only for benchmark deviations"
+        )
+        assert self.benchmark_deviation or self.impratio == 1.0, (
+            "noncanonical impratio is allowed only for benchmark deviations"
         )
         assert self.timestep > 0, "timestep must be positive"
         assert self.solref[0] > 0, "solref timeconst must be positive"
@@ -310,7 +322,8 @@ def build_mjcf(task: TaskSpec, solver: SolverSpec, plate_tilt_deg: float = 0.0) 
     ]))
     return f"""<mujoco model="peg_in_hole">
   <option timestep="{solver.timestep:.10g}" cone="{solver.cone}" \
-integrator="{solver.integrator}" gravity="0 0 -9.81"/>
+	integrator="{solver.integrator}" solver="{solver.solver}" \
+	impratio="{solver.impratio:.10g}" gravity="0 0 -9.81"/>
 
   {_geom_defaults_xml(task, solver)}
 
