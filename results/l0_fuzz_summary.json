@@ -1,0 +1,20 @@
+{
+ "target_transitions": 1000000,
+ "generated_transitions": 1001695,
+ "cases": 2022,
+ "refused_submissions": 0,
+ "executed_submissions": 2022,
+ "elapsed_s": 0.9201750755310059,
+ "transitions_per_s": 1088591.7545875185,
+ "invariant_coverage": {
+  "refused_never_opens_session": "PASS",
+  "terminal_state_is_terminal": "PASS",
+  "aborted_has_reasoned_outcome": "PASS",
+  "evidence_exactly_one_outcome": "PASS",
+  "evidence_serializes": "PASS",
+  "reset_returns_idle": "PASS"
+ },
+ "all_invariants_hold": true,
+ "seed": 20260910,
+ "platform": "3.12.13 macOS-26.5.1-arm64-arm-64bit"
+}

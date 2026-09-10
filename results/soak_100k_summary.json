@@ -1,0 +1,14 @@
+{
+ "clean_cycles": 100000,
+ "abort_cycles": 20000,
+ "clean_failures": 0,
+ "abort_failures": 0,
+ "all_failures": [],
+ "n_failures": 0,
+ "gc_clean_cycles": 7039,
+ "gc_abort_cycles": 678,
+ "replay_deterministic": true,
+ "elapsed_s": 18.572434902191162,
+ "cycles_per_s": 5384.323624050074,
+ "platform": "3.12.13 macOS-26.5.1-arm64-arm-64bit"
+}

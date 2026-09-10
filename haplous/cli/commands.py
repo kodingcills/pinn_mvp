@@ -28,7 +28,96 @@ def _table(headers: Sequence[str], rows: Sequence[Sequence[str]]) -> None:
         print("  ".join(value.ljust(widths[index]) for index, value in enumerate(row)))
 
 
-def doctor_command(_args: Namespace) -> int:
+def _git_describe() -> str:
+    import subprocess
+
+    try:
+        out = subprocess.run(
+            ["git", "describe", "--tags", "--always"], capture_output=True, text=True, timeout=5
+        )
+        return out.stdout.strip() if out.returncode == 0 else "unknown"
+    except (OSError, subprocess.TimeoutExpired):
+        return "unknown"
+
+
+def _gpu_check() -> tuple[str, str, str]:
+    import platform
+    import shutil
+    import subprocess
+
+    if shutil.which("nvidia-smi"):
+        try:
+            out = subprocess.run(
+                ["nvidia-smi", "--query-gpu=name,memory.total", "--format=csv,noheader"],
+                capture_output=True,
+                text=True,
+                timeout=5,
+            )
+            if out.returncode == 0:
+                return ("gpu/cuda", "OK", out.stdout.strip().splitlines()[0])
+        except subprocess.TimeoutExpired:
+            pass
+    if platform.system() == "Darwin":
+        try:
+            out = subprocess.run(
+                ["system_profiler", "SPDisplaysDataType"],
+                capture_output=True,
+                text=True,
+                timeout=10,
+            )
+            chipset = next(
+                (line.strip() for line in out.stdout.splitlines() if "Chipset" in line), "Metal"
+            )
+            return ("gpu/metal", "OK", chipset)
+        except (OSError, subprocess.TimeoutExpired):
+            return ("gpu/metal", "UNKNOWN", "")
+    return ("gpu/cuda", "NOT INSTALLED", "")
+
+
+def _full_checks(checks: list[tuple[str, str, str]]) -> None:
+    for label, spec in (
+        ("numpy", "numpy"),
+        ("matplotlib", "matplotlib"),
+        ("pytest", "pytest"),
+        ("yaml", "yaml"),
+    ):
+        spec_found = importlib.util.find_spec(spec) is not None
+        version = ""
+        if spec_found:
+            module = importlib.import_module(spec)
+            version = getattr(module, "__version__", "")
+        checks.append((label, "OK" if spec_found else "NOT INSTALLED", version))
+
+    checks.append(("evaluation package", "OK", "evaluation/ + claims/metrics registries"))
+    checks.append(("haplous git tag", "OK", _git_describe()))
+    checks.append(_gpu_check())
+
+    repo = Path(__file__).resolve().parent.parent.parent
+    for venv in (".venv-maniskill", ".venv-robosuite"):
+        path = repo / venv
+        if path.is_dir():
+            marker = "OK" if (path / "bin" / "python").exists() else "BROKEN"
+            checks.append((f"venv {venv}", marker, str(path)))
+        else:
+            checks.append((f"venv {venv}", "NOT INSTALLED", ""))
+
+    for label, env_var, default in (
+        ("checkpoints", "HAPLOUS_CKPT_DIR", "datasets/checkpoints"),
+        ("benchmark assets", "HAPLOUS_ASSETS_DIR", "datasets"),
+    ):
+        path = Path(os.environ.get(env_var, default))
+        checks.append((label, "OK" if path.is_dir() else "MISSING", str(path)))
+
+    try:
+        import matplotlib
+
+        importlib.import_module("matplotlib.backends.backend_agg")
+        checks.append(("visualization", "OK", matplotlib.__version__))
+    except (ImportError, AttributeError):
+        checks.append(("visualization", "NOT INSTALLED", ""))
+
+
+def doctor_command(args: Namespace) -> int:
     import platform
     import shutil
 
@@ -64,6 +153,8 @@ def doctor_command(_args: Namespace) -> int:
         checks.append(("memory", "UNKNOWN", ""))
     checks.append(("python", "OK" if sys.version_info >= (3, 10) else "OLD", platform.python_version()))
     checks.append(("cmake", "OK" if shutil.which("cmake") else "NOT INSTALLED", ""))
+    if getattr(args, "full", False):
+        _full_checks(checks)
     _table(("check", "status", "detail"), checks)
     return 0
 

@@ -18,6 +18,7 @@ def _parser() -> argparse.ArgumentParser:
     commands = parser.add_subparsers(dest="command", required=True)
 
     doctor = commands.add_parser("doctor")
+    doctor.add_argument("--full", action="store_true", help="include dependency/asset/GPU matrix")
     doctor.set_defaults(handler=doctor_command)
 
     listing = commands.add_parser("list")
