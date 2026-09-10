@@ -6,9 +6,50 @@ import copy
 import mujoco
 import pytest
 
+from benchmarks.heb.counterfactual import (
+    HARMFUL,
+    UNNECESSARY,
+    BENEFICIAL,
+    RecordingBehavior,
+    classify_intervention,
+)
 from haplous.adapters.mujoco_adapter import MuJoCoMachine, MuJoCoMachineConfig
 from haplous.behaviors.insertion import insertion_behavior_factory, insertion_intent
 from pegsim.rollout import VALIDATED_LOOSE_V1
+
+
+class _NoopBehavior:
+    def __init__(self):
+        self.begun = 0
+        self.steps = 0
+
+    def begin(self, intent, caps, observation):
+        self.begun += 1
+
+    def step(self, observation):
+        self.steps += 1
+        return None
+
+
+def test_recording_behavior_carries_deep_copied_state():
+    inner = _NoopBehavior()
+    wrapper = RecordingBehavior(inner)
+    wrapper.begin(None, None, None)
+    assert wrapper.snapshot is not inner and wrapper.snapshot.begun == 1
+    wrapper.step(None)
+    assert wrapper.snapshot.steps == 1
+    inner.steps = 99
+    assert wrapper.snapshot.steps == 1
+
+
+def test_classification_preregistered_rules():
+    completed = lambda peak: type("C", (), {"completed": True, "peak_force_n": peak})()
+    failed = lambda peak: type("C", (), {"completed": False, "peak_force_n": peak})()
+    assert classify_intervention(2.0, failed(14.95), hard_force_limit_n=2.0) == BENEFICIAL
+    assert classify_intervention(2.0, completed(2.18), hard_force_limit_n=2.0) == HARMFUL
+    assert classify_intervention(0.0, completed(2.18), hard_force_limit_n=None) == HARMFUL
+    assert classify_intervention(0.0, failed(2.18), hard_force_limit_n=None) == UNNECESSARY
+    assert classify_intervention(2.0, completed(2.1), hard_force_limit_n=2.0) == HARMFUL
 
 
 def _drive(machine: MuJoCoMachine, intent, n_ticks: int) -> list[tuple]:

@@ -2,7 +2,7 @@
 scenario whose mediated arm performs a runtime-initiated stop, fork the
 physics at the stop tick and continue the unmediated arm from the
 identical state; classify BENEFICIAL / HARMFUL / UNNECESSARY per the
-preregistered rules in evaluation/counterfactual.py.
+preregistered rules in benchmarks/heb/counterfactual.py.
 
 Writes results/counterfactual_internal_summary.json.
 """
@@ -18,7 +18,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from evaluation.counterfactual import (
+from benchmarks.heb.counterfactual import (
     BENEFICIAL,
     HARMFUL,
     NO_INTERVENTION,
