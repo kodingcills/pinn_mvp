@@ -1,11 +1,11 @@
 {
- "target_transitions": 1000000,
- "generated_transitions": 1001695,
- "cases": 2022,
+ "target_transitions": 5000000,
+ "generated_transitions": 5001725,
+ "cases": 10579,
  "refused_submissions": 0,
- "executed_submissions": 2022,
- "elapsed_s": 0.9201750755310059,
- "transitions_per_s": 1088591.7545875185,
+ "executed_submissions": 10579,
+ "elapsed_s": 4.1503753662109375,
+ "transitions_per_s": 1205125.9364924135,
  "invariant_coverage": {
   "refused_never_opens_session": "PASS",
   "terminal_state_is_terminal": "PASS",

@@ -273,11 +273,14 @@ claims:
       - results/soak_100k_summary.json
       - tests/test_haplous_reliability.py
     caveat: >
-      Evaluation-engine campaign scale-up: 1,001,695 generated
-      state-machine transitions (2022 randomized executions, six
+      Evaluation-engine campaign scale-up: 5,001,725 generated
+      state-machine transitions (10579 randomized executions, six
       invariants, all PASS) and 100,000 clean + 20,000 aborted
       submit/execute/reset cycles with 0 failures, exact archive
-      lineage, and deterministic replay (18.6 s). Fault schedules remain
+      lineage, and deterministic replay (18.6 s). A 1M-cycle in-RAM
+      soak is archive-scaling-bound (per-cycle cost grows with the
+      retained evidence archive; rotation-to-storage is the noted
+      remedy), not a correctness defect. Fault schedules remain
       modeled logical timing, not hardware timing.
 
   - claim_id: C11

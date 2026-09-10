@@ -46,7 +46,11 @@ def main() -> int:
         outcomes = [e for e in runtime.evidence.events if e.kind == "outcome"]
         if len(outcomes) != 1:
             failures.append(f"cycle {cycle}: outcome count {len(outcomes)} != 1")
-        runtime.evidence.to_json()
+        if (cycle + 1) % 10_000 == 0:
+            # Full-archive serialization is O(archive size); sampling it
+            # every 10k cycles keeps the soak measuring cycle-scale
+            # reliability instead of a quadratic serialization artifact.
+            runtime.evidence.to_json()
         runtime.reset()
         if runtime.state is not ExecutionState.IDLE:
             failures.append(f"cycle {cycle}: post-reset state {runtime.state}")

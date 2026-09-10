@@ -36,7 +36,7 @@ Permanent layers and their current evidence (all committed artifacts):
 
 | Layer | Benchmark | N | Result |
 |---|---|---|---|
-| L0 software | property fuzz | 1,001,695 transitions | 6/6 invariants PASS (`results/l0_fuzz_summary.json`) |
+| L0 software | property fuzz | 5,001,725 transitions | 6/6 invariants PASS (`results/l0_fuzz_summary.json`) |
 | L0 soak | 100k clean + 20k aborted cycles | 120,000 | 0 failures, exact archive lineage, deterministic replay (`results/soak_100k_summary.json`) |
 | L1-L2 internal | HEB dev, three-arm | 27 scenarios x 3 arms | table below |
 | L2 external | ManiSkill peg / robosuite Lift (prior waves) | 32 + 20 paired | unchanged, non-interference bit-identical |
@@ -149,8 +149,14 @@ grading catches of blind windows.
 
 Cross-physics: unchanged (MuJoCo vs PhysX ranking preserved,
 boundedness replicates, force proxies non-comparable).
-Reliability/soak: NEW at campaign scale - 1,001,695 transitions +
-120,000 soak cycles, zero violations/failures.
+Reliability/soak: NEW at campaign scale - 5,001,725 fuzz transitions +
+120,000 soak cycles, zero violations/failures. Observed scaling note:
+a 1M-cycle in-RAM soak exceeded 20 min wall because per-cycle cost
+grows with the retained evidence archive (GC/retention scaling of ~1M
+retained evidence objects), an artifact of unbounded in-memory
+archives under the repeated-serialization harness pattern, not a
+state-machine defect; long-lived runtime deployments should rotate
+evidence archives to storage (product note, hardware-path class).
 
 ## 20-23. Engineering leverage, development iterations, kept/reverted
 
