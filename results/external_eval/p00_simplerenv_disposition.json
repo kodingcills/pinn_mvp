@@ -1,0 +1,25 @@
+{
+  "campaign_node": "P00-P03",
+  "tool": "SimplerEnv (simpler-env/SimplerEnv + ManiSkill2_real2sim)",
+  "decision": "BLOCKED_PLATFORM",
+  "audit_procedure": "librarian research against official README, setup.py, requirements_full_install.txt, PyPI metadata, and upstream issues (2026-09-10); no install attempted after platform audit",
+  "evidence": {
+    "install_class": "conda env + editable pip install of ManiSkill2_real2sim then SimplerEnv; Docker-first for full stack",
+    "blocking_dependency": {
+      "package": "sapien==2.2.2 (pinned by ManiSkill2_real2sim requirements.txt)",
+      "published_wheels": "manylinux2014_x86_64 only (CPython 3.7-3.11)",
+      "macos_arm64_wheel": false,
+      "source_build": "unsupported engineering project (separate C++ toolchain, upstream declares POSIX/Linux classifiers)"
+    },
+    "gpu_dependency": "official full install pins tensorflow[and-cuda]==2.15.1 and jax[cuda11_pip]==0.4.20; evaluation loop requires SAPIEN Vulkan rendering; README states 'SAPIEN requires a GPU to run'",
+    "disk_footprint": "15-25 GB for multi-checkpoint install (RT-1/RT-1-X checkpoints ~5-8 GB, Octo ~1-5 GB, TF/JAX caches 4-8 GB); 10.2 GiB free at audit time",
+    "policy_checkpoints": "RT-1/RT-1-X on public GCS (gs://gdm-robotics-open-x-embodiment/...), Octo via HF hub (octo-small/octo-base); downloadable without auth",
+    "real_robot_references": "REAL_PERF dict in simpler_env/utils/metrics.py; Pearson/MMRV via tools/calc_metrics.py"
+  },
+  "rationale": "No macOS/arm64 SAPIEN 2.2.2 wheel exists; the official runtime path is Linux/NVIDIA-only. Substituting CPU JAX and a source-built SAPIEN would leave the official reproducible installation path and violate the frozen-checkpoint fairness requirement (section 55) with unvalidated rendering behavior.",
+  "claim_scope": "This blocks the model/VLA direct-vs-Haplous track on this Mac. It is an environment constraint, not evidence about Haplous. BLOCKED_EXTERNAL_COMPUTE would apply on a Linux NVIDIA box with insufficient resources; here the platform itself is unsupported.",
+  "would_unblock": [
+    "Linux x86_64 + NVIDIA GPU machine (cloud or local)",
+    "or upstream SAPIEN 2.2.2 darwin/arm64 wheels"
+  ]
+}

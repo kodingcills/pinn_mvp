@@ -1,0 +1,24 @@
+{
+  "campaign_node": "M04/M05",
+  "task": "PlugCharger-v1 direct vs Haplous",
+  "decision": "BASELINE_GATE_MISSED_NO_HAPLOUS_COMPARISON",
+  "evidence": {
+    "official_demos": "~/.maniskill/demos/PlugCharger-v1 (24.3 MB, official motionplanning trajectories)",
+    "conversion_attempt_1": {
+      "target_control_mode": "pd_ee_pose",
+      "command": "mani_skill.trajectory.replay_trajectory --use-first-env-state -c pd_ee_pose -o state --save-traj -b physx_cpu --allow-failure --count 50",
+      "replay_success": "29/50 = 58% (gate: >=80%)",
+      "note": "required patching recorded env_info reward_mode dense->sparse (PlugCharger SUPPORTED_REWARD_MODES=['none','sparse']; reward mode does not affect physics or the success predicate)"
+    },
+    "conversion_attempt_2": {
+      "target_control_mode": "pd_ee_target_delta_pose",
+      "result": "conversion crashed; no output produced"
+    },
+    "gate_reference": "campaign section 3: a task below the competence gate must not be used as evidence that Haplous preserves useful execution"
+  },
+  "rationale": "Two conversion variants attempted (anti-loop limit). The official pd_joint_pos->EE conversion tool preserves only 58% of PlugCharger trajectories, so a frozen-stream baseline cannot be frozen honestly. No Haplous comparison is run on this task; a PlugCharger claim would be task-cherry-picking risk per section 68.",
+  "would_unblock": [
+    "Upstream conversion tool supporting PlugCharger geometry/rotation complexity",
+    "A live official planner on macOS (mplib is Linux-only, see M02 disposition)"
+  ]
+}
