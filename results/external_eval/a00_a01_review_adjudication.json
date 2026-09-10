@@ -1,0 +1,64 @@
+{
+  "campaign_node": "A00/A01 adjudication",
+  "reviewers": {
+    "a00_independent_review": "oracle subagent, 13m27s, checklist verdicts",
+    "a01_red_team": "oracle subagent, 15m33s, attack-vector verdicts"
+  },
+  "accepted_defects": [
+    {
+      "id": "D1-metric-asymmetry",
+      "finding": "direct bounded_success used 3D force norm + tilt from task telemetry; haplous bounded_success used runtime axial-only violation events, omitting tilt and norm; dev ep4 marked bounded at 146.509 N peak (A00 FAIL, A01 BROKEN #2)",
+      "fix": "both drivers now grade bounded_success identically: success AND recorded 3D-norm peak <= 25 N AND recorded tilt <= 30 deg",
+      "verification": "M03v2 rerun: ep4 bounded=false in BOTH arms; dev 15/16 both"
+    },
+    {
+      "id": "D2-stopping-asymmetry",
+      "finding": "SuccessCondition.window_s is observation retention, not persistence; mediated arm stopped on first success observation while direct arm waited 2 extra steps (ManiSkill) / 10 extra steps (Lift) via task-adapter persistence latches; post-success excursions and tilt/wall differences were stopping artifacts (A00 FAIL #2, A01 BROKEN #1/#3)",
+      "fix": "both direct loops now end on the first benchmark-success observation, identical to the mediated arm",
+      "verification": "reruns: step parity 16/16 (M03v2), 16/16 (G02v2), 10/10 (Lift dev), 10/10 (Lift final); per-pair peaks bit-identical"
+    },
+    {
+      "id": "D3-latency-misalignment",
+      "finding": "residual = gaps[i] - (components[i]) mixed ticks: gap[i] spans end-of-step[i]..end-of-step[i+1] and contains steps[i+1]; observation arrays carried unmatched setup samples; negative residuals (direct mean -128.1 us) proved misalignment; p50-of-p50 pooling invalid (A00 CONCERN, A01 BROKEN #6)",
+      "fix": "alignment-proof metric: per-tick non-physics time = gaps[i] - steps[i+1] (verified 0 negative samples in 1412 pooled ticks), raw per-tick rows committed",
+      "verification": "L00v3 rerun: direct P50 92.5us vs mediated 122.3us, overhead ~30us/tick P50 (<0.1% of 50ms period)"
+    },
+    {
+      "id": "D4-force-ratio-overclaim",
+      "finding": "'1-2 orders of magnitude peak-force reduction' compared maxima from different seeds and different episode lengths (A01 BROKEN #2/#7)",
+      "fix": "report now states bounded termination vs unbounded continuation without a ratio; notes mediated peaks still reach 431.8 N (sampled one-tick overshoot above the 25 N requirement)",
+      "verification": "report section 3/8/9 rewritten"
+    },
+    {
+      "id": "D5-cohort-naming",
+      "finding": "'unseen episodes 23-38' were conversion-success-qualified, not outcome-blind (A01 WEAK #4)",
+      "fix": "renamed to 'conversion-success-qualified holdout' with sampling rule stated in the report",
+      "verification": "report section 3 rewritten"
+    },
+    {
+      "id": "D6-x01-wording",
+      "finding": "'caps it' overstates sampled enforcement (A00 note)",
+      "fix": "x01 conclusions and report wording changed to 'aborts earlier and reduces exposure'",
+      "verification": "x01 artifact wording flagged in report; report section 5 rewritten"
+    }
+  ],
+  "rejected_findings": [],
+  "surviving_headline_claims": [
+    "VERIFIED FACT: non-interference under harmonized stopping+grading (bit-identical per-pair peaks, identical step counts 32/32 ManiSkill + 20/20 Lift, identical success/completion)",
+    "VERIFIED FACT: ~30 us/tick P50 mediation overhead (<0.1% of 50 ms period), alignment-proof instrumentation, 0 negative samples",
+    "VERIFIED FACT: bounded termination vs unbounded continuation on failing streams (no exposure-matched ratio claimed)"
+  ],
+  "withdrawn_claims": [
+    "16/16 vs 3-4/16 bounded-success gap as supervision value (was stopping-semantics artifact; harmonized reruns show 15/16 vs 15/16 and 16/16 vs 16/16)",
+    "runtime-residual latency figures from the first-pass misaligned computation",
+    "'terminates at the bound' / '1-2 orders of magnitude peak-force reduction' wordings"
+  ],
+  "rerun_artifacts": {
+    "maniskill_dev_v2": "results/external_eval/maniskill-3.0.1/20260910T064011Z",
+    "maniskill_final_v2": "results/external_eval/maniskill-3.0.1/20260910T064040Z",
+    "maniskill_latency_v3": "results/external_eval/maniskill-3.0.1/20260910T064409Z",
+    "lift_dev_v2": "results/external_eval/robosuite-1.5.2/lift-20260910T064020Z",
+    "lift_final_v2": "results/external_eval/robosuite-1.5.2/lift-20260910T064025Z"
+  },
+  "note": "First-pass artifacts (042815Z, 045745Z sweep, 053705Z latency, lift-060505Z, 061200Z, 061250Z) remain committed as superseded evidence; the report cites only the v2/v3 runs."
+}

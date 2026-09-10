@@ -1,0 +1,55 @@
+{
+  "manifest": {
+    "campaign": "R00/R01 robosuite Lift successful-execution baseline (paired)",
+    "evidence_status": "G02v2 FINAL Lift unseen seeds 10-19, harmonized stopping+grading, no tuning after dev",
+    "haplous_version": "0.5.0",
+    "system_commit": "f6e09f88a178d018465b577167f434bf8ee1d745",
+    "benchmark": "robosuite/1.5.2/Lift",
+    "system_variants": [
+      "direct_minimal",
+      "haplous_mediated"
+    ],
+    "force_limit_n": 25.0,
+    "tilt_limit_deg": 30.0,
+    "seeds": [
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19
+    ],
+    "started_at": "20260910T064025Z",
+    "completed_at": "2026-09-10T06:40:29.599180+00:00"
+  },
+  "systems": {
+    "direct_minimal": {
+      "trials": 10,
+      "successes": 10,
+      "bounded_successes": 10,
+      "refusals": 0,
+      "force_breaches": 0,
+      "mean_peak_force_n": 7.383649281043444,
+      "max_peak_force_n": 7.967867379423119,
+      "max_peak_tilt_deg": 12.192752842429046,
+      "mean_completion_time_s": 1.7150000000000012,
+      "mean_wall_s": 0.22285634180007036
+    },
+    "haplous_mediated": {
+      "trials": 10,
+      "successes": 10,
+      "bounded_successes": 10,
+      "refusals": 0,
+      "force_breaches": 0,
+      "mean_peak_force_n": 7.383649281043444,
+      "max_peak_force_n": 7.967867379423119,
+      "max_peak_tilt_deg": 12.192752842429046,
+      "mean_completion_time_s": 1.7150000000000012,
+      "mean_wall_s": 0.1440001208015019
+    }
+  }
+}

@@ -67,9 +67,15 @@ def _direct_trial(seed: int) -> Trial:
     task = RobosuiteLiftTask(lambda: policy.gripper_action)
     started = time.perf_counter()
     task.reset(seed=seed)
-    while not task.session_ended():
+    succeeded = False
+    while not task.session_ended() and not succeeded:
         observation = task.observe()
         assert observation is not None
+        # same stopping semantics as the mediated arm: end on the first
+        # success observation (reviewer-gate harmonization)
+        succeeded = observation.extra_value("task_success") == 1.0
+        if succeeded:
+            break
         task.apply_command(policy.step(observation))
         task.step()
     wall_s = time.perf_counter() - started
@@ -126,26 +132,31 @@ def _haplous_trial(seed: int) -> Trial:
     wall_s = time.perf_counter() - started
     result = task.task_result()
     violations = evidence.constraint_violations()
-    force_breach = any(item["code"] == "process_force" for item in violations)
     stale_breach = any(item["code"] == "state_freshness" for item in violations)
     outcome_events = [event for event in evidence.events if event.kind == "outcome"]
     disposition = str(outcome_events[-1].payload.get("result", "UNKNOWN")) if outcome_events else "UNKNOWN"
     outcome_reason = str(outcome_events[-1].payload.get("reason", "")) or None if outcome_events else None
     success = bool(result["success"])
+    peak = float(result["peak_force_n"])
+    peak_tilt = float(result["peak_tilt_deg"])
     task.close()
     return Trial(
         seed=seed,
         system="haplous_mediated",
         success=success,
-        bounded_success=success and not force_breach and not stale_breach,
-        peak_force_n=float(result["peak_force_n"]),
-        peak_tilt_deg=float(result["peak_tilt_deg"]),
+        # identical grading formula as the direct arm: recorded physical
+        # peaks (3D force norm + tilt), not runtime violation events
+        bounded_success=(
+            success and peak <= FORCE_LIMIT_N and peak_tilt <= TILT_LIMIT_DEG
+        ),
+        peak_force_n=peak,
+        peak_tilt_deg=peak_tilt,
         completion_time_s=result["completion_time_s"],
         refusals=int(feasibility.outcome == "REFUSED"),
         n_steps=int(result["n_steps"]),
         n_contact_steps=int(result["n_contact_steps"]),
         wall_s=wall_s,
-        force_limit_breached=force_breach,
+        force_limit_breached=peak > FORCE_LIMIT_N,
         staleness_breached=stale_breach,
         disposition=disposition,
         outcome_reason=outcome_reason,

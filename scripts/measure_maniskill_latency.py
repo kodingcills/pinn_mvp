@@ -1,13 +1,10 @@
 """L00/L01 per-tick Haplous mediation latency instrumentation (ManiSkill/PhysX).
 
-Benchmark-owned timing wrappers only - no haplous core changes. Each mediated
-tick is decomposed as:
-
-    tick gap = observe + behavior.step + apply + machine step + runtime residual
-
-where the runtime residual (constraint evaluation, state machine, evidence,
-loop overhead) is what mediation adds over the direct loop. The direct arm is
-timed with identical wrappers on the same episodes as the baseline residual.
+Benchmark-owned timing wrappers only - no haplous core changes. Both arms run
+identical TimingSession/TimingBehavior wrappers. The measured quantity is the
+per-tick NON-PHYSICS time (tick gap minus physics step, see _run_episode),
+pooled as raw per-tick rows across episodes; the direct-vs-mediated difference
+of that quantity is the mediation overhead.
 """
 
 from __future__ import annotations
@@ -206,17 +203,15 @@ def _run_episode(episode_id: int, system: str) -> dict:
     task.close()
 
     gaps = machine.tick_gaps_us
-    observe = machine.observe_us
-    behavior_us = behavior.step_us
-    apply_us = machine.apply_us
     steps = machine.step_us
-    n = min(len(gaps), len(steps))
-    residuals: list[float] = []
-    for i in range(n):
-        observation_i = observe[i] if i < len(observe) else 0.0
-        behavior_i = behavior_us[i] if i < len(behavior_us) else 0.0
-        apply_i = apply_us[i] if i < len(apply_us) else 0.0
-        residuals.append(gaps[i] - (observation_i + behavior_i + apply_i + steps[i]))
+    # gaps[0] is recorded during the SECOND step call: gap[i] spans
+    # end-of-step[i] .. end-of-step[i+1] and therefore contains tick i+2's
+    # observe + behavior + apply + physics step[i+1] + runtime/loop work.
+    # The correct pairing is thus gaps[i] - steps[i+1]; subtracting
+    # steps[i] (or steps[i]) at any other offset mixes ticks and produces
+    # impossible negative intervals (the defect both reviews flagged).
+    n = len(gaps)
+    non_physics_us = [gaps[i] - steps[i + 1] for i in range(n)]
     return {
         "episode_id": episode_id,
         "system": system,
@@ -225,11 +220,11 @@ def _run_episode(episode_id: int, system: str) -> dict:
         "success": bool(result["success"]),
         "wall_s": wall_s,
         "tick_gap_us": _percentiles(gaps),
-        "observe_us": _percentiles(observe),
-        "behavior_step_us": _percentiles(behavior_us),
-        "apply_us": _percentiles(apply_us),
         "machine_step_us": _percentiles(steps),
-        "runtime_residual_us": _percentiles(residuals),
+        "non_physics_us": _percentiles(non_physics_us),
+        "raw_non_physics_us": non_physics_us,
+        "raw_tick_gap_us": gaps[:n],
+        "raw_paired_step_us": steps[1 : n + 1],
     }
 
 
@@ -258,28 +253,21 @@ def main() -> None:
             "campaign": "Haplous final simulation evidence - L00/L01 per-tick mediation latency (ManiSkill/PhysX)",
             "evidence_status": args.evidence_stage,
             "system_commit": commit,
-            "method": "benchmark-owned perf_counter_ns wrappers around machine + behavior; runtime residual = tick gap - timed components; direct arm timed with identical wrappers",
+            "method": "benchmark-owned perf_counter_ns TimingSession wrappers, identical in both arms; measured quantity = per-tick non-physics time (tick gap - physics step, 1:1 aligned); raw per-tick rows committed; overhead = mediated minus direct pooled raw rows",
             "episodes": episode_ids,
             "clock": "time.perf_counter_ns",
             "completed_at": datetime.now(UTC).isoformat(),
         },
         "episodes": rows,
-        "aggregate_stage_percentiles": {
-            system: {
-                stage: _percentiles(
-                    [
-                        value
-                        for row in rows
-                        if row["system"] == system
-                        for value in (
-                            [row[stage][k] for k in ("p50", "p95", "p99", "max")]
-                            if row[stage]
-                            else []
-                        )
-                    ]
-                )
-                for stage in ("tick_gap_us", "observe_us", "behavior_step_us", "apply_us", "machine_step_us", "runtime_residual_us")
-            }
+        "pooled_non_physics_us": {
+            system: _percentiles(
+                [
+                    value
+                    for row in rows
+                    if row["system"] == system
+                    for value in row["raw_non_physics_us"]
+                ]
+            )
             for system in ("direct_minimal", "haplous_mediated")
         },
     }

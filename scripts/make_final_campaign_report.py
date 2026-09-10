@@ -21,10 +21,10 @@ RS = ROOT / "results" / "external_eval" / "robosuite-1.5.2"
 OUT = ROOT / "docs" / "final_sim_evidence"
 FIGS = OUT / "figures"
 
-MS_DEV = MS / "20260910T042815Z"
+MS_DEV = MS / "20260910T064011Z"
 MS_SWEEP = MS / "20260910T045745Z"
-MS_LATENCY = MS / "20260910T053705Z"
-RS_LIFT = RS / "lift-20260910T060505Z"
+MS_LATENCY = MS / "20260910T064409Z"
+RS_LIFT = RS / "lift-20260910T064020Z"
 
 
 def _rows(path: Path) -> list[dict]:
@@ -115,33 +115,37 @@ def fig_sweep_curve(sweep_rows: list[dict]) -> str:
 def fig_latency(latency_rows: list[dict]) -> str:
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(11, 4))
     systems = ("direct_minimal", "haplous_mediated")
-    stages = ("tick_gap_us", "machine_step_us", "runtime_residual_us")
     colors = ("#4878CF", "#EE854A")
+    pooled = {}
+    for system in systems:
+        raw = [v for r in latency_rows if r["system"] == system for v in r["raw_non_physics_us"]]
+        pooled[system] = raw
+    stages = ("tick_gap_us", "machine_step_us", "non_physics_us")
     for si, system in enumerate(systems):
         rows = [r for r in latency_rows if r["system"] == system]
-        xs = range(len(stages))
         p50 = [max(0.01, sum(r[s]["p50"] for r in rows) / len(rows)) for s in stages]
         p99 = [max(0.01, sum(r[s]["p99"] for r in rows) / len(rows)) for s in stages]
+        xs = range(len(stages))
         ax1.bar([x - 0.12 + si * 0.24 for x in xs], p50, 0.24, label=system, color=colors[si])
         ax1.bar([x - 0.12 + si * 0.24 for x in xs], [a - b for a, b in zip(p99, p50)], 0.24, bottom=p50, color=colors[si], alpha=0.35)
     ax1.set_xticks(range(len(stages)))
-    ax1.set_xticklabels(["tick gap", "machine step", "runtime residual"], fontsize=8)
+    ax1.set_xticklabels(["tick gap", "physics step", "non-physics time"], fontsize=8)
     ax1.set_yscale("log")
     ax1.set_ylabel("microseconds (P50 solid, P50-P99 shaded)")
     ax1.legend(fontsize=8)
     ax1.set_title("11 per-tick latency decomposition")
-    over = []
-    for si, system in enumerate(systems):
-        rows = [r for r in latency_rows if r["system"] == system]
-        p95 = [sum(r["runtime_residual_us"]["p95"] for r in rows) / len(rows)]
-        p99 = [sum(r["runtime_residual_us"]["p99"] for r in rows) / len(rows)]
-        over.append((p95[0], p99[0]))
-    ax2.bar([0, 1], [v[0] for v in over], 0.5, color=colors, label="P95")
-    ax2.bar([0, 1], [v[1] - v[0] for v in over], 0.5, bottom=[v[0] for v in over], color=colors, alpha=0.35, label="P99 (stacked top)")
-    ax2.set_xticks([0, 1])
-    ax2.set_xticklabels(["direct loop", "haplous mediated"], fontsize=8)
-    ax2.set_ylabel("runtime residual (us)")
-    ax2.set_title("11b runtime residual: mediation overhead")
+    raw = [v for v in pooled["haplous_mediated"]]
+    base = [v for v in pooled["direct_minimal"]]
+    import numpy as np
+
+    bins = np.logspace(0, 3.2, 40)
+    ax2.hist(base, bins=bins, alpha=0.55, label="direct_minimal", color=colors[0])
+    ax2.hist(raw, bins=bins, alpha=0.55, label="haplous_mediated", color=colors[1])
+    ax2.set_xscale("log")
+    ax2.set_xlabel("per-tick non-physics time (us, pooled raw ticks)")
+    ax2.set_ylabel("ticks")
+    ax2.legend(fontsize=8)
+    ax2.set_title("11b mediation overhead: pooled raw distribution")
     return _svg(fig, "11_haplous_tick_latency.svg")
 
 
@@ -203,7 +207,7 @@ def _html(tracks, sweep_rows, lift_rows, latency_rows, figures, x01) -> str:
     latency = {r["system"]: r for r in latency_rows}
     lat_rows = []
     for system in ("direct_minimal", "haplous_mediated"):
-        r = latency[system]["runtime_residual_us"]
+        r = latency[system]["non_physics_us"]
         lat_rows.append([system, f"{r.get('p50', 0):.1f}", f"{r.get('p95', 0):.1f}", f"{r.get('p99', 0):.1f}", f"{r.get('max', 0):.1f}"])
     agreement_rows = [
         ["MuJoCo (internal HEB offset sweep)", "9/9 cells", "no ranking change", "0 violations below boundary"],
