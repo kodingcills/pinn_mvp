@@ -151,6 +151,27 @@ def _run_haplous(policy: DemoStreamPolicy, task: ManiSkillPegInsertionTask) -> t
     return trial, wall
 
 
+def _initial_state_probe(task: ManiSkillPegInsertionTask) -> tuple[float, ...]:
+    """(eef_x, eef_y, eef_z, peg_x, peg_y, peg_z) -> squared deviation helper."""
+    u = task._env.unwrapped
+    eef = u.agent.controller.controllers["arm"].ee_link.pose.p
+    peg = u.peg.pose.p
+    import numpy as np
+
+    return (
+        float(np.asarray(eef).reshape(-1)[0]),
+        float(np.asarray(eef).reshape(-1)[1]),
+        float(np.asarray(eef).reshape(-1)[2]),
+        float(np.asarray(peg).reshape(-1)[0]),
+        float(np.asarray(peg).reshape(-1)[1]),
+        float(np.asarray(peg).reshape(-1)[2]),
+    )
+
+
+def _state_deviation(a: tuple[float, ...], b: tuple[float, ...]) -> float:
+    return sum((x - y) ** 2 for x, y in zip(a, b)) ** 0.5
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--episode", type=int, required=True, help="frozen stream episode id")
@@ -165,25 +186,25 @@ def main() -> None:
     run_dir = RESULTS_ROOT / run_id
     run_dir.mkdir(parents=True)
 
-    policy_holder: list[DemoStreamPolicy] = []
-
-    def make_policy() -> DemoStreamPolicy:
-        policy = DemoStreamPolicy(TRAJECTORY_PATH, args.episode)
-        policy_holder.append(policy)
-        return policy
+    recorded_seed = _episode_seed(args.episode)
+    reference_task = ManiSkillPegInsertionTask(
+        lambda: -1.0, lambda: (0.0, 0.0, 0.0), stream_length=1
+    )
+    reference_task.reset(seed=recorded_seed)
+    reference_state = _initial_state_probe(reference_task)
+    reference_task.close()
 
     trials: list[SweepTrial] = []
     for seed in perturbation_seeds:
         for system in selected:
-            policy = make_policy()
+            policy = DemoStreamPolicy(TRAJECTORY_PATH, args.episode)
             task = ManiSkillPegInsertionTask(
                 lambda p=policy: p.gripper_action,
                 lambda p=policy: p.rotation_action,
                 stream_length=len(policy._actions),
             )
             task.reset(seed=seed)
-            truth = task.ground_truth()
-            offset = ((truth["peg_x_m"] - truth["hole_x_m"]) ** 2 + (truth["peg_y_m"] - truth["hole_y_m"]) ** 2) ** 0.5
+            deviation = _state_deviation(_initial_state_probe(task), reference_state)
             if system == "haplous":
                 trial, _ = _run_haplous(policy, task)
             else:
@@ -191,7 +212,7 @@ def main() -> None:
             trial = SweepTrial(
                 episode_id=args.episode,
                 perturbation_seed=seed,
-                initial_offset_m=offset,
+                initial_offset_m=deviation,
                 **{k: getattr(trial, k) for k in (
                     "system", "success", "bounded_success", "peak_force_n",
                     "max_tilt_deg", "completion_time_s", "n_steps",
