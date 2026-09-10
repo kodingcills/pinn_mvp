@@ -1,0 +1,304 @@
+# Haplous claim registry
+#
+# Machine-readable definitions of every technical claim the campaign
+# tracks. Statuses are frozen as of the commit that last touched this
+# file; evaluation runs may re-derive status only through the support /
+# weakening / falsification conditions below, never by editing status
+# directly without evidence links.
+#
+# Statuses (campaign spec sec. 70): SUPPORTED, SUPPORTED_WITH_CAVEATS,
+# MIXED, WEAKENED, REFUTED_WITHIN_TESTED_SCOPE, UNKNOWN.
+#
+# Frozen negative mechanisms (must not be silently revived):
+#   R01/R02 probing-estimation path (no runtime status)
+#   G1 adaptive stiffness governor (negative)
+#   generic momentum observer O2 (negative under tested real-data mismatch)
+
+claims:
+  - claim_id: C1
+    name: NON_INTERFERENCE
+    statement: >
+      Haplous does not materially degrade competent execution when no
+      intervention is required.
+    epistemic_status: SUPPORTED_WITHIN_TESTED_SCOPE
+    primary_metrics: [task_success_delta, peak_force_delta_paired, step_parity, completion_time_delta]
+    diagnostic_metrics: [trajectory_divergence, process_metric_delta]
+    benchmarks: [internal_heb_v02_holdout, maniskill_peg_mode_a, robosuite_lift_v2]
+    baselines: [direct_upstream_stream]
+    support_condition: >
+      Per-pair identical or near-identical outcomes and physical peaks on
+      streams that succeed without intervention; step parity 1.0.
+    weakening_condition: >
+      Mediated arm alters >=1% of unaided-successful trials' outcomes or
+      introduces >=10% median peak-force delta on pass-through scenarios.
+    falsification_condition: >
+      Mediated arm converts any nontrivial fraction of direct successes
+      into failures or recordable violations on pass-through streams.
+    known_confounders: [open_loop_frozen_streams_only, baseline_qualified_holdout_cohort]
+    current_evidence:
+      - results/external_eval/maniskill-3.0.1/20260910T064409Z/
+      - results/heb_final_summary.json
+      - docs/HAPLOUS_FINAL_SIMULATION_EVIDENCE.md
+
+  - claim_id: C2
+    name: BOUNDED_EXECUTION
+    statement: >
+      Haplous reduces hard execution violations at comparable useful
+      execution coverage.
+    epistemic_status: SUPPORTED_WITH_CAVEATS
+    primary_metrics: [bounded_success_rate, violation_probability_conditional_acceptance, false_abort_rate, coverage]
+    diagnostic_metrics: [violation_severity, exceedance_max, time_above_limit]
+    benchmarks: [internal_heb_v02_holdout, maniskill_off_distribution]
+    baselines: [bare_behavior, direct_minimal]
+    support_condition: >
+      Lower conditional violation probability at coverage within 10% of
+      the unmediated arm; false aborts attributed and bounded.
+    weakening_condition: >
+      Coverage collapse (refusal-everything shape) or sampled overshoot
+      exceeding declared bounds by orders of magnitude on feasible work.
+    falsification_condition: >
+      Mediated arm records more hard violations than the unmediated arm
+      at matched coverage.
+    known_confounders: [sampled_enforcement_one_tick_overshoot, exposure_not_matched_when_stopping_differs]
+    current_evidence:
+      - results/heb_final_summary.json
+      - docs/HAPLOUS_FINAL_SIMULATION_EVIDENCE.md
+    caveat: >
+      Sampled enforcement records post-breach peaks up to 431.8 N against
+      a 25 N bound (one-tick overshoot structurally possible); no
+      exposure-matched force reduction is claimed.
+
+  - claim_id: C3
+    name: NET_SYSTEM_VALUE
+    statement: >
+      Haplous improves the tradeoff between useful task completion and
+      physical execution risk.
+    epistemic_status: MIXED
+    primary_metrics: [task_success, bounded_success_rate, hard_violation_risk, coverage, latency]
+    diagnostic_metrics: [interventions_per_episode, beneficial_intervention_rate, harmful_intervention_rate]
+    benchmarks: [internal_heb_v02_holdout]
+    baselines: [bare_behavior, direct_minimal]
+    support_condition: >
+      Pareto improvement on (success, bounded success, violation risk,
+      coverage) versus both baselines on preregistered splits.
+    weakening_condition: >
+      Improvement in bounded success explained entirely by additional
+      refusals of feasible work (coverage collapse).
+    falsification_condition: >
+      No frontier point of Haplous dominates any incumbent on the
+      preregistered metric vector.
+    known_confounders: [internal_only_pareto_evidence, external_task_success_value_undemonstrated]
+    current_evidence:
+      - results/heb_final_summary.json
+      - results/heb_final_adjudication.json
+
+  - claim_id: C4
+    name: RECOVERY_VALUE
+    statement: >
+      Haplous converts meaningful classes of disturbed execution from
+      failure into successful bounded completion.
+    epistemic_status: SUPPORTED_WITHIN_TESTED_SCOPE
+    primary_metrics: [recovery_success_rate, post_recovery_task_success, recovery_latency]
+    diagnostic_metrics: [additional_violations_after_recovery, recovery_attempts]
+    benchmarks: [internal_slide_task_family]
+    baselines: [bare_behavior_no_recovery]
+    support_condition: >
+      Recovery permission flips failure to bounded completion on
+      disturbance classes where the unmediated arm cannot recover, with
+      no added violations.
+    weakening_condition: >
+      Recovery successes confined to a single disturbance class or
+      recoveries themselves recording violations.
+    falsification_condition: >
+      Recovery never flips an outcome that bare execution fails.
+    known_confounders: [single_task_family, simulated_disturbance_schedule]
+    current_evidence:
+      - results/heb_dev_summary.json
+      - docs/HAPLOUS_PREHARDWARE_EVAL_REPORT.md
+    caveat: >
+      Recovery value measured inside the internal slide task family only;
+      the stale-open-loop rescue attempt was a negative (0/11).
+
+  - claim_id: C5
+    name: CONTROLLER_SUPERIORITY
+    statement: >
+      A Haplous-owned control mechanism outperforms strong incumbent
+      contact controllers on meaningful control objectives.
+    epistemic_status: REFUTED_WITHIN_TESTED_SCOPE
+    primary_metrics: [control_objective_pareto]
+    diagnostic_metrics: [tracking_rmse, overshoot, settling_time, oscillation_energy, chatter_count]
+    benchmarks: [internal_controller_candidates]
+    baselines: [fixed_gain_impedance]
+    support_condition: >
+      A promoted candidate moves a named Pareto frontier without opaque
+      weighted scores.
+    weakening_condition: >
+      Candidate wins only under oracle information or loses on any
+      frontier axis it claimed.
+    falsification_condition: >
+      Every tested candidate is dominated by a simple fixed-gain
+      incumbent.
+    known_confounders: [only_two_candidates_tested]
+    current_evidence:
+      - tests/test_governor.py
+      - docs/HAPLOUS_EXTERNAL_BENCHMARK_REPORT.md
+    caveat: >
+      G1 governor and O2 momentum observer both negative; both remain
+      withdrawn. A new candidate must re-earn promotion from evidence.
+
+  - claim_id: C6
+    name: LEARNED_POLICY_VALUE
+    statement: >
+      The same frozen learned robot policy achieves better bounded
+      useful execution when mediated by Haplous.
+    epistemic_status: UNKNOWN
+    primary_metrics: [task_success, bounded_success_rate, intervention_value_rates, false_abort_rate]
+    diagnostic_metrics: [completion_time, peak_process_metrics, haplous_latency]
+    benchmarks: [colosseum_v2]
+    baselines: [frozen_policy_direct, competent_supervisor]
+    support_condition: >
+      Same checkpoint, same observation pipeline, no retraining: mediated
+      arm improves bounded success or reduces violations without
+      sacrificing coverage versus direct and versus a competent simple
+      supervisor, at preregistered N.
+    weakening_condition: >
+      Mediation only ever aborts without enabling completion, or the
+      competent supervisor matches it.
+    falsification_condition: >
+      Mediated arm degrades task success at equal or worse violation
+      risk.
+    known_confounders: [platform_gpu_requirements, checkpoint_reproduction_fidelity]
+    current_evidence: []
+
+  - claim_id: C7
+    name: ROBUSTNESS
+    statement: >
+      Haplous enlarges or improves meaningful operating regions under
+      perturbation.
+    epistemic_status: MIXED
+    primary_metrics: [bsr_envelope_by_axis, boundary_position_with_ci]
+    diagnostic_metrics: [failure_rate_by_axis, tail_exposure_by_axis]
+    benchmarks: [internal_single_axis_sweeps]
+    baselines: [bare_behavior]
+    support_condition: >
+      Mediated envelope strictly contains the bare envelope on >=1 axis
+      at equal grading, with CIs on the boundary displacement.
+    weakening_condition: >
+      Mediated boundary displaced inward on any axis where bare executes.
+    falsification_condition: >
+      Envelopes identical everywhere (no robustness contribution) or
+      mediated envelope strictly smaller.
+    known_confounders: [single_axis_only, internal_task_families_only]
+    current_evidence:
+      - results/heb_sweeps_dev.json
+    caveat: >
+      Compound perturbations not yet run; single-axis only as of the
+      pre-hardware campaign.
+
+  - claim_id: C8
+    name: GENERALITY
+    statement: >
+      Haplous semantics transfer across tasks, geometries, policies and
+      physics engines without task-specific core growth.
+    epistemic_status: SUPPORTED_WITH_CAVEATS
+    primary_metrics: [core_loc_changed, adapter_loc, task_specific_core_loc]
+    diagnostic_metrics: [semantic_disposition_agreement, failure_class_agreement]
+    benchmarks: [internal_mujoco, external_maniskill, external_robosuite]
+    baselines: []
+    support_condition: >
+      Zero core LOC change per new task family; adapter carries all
+      task-specific mapping; semantics unchanged.
+    weakening_condition: >
+      New integrations requiring core branches or per-task core edits.
+    falsification_condition: >
+      Any external task family requiring core modification to pass.
+    known_confounders: [two_engines_only, no_learned_policy_integrated]
+    current_evidence:
+      - docs/HAPLOUS_FINAL_SIMULATION_EVIDENCE.md
+      - docs/HAPLOUS_EXTERNAL_BENCHMARK_REPORT.md
+
+  - claim_id: C9
+    name: REAL_TIME_VIABILITY
+    statement: >
+      Haplous latency and jitter remain comfortably below required
+      execution budgets.
+    epistemic_status: SUPPORTED_WITHIN_TESTED_SCOPE
+    primary_metrics: [mediation_overhead_p99, deadline_miss_rate]
+    diagnostic_metrics: [observation_age, action_age, loop_jitter]
+    benchmarks: [maniskill_latency_l00v3]
+    baselines: [direct_loop]
+    support_condition: >
+      Mediation overhead below 0.1% of the control period through P99.9
+      with committed raw rows and zero negative-sample proof.
+    weakening_condition: >
+      P99 overhead above 1% of the control period on any tested loop.
+    falsification_condition: >
+      Overhead comparable to or exceeding the control budget.
+    known_confounders: [cpu_only_m_series_platform, single_loop_rate_20hz]
+    current_evidence:
+      - results/external_eval/maniskill-3.0.1/20260910T064409Z/latency_rows.json
+
+  - claim_id: C10
+    name: RUNTIME_RELIABILITY
+    statement: >
+      Haplous itself is reliable over long operation and adversarial
+      event sequences.
+    epistemic_status: SUPPORTED_WITHIN_TESTED_SCOPE
+    primary_metrics: [invariant_violations, soak_failure_free_cycles]
+    diagnostic_metrics: [memory_growth, evidence_completeness_rate, replay_determinism]
+    benchmarks: [l0_property_fuzz, soak]
+    baselines: []
+    support_condition: >
+      Zero invariant violations at preregistered transition counts;
+      failure-free soak exposure recorded.
+    weakening_condition: >
+      Any invariant violation reproduced; any soak crash or leak.
+    falsification_condition: >
+      A reproducible state-machine invariant violation at any scale.
+    known_confounders: [logical_timing_fault_model]
+    current_evidence:
+      - tests/test_haplous_reliability.py
+
+  - claim_id: C11
+    name: INCUMBENT_DIFFERENTIATION
+    statement: >
+      Haplous provides material value beyond realistic existing
+      supervision/control alternatives.
+    epistemic_status: UNKNOWN
+    primary_metrics: [pareto_vs_competent_supervisor]
+    diagnostic_metrics: [supervisor_loc, supervisor_latency, supervisor_coverage]
+    benchmarks: []
+    baselines: [competent_supervisor]
+    support_condition: >
+      Haplous frontier strictly beyond the strongest simple generic
+      supervisor on preregistered metrics.
+    weakening_condition: >
+      Competent supervisor achieves equivalent outcomes more cheaply.
+    falsification_condition: >
+      Competent supervisor dominates Haplous outright.
+    known_confounders: [supervisor_design_choices]
+    current_evidence: []
+
+  - claim_id: C12
+    name: SIMULATION_RELEVANCE
+    statement: >
+      Important rankings and failure phenomena survive across simulation
+      formulations and eventually hardware.
+    epistemic_status: MIXED
+    primary_metrics: [ranking_agreement, failure_class_agreement, boundary_displacement]
+    diagnostic_metrics: [semantic_disposition_agreement]
+    benchmarks: [x00_mujoco_vs_physx]
+    baselines: []
+    support_condition: >
+      Same method ranking, same failure classes, bounded termination
+      replicating across engines.
+    weakening_condition: >
+      Rankings or failure classes reversing across engines.
+    falsification_condition: >
+      An advantage on one engine reversing on the other.
+    known_confounders: [force_proxy_noncomparability, cpu_physx_build]
+    current_evidence:
+      - results/external_eval/x01_cross_physics_agreement.json
+    caveat: >
+      Force magnitudes are NOT compared across engines (different
+      proxies, declared upfront). No hardware leg exists yet.

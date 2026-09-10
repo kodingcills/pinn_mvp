@@ -1,0 +1,204 @@
+# Haplous metric registry
+#
+# One formal definition per metric. Every system arm uses the SAME
+# formula (implemented in evaluation/aggregate.py); no per-arm variants.
+# CI method names refer to evaluation/stats.py implementations.
+#
+# source_of_truth values:
+#   benchmark   - the benchmark's own success predicate (never Haplous)
+#   recorded    - recorded episode/row data (HEB row schema fields)
+#   derived     - computed from other registry metrics
+
+metrics:
+  - name: task_success_rate
+    symbol: SR
+    definition: "N(success) / N"
+    unit: fraction
+    source_of_truth: benchmark
+    aggregation: proportion_wilson
+    scope: per system x task x condition
+    failure_handling: excluded_trials_reported_separately
+    ci_method: wilson_interval
+    limitations: >
+      Uses the external benchmark's native predicate where available;
+      internal families use benchmark-owned grading (HEB protocol).
+
+  - name: bounded_success_rate
+    symbol: BSR
+    definition: >
+      N(task success AND zero hard violations AND not falsely terminated
+      on a feasible request) / N
+    unit: fraction
+    source_of_truth: derived
+    aggregation: proportion_wilson
+    scope: per system x task x condition
+    failure_handling: bounded_failure_counts_as_not_bounded
+    ci_method: wilson_interval
+    limitations: >
+      Primary Haplous outcome metric. A trial refused for genuine
+      infeasibility is coverage, not a bounded-success failure; a trial
+      refused while feasible is a false abort and counts against both.
+
+  - name: violation_probability_conditional_acceptance
+    symbol: P(V|acc)
+    definition: N(hard violation | accepted trials) / N(accepted trials)
+    unit: fraction
+    source_of_truth: recorded
+    aggregation: proportion_wilson
+    scope: per system
+    failure_handling: zero-acceptance systems report null, not 0
+    ci_method: wilson_interval
+    limitations: >
+      Separates safety from refusal; meaningless when coverage is ~0.
+
+  - name: coverage
+    definition: N(accepted) / N(presented)
+    unit: fraction
+    source_of_truth: recorded
+    aggregation: proportion_wilson
+    scope: per system
+    failure_handling: null
+    ci_method: wilson_interval
+    limitations: >
+      Coverage alone is not a quality signal; always report jointly with
+      P(V|acc) and FAR.
+
+  - name: false_abort_rate
+    symbol: FAR
+    definition: N(feasible AND incorrectly terminated) / N(feasible)
+    unit: fraction
+    source_of_truth: recorded
+    aggregation: proportion_wilson
+    scope: per system x feasibility-known subset
+    failure_handling: scenarios with unknown feasibility excluded and counted
+    ci_method: wilson_interval
+    limitations: >
+      Requires feasibility ground truth; feasible-set membership is part
+      of every scenario definition.
+
+  - name: interventions_per_episode
+    definition: total recorded interventions / episodes
+    unit: count/episode
+    source_of_truth: recorded
+    aggregation: mean_and_percentiles
+    scope: per system
+    failure_handling: null
+    ci_method: paired_bootstrap_mean
+    limitations: frequency alone is not value; pair with intervention value
+
+  - name: beneficial_intervention_rate
+    definition: >
+      fraction of interventions where counterfactual direct execution
+      records a hard violation or task failure that the mediated arm
+      prevents or converts to bounded completion (preregistered class
+      BENEFICIAL)
+    unit: fraction
+    source_of_truth: derived
+    aggregation: proportion_wilson
+    scope: per intervention record
+    failure_handling: no-fork data reports null
+    ci_method: wilson_interval
+    limitations: requires counterfactual fork support
+
+  - name: harmful_intervention_rate
+    definition: >
+      fraction of interventions where direct execution would remain
+      valid/succeed while mediation causes failure or unnecessary
+      termination (preregistered class HARMFUL)
+    unit: fraction
+    source_of_truth: derived
+    aggregation: proportion_wilson
+    scope: per intervention record
+    failure_handling: no-fork data reports null
+    ci_method: wilson_interval
+    limitations: requires counterfactual fork support
+
+  - name: unnecessary_intervention_rate
+    definition: >
+      fraction of interventions where both arms record identical
+      outcomes (preregistered class UNNECESSARY)
+    unit: fraction
+    source_of_truth: derived
+    aggregation: proportion_wilson
+    scope: per intervention record
+    failure_handling: no-fork data reports null
+    ci_method: wilson_interval
+    limitations: requires counterfactual fork support
+
+  - name: peak_force_exceedance_max
+    symbol: E_max
+    definition: max_t max(0, F(t) - F_L)
+    unit: newton
+    source_of_truth: recorded
+    aggregation: tail_percentiles
+    scope: per system x task
+    failure_handling: episodes with no force telemetry excluded and counted
+    ci_method: none_descriptive
+    limitations: sampled force reads; one-tick overshoot structurally possible
+
+  - name: time_above_force_limit
+    symbol: T_excess
+    definition: integral of I(F(t) > F_L) dt
+    unit: second
+    source_of_truth: recorded
+    aggregation: tail_percentiles
+    scope: per system x task
+    failure_handling: null
+    ci_method: none_descriptive
+    limitations: observation-rate sampling quantizes the integral
+
+  - name: integrated_force_excess
+    symbol: I_excess
+    definition: integral of max(0, F(t) - F_L) dt
+    unit: newton-second
+    source_of_truth: recorded
+    aggregation: tail_percentiles
+    scope: per system x task
+    failure_handling: null
+    ci_method: none_descriptive
+    limitations: termination-induced lower exposure must not be called
+      better force regulation
+
+  - name: mediation_overhead
+    definition: >
+      per-tick non-physics time of the mediated loop minus its paired
+      direct-loop step (gaps[i] - steps[i+1]); must pair identically
+      instrumented loops
+    unit: second
+    source_of_truth: recorded
+    aggregation: tail_percentiles
+    scope: per run
+    failure_handling: negative samples invalidate the run
+    ci_method: tail_percentiles
+    limitations: wall-clock platform dependent
+
+  - name: completion_time
+    definition: wall time from episode start to terminal observation
+    unit: second
+    source_of_truth: recorded
+    aggregation: tail_percentiles
+    scope: per system x task
+    failure_handling: failures excluded from percentile body, counted
+    ci_method: paired_bootstrap_mean
+    limitations: none
+
+  - name: recovery_success_rate
+    symbol: RSR
+    definition: N(recovery episodes ending in clean closure) / N(recovery episodes)
+    unit: fraction
+    source_of_truth: recorded
+    aggregation: proportion_wilson
+    scope: per system
+    failure_handling: recovery_timeout counts as failure
+    ci_method: wilson_interval
+    limitations: internal task families only
+
+  - name: step_parity
+    definition: fraction of paired episodes with identical step counts
+    unit: fraction
+    source_of_truth: recorded
+    aggregation: proportion_wilson
+    scope: paired open-loop runs
+    failure_handling: null
+    ci_method: wilson_interval
+    limitations: only meaningful for frozen-stream mediation
