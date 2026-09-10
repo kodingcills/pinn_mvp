@@ -1,0 +1,41 @@
+{
+  "manifest": {
+    "campaign": "Haplous final simulation evidence - ManiSkill peg (Mode A frozen stream)",
+    "evidence_status": "development",
+    "haplous_version": "0.5.0",
+    "system_commit": "aa3ca5cd4976292c814efbeab87207b496cff834",
+    "benchmark": "maniskill/3.0.1/PegInsertionSide",
+    "physics_backend": "sapien 3.0.3 / PhysX CPU (macOS, MoltenVK)",
+    "stream_source": "official motionplanning demos converted pd_joint_pos->pd_ee_pose via official replay_trajectory tool",
+    "stream_sha256": "39d602060e3c66c71734187654155f7fc2b0ef66767e9fdb81748c8e05ac6221",
+    "system_variants": [
+      "haplous_mediated"
+    ],
+    "force_limit_n": 25.0,
+    "tilt_limit_deg": 30.0,
+    "episodes": [
+      0,
+      3
+    ],
+    "episode_seeds": {
+      "0": 2,
+      "3": 6
+    },
+    "started_at": "20260910T042458Z",
+    "completed_at": "2026-09-10T04:25:01.070368+00:00"
+  },
+  "systems": {
+    "haplous_mediated": {
+      "trials": 2,
+      "successes": 0,
+      "bounded_successes": 0,
+      "refusals": 0,
+      "force_breaches": 0,
+      "tilt_breaches": 0,
+      "mean_peak_force_n": 0.0,
+      "max_peak_force_n": 0.0,
+      "max_tilt_deg": 0.0,
+      "mean_wall_s": 1.2386607294974965
+    }
+  }
+}

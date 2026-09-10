@@ -3,7 +3,13 @@ from pathlib import Path
 
 
 EXTERNAL_DIR = Path(__file__).resolve().parents[1] / "benchmarks" / "external"
-EXPECTED_FILES = {"__init__.py", "robosuite_policy.py", "robosuite_task.py"}
+EXPECTED_FILES = {
+    "__init__.py",
+    "robosuite_policy.py",
+    "robosuite_task.py",
+    "maniskill_policy.py",
+    "maniskill_task.py",
+}
 
 
 def _trees() -> list[tuple[Path, ast.Module]]:
@@ -24,6 +30,21 @@ def test_robosuite_imports_are_lazy():
                 assert all(alias.name != "robosuite" for alias in node.names), path.name
             if isinstance(node, ast.ImportFrom):
                 assert (node.module or "").split(".")[0] != "robosuite", path.name
+
+
+def test_maniskill_imports_are_lazy():
+    for path, tree in _trees():
+        for node in tree.body:
+            if isinstance(node, ast.Import):
+                assert all(
+                    alias.name.split(".")[0] not in {"gymnasium", "mani_skill"}
+                    for alias in node.names
+                ), path.name
+            if isinstance(node, ast.ImportFrom):
+                assert (node.module or "").split(".")[0] not in {
+                    "gymnasium",
+                    "mani_skill",
+                }, path.name
 
 
 def test_external_benchmarks_do_not_import_mujoco():
