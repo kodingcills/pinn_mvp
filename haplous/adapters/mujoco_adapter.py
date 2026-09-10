@@ -336,6 +336,43 @@ class _MuJoCoSession:
         self._ended = True
         self._data.qfrc_applied[:] = 0.0
 
+    def snapshot_state(self) -> dict:
+        """Full resumable state: MuJoCo integration state plus the session's
+        own command-hold buffers, so a counterfactual continuation from
+        this exact tick is deterministic."""
+        spec = mujoco.mjtState.mjSTATE_INTEGRATION
+        vec = np.empty(mujoco.mj_stateSize(self._model, spec), dtype=np.float64)
+        mujoco.mj_getState(self._model, self._data, vec, spec)
+        return {
+            "state_vec": vec.copy(),
+            "pending": self._pending,
+            "held": self._held.copy(),
+            "delayed": [d.copy() for d in self._delayed],
+            "applied_disturbances": set(self._applied_disturbances),
+            "stopped": self._stopped,
+            "fault": self._fault,
+            "ended": self._ended,
+            "n_observations": len(self._observations),
+            "time_s": float(self._data.time),
+        }
+
+    def restore_state(self, snap: dict) -> None:
+        mujoco.mj_setState(
+            self._model,
+            self._data,
+            snap["state_vec"],
+            mujoco.mjtState.mjSTATE_INTEGRATION,
+        )
+        self._pending = snap["pending"]
+        self._held = snap["held"].copy()
+        self._delayed = [d.copy() for d in snap["delayed"]]
+        self._applied_disturbances = set(snap["applied_disturbances"])
+        self._stopped = snap["stopped"]
+        self._fault = snap["fault"]
+        self._ended = snap["ended"]
+        del self._observations[snap["n_observations"]:]
+        mujoco.mj_forward(self._model, self._data)
+
     @property
     def ended(self) -> bool:
         return self._ended

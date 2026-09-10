@@ -1,0 +1,161 @@
+{
+ "scenarios": 18,
+ "interventions_forked": 4,
+ "classifications": {
+  "BENEFICIAL": 1,
+  "HARMFUL": 3,
+  "UNNECESSARY": 0,
+  "NO_INTERVENTION": 14
+ },
+ "beneficial_rate": 0.25,
+ "harmful_rate": 0.75,
+ "unnecessary_rate": 0.0,
+ "elapsed_s": 21.312555875003454,
+ "rows": [
+  {
+   "scenario_id": "insert_nominal",
+   "mediated_disposition": "COMPLETE",
+   "mediated_reason": null,
+   "classification": "NO_INTERVENTION"
+  },
+  {
+   "scenario_id": "insert_offset_1mm",
+   "mediated_disposition": "COMPLETE",
+   "mediated_reason": null,
+   "classification": "NO_INTERVENTION"
+  },
+  {
+   "scenario_id": "insert_offset_2mm",
+   "mediated_disposition": "COMPLETE",
+   "mediated_reason": null,
+   "classification": "NO_INTERVENTION"
+  },
+  {
+   "scenario_id": "insert_offset_5mm_infeasible",
+   "mediated_disposition": "REFUSED",
+   "mediated_reason": "negotiation_refusal",
+   "classification": "NO_INTERVENTION"
+  },
+  {
+   "scenario_id": "insert_force_limit_2n",
+   "mediated_disposition": "ABORTED",
+   "mediated_reason": "hard_constraint_process_force",
+   "intervention_time_s": 1.6149999999998776,
+   "intervention_force_n": 2.0001868971588066,
+   "direct_continuation": {
+    "completed": false,
+    "peak_force_n": 14.950615942727058,
+    "max_tilt_deg": 0.0019014737108550342,
+    "wall_s": 16.044300250010565
+   },
+   "mediated_wall_s": 0.32209412500378676,
+   "classification": "BENEFICIAL"
+  },
+  {
+   "scenario_id": "insert_force_limit_12n",
+   "mediated_disposition": "COMPLETE",
+   "mediated_reason": null,
+   "classification": "NO_INTERVENTION"
+  },
+  {
+   "scenario_id": "insert_force_limit_150n",
+   "mediated_disposition": "REFUSED",
+   "mediated_reason": "negotiation_refusal",
+   "classification": "NO_INTERVENTION"
+  },
+  {
+   "scenario_id": "insert_deadline_2s",
+   "mediated_disposition": "REFUSED",
+   "mediated_reason": "negotiation_refusal",
+   "classification": "NO_INTERVENTION"
+  },
+  {
+   "scenario_id": "insert_dropout_small",
+   "mediated_disposition": "COMPLETE",
+   "mediated_reason": null,
+   "classification": "NO_INTERVENTION"
+  },
+  {
+   "scenario_id": "insert_dropout_large",
+   "mediated_disposition": "ABORTED",
+   "mediated_reason": "hard_constraint_state_freshness",
+   "intervention_time_s": 1.2004999999999233,
+   "intervention_force_n": 3.3413892992051544,
+   "direct_continuation": {
+    "completed": true,
+    "peak_force_n": 2.1795330446961056,
+    "max_tilt_deg": 0.002057234879284648,
+    "wall_s": 0.12021216700668447
+   },
+   "mediated_wall_s": 0.23737395901116543,
+   "classification": "HARMFUL"
+  },
+  {
+   "scenario_id": "insert_stale_persistent",
+   "mediated_disposition": "REFUSED",
+   "mediated_reason": null,
+   "classification": "NO_INTERVENTION"
+  },
+  {
+   "scenario_id": "insert_stale_mid_motion",
+   "mediated_disposition": "ABORTED",
+   "mediated_reason": "hard_constraint_state_freshness",
+   "intervention_time_s": 0.3000000000000002,
+   "intervention_force_n": 0.0,
+   "direct_continuation": {
+    "completed": true,
+    "peak_force_n": 2.179550733816033,
+    "max_tilt_deg": 8.939381097217262e-05,
+    "wall_s": 0.2759470000019064
+   },
+   "mediated_wall_s": 0.04728204199636821,
+   "classification": "HARMFUL"
+  },
+  {
+   "scenario_id": "insert_command_rejection_persistent",
+   "mediated_disposition": "ABORTED",
+   "mediated_reason": "command_rejection_persistent",
+   "intervention_time_s": 0.3010000000000002,
+   "intervention_force_n": 0.0,
+   "direct_continuation": {
+    "completed": true,
+    "peak_force_n": 2.179550733786474,
+    "max_tilt_deg": 8.939381097217262e-05,
+    "wall_s": 0.26297391699336004
+   },
+   "mediated_wall_s": 0.04926241599605419,
+   "classification": "HARMFUL"
+  },
+  {
+   "scenario_id": "insert_command_rejection_transient",
+   "mediated_disposition": "COMPLETE",
+   "mediated_reason": null,
+   "classification": "NO_INTERVENTION"
+  },
+  {
+   "scenario_id": "insert_machine_fault",
+   "mediated_disposition": "ABORTED",
+   "mediated_reason": "machine_fault_machine_fault",
+   "classification": "NO_INTERVENTION"
+  },
+  {
+   "scenario_id": "insert_geometry_fine_facets",
+   "mediated_disposition": "COMPLETE",
+   "mediated_reason": null,
+   "classification": "NO_INTERVENTION"
+  },
+  {
+   "scenario_id": "insert_geometry_tight_clearance",
+   "mediated_disposition": "COMPLETE",
+   "mediated_reason": null,
+   "classification": "NO_INTERVENTION"
+  },
+  {
+   "scenario_id": "insert_geometry_deep_plate",
+   "mediated_disposition": "COMPLETE",
+   "mediated_reason": null,
+   "classification": "NO_INTERVENTION"
+  }
+ ],
+ "platform": "3.12.13 macOS-26.5.1-arm64-arm-64bit"
+}

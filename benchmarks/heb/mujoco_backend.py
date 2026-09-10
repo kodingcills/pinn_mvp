@@ -12,7 +12,11 @@ from benchmarks.heb import tasks
 from benchmarks.heb.protocol import Realization, Scenario
 
 
-def build_realization(scenario: Scenario) -> Realization:
+def build_realization(
+    scenario: Scenario,
+    machine_factory=MuJoCoMachine,
+    behavior_factory_override=None,
+) -> Realization:
     impl = tasks.implementation_for(scenario.task_family)
     bundle = impl.bundle_builder(scenario)
     config = MuJoCoMachineConfig(
@@ -29,9 +33,12 @@ def build_realization(scenario: Scenario) -> Realization:
         max_sensed_tilt_deg=45.0,
         position_resolution_m=1e-6,
     )
+    behavior_factory = (
+        behavior_factory_override if behavior_factory_override is not None else impl.behavior_factory(bundle)
+    )
     return Realization(
-        machine=MuJoCoMachine(bundle, config=config),
-        behavior_factory=impl.behavior_factory(bundle),
+        machine=machine_factory(bundle, config=config),
+        behavior_factory=behavior_factory,
         condition_factory=impl.condition_factory,
         bundle=bundle,
     )
