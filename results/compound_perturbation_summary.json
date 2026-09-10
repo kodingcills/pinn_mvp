@@ -1,0 +1,560 @@
+{
+ "n_scenarios": 15,
+ "offsets_m": [
+  0.0025,
+  0.003,
+  0.0035
+ ],
+ "stressors": [
+  "none",
+  "dropout_small",
+  "dropout_large",
+  "stale_mid",
+  "kick_y"
+ ],
+ "per_cell": {
+  "compound_none_off2um": {
+   "bare_behavior": {
+    "bounded_success": true,
+    "task_success": true,
+    "disposition": "COMPLETE",
+    "reason": null
+   },
+   "competent_supervisor": {
+    "bounded_success": true,
+    "task_success": true,
+    "disposition": "COMPLETE",
+    "reason": null
+   },
+   "haplous_mediated": {
+    "bounded_success": true,
+    "task_success": true,
+    "disposition": "COMPLETE",
+    "reason": null
+   }
+  },
+  "compound_dropout_small_off2um": {
+   "bare_behavior": {
+    "bounded_success": true,
+    "task_success": true,
+    "disposition": "COMPLETE",
+    "reason": null
+   },
+   "competent_supervisor": {
+    "bounded_success": false,
+    "task_success": false,
+    "disposition": "ABORTED",
+    "reason": "supervisor_state_freshness"
+   },
+   "haplous_mediated": {
+    "bounded_success": true,
+    "task_success": true,
+    "disposition": "COMPLETE",
+    "reason": null
+   }
+  },
+  "compound_dropout_large_off2um": {
+   "bare_behavior": {
+    "bounded_success": false,
+    "task_success": true,
+    "disposition": "COMPLETE",
+    "reason": null
+   },
+   "competent_supervisor": {
+    "bounded_success": false,
+    "task_success": false,
+    "disposition": "ABORTED",
+    "reason": "supervisor_state_freshness"
+   },
+   "haplous_mediated": {
+    "bounded_success": false,
+    "task_success": false,
+    "disposition": "ABORTED",
+    "reason": "hard_constraint_state_freshness"
+   }
+  },
+  "compound_stale_mid_off2um": {
+   "bare_behavior": {
+    "bounded_success": false,
+    "task_success": true,
+    "disposition": "COMPLETE",
+    "reason": null
+   },
+   "competent_supervisor": {
+    "bounded_success": false,
+    "task_success": false,
+    "disposition": "ABORTED",
+    "reason": "supervisor_state_freshness"
+   },
+   "haplous_mediated": {
+    "bounded_success": false,
+    "task_success": false,
+    "disposition": "ABORTED",
+    "reason": "hard_constraint_state_freshness"
+   }
+  },
+  "compound_kick_y_off2um": {
+   "bare_behavior": {
+    "bounded_success": true,
+    "task_success": true,
+    "disposition": "COMPLETE",
+    "reason": null
+   },
+   "competent_supervisor": {
+    "bounded_success": true,
+    "task_success": true,
+    "disposition": "COMPLETE",
+    "reason": null
+   },
+   "haplous_mediated": {
+    "bounded_success": true,
+    "task_success": true,
+    "disposition": "COMPLETE",
+    "reason": null
+   }
+  },
+  "compound_none_off3um": {
+   "bare_behavior": {
+    "bounded_success": true,
+    "task_success": true,
+    "disposition": "COMPLETE",
+    "reason": null
+   },
+   "competent_supervisor": {
+    "bounded_success": true,
+    "task_success": true,
+    "disposition": "COMPLETE",
+    "reason": null
+   },
+   "haplous_mediated": {
+    "bounded_success": true,
+    "task_success": true,
+    "disposition": "COMPLETE",
+    "reason": null
+   }
+  },
+  "compound_dropout_small_off3um": {
+   "bare_behavior": {
+    "bounded_success": true,
+    "task_success": true,
+    "disposition": "COMPLETE",
+    "reason": null
+   },
+   "competent_supervisor": {
+    "bounded_success": false,
+    "task_success": false,
+    "disposition": "ABORTED",
+    "reason": "supervisor_state_freshness"
+   },
+   "haplous_mediated": {
+    "bounded_success": true,
+    "task_success": true,
+    "disposition": "COMPLETE",
+    "reason": null
+   }
+  },
+  "compound_dropout_large_off3um": {
+   "bare_behavior": {
+    "bounded_success": false,
+    "task_success": true,
+    "disposition": "COMPLETE",
+    "reason": null
+   },
+   "competent_supervisor": {
+    "bounded_success": false,
+    "task_success": false,
+    "disposition": "ABORTED",
+    "reason": "supervisor_state_freshness"
+   },
+   "haplous_mediated": {
+    "bounded_success": false,
+    "task_success": false,
+    "disposition": "ABORTED",
+    "reason": "hard_constraint_state_freshness"
+   }
+  },
+  "compound_stale_mid_off3um": {
+   "bare_behavior": {
+    "bounded_success": false,
+    "task_success": true,
+    "disposition": "COMPLETE",
+    "reason": null
+   },
+   "competent_supervisor": {
+    "bounded_success": false,
+    "task_success": false,
+    "disposition": "ABORTED",
+    "reason": "supervisor_state_freshness"
+   },
+   "haplous_mediated": {
+    "bounded_success": false,
+    "task_success": false,
+    "disposition": "ABORTED",
+    "reason": "hard_constraint_state_freshness"
+   }
+  },
+  "compound_kick_y_off3um": {
+   "bare_behavior": {
+    "bounded_success": true,
+    "task_success": true,
+    "disposition": "COMPLETE",
+    "reason": null
+   },
+   "competent_supervisor": {
+    "bounded_success": true,
+    "task_success": true,
+    "disposition": "COMPLETE",
+    "reason": null
+   },
+   "haplous_mediated": {
+    "bounded_success": true,
+    "task_success": true,
+    "disposition": "COMPLETE",
+    "reason": null
+   }
+  }
+ },
+ "interaction_shifts": {
+  "bare_behavior": {
+   "n_flips": 6,
+   "shifts": [
+    {
+     "offset_m": 0.0025,
+     "stressor": "dropout_small",
+     "base_bounded": true,
+     "cell_bounded": true,
+     "base_reason": null,
+     "cell_reason": null,
+     "flip": false
+    },
+    {
+     "offset_m": 0.0025,
+     "stressor": "dropout_large",
+     "base_bounded": true,
+     "cell_bounded": false,
+     "base_reason": null,
+     "cell_reason": null,
+     "flip": true
+    },
+    {
+     "offset_m": 0.0025,
+     "stressor": "stale_mid",
+     "base_bounded": true,
+     "cell_bounded": false,
+     "base_reason": null,
+     "cell_reason": null,
+     "flip": true
+    },
+    {
+     "offset_m": 0.0025,
+     "stressor": "kick_y",
+     "base_bounded": true,
+     "cell_bounded": true,
+     "base_reason": null,
+     "cell_reason": null,
+     "flip": false
+    },
+    {
+     "offset_m": 0.003,
+     "stressor": "dropout_small",
+     "base_bounded": true,
+     "cell_bounded": true,
+     "base_reason": null,
+     "cell_reason": null,
+     "flip": false
+    },
+    {
+     "offset_m": 0.003,
+     "stressor": "dropout_large",
+     "base_bounded": true,
+     "cell_bounded": false,
+     "base_reason": null,
+     "cell_reason": null,
+     "flip": true
+    },
+    {
+     "offset_m": 0.003,
+     "stressor": "stale_mid",
+     "base_bounded": true,
+     "cell_bounded": false,
+     "base_reason": null,
+     "cell_reason": null,
+     "flip": true
+    },
+    {
+     "offset_m": 0.003,
+     "stressor": "kick_y",
+     "base_bounded": true,
+     "cell_bounded": true,
+     "base_reason": null,
+     "cell_reason": null,
+     "flip": false
+    },
+    {
+     "offset_m": 0.0035,
+     "stressor": "dropout_small",
+     "base_bounded": true,
+     "cell_bounded": true,
+     "base_reason": null,
+     "cell_reason": null,
+     "flip": false
+    },
+    {
+     "offset_m": 0.0035,
+     "stressor": "dropout_large",
+     "base_bounded": true,
+     "cell_bounded": false,
+     "base_reason": null,
+     "cell_reason": null,
+     "flip": true
+    },
+    {
+     "offset_m": 0.0035,
+     "stressor": "stale_mid",
+     "base_bounded": true,
+     "cell_bounded": false,
+     "base_reason": null,
+     "cell_reason": null,
+     "flip": true
+    },
+    {
+     "offset_m": 0.0035,
+     "stressor": "kick_y",
+     "base_bounded": true,
+     "cell_bounded": true,
+     "base_reason": null,
+     "cell_reason": null,
+     "flip": false
+    }
+   ]
+  },
+  "competent_supervisor": {
+   "n_flips": 9,
+   "shifts": [
+    {
+     "offset_m": 0.0025,
+     "stressor": "dropout_small",
+     "base_bounded": true,
+     "cell_bounded": false,
+     "base_reason": null,
+     "cell_reason": "supervisor_state_freshness",
+     "flip": true
+    },
+    {
+     "offset_m": 0.0025,
+     "stressor": "dropout_large",
+     "base_bounded": true,
+     "cell_bounded": false,
+     "base_reason": null,
+     "cell_reason": "supervisor_state_freshness",
+     "flip": true
+    },
+    {
+     "offset_m": 0.0025,
+     "stressor": "stale_mid",
+     "base_bounded": true,
+     "cell_bounded": false,
+     "base_reason": null,
+     "cell_reason": "supervisor_state_freshness",
+     "flip": true
+    },
+    {
+     "offset_m": 0.0025,
+     "stressor": "kick_y",
+     "base_bounded": true,
+     "cell_bounded": true,
+     "base_reason": null,
+     "cell_reason": null,
+     "flip": false
+    },
+    {
+     "offset_m": 0.003,
+     "stressor": "dropout_small",
+     "base_bounded": true,
+     "cell_bounded": false,
+     "base_reason": null,
+     "cell_reason": "supervisor_state_freshness",
+     "flip": true
+    },
+    {
+     "offset_m": 0.003,
+     "stressor": "dropout_large",
+     "base_bounded": true,
+     "cell_bounded": false,
+     "base_reason": null,
+     "cell_reason": "supervisor_state_freshness",
+     "flip": true
+    },
+    {
+     "offset_m": 0.003,
+     "stressor": "stale_mid",
+     "base_bounded": true,
+     "cell_bounded": false,
+     "base_reason": null,
+     "cell_reason": "supervisor_state_freshness",
+     "flip": true
+    },
+    {
+     "offset_m": 0.003,
+     "stressor": "kick_y",
+     "base_bounded": true,
+     "cell_bounded": true,
+     "base_reason": null,
+     "cell_reason": null,
+     "flip": false
+    },
+    {
+     "offset_m": 0.0035,
+     "stressor": "dropout_small",
+     "base_bounded": true,
+     "cell_bounded": false,
+     "base_reason": null,
+     "cell_reason": "supervisor_state_freshness",
+     "flip": true
+    },
+    {
+     "offset_m": 0.0035,
+     "stressor": "dropout_large",
+     "base_bounded": true,
+     "cell_bounded": false,
+     "base_reason": null,
+     "cell_reason": "supervisor_state_freshness",
+     "flip": true
+    },
+    {
+     "offset_m": 0.0035,
+     "stressor": "stale_mid",
+     "base_bounded": true,
+     "cell_bounded": false,
+     "base_reason": null,
+     "cell_reason": "supervisor_state_freshness",
+     "flip": true
+    },
+    {
+     "offset_m": 0.0035,
+     "stressor": "kick_y",
+     "base_bounded": true,
+     "cell_bounded": true,
+     "base_reason": null,
+     "cell_reason": null,
+     "flip": false
+    }
+   ]
+  },
+  "haplous_mediated": {
+   "n_flips": 6,
+   "shifts": [
+    {
+     "offset_m": 0.0025,
+     "stressor": "dropout_small",
+     "base_bounded": true,
+     "cell_bounded": true,
+     "base_reason": null,
+     "cell_reason": null,
+     "flip": false
+    },
+    {
+     "offset_m": 0.0025,
+     "stressor": "dropout_large",
+     "base_bounded": true,
+     "cell_bounded": false,
+     "base_reason": null,
+     "cell_reason": "hard_constraint_state_freshness",
+     "flip": true
+    },
+    {
+     "offset_m": 0.0025,
+     "stressor": "stale_mid",
+     "base_bounded": true,
+     "cell_bounded": false,
+     "base_reason": null,
+     "cell_reason": "hard_constraint_state_freshness",
+     "flip": true
+    },
+    {
+     "offset_m": 0.0025,
+     "stressor": "kick_y",
+     "base_bounded": true,
+     "cell_bounded": true,
+     "base_reason": null,
+     "cell_reason": null,
+     "flip": false
+    },
+    {
+     "offset_m": 0.003,
+     "stressor": "dropout_small",
+     "base_bounded": true,
+     "cell_bounded": true,
+     "base_reason": null,
+     "cell_reason": null,
+     "flip": false
+    },
+    {
+     "offset_m": 0.003,
+     "stressor": "dropout_large",
+     "base_bounded": true,
+     "cell_bounded": false,
+     "base_reason": null,
+     "cell_reason": "hard_constraint_state_freshness",
+     "flip": true
+    },
+    {
+     "offset_m": 0.003,
+     "stressor": "stale_mid",
+     "base_bounded": true,
+     "cell_bounded": false,
+     "base_reason": null,
+     "cell_reason": "hard_constraint_state_freshness",
+     "flip": true
+    },
+    {
+     "offset_m": 0.003,
+     "stressor": "kick_y",
+     "base_bounded": true,
+     "cell_bounded": true,
+     "base_reason": null,
+     "cell_reason": null,
+     "flip": false
+    },
+    {
+     "offset_m": 0.0035,
+     "stressor": "dropout_small",
+     "base_bounded": true,
+     "cell_bounded": true,
+     "base_reason": null,
+     "cell_reason": null,
+     "flip": false
+    },
+    {
+     "offset_m": 0.0035,
+     "stressor": "dropout_large",
+     "base_bounded": true,
+     "cell_bounded": false,
+     "base_reason": null,
+     "cell_reason": "hard_constraint_state_freshness",
+     "flip": true
+    },
+    {
+     "offset_m": 0.0035,
+     "stressor": "stale_mid",
+     "base_bounded": true,
+     "cell_bounded": false,
+     "base_reason": null,
+     "cell_reason": "hard_constraint_state_freshness",
+     "flip": true
+    },
+    {
+     "offset_m": 0.0035,
+     "stressor": "kick_y",
+     "base_bounded": true,
+     "cell_bounded": true,
+     "base_reason": null,
+     "cell_reason": null,
+     "flip": false
+    }
+   ]
+  }
+ },
+ "elapsed_s": 75.6409605420049,
+ "platform": "3.12.13 macOS-26.5.1-arm64-arm-64bit"
+}
