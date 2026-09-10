@@ -1,0 +1,37 @@
+{
+  "manifest": {
+    "campaign": "R00/R01 robosuite Lift successful-execution baseline (paired)",
+    "evidence_status": "development numbers, not qualification evidence",
+    "haplous_version": "0.5.0",
+    "system_commit": "5941db0bb77820d9dc29996d6ab0f6b61fa74dc5",
+    "benchmark": "robosuite/1.5.2/Lift",
+    "system_variants": [
+      "direct_minimal"
+    ],
+    "force_limit_n": 25.0,
+    "tilt_limit_deg": 30.0,
+    "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "started_at": "20260910T060458Z",
+    "completed_at": "2026-09-10T06:05:00.541812+00:00"
+  },
+  "systems": {
+    "direct_minimal": {
+      "trials": 5,
+      "successes": 5,
+      "bounded_successes": 5,
+      "refusals": 0,
+      "force_breaches": 0,
+      "mean_peak_force_n": 7.292468041755586,
+      "max_peak_force_n": 7.440458280485182,
+      "max_peak_tilt_deg": 13.873157179347249,
+      "mean_completion_time_s": 1.7300000000000015,
+      "mean_wall_s": 0.4349447418004274
+    }
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "campaign": "R00/R01 robosuite Lift successful-execution baseline (paired)",
+  "evidence_status": "R00/R01 development paired, 10 seeds x 2 arms",
+  "haplous_version": "0.5.0",
+  "system_commit": "5941db0bb77820d9dc29996d6ab0f6b61fa74dc5",
+  "benchmark": "robosuite/1.5.2/Lift",
+  "system_variants": [
+    "direct_minimal",
+    "haplous_mediated"
+  ],
+  "force_limit_n": 25.0,
+  "tilt_limit_deg": 30.0,
+  "seeds": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ],
+  "started_at": "20260910T060505Z",
+  "completed_at": "2026-09-10T06:05:09.692001+00:00"
+}
