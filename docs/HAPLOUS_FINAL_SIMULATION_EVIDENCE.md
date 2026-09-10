@@ -41,9 +41,17 @@ aborts on declared hard bounds.
 
 | Suite | N | direct success | haplous success | direct bounded | haplous bounded | direct peaks | mediated peaks |
 |---|---|---|---|---|---|---|---|
-| Dev (episodes 0-21 subset) | 16 | 16/16 | 16/16 | 4/16 | **16/16** | 13.7-146.5 N | 2.5-8.7 N |
+| Dev (episodes 0-21 subset) | 16 | 16/16 | 16/16 | 4/16 | **16/16** | 4.6-146.5 N | 1.3-146.5 N |
 | S00/S01 sweep (12 perturbation seeds) | 12 | 1/12 | 1/12 | 0/12 | 1/12 | 336-2115 N | 0-432 N |
-| **G02 FINAL (unseen episodes 23-38)** | 16 | 16/16 | 16/16 | 3/16 | **16/16** | 14.1-113.0 N (mean 45.3) | 3.3-13.0 N (mean 5.5) |
+| **G02 FINAL (unseen episodes 23-38)** | 16 | 16/16 | 16/16 | 3/16 | **16/16** | 5.7-113.0 N (mean 45.3) | 2.3-13.0 N (mean 5.5) |
+
+Same-step success impulse (disclosed): in dev episode 4 both arms
+recorded an identical 146.5 N single-step impulse on the step where task
+success first fired (completion 9.05 s in both, bit-identical physics);
+the mediated runtime completed on that observation and therefore graded
+no force violation. Excluding that same-step impulse, the mediated
+dev peak range is 1.3-13.0 N. All other direct-vs-mediated differences
+are the post-success window effect described below.
 
 - The only direct-vs-mediated difference on-distribution is the
   post-success window: direct keeps stepping the frozen stream ~2 steps
