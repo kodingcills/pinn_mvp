@@ -60,5 +60,6 @@
     "lift_dev_v2": "results/external_eval/robosuite-1.5.2/lift-20260910T064020Z",
     "lift_final_v2": "results/external_eval/robosuite-1.5.2/lift-20260910T064025Z"
   },
-  "note": "First-pass artifacts (042815Z, 045745Z sweep, 053705Z latency, lift-060505Z, 061200Z, 061250Z) remain committed as superseded evidence; the report cites only the v2/v3 runs."
+  "note": "First-pass artifacts (042815Z, 045745Z sweep, 053705Z latency, lift-060505Z, 061200Z, 061250Z) remain committed as superseded evidence; the report cites only the v2/v3 runs. The collected review findings are durably recorded in a00_a01_review_findings_as_collected.md (verbatim verdicts, no transcript invention).",
+  "findings_as_collected_artifact": "results/external_eval/a00_a01_review_findings_as_collected.md"
 }
