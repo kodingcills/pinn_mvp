@@ -1,0 +1,27 @@
+{
+  "campaign": "R00/R01 robosuite Lift successful-execution baseline (paired)",
+  "evidence_status": "G02 FINAL unseen seeds 10-19, frozen Lift baseline, no tuning after dev",
+  "haplous_version": "0.5.0",
+  "system_commit": "12db6614133fdff20e9ec3d7eab49d1abe3423f7",
+  "benchmark": "robosuite/1.5.2/Lift",
+  "system_variants": [
+    "direct_minimal",
+    "haplous_mediated"
+  ],
+  "force_limit_n": 25.0,
+  "tilt_limit_deg": 30.0,
+  "seeds": [
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19
+  ],
+  "started_at": "20260910T061250Z",
+  "completed_at": "2026-09-10T06:12:55.445030+00:00"
+}
