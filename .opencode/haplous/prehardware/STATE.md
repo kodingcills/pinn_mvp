@@ -75,8 +75,29 @@ verified in ancestry at campaign start; untouched.
   - slide kick: tilt-guard boundary 0.3->0.4 m/s
   - benchmark-validity fix: clearance cells derive tolerance from
     realized geometry
-- S12 reliability/property tests: NEXT
-- S07..S11, S13..S18: pending
+- S15 held-out eval: DONE (seed 9975048060650219579, manifest
+  sha256 3eb33ab5..., regraded at HEB 0.2.0)
+  - regrade: mediated coverage 0.842 BSR 0.844 breach_trials 3; bare BSR
+    0.789 (loophole closed: gap grading), breach_trials 6
+  - adjudication v0.2.0: raw 33/38 vs 31/38; corrected 37/38 vs 27/38;
+    deadline cells = capability-negotiation refusals; slide_07 mechanism
+    corrected per trace (inward drift + corner tap -> tilt guard)
+- S16/S17 reviews: DONE (oracle x2, results folded in)
+  - fixed: dropout grading loophole (gap grading), metric rename,
+    slide_07 mechanism claim withdrawn (trace evidence), deadline
+    reclassification, provenance fields (rows hash + system commit)
+  - accepted concerns: B1 is an ablation not a competing supervisor;
+    fault windows modeled rectangular, thresholds chosen post-sweep
+    (inside the declared envelope by design); held-out protocol single-
+    operator (documented deviation)
+- S13 packaging: DONE (pyproject + public API + quickstart)
+- S14 freeze: DONE (tag haplous-prehardware-eval-v0 = 5ae48fb)
+- S18 report: DONE (docs/HAPLOUS_PREHARDWARE_EVAL_REPORT.md)
+- S10/S11 second backend: NOT PERFORMED (disclosed in the report)
+- clean-room developer proxy: NOT PERFORMED (disclosed in the report)
+- compound-stress scenarios: NOT PERFORMED (single-axis only)
+- S18 complete; campaign CLOSED at commit 9d196ea with full suite green
+  (278 passed, 1 xfailed)
 
 ## Key interfaces (current)
 - haplous.machine: Machine{capabilities, observe, open_session, stop, health};

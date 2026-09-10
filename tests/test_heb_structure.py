@@ -12,6 +12,7 @@ def test_heb_file_set_is_expected():
     names = [p.name for p in HEB_DIR.glob("*.py")]
     assert set(names) == {
         "__init__.py",
+        "counterfactual.py",
         "insertion.py",
         "metrics.py",
         "mujoco_backend.py",

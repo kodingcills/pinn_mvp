@@ -10,7 +10,7 @@
  "beneficial_rate": 0.25,
  "harmful_rate": 0.75,
  "unnecessary_rate": 0.0,
- "elapsed_s": 21.312555875003454,
+ "elapsed_s": 23.639659625012428,
  "rows": [
   {
    "scenario_id": "insert_nominal",
@@ -46,9 +46,9 @@
     "completed": false,
     "peak_force_n": 14.950615942727058,
     "max_tilt_deg": 0.0019014737108550342,
-    "wall_s": 16.044300250010565
+    "wall_s": 18.321729041010258
    },
-   "mediated_wall_s": 0.32209412500378676,
+   "mediated_wall_s": 0.3101262499985751,
    "classification": "BENEFICIAL"
   },
   {
@@ -85,9 +85,9 @@
     "completed": true,
     "peak_force_n": 2.1795330446961056,
     "max_tilt_deg": 0.002057234879284648,
-    "wall_s": 0.12021216700668447
+    "wall_s": 0.11978441700921394
    },
-   "mediated_wall_s": 0.23737395901116543,
+   "mediated_wall_s": 0.23747987500973977,
    "classification": "HARMFUL"
   },
   {
@@ -106,9 +106,9 @@
     "completed": true,
     "peak_force_n": 2.179550733816033,
     "max_tilt_deg": 8.939381097217262e-05,
-    "wall_s": 0.2759470000019064
+    "wall_s": 0.2796980830025859
    },
-   "mediated_wall_s": 0.04728204199636821,
+   "mediated_wall_s": 0.05195541700231843,
    "classification": "HARMFUL"
   },
   {
@@ -121,9 +121,9 @@
     "completed": true,
     "peak_force_n": 2.179550733786474,
     "max_tilt_deg": 8.939381097217262e-05,
-    "wall_s": 0.26297391699336004
+    "wall_s": 0.27773870900273323
    },
-   "mediated_wall_s": 0.04926241599605419,
+   "mediated_wall_s": 0.046846707991790026,
    "classification": "HARMFUL"
   },
   {

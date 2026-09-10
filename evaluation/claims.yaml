@@ -168,7 +168,13 @@ claims:
       Mediated arm degrades task success at equal or worse violation
       risk.
     known_confounders: [platform_gpu_requirements, checkpoint_reproduction_fidelity]
-    current_evidence: []
+    current_evidence:
+      - results/external_eval/c01_colosseumv2_disposition.json
+    caveat: >
+      Canonical repo verified (jstmn/ColosseumV2); official ACT protocol
+      is physx_cuda-only at preregistered scale (200 eps/task/perturb,
+      11.5 h on RTX 4090). No learned-policy evidence exists; exact
+      runnable NVIDIA package committed.
 
   - claim_id: C7
     name: ROBUSTNESS
@@ -178,8 +184,8 @@ claims:
     epistemic_status: MIXED
     primary_metrics: [bsr_envelope_by_axis, boundary_position_with_ci]
     diagnostic_metrics: [failure_rate_by_axis, tail_exposure_by_axis]
-    benchmarks: [internal_single_axis_sweeps]
-    baselines: [bare_behavior]
+    benchmarks: [internal_single_axis_sweeps, internal_compound_grid]
+    baselines: [bare_behavior, competent_supervisor]
     support_condition: >
       Mediated envelope strictly contains the bare envelope on >=1 axis
       at equal grading, with CIs on the boundary displacement.
@@ -191,9 +197,15 @@ claims:
     known_confounders: [single_axis_only, internal_task_families_only]
     current_evidence:
       - results/heb_sweeps_dev.json
+      - results/compound_perturbation_summary.json
     caveat: >
-      Compound perturbations not yet run; single-axis only as of the
-      pre-hardware campaign.
+      Single-axis envelopes characterized internally (capture boundary
+      3.0-3.5mm shared exactly, clearance envelope [0.1,0.5]mm, facets
+      n>=16, stale 20ms, dropout 20ms, kick 0.3-0.4 m/s). Compound grid
+      (offset x dropout/stale/kick, 15 cells, three arms) found NO
+      multiplicative interaction: stressor effects are additive and
+      uniform across offsets; the capture boundary is not shifted by
+      timing stressors.
 
   - claim_id: C8
     name: GENERALITY
@@ -257,17 +269,26 @@ claims:
       A reproducible state-machine invariant violation at any scale.
     known_confounders: [logical_timing_fault_model]
     current_evidence:
+      - results/l0_fuzz_summary.json
+      - results/soak_100k_summary.json
       - tests/test_haplous_reliability.py
+    caveat: >
+      Evaluation-engine campaign scale-up: 1,001,695 generated
+      state-machine transitions (2022 randomized executions, six
+      invariants, all PASS) and 100,000 clean + 20,000 aborted
+      submit/execute/reset cycles with 0 failures, exact archive
+      lineage, and deterministic replay (18.6 s). Fault schedules remain
+      modeled logical timing, not hardware timing.
 
   - claim_id: C11
     name: INCUMBENT_DIFFERENTIATION
     statement: >
       Haplous provides material value beyond realistic existing
       supervision/control alternatives.
-    epistemic_status: UNKNOWN
+    epistemic_status: MIXED
     primary_metrics: [pareto_vs_competent_supervisor]
     diagnostic_metrics: [supervisor_loc, supervisor_latency, supervisor_coverage]
-    benchmarks: []
+    benchmarks: [internal_heb_dev_three_arm]
     baselines: [competent_supervisor]
     support_condition: >
       Haplous frontier strictly beyond the strongest simple generic
@@ -276,8 +297,22 @@ claims:
       Competent supervisor achieves equivalent outcomes more cheaply.
     falsification_condition: >
       Competent supervisor dominates Haplous outright.
-    known_confounders: [supervisor_design_choices]
-    current_evidence: []
+    known_confounders: [supervisor_design_choices, single_development_family_small_n]
+    current_evidence:
+      - results/competent_supervisor_dev_summary.json
+      - results/competent_supervisor_dev_rows.jsonl
+    caveat: >
+      First three-arm evidence (27 dev scenarios, paired realizations):
+      the COMPETENT SUPERVISOR matches Haplous on bounded success
+      (14/27 vs 11/27 accepted-bounded, McNemar p=0.375) and exceeds it
+      on task success (14 vs 12, p=0.69, not significant). Supervisor
+      deltas favor it on capability-negotiation refusals (150 N limit,
+      2 s deadline) and persistent command rejection; Haplous favors on
+      dropout tolerance (one lost sample stops the supervisor, Haplous
+      degrades and recovers) and microsecond refusal of infeasible
+      requests. No demonstrated superiority over the competent
+      supervisor in this family at this n; C11 remains the open
+      differentiation question.
 
   - claim_id: C12
     name: SIMULATION_RELEVANCE
