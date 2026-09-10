@@ -1,0 +1,24 @@
+{
+  "campaign_node": "M06",
+  "task": "AssemblingKits-v1 geometry generalization",
+  "decision": "BLOCKED_RESOURCE + NO_BASELINE",
+  "evidence": {
+    "asset_download_attempt_1": {
+      "method": "mani_skill interactive asset prompt (download_asset.prompt_yes_no -> official DATA_SOURCES URL)",
+      "url": "https://storage1.ucsd.edu/datasets/ManiSkill2022-assets/assembling_kits_v1.zip",
+      "result": "TimeoutError after connect (env construction blocked; ~/.maniskill/data 0B)"
+    },
+    "asset_download_attempt_2": {
+      "method": "direct curl -L, 45s connect window, verbose",
+      "result": "Connection timed out (28); 0 bytes; server unreachable from this network"
+    },
+    "baseline_status": "Even with assets, the campaign baseline gate (section 3) could not be passed: ManiSkill's official task table lists PegInsertionSide-v1 and PlugCharger-v1 with demonstrations but AssemblingKits-v1 WITHOUT demonstrations (librarian-verified against maniskill docs task table), and there is no official motionplanning solution registered for it. Building a new manipulation policy for this task is forbidden by campaign section 8."
+  },
+  "bounded_redesigns_used": "2 of 2 (env-prompt download, direct fetch)",
+  "rationale": "Two independent blockers: the benchmark's asset host is unreachable from this machine, and the task has no official successful baseline to freeze. A Haplous comparison here would violate the baseline competence gate and reproduce the 0/15 external benchmark failure mode the campaign was designed to correct.",
+  "claim_scope": "The geometry-generalization question (does Haplous preserve semantics across shapes without core changes?) is answered only on the internal HEB geometry variants (3 insertion geometries + slide task in the S-series campaign, 0 core-LOC task leakage) and NOT on AssemblingKits. No cross-shape external claim is made.",
+  "would_unblock": [
+    "Network access to storage1.ucsd.edu (or a mirror of ManiSkill2022-assets)",
+    "Upstream official demonstrations or motionplanning solution for AssemblingKits-v1"
+  ]
+}
