@@ -1,0 +1,48 @@
+{
+  "campaign_node": "C00",
+  "tool": "ContactBench (Simple-Robotics)",
+  "decision": "BUILD_BLOCKED_WITH_CORRECT_NATIVE_ATTEMPT",
+  "supersedes": "results/x41_contactbench_disposition.json (X41 was dry-run-only, no native attempt; this audit installed the full native toolchain and reached compilation)",
+  "install_class": "CMAKE/NATIVE (C++ core + optional Python bindings via jrl-cmakemodules)",
+  "native_attempt_log": [
+    {
+      "step": "clone --recurse-submodules (shallow)",
+      "result": "OK; submodule jrl-cmakemodules @ 2bea127"
+    },
+    {
+      "step": "Homebrew native deps installed (official routes)",
+      "result": "pinocchio 4.1.0, proxsuite 0.7.3, cppad 20260000.0, eigenpy 3.13.0, boost 1.92.0, urdfdom, simde"
+    },
+    {
+      "step": "cmake configure, BUILD_PYTHON_INTERFACE=ON (attempt 1)",
+      "result": "FAILED: Boost 1.92.0 found but 'missing: system' - Boost >= 1.86 dropped the compiled Boost.System library that CMakeLists.txt:124 requires; Homebrew has no older boost formula"
+    },
+    {
+      "step": "cmake configure, BUILD_PYTHON_INTERFACE=OFF, BUILD_TESTING=OFF (attempt 2)",
+      "result": "CONFIGURE OK (1.1s)"
+    },
+    {
+      "step": "cmake --build (attempt 1)",
+      "result": "FAILED: 20 C++ errors - std::void_t / std::is_arithmetic_v unresolved (C++ standard not enforced upstream; CMakeLists.txt:7 has 'set(CMAKE_CXX_STANDARD 11)' commented out)"
+    },
+    {
+      "step": "reconfigure with -DCMAKE_CXX_STANDARD=17 -DCMAKE_CXX_STANDARD_REQUIRED=ON (documented override, not a redesign)",
+      "result": "configure OK"
+    },
+    {
+      "step": "cmake --build (attempt 2)",
+      "result": "FAILED: include/contactbench/solvers.hxx:3 includes 'contactbench/bindings/context.hh' unconditionally; that header exists only in the bindings/ directory and is installed under include/contactbench/ only when the Python interface is built. Core-only build is broken upstream (include-graph defect)."
+    }
+  ],
+  "blockers": [
+    "UPSTREAM DEFECT: core header include/contactbench/solvers.hxx unconditionally includes bindings-only header contactbench/bindings/context.hh; BUILD_PYTHON_INTERFACE=OFF cannot compile",
+    "TOOLCHAIN: Python-bindings path requires compiled Boost.System, absent from Boost >= 1.86; no older Boost formula on Homebrew",
+    "NO PyPI WHEEL (reconfirms X41): setup.py expects a prebuilt package layout that the repository does not ship"
+  ],
+  "bounded_redesigns_used": "2 of 2 (PY-OFF configure variant; C++17 standard override). No upstream source modification attempted (section 12 stop rule: do not turn ContactBench into an engineering project).",
+  "value_assessment": {
+    "required_value": "Reproduce a minimal contact system whose solver/model sensitivity informs a Haplous stability or force-bound conclusion",
+    "found": "examples/ are single-contact NCP demos (cube, ball, ur5, humanoid); no insertion scenario, no reusable harness; even a successful build would only supply a solver microbenchmark (X41 already measured MuJoCo solver sensitivity directly with 48/48 seatings)"
+  },
+  "campaign_impact": "NONE - section 64: ContactBench is optional; primary cross-physics evidence is MuJoCo vs PhysX (X00/X01 complete). ContactBench remains supplementary numerical-sensitivity evidence that was not obtained."
+}
