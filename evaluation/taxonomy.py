@@ -61,6 +61,50 @@ ROOT_CAUSES: tuple[str, ...] = (
     "UNKNOWN",
 )
 
+# Mechanical terminal-reason -> root-cause mapping. Only reasons whose
+# class is mechanically clear are mapped; everything else stays UNKNOWN.
+REASON_ROOT_CAUSE: dict[str, str] = {
+    "negotiation_refusal": "EXECUTION_SEMANTICS",
+    "hard_constraint_process_force": "EXECUTION_SEMANTICS",
+    "hard_constraint_state_freshness": "EXECUTION_SEMANTICS",
+    "hard_constraint_tilt_deg": "EXECUTION_SEMANTICS",
+    "condition_not_permitted_process_force": "EXECUTION_SEMANTICS",
+    "condition_not_permitted_state_freshness": "EXECUTION_SEMANTICS",
+    "recovery_budget_exhausted": "EXECUTION_SEMANTICS",
+    "recovery_timeout": "RECOVERY",
+    "command_rejection_persistent": "EXECUTION_SEMANTICS",
+    "supervisor_force_limit": "EXECUTION_SEMANTICS",
+    "supervisor_tilt_limit": "EXECUTION_SEMANTICS",
+    "supervisor_state_freshness": "EXECUTION_SEMANTICS",
+    "supervisor_deadline": "EXECUTION_SEMANTICS",
+    "machine_fault_tilt_guard": "CONTROL",
+    "machine_fault_machine_fault": "PHYSICS",
+    "machine_error_RuntimeError": "ADAPTER",
+    "state_unavailable_at_start": "EXECUTION_SEMANTICS",
+    "state_too_stale": "EXECUTION_SEMANTICS",
+    "state_unavailable": "EXECUTION_SEMANTICS",
+}
+
+
+def _root_cause_for(row: Mapping[str, Any]) -> str:
+    attribution = str(row.get("failure_attribution") or "").strip().upper()
+    if attribution in ROOT_CAUSES:
+        return attribution
+    reason = str(row.get("reason") or "").strip()
+    exact = REASON_ROOT_CAUSE.get(reason)
+    if exact:
+        return exact
+    for prefix, cause in (
+        ("hard_constraint_", "EXECUTION_SEMANTICS"),
+        ("condition_not_permitted_", "EXECUTION_SEMANTICS"),
+        ("supervisor_", "EXECUTION_SEMANTICS"),
+        ("machine_error_", "ADAPTER"),
+        ("machine_fault_", "PHYSICS"),
+    ):
+        if reason.startswith(prefix):
+            return cause
+    return "UNKNOWN"
+
 # Suffixes of a trial's terminal/disposition evidence that map to a
 # severity class without any guessing. Suffix -> (Severity, rationale).
 _DISPOSITION_SEVERITY: dict[str, Severity] = {
@@ -123,7 +167,7 @@ def classify(row: Mapping[str, Any]) -> FailureClass | None:
         severity = Severity.S2
         rationale = f"task failure without recorded constraint breach (disposition={disposition!r})"
 
-    attribution = str(row.get("failure_attribution") or "").strip().upper()
+    attribution = _root_cause_for(row)
     root = attribution if attribution in ROOT_CAUSES else "UNKNOWN"
 
     return FailureClass(severity=severity.value, root_cause=root, rationale=rationale)

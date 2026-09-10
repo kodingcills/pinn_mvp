@@ -150,6 +150,102 @@ class HaplousSystem:
         )
 
 
+class SupervisedSystem:
+    """COMPETENT SUPERVISOR: the task behavior plus independent watchdogs
+    built only from the scenario's declared requirements — the realistic
+    production supervision shape (force watchdog, tilt watchdog,
+    freshness watchdog, deadline). No negotiation, no recovery
+    authorization, no capability semantics, no evidence trail: it stops
+    execution on a watched breach and otherwise lets the behavior run."""
+
+    def __init__(self) -> None:
+        self.name = "competent_supervisor"
+
+    def run(self, realization: Realization, scenario: Scenario) -> SystemRun:
+        machine = realization.machine
+        condition = realization.condition_factory(scenario, realization.bundle)
+        intent = build_intent(scenario, condition)
+        t0 = time.perf_counter()
+        caps = machine.capabilities()
+        try:
+            session = machine.open_session(
+                start_position_m=intent.start_position_m,
+                horizon_s=caps.execution_horizon_s,
+            )
+        except Exception as exc:
+            return SystemRun(
+                system=self.name,
+                disposition="ABORTED",
+                reason=f"machine_error_{type(exc).__name__}",
+                wall_s=time.perf_counter() - t0,
+            )
+        behavior = realization.behavior_factory()
+        observation = session.observe()
+        if observation is None:
+            return SystemRun(
+                system=self.name,
+                disposition="ABORTED",
+                reason="state_unavailable_at_start",
+                wall_s=time.perf_counter() - t0,
+            )
+        behavior.begin(intent, caps, observation)
+        observations: list[MachineObservation] = [observation]
+        disposition = "ABORTED"
+        reason = "horizon_exhausted"
+        while not session.ended:
+            session.apply(behavior.step(observation))
+            session.step()
+            if session.ended:
+                break
+            observation = session.observe()
+            if observation is None:
+                # Watchdog view: no fresh sample at all is a freshness
+                # violation, not a held-observation pass.
+                session.stop()
+                disposition = "ABORTED"
+                reason = "supervisor_state_freshness"
+                break
+            observations.append(observation)
+            if observation.stamp.age_s > scenario.state_max_age_s:
+                session.stop()
+                disposition = "ABORTED"
+                reason = "supervisor_state_freshness"
+                break
+            if (
+                scenario.max_force_n is not None
+                and abs(observation.force_z_n) > scenario.max_force_n
+            ):
+                session.stop()
+                disposition = "ABORTED"
+                reason = "supervisor_force_limit"
+                break
+            if scenario.max_tilt_deg is not None and observation.tilt_deg > scenario.max_tilt_deg:
+                session.stop()
+                disposition = "ABORTED"
+                reason = "supervisor_tilt_limit"
+                break
+            if scenario.deadline_s is not None and observation.stamp.source_s > scenario.deadline_s:
+                session.stop()
+                disposition = "ABORTED"
+                reason = "supervisor_deadline"
+                break
+            if condition.evaluate(observations):
+                session.stop()
+                disposition = "COMPLETE"
+                reason = None
+                break
+        wall = time.perf_counter() - t0
+        if disposition == "ABORTED" and session.fault is not None:
+            reason = f"machine_fault_{session.fault}"
+        return SystemRun(
+            system=self.name,
+            disposition=disposition,
+            reason=reason,
+            observations=tuple(observations),
+            wall_s=wall,
+        )
+
+
 class BareSystem:
     """B1: the task behavior driven directly over the machine session —
     the same task primitive and task success condition without runtime

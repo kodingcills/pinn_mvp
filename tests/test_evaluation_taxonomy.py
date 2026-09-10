@@ -86,6 +86,23 @@ def test_summarize_expected_loss_ranking():
     assert s["expected_loss_proxy_by_root_cause"]["EXECUTION_SEMANTICS"] == 10.0
 
 
+def test_reason_mapping_mechanical_classes():
+    fc = classify(_row(reason="supervisor_force_limit"))
+    assert fc.root_cause == "EXECUTION_SEMANTICS"
+    fc = classify(_row(reason="machine_fault_tilt_guard"))
+    assert fc.root_cause == "CONTROL"
+    fc = classify(_row(reason="machine_fault_machine_fault"))
+    assert fc.root_cause == "PHYSICS"
+    fc = classify(_row(reason="recovery_timeout"))
+    assert fc.root_cause == "RECOVERY"
+    fc = classify(_row(reason="machine_error_RuntimeError"))
+    assert fc.root_cause == "ADAPTER"
+    fc = classify(_row(reason="machine_error_OSError"))
+    assert fc.root_cause == "ADAPTER"
+    fc = classify(_row(reason="horizon_exhausted"))
+    assert fc.root_cause == "UNKNOWN"
+
+
 def test_classify_real_heb_rows_smoke():
     rows_path = Path(__file__).resolve().parent.parent / "results" / "heb_final_rows.jsonl"
     if not rows_path.exists():

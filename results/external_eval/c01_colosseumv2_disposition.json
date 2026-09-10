@@ -1,0 +1,23 @@
+{
+  "node": "C01_ColosseumV2_act_baseline",
+  "verdict": "BLOCKED_PLATFORM",
+  "date": "2026-09-10",
+  "benchmark": "Colosseum V2 (canonical repo jstmn/ColosseumV2, ManiSkill fork; official website jstmn.github.io/colosseum-v2-website, paper arXiv:2605.27759)",
+  "blocked_reasons": [
+    "official ACT evaluation commands hardcode --sim-backend physx_cuda (NVIDIA); this host is Apple M4 Pro with no CUDA",
+    "official checkpoints are 2 x 1.19 GB GCS objects; with assets + torch + repo the install exceeds the 5.1 GiB free disk on this host",
+    "official reported protocol: 200 episodes/task-perturbation, 11.5 h on one RTX 4090; CPU/MPS execution at official scale is days-to-weeks and noncanonical",
+    "no official CPU-only or Apple Silicon evaluation path is documented upstream (verified README, ACT README, paper)"
+  ],
+  "not_attempted": [
+    "physx_cpu deviation run (would be a noncanonical protocol; recorded as possible future deviation only)",
+    "checkpoint download"
+  ],
+  "runnable_package": "scripts/run_colosseum_v2_official.sh (exact official install + checkpoint + eval commands; execute unchanged on NVIDIA Linux host with >=60 GiB disk)",
+  "install_classification": "conda/python 3.10 + pip (torch) + editable installs; asset download via mani_skill CLI; NOT pip-only, NOT docker, NOT CUDA-only build",
+  "claim_impact": {
+    "C6_learned_policy_value": "remains UNKNOWN (no learned-policy evidence; platform-blocked)",
+    "C8_generality": "learned-policy leg not added"
+  },
+  "preregistered_next_gate": "on NVIDIA hardware: official ACT baseline reproduction gate (campaign sec. 27) BEFORE any Haplous integration; no Haplous scores may be compared against an unreproduced baseline"
+}
