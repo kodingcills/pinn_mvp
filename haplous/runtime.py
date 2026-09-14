@@ -228,7 +228,7 @@ class HaplousRuntime:
         assert self._intent is not None
         intent = self._intent
         policy = intent.recovery_policy
-        constraints: tuple[Constraint, ...] = build_constraints(intent)
+        constraints: tuple[Constraint, ...] = build_constraints(intent, caps)
         deadline_req = next(
             (r for r in intent.requirements if r.kind is RequirementKind.DEADLINE_S),
             None,

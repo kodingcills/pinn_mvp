@@ -63,8 +63,13 @@ def test_unrecoverable_request_refuses_before_motion():
     assert machine.open_session_calls == []
 
 
-def test_unsensed_force_requirement_refuses():
+def test_unsensed_force_requirement_degrades_and_enforces_at_ceiling():
+    """Measured counterfactual evidence (results/
+    false_refusal_summary.json): the refused execution completed at
+    2.18 N against the 150 N contract. The capability model now accepts
+    with disclosure and enforces at the sensed ceiling."""
     feasibility, runtime, _ = run_insertion(0.0, max_force_n=150.0)
-    assert feasibility.outcome == "REFUSED"
-    assert feasibility.reasons[0].code == "force_requirement_unsensed"
-    assert runtime.state is ExecutionState.REFUSED
+    assert feasibility.outcome == "DEGRADED"
+    codes = [r.code for r in feasibility.reasons]
+    assert "force_requirement_enforced_at_sensor_ceiling" in codes
+    assert runtime.state is not ExecutionState.REFUSED

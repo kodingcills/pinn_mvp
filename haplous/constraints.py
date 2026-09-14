@@ -6,6 +6,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Callable
 
+from haplous.capabilities import MachineCapabilities, SensingChannel
 from haplous.intent import ExecutionIntent, RequirementKind
 from haplous.machine import MachineObservation
 
@@ -43,14 +44,27 @@ class Constraint:
         )
 
 
-def build_constraints(intent: ExecutionIntent) -> tuple[Constraint, ...]:
+def build_constraints(
+    intent: ExecutionIntent, caps: MachineCapabilities | None = None
+) -> tuple[Constraint, ...]:
     constraints: list[Constraint] = []
     for req in intent.requirements:
         if req.kind is RequirementKind.MAX_PROCESS_FORCE_N:
+            limit = req.limit
+            if (
+                caps is not None
+                and SensingChannel.FORCE_Z in caps.sensing
+                and limit > caps.max_sensed_force_n
+            ):
+                # Above the sensor ceiling a breach is undetectable
+                # (saturated readings cannot distinguish 120 N from
+                # 200 N), so enforcement clamps to the sensed ceiling:
+                # stricter than requested, and actually verifiable.
+                limit = caps.max_sensed_force_n
             constraints.append(
                 Constraint(
                     code="process_force",
-                    limit=req.limit,
+                    limit=limit,
                     hard=req.hard,
                     measure=lambda obs: abs(obs.force_z_n),
                 )

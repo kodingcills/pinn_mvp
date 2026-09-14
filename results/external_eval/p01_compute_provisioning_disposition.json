@@ -1,0 +1,22 @@
+{
+  "node": "P01_compute_provisioning",
+  "verdict": "COMPUTE_PROVISIONING_BLOCKED_CREDENTIALS",
+  "date": "2026-09-10",
+  "attempts": [
+    "local: Apple M4 Pro, no NVIDIA GPU (known from prior campaign)",
+    "aws: ~/.aws contains only an amazonq IDE-assistant directory; no AWS credentials, no aws CLI installed",
+    "gcloud: not installed, no ~/.config/gcloud",
+    "modal/runpod CLIs: not installed, no env credentials",
+    "ssh host oci-ubuntu (129.158.255.119) from ~/.ssh/config: reachable, but ALL four local key identities rejected (publickey) - BatchMode probes with id_ed25519, id_rsa, id_ed25519_github_school, id_ed25519_work"
+  ],
+  "specific_external_limitation": "no valid credentials for any compute provider exist on this machine; the one known remote Linux host rejects every local key",
+  "unblock_options": [
+    "add a valid SSH key for oci-ubuntu to ~/.ssh/ and confirm GPU presence (nvidia-smi) on that host",
+    "provide AWS/GCP/RunPod/Lambda credentials",
+    "install + authenticate any cloud CLI"
+  ],
+  "claim_impact": {
+    "C6": "remains UNKNOWN; blocked on credentials, NOT on integration work",
+    "note": "the runnable Colosseum package (scripts/run_colosseum_v2_official.sh) is ready and verified against upstream via librarian research"
+  }
+}

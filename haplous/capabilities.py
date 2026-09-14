@@ -47,8 +47,11 @@ class RefusalReason:
 @dataclass(frozen=True)
 class FeasibilityResult:
     """SUPPORTED | DEGRADED | REFUSED with structured reasons. DEGRADED is
-    only reachable through soft requirements; a hard requirement that is not
-    fully satisfiable always refuses."""
+    reachable when a requirement is enforceable with disclosure: an upper
+    bound above the sensor ceiling (enforced at the ceiling), a deadline
+    below the nominal expected duration (enforced mid-execution), or a
+    soft requirement at a capability margin. REFUSED is reserved for
+    requirements that cannot be satisfied or enforced at all."""
 
     outcome: str
     reasons: tuple[RefusalReason, ...]
@@ -84,23 +87,19 @@ def negotiate(intent: ExecutionIntent, caps: MachineCapabilities) -> Feasibility
                     )
                 )
             elif req.limit > caps.max_sensed_force_n:
-                if req.hard:
-                    refusals.append(
-                        RefusalReason(
-                            "force_requirement_unsensed",
-                            f"hard force limit {req.limit} N exceeds sensed "
-                            f"range {caps.max_sensed_force_n} N",
-                        )
+                # An upper bound above the sensor ceiling is enforceable:
+                # hold the sensed value at the ceiling (stricter than the
+                # requested limit). Refusal would conflate "cannot verify
+                # above ceiling" with "cannot honor".
+                degradations.append(
+                    RefusalReason(
+                        "force_requirement_enforced_at_sensor_ceiling",
+                        f"force limit {req.limit} N exceeds sensed range "
+                        f"{caps.max_sensed_force_n} N; execution enforces "
+                        f"at the sensed ceiling {caps.max_sensed_force_n} N "
+                        "(stricter than requested)",
                     )
-                else:
-                    degradations.append(
-                        RefusalReason(
-                            "force_requirement_unverified",
-                            f"soft force limit {req.limit} N exceeds sensed "
-                            f"range {caps.max_sensed_force_n} N; it cannot "
-                            "be verified during execution",
-                        )
-                    )
+                )
         elif req.kind is RequirementKind.MIN_PROCESS_FORCE_N:
             if SensingChannel.FORCE_Z not in caps.sensing:
                 refusals.append(

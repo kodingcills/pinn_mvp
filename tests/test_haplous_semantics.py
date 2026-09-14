@@ -271,7 +271,12 @@ def test_refuses_unsupported_requirement():
     assert runtime.state is ExecutionState.REFUSED
 
 
-def test_hard_force_over_sensed_range_refuses():
+def test_hard_force_over_sensed_range_degrades_and_enforces_at_ceiling():
+    """A hard force limit above the sensor ceiling is enforceable at the
+    ceiling (stricter than requested): accept with disclosure, never
+    refuse. Measured counterfactual evidence (results/
+    false_refusal_summary.json): the refused execution completed at
+    2.18 N against the 150 N contract."""
     machine = ScriptedMachine(observation=obs(0.0))
     runtime = HaplousRuntime(machine, behaviors={"motion": HoldBehavior})
     result = runtime.submit(
@@ -283,8 +288,9 @@ def test_hard_force_over_sensed_range_refuses():
             ),
         )
     )
-    assert result.outcome == "REFUSED"
-    assert result.reasons[0].code == "force_requirement_unsensed"
+    assert result.outcome == "DEGRADED"
+    codes = [r.code for r in result.reasons]
+    assert "force_requirement_enforced_at_sensor_ceiling" in codes
 
 
 def test_hard_tolerance_below_resolution_refuses():

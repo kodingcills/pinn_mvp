@@ -77,8 +77,13 @@ def insertion_scenarios() -> list[Scenario]:
             task_family="peg_insertion",
             max_force_n=150.0,
             position_tolerance_m=0.0005 + PEN_ALLOW_M,
-            expected_disposition="REFUSED",
-            infeasible_request=True,
+            # Counterfactual-falsified infeasibility (results/
+            # false_refusal_summary.json): the request completes at
+            # 2.18 N peak, far inside the 150 N contract; the capability
+            # model now degrades to ceiling enforcement instead of
+            # refusing.
+            expected_disposition="COMPLETE",
+            infeasible_request=False,
             tags=("task_a", "semantic"),
         ),
         Scenario(
@@ -86,8 +91,12 @@ def insertion_scenarios() -> list[Scenario]:
             task_family="peg_insertion",
             deadline_s=2.0,
             position_tolerance_m=0.0005 + PEN_ALLOW_M,
-            expected_disposition="REFUSED",
-            infeasible_request=True,
+            # Counterfactual-falsified infeasibility: nominal seating
+            # completes at ~1.62 s, inside the 2 s contract; the 4.0 s
+            # duration declaration was never a measured quantity and is
+            # calibrated to 2.0 s (see benchmarks/heb/tasks.py).
+            expected_disposition="COMPLETE",
+            infeasible_request=False,
             tags=("task_a", "semantic"),
         ),
         Scenario(

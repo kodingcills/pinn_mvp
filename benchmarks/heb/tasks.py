@@ -48,7 +48,12 @@ register(
         bundle_builder=realize_insertion_bundle,
         behavior_factory=insertion_behavior_factory,
         condition_factory=insertion_condition_factory,
-        expected_duration_s=4.0,
+        # Calibrated from measured completions (results/
+        # competent_supervisor_dev_rows.jsonl): nominal-path seating
+        # 1.62-1.68 s across 9 nominal dev trials; offset-path seating
+        # up to 2.62 s. 2.0 s is the nominal-path expectation; larger
+        # offsets carry deadline risk enforced mid-execution.
+        expected_duration_s=2.0,
     ),
 )
 register(
