@@ -61,19 +61,22 @@ def arm_summary(rows: list[dict[str, Any]], force_limit_n: float = 25.0) -> dict
     summary: dict[str, Any] = {
         "n": n,
         "task_success": st.proportion_ci(succ, n).as_dict(),
-        "bounded_success": st.proportion_ci(bnd, n).as_dict(),
         "any_violation": st.proportion_ci(viol, n).as_dict(),
         "coverage": st.proportion_ci(len(acc), n).as_dict(),
         "violation_conditional_acceptance": (
             st.proportion_ci(viol_acc, len(acc)).as_dict() if acc else {"value": None, "n": 0, "note": "no accepted trials"}
         ),
     }
-    # HEB headline semantics: BSR among accepted trials (genuine
-    # infeasibility refusals are coverage, not bounded-success failures).
+    # Both BSR denominators, always reported together (campaign spec
+    # sec. 3): system BSR counts every presented request; conditional BSR
+    # counts only accepted executions. Never collapse them.
     bnd_acc = sum(1 for r in acc if r.get("bounded_success"))
-    summary["bounded_success_among_accepted"] = (
+    summary["bsr_system"] = st.proportion_ci(bnd, n).as_dict()
+    summary["bsr_conditional"] = (
         st.proportion_ci(bnd_acc, len(acc)).as_dict() if acc else {"value": None, "n": 0, "note": "no accepted trials"}
     )
+    summary["bounded_success"] = summary["bsr_system"]
+    summary["bounded_success_among_accepted"] = summary["bsr_conditional"]
     if forces:
         summary["peak_force_tail"] = st.tail_percentiles(forces)
         summary["force_exceedance_tail"] = st.tail_percentiles(exceedance := [max(0.0, f - force_limit_n) for f in forces])

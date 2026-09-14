@@ -1,0 +1,116 @@
+{
+ "n_scenarios": 27,
+ "n_refusals": 5,
+ "classifications": {
+  "TRUE_REFUSAL": 3,
+  "FALSE_REFUSAL": 2,
+  "AMBIGUOUS": 0
+ },
+ "false_refusal_rate": 0.4,
+ "true_refusal_rate": 0.6,
+ "ambiguous_rate": 0.0,
+ "by_refusal_code": {
+  "unreachable_goal": {
+   "TRUE_REFUSAL": 1,
+   "FALSE_REFUSAL": 0,
+   "AMBIGUOUS": 0
+  },
+  "force_requirement_unsensed": {
+   "TRUE_REFUSAL": 0,
+   "FALSE_REFUSAL": 1,
+   "AMBIGUOUS": 0
+  },
+  "deadline_unachievable": {
+   "TRUE_REFUSAL": 1,
+   "FALSE_REFUSAL": 1,
+   "AMBIGUOUS": 0
+  }
+ },
+ "refusals": [
+  {
+   "scenario_id": "insert_offset_5mm_infeasible",
+   "task_family": "peg_insertion",
+   "refusal_codes": [
+    "unreachable_goal"
+   ],
+   "reason": "negotiation_refusal",
+   "classification": "TRUE_REFUSAL",
+   "counterfactual": {
+    "completed": false,
+    "deadline_met": true,
+    "peak_force_n": 2.1395083757235667,
+    "max_tilt_deg": 0.061215273025911704,
+    "force_limit_breached": false,
+    "tilt_limit_breached": false
+   }
+  },
+  {
+   "scenario_id": "insert_force_limit_150n",
+   "task_family": "peg_insertion",
+   "refusal_codes": [
+    "force_requirement_unsensed"
+   ],
+   "reason": "negotiation_refusal",
+   "classification": "FALSE_REFUSAL",
+   "counterfactual": {
+    "completed": true,
+    "deadline_met": true,
+    "peak_force_n": 2.179550733816033,
+    "max_tilt_deg": 8.939381097217262e-05,
+    "force_limit_breached": false,
+    "tilt_limit_breached": false
+   }
+  },
+  {
+   "scenario_id": "insert_deadline_2s",
+   "task_family": "peg_insertion",
+   "refusal_codes": [
+    "deadline_unachievable"
+   ],
+   "reason": "negotiation_refusal",
+   "classification": "FALSE_REFUSAL",
+   "counterfactual": {
+    "completed": true,
+    "deadline_met": true,
+    "peak_force_n": 2.179550733816033,
+    "max_tilt_deg": 8.939381097217262e-05,
+    "force_limit_breached": false,
+    "tilt_limit_breached": false
+   }
+  },
+  {
+   "scenario_id": "insert_stale_persistent",
+   "task_family": "peg_insertion",
+   "refusal_codes": [],
+   "reason": null,
+   "classification": "TRUE_REFUSAL",
+   "counterfactual": {
+    "completed": true,
+    "deadline_met": true,
+    "peak_force_n": 2.179550733816033,
+    "max_tilt_deg": 8.939381097217262e-05,
+    "force_limit_breached": false,
+    "tilt_limit_breached": false
+   }
+  },
+  {
+   "scenario_id": "slide_deadline_infeasible",
+   "task_family": "constrained_slide",
+   "refusal_codes": [
+    "deadline_unachievable"
+   ],
+   "reason": "negotiation_refusal",
+   "classification": "TRUE_REFUSAL",
+   "counterfactual": {
+    "completed": true,
+    "deadline_met": false,
+    "peak_force_n": 1.7357580466895706,
+    "max_tilt_deg": 0.3982536945754278,
+    "force_limit_breached": false,
+    "tilt_limit_breached": false
+   }
+  }
+ ],
+ "elapsed_s": 28.78304170901538,
+ "platform": "3.12.13 macOS-26.5.1-arm64-arm-64bit"
+}

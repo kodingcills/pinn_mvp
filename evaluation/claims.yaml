@@ -124,7 +124,7 @@ claims:
     statement: >
       A Haplous-owned control mechanism outperforms strong incumbent
       contact controllers on meaningful control objectives.
-    epistemic_status: REFUTED_WITHIN_TESTED_SCOPE
+    epistemic_status: UNKNOWN
     primary_metrics: [control_objective_pareto]
     diagnostic_metrics: [tracking_rmse, overshoot, settling_time, oscillation_energy, chatter_count]
     benchmarks: [internal_controller_candidates]
@@ -138,13 +138,19 @@ claims:
     falsification_condition: >
       Every tested candidate is dominated by a simple fixed-gain
       incumbent.
-    known_confounders: [only_two_candidates_tested]
+    known_confounders: [only_two_candidates_tested, no_representative_controller_class_tournament]
     current_evidence:
       - tests/test_governor.py
       - docs/HAPLOUS_EXTERNAL_BENCHMARK_REPORT.md
     caveat: >
-      G1 governor and O2 momentum observer both negative; both remain
-      withdrawn. A new candidate must re-earn promotion from evidence.
+      G1 governor and O2 momentum observer both REFUTED_WITHIN_TESTED_SCOPE;
+      both remain withdrawn. The broad Haplous-native controller thesis is
+      UNKNOWN / NOT CURRENTLY MOTIVATED: no representative controller
+      class tournament has been run, and current failure mass does not
+      concentrate on control (1 CONTROL-class trial per arm in the dev
+      family, identical across arms). A candidate must re-earn promotion
+      from evidence; do not confuse G1's failure with universal
+      falsification.
 
   - claim_id: C6
     name: LEARNED_POLICY_VALUE
