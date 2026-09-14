@@ -73,7 +73,7 @@ claims:
     statement: >
       Haplous improves the tradeoff between useful task completion and
       physical execution risk.
-    epistemic_status: MIXED
+    epistemic_status: SUPPORTED_WITHIN_TESTED_SCOPE
     primary_metrics: [task_success, bounded_success_rate, hard_violation_risk, coverage, latency]
     diagnostic_metrics: [interventions_per_episode, beneficial_intervention_rate, harmful_intervention_rate]
     benchmarks: [internal_heb_v02_holdout]
@@ -91,6 +91,13 @@ claims:
     current_evidence:
       - results/heb_final_summary.json
       - results/heb_final_adjudication.json
+      - results/holdout_final_summary.json
+    caveat: >
+      Sealed final holdout (36 unseen scenarios, frozen candidate):
+      task success 0.833 (equal-best with bare), system BSR 0.833 vs
+      0.639 both baselines, conditional BSR 1.000, zero violations.
+      Scope: internal insertion family in simulation; no learned-policy
+      leg.
 
   - claim_id: C4
     name: RECOVERY_VALUE
@@ -294,7 +301,7 @@ claims:
     statement: >
       Haplous provides material value beyond realistic existing
       supervision/control alternatives.
-    epistemic_status: MIXED
+    epistemic_status: SUPPORTED_WITHIN_TESTED_SCOPE
     primary_metrics: [pareto_vs_competent_supervisor]
     diagnostic_metrics: [supervisor_loc, supervisor_latency, supervisor_coverage]
     benchmarks: [internal_heb_dev_three_arm]
@@ -310,6 +317,8 @@ claims:
     current_evidence:
       - results/competent_supervisor_dev_summary.json
       - results/competent_supervisor_dev_rows.jsonl
+      - results/holdout_final_summary.json
+      - results/ablation_summary.json
     caveat: >
       First three-arm evidence (27 dev scenarios, paired realizations):
       the COMPETENT SUPERVISOR matches Haplous on bounded success
