@@ -140,13 +140,19 @@ class HaplousSystem:
         evidence = runtime.execute()
         wall = time.perf_counter() - t0
         outcome = [e for e in evidence.events if e.kind == "outcome"][-1]
+        applied = getattr(
+            realization.machine, "last_session_applied_command_times", ()
+        )
         return SystemRun(
             system=self.name,
             disposition=outcome.payload["result"],
             reason=outcome.payload.get("reason"),
             observations=realization.machine.last_session_observations,
             wall_s=wall,
-            detail={"evidence_events": len(evidence.events)},
+            detail={
+                "evidence_events": len(evidence.events),
+                "applied_command_times": tuple(applied),
+            },
         )
 
 
@@ -237,12 +243,14 @@ class SupervisedSystem:
         wall = time.perf_counter() - t0
         if disposition == "ABORTED" and session.fault is not None:
             reason = f"machine_fault_{session.fault}"
+        applied = getattr(session, "applied_command_times", ())
         return SystemRun(
             system=self.name,
             disposition=disposition,
             reason=reason,
             observations=tuple(observations),
             wall_s=wall,
+            detail={"applied_command_times": tuple(applied)},
         )
 
 
@@ -313,10 +321,12 @@ class BareSystem:
         wall = time.perf_counter() - t0
         if disposition == "ABORTED" and session.fault is not None:
             reason = f"machine_fault_{session.fault}"
+        applied = getattr(session, "applied_command_times", ())
         return SystemRun(
             system=self.name,
             disposition=disposition,
             reason=reason,
             observations=tuple(observations),
             wall_s=wall,
+            detail={"applied_command_times": tuple(applied)},
         )

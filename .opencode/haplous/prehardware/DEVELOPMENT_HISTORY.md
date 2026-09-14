@@ -43,3 +43,41 @@
 - Failure redistribution: none observed (the two newly accepted
   scenarios complete within contract; no new stop-interventions).
 - Decision: KEEP
+
+## v3 — temporal hold/revalidate/resume (Wave 3)
+
+- Motivating evidence: counterfactual fork (post-v2 rerun): 3 of 4
+  runtime stop-interventions were HARMFUL, all temporal-integrity stops
+  (dropout_large, stale_mid_motion, command_rejection_persistent) where
+  the unmediated arm completes within contract. Hypothesis artifact:
+  .opencode/haplous/prehardware/WAVE3_TEMPORAL_HOLD_HYPOTHESIS.md
+- Change: temporal-integrity faults (freshness gap, stale delivery,
+  command-rejection streak) now SUSPEND authority (DEGRADED, compliant
+  hold of the last accepted command) instead of aborting; on restoration
+  the fresh observation is revalidated (normal constraint evaluation) -
+  clean resumes, breached aborts. Bounded by new MachineCapabilities
+  field max_hold_unobserved_s (default 0.5 s = 25x the 20 ms freshness
+  contract; measured safe hold 200 ms). Pre-execution stale refusal and
+  machine-fault aborts unchanged. Temporal faults never consume recovery
+  budget (recovery is for physical breaches).
+- Grading correction (arm-symmetric, machine-recorded): staleness
+  violations now require ACTUATION within the stale span (applied-
+  command times from the machine session, open interval). Closes the
+  caching loophole (bare acting through blackouts still grades in
+  violation: 4052 staleness catches stand for bare where it actuated);
+  suspension-without-actuation no longer counts machine-imposed
+  staleness against the execution.
+- Scenario expectations updated where counterfactual evidence falsified
+  them (4 dev temporal scenarios + v0-sim dropout_large and
+  unsupported_requirement_force, all ABORTED/REFUSED -> COMPLETE).
+- After metrics (paired, 27 dev scenarios, three arms):
+  - haplous: SR 14 -> 19 (0.704), BSR among accepted 13/24 (0.542) ->
+    15/20 (0.750), coverage 24/27, violation-trials 3
+  - supervisor: SR 0.519, BSRacc 0.519, violation-trials 4
+  - haplous now EXCEEDS the supervisor on every headline metric
+  - counterfactual: 0 HARMFUL interventions (was 3); 1 BENEFICIAL
+  - false refusals 0/3; refusal precision/recall 1.0
+  - v0-sim conformance 20/20 under updated expectations
+- Failure redistribution: none (per-scenario diff: only ABORTED ->
+  COMPLETE transitions, zero regressions).
+- Decision: KEEP

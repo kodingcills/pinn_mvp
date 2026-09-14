@@ -186,7 +186,8 @@ def sliding_scenarios() -> list[Scenario]:
             position_tolerance_m=_SLIDE_TOLERANCE_M,
             persistence_s=_SLIDE_PERSISTENCE_S,
             stale_windows_s=((mid_slide, mid_slide + 0.2, 0.05),),
-            expected_disposition="ABORTED",
+            # Temporal fault: hold/revalidate/resume (Wave 3 semantics).
+            expected_disposition="COMPLETE",
             tags=("task_b", "measurement"),
         ),
         Scenario(
@@ -214,7 +215,8 @@ def sliding_scenarios() -> list[Scenario]:
             position_tolerance_m=_SLIDE_TOLERANCE_M,
             persistence_s=_SLIDE_PERSISTENCE_S,
             command_rejection_windows_s=((mid_slide, mid_slide + 0.02),),
-            expected_disposition="ABORTED",
+            # Temporal fault: hold/revalidate/resume (Wave 3 semantics).
+            expected_disposition="COMPLETE",
             tags=("task_b", "capability"),
         ),
         Scenario(

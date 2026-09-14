@@ -98,14 +98,19 @@ SCENARIOS: list[ScenarioSpec] = [
                  MuJoCoMachineConfig(dropout_windows_s=((1.0, 1.005),)),
                  VALIDATED_LOOSE_V1, dict(initial_offset_m=0.001,
                                           initial_bearing_rad=1.3)),
-    ScenarioSpec("measurement_dropout_large", "measurement", "ABORTED", False,
+    # Counterfactual-falsified abort: the unmediated arm completes within
+    # contract; temporal faults hold/revalidate/resume (Wave 3).
+    ScenarioSpec("measurement_dropout_large", "measurement", "COMPLETE", False,
                  MuJoCoMachineConfig(dropout_windows_s=((1.0, 1.2),)),
                  VALIDATED_LOOSE_V1, dict(initial_offset_m=0.001,
                                           initial_bearing_rad=3.3)),
     ScenarioSpec("stale_observation", "measurement", "REFUSED", True,
                  MuJoCoMachineConfig(receive_delay_s=0.05),
                  VALIDATED_LOOSE_V1, dict(initial_offset_m=0.0)),
-    ScenarioSpec("unsupported_requirement_force", "semantic", "REFUSED", True,
+    # Counterfactual-falsified refusal: completes at ~2 N vs the 150 N
+    # contract; the capability model degrades to ceiling enforcement
+    # (Wave 2).
+    ScenarioSpec("unsupported_requirement_force", "semantic", "COMPLETE", False,
                  STANDARD_CONFIG, VALIDATED_LOOSE_V1,
                  dict(initial_offset_m=0.0, max_force_n=150.0)),
     ScenarioSpec("deadline_unachievable", "semantic", "REFUSED", True,

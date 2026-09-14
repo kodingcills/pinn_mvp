@@ -120,8 +120,8 @@ def stale_tail(script, onset_tick, end_tick=None, extra_delay_s=0.1):
 
 def test_mid_motion_stale_delivery_detected_on_first_stale_tick():
     """A stale-delivery window opening at t=0.10 is detected on the first
-    affected tick (detection latency 0 ticks); the stop is issued on the
-    same tick (stop latency 0 ticks)."""
+    affected tick (detection latency 0 ticks): authority is suspended on
+    that same tick (temporal hold)."""
     onset = 0.10
     script = stream(seated_samples(30, z=-0.002, fz=1.0))
     script = stale_tail(script, onset_tick=20)
@@ -129,12 +129,11 @@ def test_mid_motion_stale_delivery_detected_on_first_stale_tick():
     runtime = HaplousRuntime(machine, behaviors=BEHAVIORS)
     runtime.submit(make_intent(recovery_policy=None))
     evidence = runtime.execute()
-    assert runtime.state is ExecutionState.ABORTED
-    violations = evidence.constraint_violations()
-    assert violations and violations[0]["code"] == "state_freshness"
-    assert violations[0]["t_s"] == pytest.approx(onset)
-    assert outcome_payload(evidence)["reason"] == "hard_constraint_state_freshness"
-    assert machine.stop_calls == 1
+    holds = [
+        e for e in evidence.events if e.kind == "temporal_hold_entered"
+    ]
+    assert holds and holds[0].t_s == pytest.approx(onset)
+    assert holds[0].payload["cause"] == "stale_state"
 
 
 def test_mid_motion_machine_fault_zero_tick_stop_latency():
@@ -155,9 +154,10 @@ def test_mid_motion_machine_fault_zero_tick_stop_latency():
 
 
 def test_no_command_authorized_from_stale_state():
-    """During a stale window with recovery permitted, recovery decisions
-    re-reference the behavior but NO new command is applied from stale
-    state; the machine holds its previous command."""
+    """During a stale window NO new command is applied from stale state:
+    authority is suspended (temporal hold, not recovery - temporal
+    faults never consume recovery budget) and restored on the first
+    fresh observation."""
     script = stream(seated_samples(15, z=-0.002, fz=1.0))
     script += stream(seated_samples(40), period=0.005)[18:]
     script = stale_tail(script, onset_tick=15, end_tick=18, extra_delay_s=0.05)
@@ -174,10 +174,13 @@ def test_no_command_authorized_from_stale_state():
     )
     evidence = runtime.execute()
     assert runtime.state is ExecutionState.COMPLETE
+    kinds = [e.kind for e in evidence.events]
+    assert "temporal_hold_entered" in kinds
+    assert "temporal_revalidation_resumed" in kinds
     decisions = [
         e for e in evidence.events if e.kind == "recovery_decision"
     ]
-    assert decisions, "stale window did not trigger recovery"
+    assert not decisions, "temporal hold must not consume recovery budget"
 
 
 # ---------------------------------------------------------------------------
@@ -223,7 +226,10 @@ def test_adapter_packet_loss_small_window_degrades_and_completes():
     assert "degraded" in transitions
 
 
-def test_adapter_packet_loss_large_window_aborts():
+def test_adapter_packet_loss_large_window_holds_and_resumes():
+    """A 200 ms packet-loss window is temporal uncertainty: authority is
+    suspended, the machine holds, and the execution resumes on the first
+    fresh observation (200 ms < the 0.5 s hold budget)."""
     machine = insertion_machine(
         VALIDATED_LOOSE_V1,
         state_max_age_s=0.02,
@@ -235,36 +241,37 @@ def test_adapter_packet_loss_large_window_aborts():
     runtime = HaplousRuntime(machine, behaviors=INSERTION_BEHAVIORS)
     runtime.submit(intent)
     runtime.execute()
-    assert runtime.state is ExecutionState.ABORTED
+    assert runtime.state is ExecutionState.COMPLETE
     kinds = [e.kind for e in runtime.evidence.events]
     assert "measurement_loss" in kinds
-    payload = outcome_payload(runtime.evidence)
-    assert payload["result"] == "ABORTED"
+    assert "temporal_hold_entered" in kinds
+    assert "temporal_revalidation_resumed" in kinds
 
 
-def test_adapter_stale_window_mid_motion_aborts_with_latency():
+def test_adapter_stale_window_mid_motion_holds_with_latency():
     """A 50 ms extra-delivery window opening at t=1.0 s: the first stale
-    observation breaches the 20 ms freshness constraint on the tick it is
-    received (detection latency < 1 tick); the stop is issued on that tick."""
+    observation suspends authority on the tick it is received (detection
+    latency < 1 tick); the 400 ms window ends inside the 0.5 s hold
+    budget and the execution resumes."""
     machine = insertion_machine(
         VALIDATED_LOOSE_V1,
         state_max_age_s=0.02,
-        stale_windows_s=((1.0, 1.5, 0.05),),
+        stale_windows_s=((1.0, 1.4, 0.05),),
     )
     intent = insertion_intent(VALIDATED_LOOSE_V1.task, initial_offset_m=0.0)
     runtime = HaplousRuntime(machine, behaviors=INSERTION_BEHAVIORS)
     runtime.submit(intent)
     runtime.execute()
-    assert runtime.state is ExecutionState.ABORTED
-    violations = runtime.evidence.constraint_violations()
-    assert violations and violations[0]["code"] == "state_freshness"
-    assert violations[0]["t_s"] == pytest.approx(1.0, abs=1e-9)
-    assert machine.stop_calls == 1
-    payload = outcome_payload(runtime.evidence)
-    assert payload["reason"] == "hard_constraint_state_freshness"
+    assert runtime.state is ExecutionState.COMPLETE
+    holds = [
+        e for e in runtime.evidence.events if e.kind == "temporal_hold_entered"
+    ]
+    assert holds and holds[0].t_s == pytest.approx(1.0, abs=1e-9)
+    kinds = [e.kind for e in runtime.evidence.events]
+    assert "temporal_revalidation_resumed" in kinds
 
 
-def test_adapter_persistent_command_rejection_mid_motion_aborts():
+def test_adapter_persistent_command_rejection_holds_and_resumes():
     machine = insertion_machine(
         VALIDATED_LOOSE_V1,
         command_rejection_windows_s=((1.0, 1.01),),
@@ -273,14 +280,15 @@ def test_adapter_persistent_command_rejection_mid_motion_aborts():
     runtime = HaplousRuntime(machine, behaviors=INSERTION_BEHAVIORS)
     runtime.submit(intent)
     runtime.execute()
-    assert runtime.state is ExecutionState.ABORTED
-    payload = outcome_payload(runtime.evidence)
-    assert payload["reason"] == "command_rejection_persistent"
+    assert runtime.state is ExecutionState.COMPLETE
     rejections = [
         e for e in runtime.evidence.events if e.kind == "command_rejected"
     ]
-    assert len(rejections) == 3
+    assert len(rejections) >= 3
     assert rejections[0].t_s == pytest.approx(1.0, abs=1e-9)
+    kinds = [e.kind for e in runtime.evidence.events]
+    assert "temporal_hold_entered" in kinds
+    assert "temporal_revalidation_resumed" in kinds
 
 
 def test_adapter_transient_command_rejection_completes():
@@ -313,9 +321,10 @@ def test_adapter_machine_fault_mid_motion_aborts_at_fault_time():
     assert machine.stop_calls == 1
 
 
-def test_adapter_stale_window_with_recovery_policy_recovers():
-    """With freshness explicitly permitted for recovery, a short stale
-    window consumes recovery actions and the insertion still completes."""
+def test_adapter_stale_window_resumes_without_recovery():
+    """A short stale window suspends authority and resumes on fresh
+    state WITHOUT consuming recovery budget: temporal faults are holds,
+    not recoveries."""
     machine = insertion_machine(
         VALIDATED_LOOSE_V1,
         state_max_age_s=0.02,
@@ -335,4 +344,6 @@ def test_adapter_stale_window_with_recovery_policy_recovers():
     runtime.execute()
     assert runtime.state is ExecutionState.COMPLETE
     kinds = [e.kind for e in runtime.evidence.events]
-    assert "recovery_decision" in kinds
+    assert "temporal_hold_entered" in kinds
+    assert "temporal_revalidation_resumed" in kinds
+    assert "recovery_decision" not in kinds

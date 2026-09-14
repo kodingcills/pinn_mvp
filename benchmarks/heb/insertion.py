@@ -116,7 +116,11 @@ def insertion_scenarios() -> list[Scenario]:
             initial_bearing_rad=3.3,
             position_tolerance_m=0.0005 + PEN_ALLOW_M,
             dropout_windows_s=((1.0, 1.2),),
-            expected_disposition="ABORTED",
+            # Counterfactual-falsified abort (results/
+            # counterfactual_internal_summary.json): the stop was HARMFUL
+            # - the unmediated arm completes within contract. Temporal
+            # faults are temporary uncertainty: hold, revalidate, resume.
+            expected_disposition="COMPLETE",
             tags=("task_a", "measurement"),
         ),
         Scenario(
@@ -133,7 +137,11 @@ def insertion_scenarios() -> list[Scenario]:
             task_family="peg_insertion",
             stale_windows_s=((0.3, 0.5, 0.05),),
             position_tolerance_m=0.0005 + PEN_ALLOW_M,
-            expected_disposition="ABORTED",
+            # Counterfactual-falsified abort (results/
+            # counterfactual_internal_summary.json): the stop was HARMFUL
+            # - the unmediated arm completes within contract. Temporal
+            # faults are temporary uncertainty: hold, revalidate, resume.
+            expected_disposition="COMPLETE",
             tags=("task_a", "timing"),
         ),
         Scenario(
@@ -141,7 +149,11 @@ def insertion_scenarios() -> list[Scenario]:
             task_family="peg_insertion",
             command_rejection_windows_s=((0.3, 0.32),),
             position_tolerance_m=0.0005 + PEN_ALLOW_M,
-            expected_disposition="ABORTED",
+            # Counterfactual-falsified abort (results/
+            # counterfactual_internal_summary.json): the stop was HARMFUL
+            # - the unmediated arm completes within contract. Temporal
+            # faults are temporary uncertainty: hold, revalidate, resume.
+            expected_disposition="COMPLETE",
             tags=("task_a", "capability"),
         ),
         Scenario(

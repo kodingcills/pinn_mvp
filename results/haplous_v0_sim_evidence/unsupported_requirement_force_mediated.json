@@ -21,16 +21,54 @@
      "state_period_s": 0.0005,
      "supports_stop": true
     },
-    "outcome": "REFUSED",
+    "outcome": "DEGRADED",
     "reasons": [
      {
-      "code": "force_requirement_unsensed",
-      "detail": "hard force limit 150.0 N exceeds sensed range 100.0 N"
+      "code": "force_requirement_enforced_at_sensor_ceiling",
+      "detail": "force limit 150.0 N exceeds sensed range 100.0 N; execution enforces at the sensed ceiling 100.0 N (stricter than requested)"
      }
     ]
    },
    "seq": 0,
    "t_s": 0.0
+  },
+  {
+   "kind": "degraded_requirements",
+   "payload": {
+    "reasons": [
+     {
+      "code": "force_requirement_enforced_at_sensor_ceiling",
+      "detail": "force limit 150.0 N exceeds sensed range 100.0 N; execution enforces at the sensed ceiling 100.0 N (stricter than requested)"
+     }
+    ]
+   },
+   "seq": 1,
+   "t_s": 0.0
+  },
+  {
+   "kind": "execution_authorized",
+   "payload": {
+    "observation_age_s": 0.0
+   },
+   "seq": 2,
+   "t_s": 0.0
+  },
+  {
+   "kind": "motion_started",
+   "payload": {
+    "state_period_s": 0.0005
+   },
+   "seq": 3,
+   "t_s": 0.0
+  },
+  {
+   "kind": "outcome",
+   "payload": {
+    "result": "COMPLETE",
+    "success_condition": "seated"
+   },
+   "seq": 4,
+   "t_s": 1.6239999999998767
   }
  ],
  "intent_behavior": "peg_insertion",

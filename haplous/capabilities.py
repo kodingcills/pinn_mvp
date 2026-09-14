@@ -36,6 +36,11 @@ class MachineCapabilities:
     execution_horizon_s: float
     expected_duration_s: float
     supports_stop: bool
+    # How long the machine can safely hold its last accepted command
+    # without fresh state (compliant hold; the held force is bounded by
+    # the commanded target). Temporal-integrity faults suspend authority
+    # for at most this long before the fault is treated as definitive.
+    max_hold_unobserved_s: float = 0.5
 
 
 @dataclass(frozen=True)

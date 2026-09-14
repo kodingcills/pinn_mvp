@@ -187,6 +187,7 @@ class ScriptedSession:
         self._ended = False
         self._fault: str | None = None
         self.stop_t_s: float | None = None
+        self.applied_command_times: list[float] = []
 
     def _next(self):
         if self._idx < len(self._script):
@@ -218,6 +219,7 @@ class ScriptedSession:
         if any(lo <= self._t <= hi for lo, hi in self._reject_windows_s):
             return CommandOutcome(accepted=False, reason="command_rejected")
         self._machine.applied_commands.append((self._t, command))
+        self.applied_command_times.append(self._t)
         return CommandOutcome(accepted=True)
 
     def step(self) -> None:
@@ -400,36 +402,58 @@ def test_small_measurement_loss_degrades_then_completes():
     assert outcome_payload(evidence)["result"] == "COMPLETE"
 
 
-def test_large_measurement_loss_aborts():
+def test_large_measurement_loss_holds_and_resumes():
+    """A 10-tick observation loss suspends authority (compliant hold)
+    and resumes on the first fresh observation; the execution completes."""
     script = stream(seated_samples(4, z=-0.002, fz=1.0))
     script += [None] * 10
     script += stream(seated_samples(30), period=PERIOD)[14:]
     machine = ScriptedMachine(observation=obs(0.0), script=script)
     runtime = runtime_over(machine)
     evidence = runtime.execute()
-    assert runtime.state is ExecutionState.ABORTED
+    assert runtime.state is ExecutionState.COMPLETE
     assert len(machine.open_session_calls) == 1
-    assert outcome_payload(evidence)["result"] == "ABORTED"
+    kinds = [e.kind for e in evidence.events]
+    assert "temporal_hold_entered" in kinds
+    assert "temporal_revalidation_resumed" in kinds
 
 
-def test_stale_observation_mid_motion_aborts_without_command():
-    """A delivered-but-stale observation cannot authorize a command: the
-    hard freshness constraint breaches and the execution stops."""
+def test_measurement_loss_beyond_hold_budget_aborts():
+    """Untrusted-state exposure beyond the machine's declared hold
+    budget is a definitive fault: abort."""
+    script = stream(seated_samples(4, z=-0.002, fz=1.0))
+    script += [None] * 150
+    script += stream(seated_samples(30), period=PERIOD)[14:]
+    machine = ScriptedMachine(observation=obs(0.0), script=script)
+    runtime = runtime_over(machine)
+    evidence = runtime.execute()
+    assert runtime.state is ExecutionState.ABORTED
+    payload = outcome_payload(evidence)
+    assert payload["reason"] == "temporal_hold_budget_exhausted"
+
+
+def test_stale_observation_mid_motion_holds_without_command_and_resumes():
+    """A delivered-but-stale observation cannot authorize a command:
+    authority is suspended (hold) and restored only after the fresh
+    observation revalidates clean."""
     script = stream(seated_samples(3, z=-0.002, fz=1.0))
     script.append(obs(0.0, received=0.1))  # arrives 0.1 s late
     script += stream(seated_samples(30), period=PERIOD)[6:]
     machine = ScriptedMachine(observation=obs(0.0), script=script)
     runtime = runtime_over(machine)
     evidence = runtime.execute()
-    assert runtime.state is ExecutionState.ABORTED
-    payload = outcome_payload(evidence)
-    assert payload["reason"] == "condition_not_permitted_state_freshness"
-    assert machine.stop_calls == 1
-    violations = evidence.constraint_violations()
-    assert violations and violations[0]["code"] == "state_freshness"
-    # No command was authorized from the stale state.
-    stale_t = 0.1
-    assert all(t < stale_t - 1e-9 for t, _ in machine.applied_commands)
+    assert runtime.state is ExecutionState.COMPLETE
+    kinds = [e.kind for e in evidence.events]
+    assert "temporal_hold_entered" in kinds
+    assert "temporal_revalidation_resumed" in kinds
+    kinds = [e.kind for e in evidence.events]
+    assert "temporal_revalidation_resumed" in kinds
+    # No command was authorized on the stale tick itself (script index 3
+    # -> session time 3 * PERIOD): the held command stands in for it.
+    stale_tick_t = 3 * PERIOD
+    assert all(
+        abs(t - stale_tick_t) > 1e-9 for t, _ in machine.applied_commands
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -563,7 +587,10 @@ def test_soft_force_breach_records_violation_but_completes():
     assert violations and violations[0]["hard"] is False
 
 
-def test_command_rejection_persistent_aborts():
+def test_command_rejection_persistent_holds_and_resumes():
+    """A rejection window longer than the streak limit suspends new
+    authority (the machine holds); when the machine accepts again the
+    execution resumes and completes."""
     script = stream([(0.0, 0.0, -0.002, 1.0, 0.0)] * 5)
     script += stream(seated_samples(60), period=PERIOD)[5:]
     machine = ScriptedMachine(
@@ -573,11 +600,31 @@ def test_command_rejection_persistent_aborts():
     )
     runtime = runtime_over(machine)
     evidence = runtime.execute()
-    assert runtime.state is ExecutionState.ABORTED
-    payload = outcome_payload(evidence)
-    assert payload["reason"] == "command_rejection_persistent"
+    assert runtime.state is ExecutionState.COMPLETE
     kinds = [e.kind for e in evidence.events]
     assert "command_rejected" in kinds
+    assert "temporal_hold_entered" in kinds
+    # The hold was exited: either an explicit revalidation-resume event
+    # or direct completion on the first fresh tick.
+    assert "temporal_revalidation_resumed" in kinds or kinds[-1] == "outcome"
+
+
+def test_command_rejection_beyond_hold_budget_aborts():
+    """Rejections persisting beyond the hold budget are a definitive
+    machine fault: abort. Samples stay non-seated through the window so
+    the success condition cannot complete the execution first."""
+    script = stream([(0.0, 0.0, 0.002, 0.0, 0.0)] * 130)
+    script += stream(seated_samples(30), period=PERIOD)[130:]
+    machine = ScriptedMachine(
+        observation=obs(0.0),
+        script=script,
+        reject_windows_s=((0.005, 0.6),),
+    )
+    runtime = runtime_over(machine)
+    evidence = runtime.execute()
+    assert runtime.state is ExecutionState.ABORTED
+    payload = outcome_payload(evidence)
+    assert payload["reason"] == "temporal_hold_budget_exhausted"
 
 
 def test_transient_command_rejection_degrades_and_completes():

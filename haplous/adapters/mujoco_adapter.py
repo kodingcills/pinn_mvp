@@ -98,6 +98,12 @@ class MuJoCoMachine:
         return ()
 
     @property
+    def last_session_applied_command_times(self) -> tuple[float, ...]:
+        if self._session is not None:
+            return tuple(self._session.applied_command_times)
+        return ()
+
+    @property
     def parameters(self) -> ControlParameters:
         """The mechanism parameters behind this machine, published as a
         distinct type so they can never be confused with intent."""
@@ -234,6 +240,7 @@ class _MuJoCoSession:
         self._fault: Optional[str] = None
         self._observations: list[MachineObservation] = []
         self._applied_disturbances: set[float] = set()
+        self.applied_command_times: list[float] = []
 
     # -- session protocol ---------------------------------------------------
 
@@ -322,6 +329,7 @@ class _MuJoCoSession:
                 self._delayed.append(self._data.qfrc_applied.copy())
                 if len(self._delayed) > self._delay_steps:
                     self._held = self._delayed.pop(0)
+                self.applied_command_times.append(float(self._data.time))
             if self._stopped or self._fault is not None:
                 self._data.qfrc_applied[:] = 0.0
             else:

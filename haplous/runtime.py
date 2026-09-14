@@ -245,6 +245,20 @@ class HaplousRuntime:
         degraded_announced = False
         recovery_episode: set[str] = set()
         breached_codes: set[str] = set()
+        # Temporal-integrity hold: authority suspended while state is
+        # unobservable or stale, or while the machine rejects commands.
+        # The machine compliantly holds its last accepted command; on
+        # restoration the fresh observation is revalidated before any new
+        # motion. Bounded by caps.max_hold_unobserved_s of accumulated
+        # untrusted-state exposure.
+        holding = False
+        hold_cause: str | None = None
+        untrusted_ticks = 0
+        max_hold_ticks = (
+            int(caps.max_hold_unobserved_s / period_s)
+            if period_s > 0
+            else 0
+        )
 
         try:
             first = session.observe()
@@ -277,7 +291,28 @@ class HaplousRuntime:
                 if obs is None:
                     # No observation this tick: no fresh state, so no new
                     # command may be authorized. The machine holds its last
-                    # accepted command while the runtime waits.
+                    # accepted command while the runtime waits. This is
+                    # temporal uncertainty, not definitive invalidity: the
+                    # hold budget bounds the exposure.
+                    untrusted_ticks += 1
+                    if untrusted_ticks > max_hold_ticks:
+                        self._machine.stop()
+                        self._tracker.transition(ExecutionState.ABORTED)
+                        self._evidence.append(
+                            "outcome",
+                            t_s=last_source,
+                            result="ABORTED",
+                            reason="temporal_hold_budget_exhausted",
+                            untrusted_ticks=untrusted_ticks,
+                        )
+                        return
+                    if not holding:
+                        holding = True
+                        self._evidence.append(
+                            "temporal_hold_entered",
+                            t_s=last_source,
+                            cause="observation_loss",
+                        )
                     if self._tracker.state is ExecutionState.EXECUTING:
                         self._tracker.transition(ExecutionState.DEGRADED)
                         self._evidence.append(
@@ -306,21 +341,59 @@ class HaplousRuntime:
                         state_max_age_s=state_max_age_s,
                     )
                     if gap_s > state_max_age_s:
-                        terminal, skip = self._handle_breach(
-                            ("state_freshness", True),
-                            policy,
-                            behavior,
-                            caps,
-                            obs,
-                            recovery_episode,
-                        )
-                        if terminal:
+                        # Temporal-integrity fault: suspend authority and
+                        # hold; revalidation happens on the first fresh
+                        # observation. Never a terminal outcome by itself.
+                        if not holding:
+                            holding = True
+                            hold_cause = "freshness_gap"
+                            self._evidence.append(
+                                "temporal_hold_entered",
+                                t_s=obs.stamp.source_s,
+                                cause="freshness_gap",
+                                gap_s=gap_s,
+                            )
+                        untrusted_ticks += 1
+                        if untrusted_ticks > max_hold_ticks:
+                            self._machine.stop()
+                            self._tracker.transition(ExecutionState.ABORTED)
+                            self._evidence.append(
+                                "outcome",
+                                t_s=obs.stamp.source_s,
+                                result="ABORTED",
+                                reason="temporal_hold_budget_exhausted",
+                                untrusted_ticks=untrusted_ticks,
+                            )
                             return
-                        skip_command = skip
+                        skip_command = True
                     else:
                         skip_command = False
                 else:
                     skip_command = False
+                if (
+                    holding
+                    and hold_cause != "command_rejection"
+                    and obs.stamp.age_s <= state_max_age_s
+                ):
+                    # Restoration: the fresh observation below reenters the
+                    # normal loop - constraints are re-evaluated on it and
+                    # a hard breach aborts exactly as before. A clean
+                    # revalidation resumes authority.
+                    holding = False
+                    hold_cause = None
+                    untrusted_ticks = 0
+                    self._evidence.append(
+                        "temporal_revalidation_resumed",
+                        t_s=obs.stamp.source_s,
+                        cause="fresh_state",
+                    )
+                    if self._tracker.state is ExecutionState.DEGRADED:
+                        self._tracker.transition(ExecutionState.EXECUTING)
+                        self._evidence.append(
+                            "state_transition",
+                            t_s=obs.stamp.source_s,
+                            to="executing",
+                        )
                 if degraded_announced:
                     degraded_announced = False
                     if self._tracker.state is ExecutionState.DEGRADED:
@@ -355,6 +428,33 @@ class HaplousRuntime:
                     if not status.breached:
                         continue
                     if status.hard:
+                        if status.code == "state_freshness":
+                            # Temporal-integrity fault (stale delivery):
+                            # suspend authority and hold; the fresh
+                            # revalidation below decides resumption.
+                            if not holding:
+                                holding = True
+                                hold_cause = "stale_state"
+                                self._evidence.append(
+                                    "temporal_hold_entered",
+                                    t_s=obs.stamp.source_s,
+                                    cause="stale_state",
+                                    age_s=obs.stamp.age_s,
+                                )
+                            untrusted_ticks += 1
+                            if untrusted_ticks > max_hold_ticks:
+                                self._machine.stop()
+                                self._tracker.transition(ExecutionState.ABORTED)
+                                self._evidence.append(
+                                    "outcome",
+                                    t_s=obs.stamp.source_s,
+                                    result="ABORTED",
+                                    reason="temporal_hold_budget_exhausted",
+                                    untrusted_ticks=untrusted_ticks,
+                                )
+                                return
+                            skip_command = True
+                            continue
                         if hard_breach is None:
                             hard_breach = (status.code, True)
                             self._evidence.append(
@@ -481,6 +581,26 @@ class HaplousRuntime:
                     command = behavior.step(obs)
                     outcome = session.apply(command)
                     if outcome.accepted:
+                        if holding and rejected_streak > 0:
+                            # Restoration after command rejection: the
+                            # machine accepts again; this tick's
+                            # constraints were evaluated on fresh state
+                            # above, so revalidation already passed.
+                            holding = False
+                            hold_cause = None
+                            untrusted_ticks = 0
+                            self._evidence.append(
+                                "temporal_revalidation_resumed",
+                                t_s=obs.stamp.source_s,
+                                cause="command_accepted",
+                            )
+                            if self._tracker.state is ExecutionState.DEGRADED:
+                                self._tracker.transition(ExecutionState.EXECUTING)
+                                self._evidence.append(
+                                    "state_transition",
+                                    t_s=obs.stamp.source_s,
+                                    to="executing",
+                                )
                         rejected_streak = 0
                     else:
                         rejected_streak += 1
@@ -491,15 +611,30 @@ class HaplousRuntime:
                             streak=rejected_streak,
                         )
                         if rejected_streak >= _COMMAND_REJECTION_LIMIT:
-                            self._machine.stop()
-                            self._tracker.transition(ExecutionState.ABORTED)
-                            self._evidence.append(
-                                "outcome",
-                                t_s=obs.stamp.source_s,
-                                result="ABORTED",
-                                reason="command_rejection_persistent",
-                            )
-                            return
+                            # Command rejection suspends NEW authority but
+                            # the machine holds; attempts continue so
+                            # restoration is discoverable. The hold budget
+                            # bounds the exposure.
+                            if not holding:
+                                holding = True
+                                hold_cause = "command_rejection"
+                                self._evidence.append(
+                                    "temporal_hold_entered",
+                                    t_s=obs.stamp.source_s,
+                                    cause="command_rejection",
+                                )
+                            untrusted_ticks += 1
+                            if untrusted_ticks > max_hold_ticks:
+                                self._machine.stop()
+                                self._tracker.transition(ExecutionState.ABORTED)
+                                self._evidence.append(
+                                    "outcome",
+                                    t_s=obs.stamp.source_s,
+                                    result="ABORTED",
+                                    reason="temporal_hold_budget_exhausted",
+                                    untrusted_ticks=untrusted_ticks,
+                                )
+                                return
                 session.step()
                 if session.ended:
                     if session.fault is not None:

@@ -26,35 +26,67 @@ FLOOR_GRACE_S = 0.05
 
 
 def grade_requirements(
-    scenario: Scenario, observations: tuple[MachineObservation, ...]
+    scenario: Scenario,
+    observations: tuple[MachineObservation, ...],
+    applied_command_times: tuple[float, ...] = (),
 ) -> tuple[dict, ...]:
     """Benchmark-owned hard-requirement check over the observed stream.
     The max-force ceiling is per-observation; the declared force floor is
-    graded as a sustained condition (see FLOOR_GRACE_S)."""
+    graded as a sustained condition (see FLOOR_GRACE_S).
+
+    Staleness is graded against ACTUATION, machine-recorded: a stale
+    observation or source gap is a violation only if a command was
+    applied while the state was untrustworthy (acting on stale state).
+    Suspension-without-actuation (hold) is not a violation - the machine
+    held its last accepted command, which no execution path controls.
+    This applies identically to every arm; applied times come from the
+    machine session, never from a system self-report."""
     if not observations:
         return ()
     violations: list[dict] = []
     deadline = scenario.deadline_s
     floor_streak_start: float | None = None
     contact_established = scenario.min_force_n is None
+
+    def _actuated_during(lo: float, hi: float) -> bool:
+        return any(lo - 1e-9 <= t <= hi + 1e-9 for t in applied_command_times)
+
+    def _actuated_strictly_within(lo: float, hi: float) -> bool:
+        # Open interval: a command applied exactly at span start derives
+        # from the fresh observation preceding the fault; a command at
+        # span end derives from the first fresh observation after it.
+        return any(lo + 1e-9 < t < hi - 1e-9 for t in applied_command_times)
+
+    # Stale spans (half-open: a command applied at the first fresh
+    # observation's time is derived from fresh state and is clean).
+    stale_spans: list[tuple[float, float]] = []
+    n_obs = len(observations)
+    i = 0
+    while i < n_obs:
+        if observations[i].stamp.age_s > scenario.state_max_age_s:
+            j = i
+            while j + 1 < n_obs and observations[j + 1].stamp.age_s > scenario.state_max_age_s:
+                j += 1
+            start = observations[i].stamp.source_s
+            end = (
+                observations[j + 1].stamp.source_s
+                if j + 1 < n_obs
+                else observations[j].stamp.source_s + scenario.state_max_age_s
+            )
+            stale_spans.append((start, end))
+            i = j + 1
+        else:
+            i += 1
+
     # Source-time gaps are graded too: a blackout longer than the declared
-    # state-age bound is a freshness violation even though no delivered
-    # observation carries a stale age (the grader only sees delivered
-    # samples; without this, a system that caches its last observation
-    # through a blackout grades clean — the loophole the 0.1.0 review
-    # found). The bound matches the runtime's own hard-breach rule.
+    # state-age bound is a freshness violation WHEN THE SYSTEM ACTUATED
+    # through it - a system that caches its last observation and keeps
+    # commanding grades in violation (the loophole the 0.1.0 review
+    # found); a system that suspends authority does not.
     for prev, obs in zip(observations, observations[1:]):
         gap = obs.stamp.source_s - prev.stamp.source_s
         if gap > scenario.state_max_age_s:
-            violations.append(
-                {
-                    "code": "state_freshness",
-                    "t_s": obs.stamp.source_s,
-                    "value": gap,
-                    "limit": scenario.state_max_age_s,
-                    "kind": "source_gap",
-                }
-            )
+            stale_spans.append((prev.stamp.source_s, obs.stamp.source_s))
     for obs in observations:
         t = obs.stamp.source_s
         fz = abs(obs.force_z_n)
@@ -80,14 +112,8 @@ def grade_requirements(
                 }
             )
         if obs.stamp.age_s > scenario.state_max_age_s:
-            violations.append(
-                {
-                    "code": "state_freshness",
-                    "t_s": t,
-                    "value": obs.stamp.age_s,
-                    "limit": scenario.state_max_age_s,
-                }
-            )
+            # Flagged once per stale span (below), not per observation.
+            pass
         if scenario.min_force_n is not None:
             if not contact_established:
                 if fz >= scenario.min_force_n:
@@ -106,6 +132,17 @@ def grade_requirements(
                     )
             else:
                 floor_streak_start = None
+    for start, end in stale_spans:
+        if _actuated_strictly_within(start, end):
+            violations.append(
+                {
+                    "code": "state_freshness",
+                    "t_s": start,
+                    "value": end - start,
+                    "limit": scenario.state_max_age_s,
+                    "kind": "stale_span_actuated",
+                }
+            )
     if deadline is not None and observations[-1].stamp.source_s > deadline:
         violations.append(
             {
@@ -236,7 +273,9 @@ def grade_run(scenario: Scenario, bundle, run: SystemRun, task_grader=None):
         )
     if run.disposition == "REFUSED":
         return "REFUSED", False, False, (), {"system": run.system}
-    violations = grade_requirements(scenario, run.observations)
+    violations = grade_requirements(
+        scenario, run.observations, applied_command_times=run.detail.get("applied_command_times", ())
+    )
     task_success, task_metrics = task_grader(scenario, bundle, run.observations)
     graded = "COMPLETE" if task_success else "ABORTED"
     bounded = task_success and not violations

@@ -44,11 +44,19 @@
    "t_s": 0.0
   },
   {
+   "kind": "temporal_hold_entered",
+   "payload": {
+    "cause": "observation_loss"
+   },
+   "seq": 3,
+   "t_s": 0.9994999999999453
+  },
+  {
    "kind": "state_transition",
    "payload": {
     "to": "degraded"
    },
-   "seq": 3,
+   "seq": 4,
    "t_s": 0.9994999999999453
   },
   {
@@ -57,7 +65,15 @@
     "gap_s": 0.00599999999999945,
     "state_max_age_s": 0.02
    },
-   "seq": 4,
+   "seq": 5,
+   "t_s": 1.0054999999999448
+  },
+  {
+   "kind": "temporal_revalidation_resumed",
+   "payload": {
+    "cause": "fresh_state"
+   },
+   "seq": 6,
    "t_s": 1.0054999999999448
   },
   {
@@ -65,7 +81,7 @@
    "payload": {
     "to": "executing"
    },
-   "seq": 5,
+   "seq": 7,
    "t_s": 1.0054999999999448
   },
   {
@@ -74,7 +90,7 @@
     "result": "COMPLETE",
     "success_condition": "seated"
    },
-   "seq": 6,
+   "seq": 8,
    "t_s": 1.6874999999998697
   }
  ],

@@ -21,64 +21,64 @@
   "constraint_violation_tight_force": true,
   "tight_force_enforced_live": true
  },
- "refusal_recall": "5/5",
- "refusal_precision": "5/5",
+ "refusal_recall": "4/4",
+ "refusal_precision": "4/4",
  "constraint_violations_total": 1,
  "measurement_loss_events": 2,
  "max_constraint_excess": 0.00018689715880659818,
  "feasibility_latency_s": {
-  "median": 2.2500000341096893e-05,
-  "max": 3.462499807938002e-05
+  "median": 2.3833010345697403e-05,
+  "max": 3.5667006159201264e-05
  },
  "overhead_vs_direct": {
   "nominal": {
-   "wall_delta_s": -3.023385665997921,
-   "fraction": -0.9239180648515577
+   "wall_delta_s": -2.9558172909892164,
+   "fraction": -0.9098363446873527
   },
   "recoverable_lateral_1mm": {
-   "wall_delta_s": -5.755814666998049,
-   "fraction": -0.9294139691740405
+   "wall_delta_s": -5.9267194170097355,
+   "fraction": -0.9345661489261987
   },
   "recoverable_lateral_2mm": {
-   "wall_delta_s": -2.8272634579989244,
-   "fraction": -0.8489919896797218
+   "wall_delta_s": -2.993643834022805,
+   "fraction": -0.8518104650556116
   },
   "geometry_variation_dc_plus10um": {
-   "wall_delta_s": -5.9233720830015955,
-   "fraction": -0.9370088825208189
+   "wall_delta_s": -5.988645748962881,
+   "fraction": -0.9280561966560387
   },
   "unrecoverable_lateral_5mm": {
-   "wall_delta_s": -9.0287350840008,
-   "fraction": -0.9999966219081526
+   "wall_delta_s": -9.364114166994113,
+   "fraction": -0.9999964091773379
   },
   "constraint_violation_tight_force": {
-   "wall_delta_s": -2.9955563330040604,
-   "fraction": -0.9162413364280387
+   "wall_delta_s": -2.96632020897232,
+   "fraction": -0.9075039187320132
   },
   "tight_force_enforced_live": {
-   "wall_delta_s": -2.9678872500007856,
-   "fraction": -0.925684197606825
+   "wall_delta_s": -3.043677874986315,
+   "fraction": -0.9117296251919069
   }
  },
  "execution_wall_s": {
-  "nominal": 0.24896691700269002,
-  "recoverable_lateral_1mm": 0.43713579200266395,
-  "recoverable_lateral_2mm": 0.5028780419997929,
-  "geometry_variation_dc_plus10um": 0.3982030839979416,
-  "unrecoverable_lateral_5mm": 3.0499999411404133e-05,
-  "constraint_violation_tight_force": 0.2738402919967484,
-  "tight_force_enforced_live": 0.23826800000097137,
-  "measurement_dropout_small": 0.3154979579958308,
-  "measurement_dropout_large": 0.18919937500322703,
-  "stale_observation": 2.9958995583001524e-05,
-  "unsupported_requirement_force": 1.641699782339856e-05,
-  "deadline_unachievable": 1.3667002349393442e-05,
-  "missing_success_condition": 1.445800080546178e-05
+  "nominal": 0.29291783401276916,
+  "recoverable_lateral_1mm": 0.41496054199524224,
+  "recoverable_lateral_2mm": 0.520804457977647,
+  "geometry_variation_dc_plus10um": 0.4642455420398619,
+  "unrecoverable_lateral_5mm": 3.362499410286546e-05,
+  "constraint_violation_tight_force": 0.302338083012728,
+  "tight_force_enforced_live": 0.2946779170015361,
+  "measurement_dropout_small": 0.3117992919869721,
+  "measurement_dropout_large": 0.2825787909969222,
+  "stale_observation": 3.2750016544014215e-05,
+  "unsupported_requirement_force": 0.2775139159930404,
+  "deadline_unachievable": 3.0208000680431724e-05,
+  "missing_success_condition": 1.8708000425249338e-05
  },
  "engineering_leverage": {
-  "core_runtime_loc": 1049,
-  "behavior_loc": 249,
-  "adapter_loc": 297,
+  "core_runtime_loc": 1470,
+  "behavior_loc": 413,
+  "adapter_loc": 423,
   "scenario_count": 13,
   "core_loc_changed_per_scenario_variant": 0,
   "tuned_parameters_per_scenario": 0,

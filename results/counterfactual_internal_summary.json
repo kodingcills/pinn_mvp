@@ -1,16 +1,16 @@
 {
  "scenarios": 18,
- "interventions_forked": 4,
+ "interventions_forked": 1,
  "classifications": {
   "BENEFICIAL": 1,
-  "HARMFUL": 3,
+  "HARMFUL": 0,
   "UNNECESSARY": 0,
-  "NO_INTERVENTION": 14
+  "NO_INTERVENTION": 17
  },
- "beneficial_rate": 0.25,
- "harmful_rate": 0.75,
+ "beneficial_rate": 1.0,
+ "harmful_rate": 0.0,
  "unnecessary_rate": 0.0,
- "elapsed_s": 23.639659625012428,
+ "elapsed_s": 23.325498542020796,
  "rows": [
   {
    "scenario_id": "insert_nominal",
@@ -46,9 +46,9 @@
     "completed": false,
     "peak_force_n": 14.950615942727058,
     "max_tilt_deg": 0.0019014737108550342,
-    "wall_s": 18.321729041010258
+    "wall_s": 17.145904375007376
    },
-   "mediated_wall_s": 0.3101262499985751,
+   "mediated_wall_s": 0.3694413749908563,
    "classification": "BENEFICIAL"
   },
   {
@@ -59,14 +59,14 @@
   },
   {
    "scenario_id": "insert_force_limit_150n",
-   "mediated_disposition": "REFUSED",
-   "mediated_reason": "negotiation_refusal",
+   "mediated_disposition": "COMPLETE",
+   "mediated_reason": null,
    "classification": "NO_INTERVENTION"
   },
   {
    "scenario_id": "insert_deadline_2s",
-   "mediated_disposition": "REFUSED",
-   "mediated_reason": "negotiation_refusal",
+   "mediated_disposition": "COMPLETE",
+   "mediated_reason": null,
    "classification": "NO_INTERVENTION"
   },
   {
@@ -77,18 +77,9 @@
   },
   {
    "scenario_id": "insert_dropout_large",
-   "mediated_disposition": "ABORTED",
-   "mediated_reason": "hard_constraint_state_freshness",
-   "intervention_time_s": 1.2004999999999233,
-   "intervention_force_n": 3.3413892992051544,
-   "direct_continuation": {
-    "completed": true,
-    "peak_force_n": 2.1795330446961056,
-    "max_tilt_deg": 0.002057234879284648,
-    "wall_s": 0.11978441700921394
-   },
-   "mediated_wall_s": 0.23747987500973977,
-   "classification": "HARMFUL"
+   "mediated_disposition": "COMPLETE",
+   "mediated_reason": null,
+   "classification": "NO_INTERVENTION"
   },
   {
    "scenario_id": "insert_stale_persistent",
@@ -98,33 +89,15 @@
   },
   {
    "scenario_id": "insert_stale_mid_motion",
-   "mediated_disposition": "ABORTED",
-   "mediated_reason": "hard_constraint_state_freshness",
-   "intervention_time_s": 0.3000000000000002,
-   "intervention_force_n": 0.0,
-   "direct_continuation": {
-    "completed": true,
-    "peak_force_n": 2.179550733816033,
-    "max_tilt_deg": 8.939381097217262e-05,
-    "wall_s": 0.2796980830025859
-   },
-   "mediated_wall_s": 0.05195541700231843,
-   "classification": "HARMFUL"
+   "mediated_disposition": "COMPLETE",
+   "mediated_reason": null,
+   "classification": "NO_INTERVENTION"
   },
   {
    "scenario_id": "insert_command_rejection_persistent",
-   "mediated_disposition": "ABORTED",
-   "mediated_reason": "command_rejection_persistent",
-   "intervention_time_s": 0.3010000000000002,
-   "intervention_force_n": 0.0,
-   "direct_continuation": {
-    "completed": true,
-    "peak_force_n": 2.179550733786474,
-    "max_tilt_deg": 8.939381097217262e-05,
-    "wall_s": 0.27773870900273323
-   },
-   "mediated_wall_s": 0.046846707991790026,
-   "classification": "HARMFUL"
+   "mediated_disposition": "COMPLETE",
+   "mediated_reason": null,
+   "classification": "NO_INTERVENTION"
   },
   {
    "scenario_id": "insert_command_rejection_transient",
