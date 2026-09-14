@@ -4,6 +4,7 @@ import argparse
 from collections.abc import Sequence
 
 from haplous.cli.commands import doctor_command, list_command
+from haplous.cli.demo import demo_command
 from haplous.cli.execution import eval_command, run_command
 from haplous.cli.inspection import (
     compare_command,
@@ -23,6 +24,9 @@ def _parser() -> argparse.ArgumentParser:
 
     listing = commands.add_parser("list")
     listing.set_defaults(handler=list_command)
+
+    demo = commands.add_parser("demo", help="run the three-leg reference execution (success, refusal, bounded abort)")
+    demo.set_defaults(handler=demo_command)
 
     run = commands.add_parser("run")
     run.add_argument("benchmark")

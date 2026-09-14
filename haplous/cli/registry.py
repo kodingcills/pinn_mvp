@@ -61,20 +61,47 @@ def file_sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def _git_commit_or_none() -> str | None:
+    try:
+        return subprocess.run(
+            ["git", "rev-parse", "HEAD"],
+            cwd=Path(__file__).resolve().parents[2],
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout.strip()
+    except (subprocess.CalledProcessError, FileNotFoundError, OSError):
+        return None
+
+
 class RunRegistry:
+    """Run storage. Resolution order: explicit argument, then the
+    HAPLOUS_RESULTS_DIR / HAPLOUS_ARTIFACTS_DIR environment variables,
+    then the repository layout when running from a checkout, then
+    ~/.haplous for wheel installs outside a repository."""
+
     def __init__(
         self,
         results_root: Path | None = None,
         artifacts_root: Path | None = None,
     ) -> None:
         project_root = Path(__file__).resolve().parents[2]
-        configured_results = os.environ.get("HAPLOUS_RESULTS_DIR")
-        self.results_root = results_root or (
-            Path(configured_results)
-            if configured_results
-            else project_root / "results" / "external_eval"
+        self.results_root = results_root or self._resolve_root(
+            "HAPLOUS_RESULTS_DIR", project_root / "results" / "external_eval"
         )
-        self.artifacts_root = artifacts_root or project_root / "artifacts" / "evals"
+        self.artifacts_root = artifacts_root or self._resolve_root(
+            "HAPLOUS_ARTIFACTS_DIR", project_root / "artifacts" / "evals"
+        )
+
+    @staticmethod
+    def _resolve_root(env_var: str, repo_default: Path) -> Path:
+        configured = os.environ.get(env_var)
+        if configured:
+            return Path(configured)
+        if repo_default.is_dir():
+            return repo_default
+        home = Path.home() / ".haplous"
+        return home / "runs" if env_var == "HAPLOUS_RESULTS_DIR" else home / "artifacts"
 
     def write_run(
         self,
@@ -110,13 +137,7 @@ class RunRegistry:
         }
         manifest = {
             "haplous_version": __version__,
-            "system_commit": subprocess.run(
-                ["git", "rev-parse", "HEAD"],
-                cwd=Path(__file__).resolve().parents[2],
-                check=True,
-                capture_output=True,
-                text=True,
-            ).stdout.strip(),
+            "system_commit": _git_commit_or_none(),
             "benchmark": {
                 "name": metadata.benchmark_name,
                 "version": metadata.benchmark_version,

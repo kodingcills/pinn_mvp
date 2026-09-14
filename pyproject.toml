@@ -24,3 +24,7 @@ build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
 packages = ["pegsim", "haplous", "haplous.adapters", "haplous.behaviors"]
+
+[tool.hatch.build.targets.sdist]
+only-packages = true
+exclude = [".venv*", "dist", "results", "artifacts", "datasets", "UI"]

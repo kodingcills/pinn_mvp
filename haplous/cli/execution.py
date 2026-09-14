@@ -110,7 +110,24 @@ def _write_evaluation(request: EvaluationRequest):
     return RunRegistry().write_run(metadata, _trial_rows(request.scenarios, records), summary)
 
 
+def _harness_available() -> bool:
+    import importlib.util
+
+    return importlib.util.find_spec("benchmarks") is not None
+
+
+_HARNESS_MESSAGE = (
+    "the run/eval commands execute the HEB evaluation harness, which is not\n"
+    "  part of the installed package. Use the self-contained quickstart:\n"
+    "      haplous demo\n"
+    "  or run from a repository checkout that provides the benchmarks package."
+)
+
+
 def run_command(args: Namespace) -> int:
+    if not _harness_available():
+        print(f"benchmark harness not installed:\n{_HARNESS_MESSAGE}")
+        return 3
     try:
         benchmark = get_benchmark(args.benchmark)
     except KeyError:
@@ -139,6 +156,9 @@ def run_command(args: Namespace) -> int:
 
 
 def eval_command(args: Namespace) -> int:
+    if not _harness_available():
+        print(f"benchmark harness not installed:\n{_HARNESS_MESSAGE}")
+        return 3
     external = [item for item in registered_benchmarks() if item.framework != "internal"]
     if args.suite == "external" and not external:
         print("external benchmarks: none registered")
