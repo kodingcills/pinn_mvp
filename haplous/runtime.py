@@ -10,7 +10,7 @@ degrade, recovery, and refusal can all occur mid-motion, before task
 completion."""
 from __future__ import annotations
 
-from typing import Callable, Mapping, Optional
+from typing import TYPE_CHECKING, Callable, Mapping, Optional
 
 from haplous.behavior import ExecutionBehavior
 from haplous.capabilities import FeasibilityResult, MachineCapabilities, RefusalReason, negotiate
@@ -19,6 +19,9 @@ from haplous.evidence import ExecutionEvidence
 from haplous.intent import ExecutionIntent, RequirementKind
 from haplous.machine import Machine, MachineObservation, MachineSession
 from haplous.state import ExecutionState, ExecutionStateTracker
+
+if TYPE_CHECKING:
+    from haplous.evidence_store import EvidenceSink
 
 _GAP_TOLERANCE_FACTOR = 1.5
 _COMMAND_REJECTION_LIMIT = 3
@@ -29,12 +32,23 @@ class HaplousRuntime:
         self,
         machine: Machine,
         behaviors: Optional[Mapping[str, Callable[[], ExecutionBehavior]]] = None,
+        evidence_sink: Optional["EvidenceSink"] = None,
+        max_archived_evidence: Optional[int] = None,
     ) -> None:
+        if max_archived_evidence is not None and evidence_sink is None:
+            raise ValueError(
+                "max_archived_evidence requires an evidence_sink; "
+                "eviction without a sink would silently lose evidence"
+            )
         self._machine = machine
         self._behaviors = dict(behaviors or {})
         self._tracker = ExecutionStateTracker()
         self._evidence = ExecutionEvidence()
         self._archived: list[ExecutionEvidence] = []
+        self._evidence_sink = evidence_sink
+        self._max_archived = max_archived_evidence
+        self._archive_seq = 0
+        self._flushed = 0
         self._intent: Optional[ExecutionIntent] = None
         self._feasibility: Optional[FeasibilityResult] = None
         self._recoveries_used = 0
@@ -51,6 +65,16 @@ class HaplousRuntime:
     @property
     def archived_evidence(self) -> tuple[ExecutionEvidence, ...]:
         return tuple(self._archived)
+
+    @property
+    def flushed_evidence_count(self) -> int:
+        """Terminal evidences evicted from RAM and written to the sink."""
+        return self._flushed
+
+    @property
+    def evidence_retained(self) -> int:
+        """Terminal evidences currently held in RAM (hot archive)."""
+        return len(self._archived)
 
     def submit(self, intent: ExecutionIntent) -> FeasibilityResult:
         if self._tracker.state is not ExecutionState.IDLE:
@@ -178,7 +202,14 @@ class HaplousRuntime:
         return self._evidence
 
     def reset(self) -> None:
+        self._archive_seq += 1
         self._archived.append(self._evidence)
+        if self._max_archived is not None:
+            while len(self._archived) > self._max_archived:
+                evicted = self._archived.pop(0)
+                # Flush before drop: eviction never loses evidence.
+                self._evidence_sink.write(evicted, self._archive_seq)
+                self._flushed += 1
         self._evidence = ExecutionEvidence()
         self._intent = None
         self._feasibility = None

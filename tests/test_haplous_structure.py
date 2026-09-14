@@ -14,6 +14,7 @@ def test_core_file_set_is_expected():
         "capabilities.py",
         "constraints.py",
         "evidence.py",
+        "evidence_store.py",
         "intent.py",
         "machine.py",
         "runtime.py",
