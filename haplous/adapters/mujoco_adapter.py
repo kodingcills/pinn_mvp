@@ -61,6 +61,11 @@ class MuJoCoMachineConfig:
     # a modelled impulsive disturbance (a bump/jolt), not a control input.
     disturbances: tuple[tuple[float, tuple[float, float, float, float, float, float]], ...] = ()
     expected_duration_s: float = 4.0
+    # Measured-success reach override for the refusal boundary. None
+    # reports the bundle's geometric search envelope; a value here
+    # declares the largest initial offset measured to succeed (the
+    # capture boundary), which is what "can this request succeed" means.
+    max_initial_offset_m: float | None = None
     max_sensed_force_n: float = 100.0
     max_sensed_tilt_deg: float = 45.0
     position_resolution_m: float = 1e-6
@@ -145,7 +150,11 @@ class MuJoCoMachine:
             position_resolution_m=c.position_resolution_m,
             state_period_s=b.solver.timestep * c.observation_decimation,
             state_max_age_s=c.state_max_age_s,
-            max_initial_offset_m=b.max_initial_offset_m,
+            max_initial_offset_m=(
+                c.max_initial_offset_m
+                if c.max_initial_offset_m is not None
+                else b.max_initial_offset_m
+            ),
             execution_horizon_s=b.max_seconds,
             expected_duration_s=c.expected_duration_s,
             supports_stop=True,

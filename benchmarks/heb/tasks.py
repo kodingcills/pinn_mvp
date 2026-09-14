@@ -29,6 +29,9 @@ class TaskImplementation:
     behavior_factory: Callable[[ValidatedConfig], Callable[[], object]]
     condition_factory: Callable[[Scenario, ValidatedConfig], SuccessCondition]
     expected_duration_s: float
+    # Measured-success reach for the refusal boundary; None reports the
+    # bundle's geometric envelope.
+    max_initial_offset_m: float | None = None
 
 
 _REGISTRY: dict[str, TaskImplementation] = {}
@@ -54,6 +57,11 @@ register(
         # up to 2.62 s. 2.0 s is the nominal-path expectation; larger
         # offsets carry deadline risk enforced mid-execution.
         expected_duration_s=2.0,
+        # Measured capture boundary (results/heb_sweeps_dev.json offset
+        # sweep: 3.0 mm succeeds, 3.5 mm fails, both arms) supersedes
+        # the 4.35 mm geometric search envelope for the refusal
+        # boundary.
+        max_initial_offset_m=0.003,
     ),
 )
 register(

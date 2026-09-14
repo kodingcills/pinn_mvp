@@ -29,6 +29,7 @@ def build_realization(
         fault_at_s=scenario.fault_at_s,
         disturbances=scenario.disturbances,
         expected_duration_s=impl.expected_duration_s,
+        max_initial_offset_m=impl.max_initial_offset_m,
         max_sensed_force_n=100.0,
         max_sensed_tilt_deg=45.0,
         position_resolution_m=1e-6,
