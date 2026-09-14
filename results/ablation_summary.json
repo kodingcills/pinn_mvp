@@ -1,0 +1,21 @@
+{
+ "elapsed_s": 21.5321152919787,
+ "platform": "macOS-26.5.1-arm64-arm-64bit",
+ "arms": {
+  "hold_disabled": {
+   "task_success": 13,
+   "bounded_success": 12,
+   "violation_trials": 3
+  },
+  "recovery_disabled": {
+   "task_success": 18,
+   "bounded_success": 18,
+   "violation_trials": 3
+  },
+  "haplous_v3_full": {
+   "task_success": 19,
+   "bounded_success": 18,
+   "violation_trials": 3
+  }
+ }
+}
