@@ -18,6 +18,7 @@ def test_heb_file_set_is_expected():
         "metrics.py",
         "mujoco_backend.py",
         "protocol.py",
+        "population.py",
         "runner.py",
         "sliding.py",
         "systems.py",

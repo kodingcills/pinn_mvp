@@ -130,32 +130,45 @@ def evaluate_scenario(scenario: Scenario) -> dict:
     runtime_abort = med.disposition == "ABORTED" and not reason.startswith("machine_error")
     forks: dict = {}
     if med.disposition == "REFUSED":
-        cf = run_refusal_counterfactual(machine, realization, scenario)
-        forks["refusal"] = {
-            "classification": classify_refusal(cf),
-            "completed": cf.completed,
-            "peak_force_n": cf.peak_force_n,
-        }
+        try:
+            cf = run_refusal_counterfactual(machine, realization, scenario)
+        except AssertionError:
+            # Fork tick inside a corruption window (dropout/stale/delay):
+            # snapshot limitation prevents attribution (AMBIGUOUS class).
+            forks["refusal"] = {"classification": "AMBIGUOUS", "reason": "fork_observation_unavailable"}
+        else:
+            forks["refusal"] = {
+                "classification": classify_refusal(cf),
+                "completed": cf.completed,
+                "peak_force_n": cf.peak_force_n,
+            }
     elif runtime_abort and machine.intervention_snapshots:
         snapshot = machine.intervention_snapshots[-1]
         intervention_force = max(
             (abs(o.force_z_n) for o in med.observations), default=0.0
         )
-        continuation = direct_continuation(
-            fork_realization.machine,
-            snapshot,
-            fork_realization,
-            scenario,
-            behavior=carried,
-        )
-        forks["intervention"] = {
-            "classification": classify_intervention(
-                intervention_force, continuation, hard_force_limit_n=scenario.max_force_n
-            ),
-            "intervention_force_n": intervention_force,
-            "continuation_completed": continuation.completed,
-            "continuation_peak_force_n": continuation.peak_force_n,
-        }
+        try:
+            continuation = direct_continuation(
+                fork_realization.machine,
+                snapshot,
+                fork_realization,
+                scenario,
+                behavior=carried,
+            )
+        except AssertionError:
+            forks["intervention"] = {
+                "classification": "AMBIGUOUS",
+                "reason": "fork_observation_unavailable",
+            }
+        else:
+            forks["intervention"] = {
+                "classification": classify_intervention(
+                    intervention_force, continuation, hard_force_limit_n=scenario.max_force_n
+                ),
+                "intervention_force_n": intervention_force,
+                "continuation_completed": continuation.completed,
+                "continuation_peak_force_n": continuation.peak_force_n,
+            }
     row["counterfactuals"] = forks
     return row
 
@@ -299,20 +312,18 @@ def summarize_fleet(records: list[dict], *, phase: str, seed: int, wall_s: float
     }
 
     # Counterfactuals.
-    iv = {"BENEFICIAL": 0, "HARMFUL": 0, "UNNECESSARY": 0}
+    iv = {"BENEFICIAL": 0, "HARMFUL": 0, "UNNECESSARY": 0, "AMBIGUOUS": 0}
     ref = {"TRUE": 0, "FALSE": 0, "AMBIGUOUS": 0}
     for r in records:
         cf = r["counterfactuals"]
         if "intervention" in cf:
             c = cf["intervention"]["classification"]
-            if c in iv:
-                iv[c] += 1
+            iv[c] = iv.get(c, 0) + 1
         if "refusal" in cf:
             c = cf["refusal"]["classification"]
-            if c in ref:
-                ref[c] += 1
-    n_forked = sum(iv.values())
-    forked_ci = wilson(iv["BENEFICIAL"], n_forked) if n_forked else None
+            ref[c] = ref.get(c, 0) + 1
+    n_attributable = iv["BENEFICIAL"] + iv["HARMFUL"] + iv["UNNECESSARY"]
+    forked_ci = wilson(iv["BENEFICIAL"], n_attributable) if n_attributable else None
 
     # Per-stratum (offset) haplous vs bare task success.
     strata: dict[str, dict] = {}
@@ -360,7 +371,7 @@ def summarize_fleet(records: list[dict], *, phase: str, seed: int, wall_s: float
         "systems": per_system,
         "paired": paired,
         "counterfactuals": {
-            "interventions_forked": n_forked,
+            "interventions_forked": n_attributable,
             "classifications": iv,
             "beneficial_rate_ci": forked_ci,
             "refusals_forked": sum(ref.values()),
