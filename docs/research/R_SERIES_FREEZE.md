@@ -30,7 +30,7 @@ R05 challenge-set deviations: n_segments=64 (pair covariance/bias evidence
 geometry), tuned baseline spiral speed v_t=0.1 m/s (dev-selected), Haplous
 treatment = 1 antipodal probe pair (1 mm radius) + N5 pair covariance/bias +
 StateFilter + recentered straight-drop execution. Everything else locked
-per `.opencode/haplous/state/locked-tests/R05-v3.yaml`.
+per `evaluation/locked-tests/R05-v3.yaml`.
 
 ## 3. R-series conclusions
 
@@ -97,7 +97,7 @@ Classification is by role in the Haplous product, not code quality.
 
 ## 7. Key artifact locations
 
-- Locked designs: `.opencode/haplous/state/locked-tests/R05-v{1,2,3}.yaml`
+- Locked designs: `evaluation/locked-tests/R05-v{1,2,3}.yaml`
 - Freeze record: `results/r05_freeze.json` (HEAD `abedb9ba`)
 - R05 adjudication: `results/r05_adjudication.json`
 - R05 rows: `results/r05_dev_trials.jsonl` (200), `results/r05_holdout_trials.jsonl` (160)

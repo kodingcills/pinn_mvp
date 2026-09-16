@@ -1,6 +1,6 @@
 {
  "phase": "holdout",
- "locked_design": ".opencode/haplous/state/locked-tests/R05-v3.yaml",
+ "locked_design": "evaluation/locked-tests/R05-v3.yaml",
  "locked_design_sha256": "945bea748201d7a7c1cd0de5736be5378cba0723e2510202c6343f62a374cf54",
  "freeze_repo_head": "abedb9ba19c4186fa994488e6ee402fa3b544e5f",
  "baseline_selected_v_t_m_per_s": 0.1,

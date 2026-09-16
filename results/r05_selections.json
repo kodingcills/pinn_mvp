@@ -1,5 +1,5 @@
 {
- "locked_design": ".opencode/haplous/state/locked-tests/R05-v3.yaml",
+ "locked_design": "evaluation/locked-tests/R05-v3.yaml",
  "locked_design_sha256": "945bea748201d7a7c1cd0de5736be5378cba0723e2510202c6343f62a374cf54",
  "repo_head": "c96e8a7bc72d2f25931c4b4f04d165a5f5cab14b",
  "baseline_selected_v_t_m_per_s": 0.1,

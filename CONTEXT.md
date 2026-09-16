@@ -288,7 +288,7 @@ physics-shaped symptom that cost multiple rounds of wrong theorizing.
   process priors remain placeholders.
 - **R05 (execution value of probing/filtering) is CLOSED: INCONCLUSIVE
   under the preregistered K6 waiver; no material execution value
-  demonstrated.** Locked design `.opencode/haplous/state/locked-tests/R05-v3.yaml`
+  demonstrated.** Locked design `evaluation/locked-tests/R05-v3.yaml`
   (commits `64fe02c`→`777ae40`), 20-scenario dev envelope + 80-scenario
   paired held-out evaluation, all intent-to-treat. Primary table: n10=0,
   n01=0, n11=70, n00=10; delta_hat=0, exact McNemar p=1.0. Mixed ceiling

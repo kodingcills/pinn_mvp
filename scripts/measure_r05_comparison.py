@@ -1,4 +1,4 @@
-"""R05 locked comparison driver (see .opencode/haplous/state/locked-tests/R05-v3.yaml).
+"""R05 locked comparison driver (see evaluation/locked-tests/R05-v3.yaml).
 
 Phases:
   generate  write the locked dev/holdout manifests and record their hashes
@@ -55,7 +55,7 @@ MANIFEST_HASHES = RESULTS / "r05_manifest_hashes.json"
 FREEZE = RESULTS / "r05_freeze.json"
 TRACES_DEV = RESULTS / "r05_traces_dev"
 TRACES_HOLDOUT = RESULTS / "r05_traces_holdout"
-LOCK_YAML = ROOT / ".opencode/haplous/state/locked-tests/R05-v3.yaml"
+LOCK_YAML = ROOT / "evaluation/locked-tests/R05-v3.yaml"
 MAX_WORKERS = 14
 MIN_THROUGHPUT_STEPS_PER_S = 200.0
 EPISODE_STEPS = 32600

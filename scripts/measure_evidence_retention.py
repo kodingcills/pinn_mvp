@@ -14,6 +14,7 @@ import platform
 import resource
 import shutil
 import sys
+import tempfile
 import time
 from pathlib import Path
 
@@ -49,7 +50,7 @@ def main() -> int:
     parser.add_argument("--abort-cycles", type=int, default=0)
     parser.add_argument("--ticks-per-cycle", type=int, default=10)
     parser.add_argument("--max-archived", type=int, default=64)
-    parser.add_argument("--store-dir", default="/var/folders/fm/2lpfzkpx72568chshr2qznw00000gn/T/opencode/evidence_soak")
+    parser.add_argument("--store-dir", default=str(Path(tempfile.gettempdir()) / "haplous_evidence_soak"))
     parser.add_argument("--checkpoint-every", type=int, default=100_000)
     args = parser.parse_args()
 

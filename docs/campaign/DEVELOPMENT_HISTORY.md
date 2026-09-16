@@ -8,7 +8,7 @@
   execution (insert_force_limit_150n: completes at 2.18 N vs 150 N
   contract; insert_deadline_2s: completes at ~1.62 s vs 2 s contract).
   Hypothesis artifact:
-  .opencode/haplous/prehardware/WAVE2_CAPABILITY_CALIBRATION_HYPOTHESIS.md
+  docs/campaign/WAVE2_CAPABILITY_CALIBRATION_HYPOTHESIS.md
 - Change:
   1. negotiate(): hard MAX_PROCESS_FORCE_N above the sensor ceiling
      degrades (`force_requirement_enforced_at_sensor_ceiling`) instead
@@ -50,7 +50,7 @@
   runtime stop-interventions were HARMFUL, all temporal-integrity stops
   (dropout_large, stale_mid_motion, command_rejection_persistent) where
   the unmediated arm completes within contract. Hypothesis artifact:
-  .opencode/haplous/prehardware/WAVE3_TEMPORAL_HOLD_HYPOTHESIS.md
+  docs/campaign/WAVE3_TEMPORAL_HOLD_HYPOTHESIS.md
 - Change: temporal-integrity faults (freshness gap, stale delivery,
   command-rejection streak) now SUSPEND authority (DEGRADED, compliant
   hold of the last accepted command) instead of aborting; on restoration

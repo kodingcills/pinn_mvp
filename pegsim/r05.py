@@ -1,7 +1,7 @@
 """R05 locked comparison engine (campaign: pegsim R-series closure).
 
 Implements exactly the design locked in
-``.opencode/haplous/state/locked-tests/R05-v1.yaml``. Every physics motion is
+``evaluation/locked-tests/R05-v1.yaml``. Every physics motion is
 an ``EpisodeConfig`` executed by ``pegsim.rollout.run_episode`` (campaign Rule
 1); this module composes episodes and post-processes traces -- it never steps
 MuJoCo itself.
