@@ -1,30 +1,78 @@
 [project]
 name = "pegsim"
-version = "0.5.0"
 description = "pegsim research substrate + Haplous physical-execution runtime (v0.5-sim pre-hardware candidate)"
+readme = "README.md"
 requires-python = ">=3.12"
+license = { text = "Proprietary" }
+dynamic = ["version"]
 dependencies = [
-    "h5py>=3.16.0",
-    "matplotlib>=3.11.1",
     "mujoco>=3.11.0",
     "numpy>=2.5.1",
+]
+
+[project.optional-dependencies]
+# Evaluation and reporting: manifests, Parquet result tables, plots.
+eval = [
+    "matplotlib>=3.11.1",
     "pyarrow>=25.0.1",
+    "pyyaml>=6.0",
+]
+# Development and CI tooling.
+dev = [
+    "pytest>=9.1.1",
+    "ruff>=0.6",
+    "mypy>=1.11",
+]
+# Everything needed to run the full repository test suite.
+all = [
+    "matplotlib>=3.11.1",
+    "pyarrow>=25.0.1",
+    "pyyaml>=6.0",
     "pytest>=9.1.1",
 ]
 
 [project.scripts]
 haplous = "haplous.cli:main"
 
-[tool.pytest.ini_options]
-pythonpath = ["."]
-
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
+[tool.hatch.version]
+path = "haplous/__init__.py"
+
 [tool.hatch.build.targets.wheel]
-packages = ["pegsim", "haplous", "haplous.adapters", "haplous.behaviors"]
+packages = ["pegsim", "haplous"]
 
 [tool.hatch.build.targets.sdist]
-only-packages = true
-exclude = [".venv*", "dist", "results", "artifacts", "datasets", "UI"]
+only-packages = false
+exclude = [
+    ".venv*",
+    "dist",
+    "results",
+    "artifacts",
+    "datasets",
+    "UI",
+    "data",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+extend-exclude = ["results", "dist", "datasets", "artifacts"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+# Historical research scripts are not product code; keep lint meaningful
+# for the shipped surface and the test suite.
+ignore = ["E501", "B008"]
+
+[tool.mypy]
+python_version = "3.12"
+files = ["haplous", "evaluation/experiment.py", "evaluation/stats.py", "evaluation/aggregate.py"]
+ignore_missing_imports = true
+warn_unused_ignores = true
