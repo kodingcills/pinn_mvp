@@ -32,6 +32,7 @@ import os
 import sys
 import time
 from pathlib import Path
+from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
@@ -337,8 +338,8 @@ def make_plots(root: Path, manifest: ExperimentManifest, rows: list[dict], fork_
     if values:
         fig, ax = plt.subplots(figsize=(6, 4))
         order = ["BENEFICIAL", "HARMFUL", "UNNECESSARY", "AMBIGUOUS"]
-        counts = [values.get(k, 0) for k in order]
-        ax.bar(order, counts, color=["#27ae60", "#c0392b", "#7f8c8d", "#f39c12"])
+        bar_counts = [values.get(k, 0) for k in order]
+        ax.bar(order, bar_counts, color=["#27ae60", "#c0392b", "#7f8c8d", "#f39c12"])
         ax.set_ylabel("fork count")
         ax.set_title("Intervention value (attributable forks; AMBIGUOUS excluded)")
         fig.tight_layout()
@@ -385,7 +386,7 @@ def make_plots(root: Path, manifest: ExperimentManifest, rows: list[dict], fork_
 
 
 def _prune_metrics(metrics: dict) -> dict:
-    pruned = {}
+    pruned: dict[str, Any] = {}
     for key, value in (metrics or {}).items():
         if key == "applied_command_times":
             pruned["n_applied_commands"] = len(value or ())
@@ -545,7 +546,7 @@ def main() -> int:
     parser.add_argument("--n", type=int, default=600)
     parser.add_argument("--seed", type=int, default=20260916)
     parser.add_argument("--shard-size", type=int, default=20)
-    parser.add_argument("--workers", type=int, default=max(1, os.cpu_count() - 4))
+    parser.add_argument("--workers", type=int, default=max(1, (os.cpu_count() or 1) - 4))
     parser.add_argument("--fork-scenarios", type=int, default=150)
     parser.add_argument("--root", type=Path, default=DEFAULT_ROOT)
     parser.add_argument("--verbose", action="store_true")

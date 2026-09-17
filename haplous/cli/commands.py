@@ -5,14 +5,12 @@ import importlib.util
 import os
 import sys
 from argparse import Namespace
+from collections.abc import Sequence
 from pathlib import Path
-from typing import Sequence
 
 import haplous
-
 from haplous.cli.benchmarks import registered_benchmarks
 from haplous.cli.registry import RunRegistry
-
 
 SYSTEM_NAMES = (
     "direct_minimal",

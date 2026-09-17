@@ -73,9 +73,17 @@ interface, not private runtime internals.
 
 ## 8. Typed Machine boundary
 
-The Machine protocol is the single seam between Haplous and any substrate.
-The MuJoCo adapter and the external adapter both implement it. Typing is
-checked under `mypy` for the boundary modules.
+The `Machine` and `MachineSession` protocols are the single seam between
+Haplous and any substrate; the MuJoCo adapter and the external adapter
+both implement them. The seam is enforced structurally: an AST test
+pins the MuJoCo-free modules, and the protocols carry full
+annotations. `mypy` is configured in `pyproject.toml` over `haplous/`
+plus the evaluation statistics modules. No `mypy` finding falls in code
+this pass added or changed; the findings that remain in the configured
+run are all in pre-existing code (frozen runtime, evidence store,
+behaviors, MuJoCo adapter, benchmark systems, `pegsim.rollout`). They
+are left as-is to preserve the v3 freeze rather than reshaped for the
+type checker.
 
 ## 9. Contract, capability, and evidence APIs
 
@@ -106,9 +114,12 @@ backend is future work behind the same shard contract. This run used
 
 ## 12. Quality tooling
 
-`ruff` and `mypy` configurations are committed. The full test suite is
-run before declaring completion (see section 13). Characterization tests
-for v3 semantics are unchanged.
+`ruff` and `mypy` are configured in `pyproject.toml`. On the code this
+pass added or changed, `ruff` is clean and `mypy` reports nothing. The
+configured `mypy` scope still surfaces pre-existing findings in the
+frozen modules described in section 8; they are deliberately untouched.
+The full test suite is run before declaring completion (section 13),
+and the characterization tests for v3 semantics are unchanged.
 
 ## 13. Test strategy and counts
 
@@ -135,9 +146,11 @@ pursued without profiling evidence.
 
 ## 15. CLI
 
-`haplous --version`, `haplous doctor`, `haplous demo`,
-`haplous inspect`, `haplous timeline`, `haplous benchmark`, and the
-evaluation driver all share the public facade.
+`haplous --version`, `haplous doctor`, `haplous list`, `haplous demo`,
+`haplous run`, `haplous eval`, `haplous compare`, `haplous report`,
+`haplous replay`, `haplous envelope`, `haplous inspect`, and
+`haplous timeline` share the public facade. `inspect`, `timeline`, and
+`--version` are the additions in this pass; the rest are unchanged.
 
 ## 16. Documentation and hygiene
 

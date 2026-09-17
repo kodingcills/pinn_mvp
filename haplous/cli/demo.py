@@ -8,18 +8,17 @@ from __future__ import annotations
 
 from argparse import Namespace
 
-from haplous.cli.registry import RunMetadata, RunRegistry
+from haplous.cli.registry import JsonMapping, RunMetadata, RunRegistry
 
 
 def _demo_leg(offset_m: float, *, max_force_n: float | None = None) -> dict:
-    from pegsim.rollout import VALIDATED_LOOSE_V1
-
-    from haplous import ExecutionState, HaplousRuntime, RecoveryPolicy
+    from haplous import HaplousRuntime, RecoveryPolicy
     from haplous.behaviors.insertion import (
         insertion_behavior_factory,
         insertion_intent,
         insertion_machine,
     )
+    from pegsim.rollout import VALIDATED_LOOSE_V1
 
     bundle = VALIDATED_LOOSE_V1
     machine = insertion_machine(bundle)
@@ -82,7 +81,7 @@ def demo_command(_args: Namespace) -> int:
         print(f"{scenario_id}: {disposition} ({result.get('reason') or 'ok'})")
 
     completed = sum(1 for t in trials if t["task_success"])
-    summary = {
+    summary: JsonMapping = {
         "benchmark_version": "demo-0.5.0",
         "n_scenarios": len(trials),
         "n_trials": len(trials),

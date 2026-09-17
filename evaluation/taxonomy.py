@@ -24,9 +24,10 @@ Root-cause classes:
 
 from __future__ import annotations
 
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Mapping
+from typing import Any
 
 
 class Severity(str, Enum):
@@ -173,7 +174,7 @@ def classify(row: Mapping[str, Any]) -> FailureClass | None:
     return FailureClass(severity=severity.value, root_cause=root, rationale=rationale)
 
 
-def summarize(rows: list[Mapping[str, Any]]) -> dict:
+def summarize(rows: Sequence[Mapping[str, Any]]) -> dict:
     """Failure-mass summary: frequency, severity, and contribution.
 
     Decision-relevant ranking uses expected loss proxy =

@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import Any
 
 from haplous.cli.commands import _table
-from haplous.cli.registry import JsonValue, RunRegistry
+from haplous.cli.registry import RunRegistry
 
 # Evidence event kind -> normalized human timeline label. The runtime's
 # event vocabulary is the source of truth; unknown kinds fall back to the
@@ -30,7 +30,7 @@ _TIMELINE_LABELS: dict[str, str] = {
 }
 
 
-def _load_json(path: Path) -> Mapping[str, JsonValue]:
+def _load_json(path: Path) -> dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
@@ -64,7 +64,7 @@ def report_command(args: Namespace) -> int:
     return 0
 
 
-def _load_trials(path: Path) -> list[dict]:
+def _load_trials(path: Path) -> list[dict[str, Any]]:
     with path.open(encoding="utf-8") as handle:
         return [json.loads(line) for line in handle if line.strip()]
 
@@ -142,6 +142,7 @@ def inspect_command(args: Namespace) -> int:
 
 def timeline_command(args: Namespace) -> int:
     path = Path(args.source)
+    bundles: list[dict[str, Any]]
     if path.is_file():
         evidence = json.loads(path.read_text(encoding="utf-8"))
         bundles = [{"execution_id": path.name, "request": evidence.get("intent_summary"), "timeline": _timeline_rows(evidence)}]
@@ -174,7 +175,7 @@ def replay_command(args: Namespace) -> int:
 
 def envelope_command(args: Namespace) -> int:
     rows = _load_trials(RunRegistry().resolve(args.run_id).trials)
-    grouped = {}
+    grouped: dict[tuple[str, str], tuple[int, int]] = {}
     for row in rows:
         for dimension, value in row.get("scenario_axes", {}).items():
             key = (str(dimension), str(value))

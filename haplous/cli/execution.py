@@ -2,14 +2,14 @@ from __future__ import annotations
 
 import dataclasses
 from argparse import Namespace
+from collections.abc import Sequence
 from dataclasses import dataclass
 from datetime import UTC, datetime
-from typing import Sequence
+from typing import cast
 
 from haplous.cli.benchmarks import get_benchmark, registered_benchmarks
 from haplous.cli.commands import SYSTEM_NAMES
 from haplous.cli.registry import JsonMapping, JsonValue, RunMetadata, RunRegistry
-
 
 METRIC_IMPLEMENTATION_VERSION = "heb-metrics-0.2.0"
 
@@ -51,16 +51,16 @@ def _trial_rows(scenarios, records) -> list[JsonMapping]:
     for record in records:
         row = dataclasses.asdict(record)
         row["scenario_axes"] = _scenario_axes(by_id[record.scenario_id])
-        rows.append(row)
+        rows.append(cast(JsonMapping, row))
     return rows
 
 
 def _summary_json(scenarios, records, *, benchmark_version: str) -> JsonMapping:
     from benchmarks.heb.metrics import summarize
 
-    systems = {}
+    systems: dict[str, JsonValue] = {}
     for name, summary in summarize(scenarios, records).items():
-        systems[name] = {
+        systems[name] = cast(JsonValue, {
             "trials": summary.trials,
             "coverage": summary.coverage,
             "bounded_success_rate_among_accepted": summary.bounded_success_rate,
@@ -72,7 +72,7 @@ def _summary_json(scenarios, records, *, benchmark_version: str) -> JsonMapping:
             "breach_trials": summary.breach_trials,
             "recovery_success_rate": summary.recovery_success_rate,
             "completion_percentiles_s": summary.completion_percentiles(),
-        }
+        })
     return {
         "benchmark_version": benchmark_version,
         "n_scenarios": len(scenarios),
