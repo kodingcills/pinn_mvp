@@ -1,0 +1,497 @@
+{
+  "experiment_id": "v3_hardening_qualification",
+  "failure_mass_by_arm": {
+    "competent_supervisor": {
+      "by_root_cause": {
+        "CONTROL": 12,
+        "EXECUTION_SEMANTICS": 808,
+        "PHYSICS": 32,
+        "UNKNOWN": 16
+      },
+      "by_severity": {
+        "S2": 536,
+        "S3": 332
+      },
+      "expected_loss_proxy_by_root_cause": {
+        "CONTROL": 24.0,
+        "EXECUTION_SEMANTICS": 4272.0,
+        "PHYSICS": 64.0,
+        "UNKNOWN": 32.0
+      },
+      "expected_loss_proxy_total": 4392.0,
+      "failure_rate": 0.868,
+      "n_failures": 868,
+      "n_trials": 1000,
+      "severity_weights": {
+        "S0": 0.0,
+        "S1": 1.0,
+        "S2": 2.0,
+        "S3": 10.0,
+        "S4": 40.0,
+        "S5": 100.0
+      }
+    },
+    "direct_minimal": {
+      "by_root_cause": {
+        "CONTROL": 31,
+        "PHYSICS": 64,
+        "UNKNOWN": 774
+      },
+      "by_severity": {
+        "S2": 64,
+        "S3": 805
+      },
+      "expected_loss_proxy_by_root_cause": {
+        "CONTROL": 214.0,
+        "PHYSICS": 376.0,
+        "UNKNOWN": 7588.0
+      },
+      "expected_loss_proxy_total": 8178.0,
+      "failure_rate": 0.869,
+      "n_failures": 869,
+      "n_trials": 1000,
+      "severity_weights": {
+        "S0": 0.0,
+        "S1": 1.0,
+        "S2": 2.0,
+        "S3": 10.0,
+        "S4": 40.0,
+        "S5": 100.0
+      }
+    },
+    "haplous_mediated": {
+      "by_root_cause": {
+        "CONTROL": 67,
+        "EXECUTION_SEMANTICS": 578,
+        "PHYSICS": 24,
+        "UNKNOWN": 149
+      },
+      "by_severity": {
+        "S1": 427,
+        "S2": 110,
+        "S3": 281
+      },
+      "expected_loss_proxy_by_root_cause": {
+        "CONTROL": 158.0,
+        "EXECUTION_SEMANTICS": 2135.0,
+        "PHYSICS": 48.0,
+        "UNKNOWN": 1116.0
+      },
+      "expected_loss_proxy_total": 3457.0,
+      "failure_rate": 0.818,
+      "n_failures": 818,
+      "n_trials": 1000,
+      "severity_weights": {
+        "S0": 0.0,
+        "S1": 1.0,
+        "S2": 2.0,
+        "S3": 10.0,
+        "S4": 40.0,
+        "S5": 100.0
+      }
+    }
+  },
+  "manifest_sha256": "4b0df50373e2f58437c6f0f31ba8a6df14d7df0f2759042c0db48b22e61395d0",
+  "n_episodes": 3000,
+  "paired": {
+    "competent_supervisor_vs_haplous_mediated": {
+      "identical_value_pairs_task_metrics_peak_abs_force_n": 330,
+      "mcnemar_bounded_success": {
+        "a_success": 132,
+        "b_success": 182,
+        "delta": 0.05,
+        "n01": 77,
+        "n10": 27,
+        "n_concordant_success": 896,
+        "n_pairs": 1000,
+        "p_value": 9.701730804528632e-07
+      },
+      "mcnemar_task_success": {
+        "a_success": 142,
+        "b_success": 239,
+        "delta": 0.097,
+        "n01": 128,
+        "n10": 31,
+        "n_concordant_success": 841,
+        "n_pairs": 1000,
+        "p_value": 3.335166576122432e-15
+      },
+      "n_pairs": 1000,
+      "paired_delta_task_metrics_peak_abs_force_n": {
+        "ci_high": 4.488096129291848,
+        "ci_low": 3.1052594180315785,
+        "delta": 3.775871798944466,
+        "method": "paired_bootstrap_mean",
+        "n": 573,
+        "n_resamples": 10000
+      },
+      "unpaired": []
+    },
+    "direct_minimal_vs_haplous_mediated": {
+      "identical_value_pairs_task_metrics_peak_abs_force_n": 131,
+      "mcnemar_bounded_success": {
+        "a_success": 131,
+        "b_success": 182,
+        "delta": 0.051,
+        "n01": 79,
+        "n10": 28,
+        "n_concordant_success": 893,
+        "n_pairs": 1000,
+        "p_value": 8.420013817717271e-07
+      },
+      "mcnemar_task_success": {
+        "a_success": 691,
+        "b_success": 239,
+        "delta": -0.452,
+        "n01": 14,
+        "n10": 466,
+        "n_concordant_success": 520,
+        "n_pairs": 1000,
+        "p_value": 3.016745202131765e-15
+      },
+      "n_pairs": 1000,
+      "paired_delta_task_metrics_peak_abs_force_n": {
+        "ci_high": -2.714207318700233,
+        "ci_low": -4.2594689168926605,
+        "delta": -3.466160071491541,
+        "method": "paired_bootstrap_mean",
+        "n": 573,
+        "n_resamples": 10000
+      },
+      "unpaired": []
+    }
+  },
+  "reference_arm": "haplous_mediated",
+  "schema_version": "haplous-episode-v1",
+  "systems": {
+    "competent_supervisor": {
+      "any_violation": {
+        "ci_high": 0.36178215595875596,
+        "ci_low": 0.30350363489239063,
+        "method": "wilson95",
+        "n": 1000,
+        "value": 0.332
+      },
+      "bounded_success": {
+        "ci_high": 0.15439485809729173,
+        "ci_low": 0.1124216361480769,
+        "method": "wilson95",
+        "n": 1000,
+        "value": 0.132
+      },
+      "bounded_success_among_accepted": {
+        "ci_high": 0.15439485809729173,
+        "ci_low": 0.1124216361480769,
+        "method": "wilson95",
+        "n": 1000,
+        "value": 0.132
+      },
+      "bsr_conditional": {
+        "ci_high": 0.15439485809729173,
+        "ci_low": 0.1124216361480769,
+        "method": "wilson95",
+        "n": 1000,
+        "value": 0.132
+      },
+      "bsr_system": {
+        "ci_high": 0.15439485809729173,
+        "ci_low": 0.1124216361480769,
+        "method": "wilson95",
+        "n": 1000,
+        "value": 0.132
+      },
+      "coverage": {
+        "ci_high": 1.0,
+        "ci_low": 0.996173241514445,
+        "method": "wilson95",
+        "n": 1000,
+        "value": 1.0
+      },
+      "failure_mass": {
+        "by_root_cause": {
+          "CONTROL": 12,
+          "EXECUTION_SEMANTICS": 808,
+          "PHYSICS": 32,
+          "UNKNOWN": 16
+        },
+        "by_severity": {
+          "S2": 536,
+          "S3": 332
+        },
+        "expected_loss_proxy_by_root_cause": {
+          "CONTROL": 24.0,
+          "EXECUTION_SEMANTICS": 4272.0,
+          "PHYSICS": 64.0,
+          "UNKNOWN": 32.0
+        },
+        "expected_loss_proxy_total": 4392.0,
+        "failure_rate": 0.868,
+        "n_failures": 868,
+        "n_trials": 1000,
+        "severity_weights": {
+          "S0": 0.0,
+          "S1": 1.0,
+          "S2": 2.0,
+          "S3": 10.0,
+          "S4": 40.0,
+          "S5": 100.0
+        }
+      },
+      "force_cvar95": 40.88213557867285,
+      "force_exceedance_tail": {
+        "max": 95.97159753991292,
+        "mean": 2.2007924755394233,
+        "n": 1000,
+        "p50": 0.0,
+        "p90": 0.0,
+        "p95": 11.983974556824103,
+        "p99": 61.58744031841375,
+        "p999": 79.98630063429933
+      },
+      "n": 1000,
+      "peak_force_tail": {
+        "max": 120.97159753991292,
+        "mean": 6.358404641073585,
+        "n": 1000,
+        "p50": 1.7064216906918612,
+        "p90": 14.950645761704433,
+        "p95": 36.9839745568241,
+        "p99": 86.58744031841375,
+        "p999": 104.98630063429933
+      },
+      "task_success": {
+        "ci_high": 0.16500591702110326,
+        "ci_low": 0.12173404205455421,
+        "method": "wilson95",
+        "n": 1000,
+        "value": 0.142
+      },
+      "violation_conditional_acceptance": {
+        "ci_high": 0.36178215595875596,
+        "ci_low": 0.30350363489239063,
+        "method": "wilson95",
+        "n": 1000,
+        "value": 0.332
+      }
+    },
+    "direct_minimal": {
+      "any_violation": {
+        "ci_high": 0.8283699061081016,
+        "ci_low": 0.77929577121571,
+        "method": "wilson95",
+        "n": 1000,
+        "value": 0.805
+      },
+      "bounded_success": {
+        "ci_high": 0.15333164156033072,
+        "ci_low": 0.11149250620200898,
+        "method": "wilson95",
+        "n": 1000,
+        "value": 0.131
+      },
+      "bounded_success_among_accepted": {
+        "ci_high": 0.15333164156033072,
+        "ci_low": 0.11149250620200898,
+        "method": "wilson95",
+        "n": 1000,
+        "value": 0.131
+      },
+      "bsr_conditional": {
+        "ci_high": 0.15333164156033072,
+        "ci_low": 0.11149250620200898,
+        "method": "wilson95",
+        "n": 1000,
+        "value": 0.131
+      },
+      "bsr_system": {
+        "ci_high": 0.15333164156033072,
+        "ci_low": 0.11149250620200898,
+        "method": "wilson95",
+        "n": 1000,
+        "value": 0.131
+      },
+      "coverage": {
+        "ci_high": 1.0,
+        "ci_low": 0.996173241514445,
+        "method": "wilson95",
+        "n": 1000,
+        "value": 1.0
+      },
+      "failure_mass": {
+        "by_root_cause": {
+          "CONTROL": 31,
+          "PHYSICS": 64,
+          "UNKNOWN": 774
+        },
+        "by_severity": {
+          "S2": 64,
+          "S3": 805
+        },
+        "expected_loss_proxy_by_root_cause": {
+          "CONTROL": 214.0,
+          "PHYSICS": 376.0,
+          "UNKNOWN": 7588.0
+        },
+        "expected_loss_proxy_total": 8178.0,
+        "failure_rate": 0.869,
+        "n_failures": 869,
+        "n_trials": 1000,
+        "severity_weights": {
+          "S0": 0.0,
+          "S1": 1.0,
+          "S2": 2.0,
+          "S3": 10.0,
+          "S4": 40.0,
+          "S5": 100.0
+        }
+      },
+      "force_cvar95": 82.41310496398684,
+      "force_exceedance_tail": {
+        "max": 105.17030344669439,
+        "mean": 10.444853607744117,
+        "n": 1000,
+        "p50": 0.0,
+        "p90": 54.86722781880476,
+        "p95": 72.84212136958439,
+        "p99": 88.53031270823952,
+        "p999": 103.76985274621984
+      },
+      "n": 1000,
+      "peak_force_tail": {
+        "max": 130.1703034466944,
+        "mean": 22.8335901220603,
+        "n": 1000,
+        "p50": 14.950591350153378,
+        "p90": 79.86722781880475,
+        "p95": 97.84212136958439,
+        "p99": 113.53031270823952,
+        "p999": 128.76985274621984
+      },
+      "task_success": {
+        "ci_high": 0.7188631422833365,
+        "ci_low": 0.6616750359751813,
+        "method": "wilson95",
+        "n": 1000,
+        "value": 0.691
+      },
+      "violation_conditional_acceptance": {
+        "ci_high": 0.8283699061081016,
+        "ci_low": 0.77929577121571,
+        "method": "wilson95",
+        "n": 1000,
+        "value": 0.805
+      }
+    },
+    "haplous_mediated": {
+      "any_violation": {
+        "ci_high": 0.3096563419102067,
+        "ci_low": 0.25401977830646655,
+        "method": "wilson95",
+        "n": 1000,
+        "value": 0.281
+      },
+      "bounded_success": {
+        "ci_high": 0.2071165611685226,
+        "ci_low": 0.15931725722829052,
+        "method": "wilson95",
+        "n": 1000,
+        "value": 0.182
+      },
+      "bounded_success_among_accepted": {
+        "ci_high": 0.356852196342108,
+        "ci_low": 0.28082987937539744,
+        "method": "wilson95",
+        "n": 573,
+        "value": 0.31762652705061084
+      },
+      "bsr_conditional": {
+        "ci_high": 0.356852196342108,
+        "ci_low": 0.28082987937539744,
+        "method": "wilson95",
+        "n": 573,
+        "value": 0.31762652705061084
+      },
+      "bsr_system": {
+        "ci_high": 0.2071165611685226,
+        "ci_low": 0.15931725722829052,
+        "method": "wilson95",
+        "n": 1000,
+        "value": 0.182
+      },
+      "coverage": {
+        "ci_high": 0.6033208895009023,
+        "ci_low": 0.5421204037602065,
+        "method": "wilson95",
+        "n": 1000,
+        "value": 0.573
+      },
+      "failure_mass": {
+        "by_root_cause": {
+          "CONTROL": 67,
+          "EXECUTION_SEMANTICS": 578,
+          "PHYSICS": 24,
+          "UNKNOWN": 149
+        },
+        "by_severity": {
+          "S1": 427,
+          "S2": 110,
+          "S3": 281
+        },
+        "expected_loss_proxy_by_root_cause": {
+          "CONTROL": 158.0,
+          "EXECUTION_SEMANTICS": 2135.0,
+          "PHYSICS": 48.0,
+          "UNKNOWN": 1116.0
+        },
+        "expected_loss_proxy_total": 3457.0,
+        "failure_rate": 0.818,
+        "n_failures": 818,
+        "n_trials": 1000,
+        "severity_weights": {
+          "S0": 0.0,
+          "S1": 1.0,
+          "S2": 2.0,
+          "S3": 10.0,
+          "S4": 40.0,
+          "S5": 100.0
+        }
+      },
+      "force_cvar95": 10.604671432185265,
+      "force_exceedance_tail": {
+        "max": 34.824082329114816,
+        "mean": 0.5367111196044898,
+        "n": 573,
+        "p50": 0.0,
+        "p90": 0.0,
+        "p95": 0.0,
+        "p99": 21.34507659478621,
+        "p999": 29.902537111066458
+      },
+      "n": 1000,
+      "peak_force_tail": {
+        "max": 59.824082329114816,
+        "mean": 6.390376445707301,
+        "n": 573,
+        "p50": 1.8070852715510939,
+        "p90": 14.950949951771126,
+        "p95": 22.036010744115284,
+        "p99": 46.345076594786214,
+        "p999": 54.90253711106646
+      },
+      "task_success": {
+        "ci_high": 0.2663996281937026,
+        "ci_low": 0.2135979397357572,
+        "method": "wilson95",
+        "n": 1000,
+        "value": 0.239
+      },
+      "violation_conditional_acceptance": {
+        "ci_high": 0.5312606387687825,
+        "ci_low": 0.4496699967952968,
+        "method": "wilson95",
+        "n": 573,
+        "value": 0.49040139616055844
+      }
+    }
+  }
+}

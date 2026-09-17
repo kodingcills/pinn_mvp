@@ -1,0 +1,10 @@
+{
+  "attempts": 1,
+  "completed_at_utc": "2026-09-17T00:19:09.643527+00:00",
+  "episodes": 60,
+  "episodes_sha256": "1f1dfa0e0059727de8d8b38fbfd8ed6f25872e9083c93a3b85774aa378f655f5",
+  "experiment_id": "v3_hardening_qualification",
+  "shard_id": "v3_hardening_qualification-s00028",
+  "status": "COMPLETE",
+  "wall_s": 418.5926741250005
+}

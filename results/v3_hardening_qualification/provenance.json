@@ -1,0 +1,24 @@
+{
+  "benchmark": "internal-heb",
+  "benchmark_version": "0.2.0",
+  "cpu_count": 14,
+  "dependencies": {
+    "matplotlib": "3.11.1",
+    "mujoco": "3.11.0",
+    "numpy": "2.5.1",
+    "pyarrow": "25.0.1",
+    "yaml": "6.0.3"
+  },
+  "episode_schema_version": "haplous-episode-v1",
+  "git_commit": "d6330193b080a0525e8b4c8dd05fdf5d95ca414b",
+  "git_dirty": true,
+  "haplous_version": "0.5.0",
+  "machine": "arm64",
+  "manifest_schema_version": "haplous-experiment-v1",
+  "manifest_sha256": "4b0df50373e2f58437c6f0f31ba8a6df14d7df0f2759042c0db48b22e61395d0",
+  "platform": "macOS-26.5.1-arm64-arm-64bit",
+  "policy_checkpoint": null,
+  "processor": "arm",
+  "python": "3.12.13",
+  "recorded_at_utc": "2026-09-17T01:07:50.188444+00:00"
+}

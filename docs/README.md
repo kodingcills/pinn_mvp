@@ -10,6 +10,16 @@ explain how that state was reached.
   (Phase III), the 12-scenario semantic benchmark (Phase IV, 12/12
   conformance), fault simulation (Phase V), and the physical gate with
   hardware requirements.
+- [Haplous v3 software hardening](HAPLOUS_V3_SOFTWARE_HARDENING.md) —
+  behavior-freeze parity, packaging/installability, dependency
+  separation, generic resumable experiment infrastructure, CLI
+  observability, and the local three-arm qualification (generated from
+  `results/v3_hardening_qualification/` by
+  `scripts/render_v3_hardening_report.py`).
+- [Haplous product-scale evidence](HAPLOUS_PRODUCT_SCALE_EVIDENCE.md) —
+  the frozen v3 candidate, the 27-scenario development family and the
+  36-scenario sealed holdout, with the learned-policy workstream blocked
+  on compute credentials rather than integration.
 - [R-series freeze](research/R_SERIES_FREEZE.md) — the frozen pre-runtime
   research lineage: R01-R06 conclusions, refuted beliefs, known simulator
   limitations, migration classification, and reproduction commands. The

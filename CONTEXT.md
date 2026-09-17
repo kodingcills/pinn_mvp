@@ -342,6 +342,20 @@ physics-shaped symptom that cost multiple rounds of wrong theorizing.
   requirements (500 Hz sampled-loop instability per R04, F/T sensor ~4 N
   accuracy, touch-off calibration, safety watchdog, evidence
   instrumentation) listed in the v0-sim report.
+- **Haplous v3 software hardening + local qualification DONE (see
+  `docs/HAPLOUS_V3_SOFTWARE_HARDENING.md`).** Additive pass: behavior
+  freeze proven (core semantics modules byte-identical to `d633019`);
+  `pyproject.toml` dependency split (core `mujoco`+`numpy`, extras
+  `eval`/`dev`) with clean-room `uv` install verified; generic resumable
+  experiment infrastructure in `evaluation/experiment.py` (manifest,
+  deterministic shards, hash-verified resume, canonical Parquet,
+  alignment-checked aggregation); CLI `inspect`/`timeline`/`--version`;
+  driver `scripts/run_v3_hardening_qualification.py`; evidence package
+  `results/v3_hardening_qualification/` (N=1000 scenarios x 3 arms =
+  3000 paired episodes + bounded counterfactual fork sample). Report is
+  rendered from the package by `scripts/render_v3_hardening_report.py`
+  (`--check` fails on drift). Local CPU scope only; not a product-scale
+  or hardware verdict.
 - **R04 (coupled sampled-loop instability) is RESOLVED; the ~135 Hz
   rotational-mode explanation is REFUTED.** `pegsim/dynamics.py` (commit
   `ff48f8b`) now performs the full `mj_fullM` eigenvalue decomposition at

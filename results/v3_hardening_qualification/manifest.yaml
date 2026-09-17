@@ -1,0 +1,33 @@
+artifact_policy:
+- all_summaries
+- all_severe_failures
+- all_false_refusals
+benchmark: internal-heb
+benchmark_version: 0.2.0
+claims: []
+description: 'Local MuJoCo 3-arm paired qualification of the hardened v3 candidate:
+  direct behavior, competent supervisor, Haplous-mediated.'
+experiment_class: qualification
+experiment_id: v3_hardening_qualification
+haplous_version: 0.5.0
+metrics:
+- task_success
+- system_bsr
+- conditional_bsr
+- coverage
+- violation_rate
+- violation_given_acceptance
+- recovery_success_rate
+policy_checkpoint: null
+population:
+  n: 1000
+  seed: 20260916
+  slide_fraction: 0.28
+reference_arm: haplous_mediated
+schema_version: haplous-experiment-v1
+sharding:
+  shard_size: 20
+systems:
+- direct_minimal
+- competent_supervisor
+- haplous_mediated
