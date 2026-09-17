@@ -330,3 +330,21 @@ class BareSystem:
             wall_s=wall,
             detail={"applied_command_times": tuple(applied)},
         )
+
+
+def system_by_name(name: str) -> object:
+    """Benchmark-owned system factory. The single mapping from an arm
+    name to a system under test, shared by the CLI and the evaluation
+    executor so an arm name can never mean two different systems."""
+    factories = {
+        "direct_minimal": lambda: BareSystem(evaluate_success=False),
+        "bare_behavior": BareSystem,
+        "competent_supervisor": SupervisedSystem,
+        "haplous_mediated": HaplousSystem,
+    }
+    try:
+        return factories[name]()
+    except KeyError as exc:
+        raise ValueError(
+            f"unknown system {name!r}; expected one of {sorted(factories)}"
+        ) from exc

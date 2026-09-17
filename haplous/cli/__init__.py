@@ -9,13 +9,24 @@ from haplous.cli.execution import eval_command, run_command
 from haplous.cli.inspection import (
     compare_command,
     envelope_command,
+    inspect_command,
     replay_command,
     report_command,
+    timeline_command,
 )
+
+
+def _version() -> str:
+    import haplous
+
+    return haplous.__version__
 
 
 def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="haplous")
+    parser.add_argument(
+        "--version", action="version", version=f"haplous {_version()}"
+    )
     commands = parser.add_subparsers(dest="command", required=True)
 
     doctor = commands.add_parser("doctor")
@@ -61,6 +72,16 @@ def _parser() -> argparse.ArgumentParser:
     envelope = commands.add_parser("envelope")
     envelope.add_argument("run_id")
     envelope.set_defaults(handler=envelope_command)
+
+    inspect = commands.add_parser("inspect", help="explain one execution: request, decision, timeline, terminal result")
+    inspect.add_argument("run_id")
+    inspect.add_argument("--json", action="store_true", help="machine-readable output")
+    inspect.set_defaults(handler=inspect_command)
+
+    timeline = commands.add_parser("timeline", help="normalized execution timeline from a run or evidence JSON")
+    timeline.add_argument("source")
+    timeline.add_argument("--json", action="store_true", help="machine-readable output")
+    timeline.set_defaults(handler=timeline_command)
     return parser
 
 

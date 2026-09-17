@@ -14,7 +14,12 @@ from haplous.cli.benchmarks import registered_benchmarks
 from haplous.cli.registry import RunRegistry
 
 
-SYSTEM_NAMES = ("direct_minimal", "bare_behavior", "haplous_mediated")
+SYSTEM_NAMES = (
+    "direct_minimal",
+    "bare_behavior",
+    "competent_supervisor",
+    "haplous_mediated",
+)
 
 
 def _table(headers: Sequence[str], rows: Sequence[Sequence[str]]) -> None:

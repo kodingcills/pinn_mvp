@@ -44,6 +44,7 @@ def _demo_leg(offset_m: float, *, max_force_n: float | None = None) -> dict:
             "disposition": "REFUSED",
             "reason": "negotiation_refusal",
             "codes": [r.code for r in feasibility.reasons],
+            "evidence": runtime.evidence.to_json_dict(),
         }
     evidence = runtime.execute()
     outcome = [e for e in evidence.events if e.kind == "outcome"][-1]
@@ -52,6 +53,7 @@ def _demo_leg(offset_m: float, *, max_force_n: float | None = None) -> dict:
         "reason": outcome.payload.get("reason"),
         "codes": [],
         "final_state": runtime.state.value,
+        "evidence": evidence.to_json_dict(),
     }
 
 
@@ -112,6 +114,7 @@ def demo_command(_args: Namespace) -> int:
         summary,
     )
     print(f"\nrun id: {paths.run_id}")
+    print(f"inspect: haplous inspect {paths.run_id}")
     print(f"replay:  haplous replay {paths.run_id}")
     print(f"report:  haplous report {paths.run_id}")
     return 0

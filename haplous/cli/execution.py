@@ -27,14 +27,9 @@ class EvaluationRequest:
 
 
 def _system(name: str):
-    from benchmarks.heb.systems import BareSystem, HaplousSystem
+    from benchmarks.heb.systems import system_by_name
 
-    factories = {
-        "direct_minimal": lambda: BareSystem(evaluate_success=False),
-        "bare_behavior": BareSystem,
-        "haplous_mediated": HaplousSystem,
-    }
-    return factories[name]()
+    return system_by_name(name)
 
 
 def _scenario_axes(scenario) -> dict[str, JsonValue]:
