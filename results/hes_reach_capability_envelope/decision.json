@@ -1,0 +1,128 @@
+{
+  "band": [
+    0.003,
+    0.005
+  ],
+  "boundary_shift_factors_mm": {},
+  "bsr_maximising_cap_m": 0.00435,
+  "candidate_caps_clearing_declared_gates": [
+    "0.00350",
+    "0.00375",
+    "0.00400",
+    "0.00435",
+    "0.00450"
+  ],
+  "capture_levels": {
+    "x25": {
+      "isotonic_crossing_mm": 3.421195652173913,
+      "level": 0.25,
+      "note": null,
+      "raw_crossing_mm": 3.415794979079498,
+      "reached_above_level": true,
+      "supported": true
+    },
+    "x50": {
+      "isotonic_crossing_mm": null,
+      "level": 0.5,
+      "note": "not_supported: capture never reaches this level in the band",
+      "raw_crossing_mm": null,
+      "reached_above_level": false,
+      "supported": false
+    },
+    "x75": {
+      "isotonic_crossing_mm": null,
+      "level": 0.75,
+      "note": "not_supported: capture never reaches this level in the band",
+      "raw_crossing_mm": null,
+      "reached_above_level": false,
+      "supported": false
+    },
+    "x90": {
+      "isotonic_crossing_mm": null,
+      "level": 0.9,
+      "note": "not_supported: capture never reaches this level in the band",
+      "raw_crossing_mm": null,
+      "reached_above_level": false,
+      "supported": false
+    }
+  },
+  "declared_cap_m": 0.003,
+  "declared_impact": {
+    "accepted_violations_total": 514,
+    "bounded_success_regression_rate": 0.21374045801526717,
+    "bounded_successes": 182,
+    "bsr_among_accepted": 0.31762652705061084,
+    "cap_m": 0.003,
+    "coverage": 0.573,
+    "execution_capture_among_attainable": 0.8504672897196262,
+    "false_refusal_rate": 0.14485981308411214,
+    "g3_preservation_pass": false,
+    "g4_false_refusal_pass": true,
+    "n_accepted": 573,
+    "n_accepted_with_violation": 281,
+    "n_demonstrated_attainable": 214,
+    "n_false_refusals": 31,
+    "n_reference_bounded_success": 131,
+    "preservation_rate": 0.7862595419847328,
+    "system_bsr": 0.182,
+    "task_success_regression_rate": 0.21374045801526717,
+    "unnecessary_intervention_rate": 0.20610687022900764,
+    "violation_given_acceptance": 0.49040139616055844,
+    "violation_rate": 0.281
+  },
+  "generation_regime": {
+    "marginal_region": "offset where authorisation stays safe but bounded completion falls below ~10%",
+    "physically_safe_region": "offset where P(hard violation | authorised) is not materially above its in-band minimum and peak force stays bounded",
+    "productive_region_offset_le_mm": 3.5,
+    "unsafe_region": "offset beyond the measured physical reach (~4.25 mm), where capture is zero for every arm and only violation exposure grows",
+    "violation_given_acceptance_by_band": {
+      "3.00-3.25": 0.49019607843137253,
+      "3.25-3.50": 0.472,
+      "3.50-3.75": 0.5192307692307693,
+      "3.75-4.00": 0.5074626865671642,
+      "4.00-4.25": 0.6190476190476191,
+      "4.25-4.50": 0.6382978723404256,
+      "4.50-4.75": 0.6097560975609756,
+      "4.75-5.00": 0.6190476190476191
+    }
+  },
+  "material_factors": [
+    "facet_count",
+    "max_force_n",
+    "n_stale",
+    "position_tolerance_m"
+  ],
+  "product_criterion": "existing declared hard gates, not invented targets: G3 preservation >= 0.95, G4 false refusal <= 0.20, and conditional violation within 0.02 of the declared cap's rate",
+  "scalar_adequate": false,
+  "scalar_verdict": "adequate_as_safety_boundary+inadequate_as_success_predictor",
+  "selected_cap_m": 0.0035,
+  "selected_impact": {
+    "accepted_violations_total": 578,
+    "bounded_success_regression_rate": 0.030534351145038167,
+    "bounded_successes": 212,
+    "bsr_among_accepted": 0.3045977011494253,
+    "cap_m": 0.0035,
+    "coverage": 0.696,
+    "execution_capture_among_attainable": 0.9626168224299065,
+    "false_refusal_rate": 0.03271028037383177,
+    "g3_preservation_pass": true,
+    "g4_false_refusal_pass": true,
+    "n_accepted": 696,
+    "n_accepted_with_violation": 345,
+    "n_demonstrated_attainable": 214,
+    "n_false_refusals": 7,
+    "n_reference_bounded_success": 131,
+    "preservation_rate": 0.9694656488549618,
+    "system_bsr": 0.212,
+    "task_success_regression_rate": 0.030534351145038167,
+    "unnecessary_intervention_rate": 0.022900763358778626,
+    "violation_given_acceptance": 0.4956896551724138,
+    "violation_rate": 0.345
+  },
+  "selected_rationale": "smallest cap clearing G3/G4 while holding conditional violation within tolerance of the declared rate; a minimal restoration of non-interference, not a BSR-maximising choice",
+  "separate_issues_not_bundled": [
+    "deadline expected_duration_s recalibration",
+    "freshness refusal mechanism",
+    "insert_000793 49.7 N mediation divergence"
+  ]
+}

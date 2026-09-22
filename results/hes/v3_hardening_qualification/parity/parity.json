@@ -1,0 +1,75 @@
+{
+  "baseline_commit": "d6330193b080a0525e8b4c8dd05fdf5d95ca414b",
+  "characterization_tests": "tests/test_haplous_semantics.py, tests/test_haplous_sliding.py, tests/test_haplous_faults.py, tests/test_haplous_live_equivalence.py, tests/test_r05.py",
+  "core_modules_changed": [],
+  "core_modules_identical": true,
+  "core_modules_untracked": [],
+  "method": "Byte-level comparison of every Haplous core semantics module against the baseline commit (HEAD at campaign start). The hardening pass is additive: evaluation/, CLI inspection, and tests. Any core-module divergence invalidates behavioral parity.",
+  "module_hashes": {
+    "haplous/adapters/external.py": {
+      "disk_sha256": "0dabb691accad93d30b74a3d6fa87291fdcf207f029356721c54186eaceef2d8",
+      "head_sha256": "0dabb691accad93d30b74a3d6fa87291fdcf207f029356721c54186eaceef2d8",
+      "identical": true
+    },
+    "haplous/adapters/mujoco_adapter.py": {
+      "disk_sha256": "019448b47743882c441a5ccbffd997b60dfc38cc0a359c36daff41d188a7126a",
+      "head_sha256": "019448b47743882c441a5ccbffd997b60dfc38cc0a359c36daff41d188a7126a",
+      "identical": true
+    },
+    "haplous/behavior.py": {
+      "disk_sha256": "299b3581a34c806d19ce2f54203217bcde59a08f58203c35a06ef432517fa5b0",
+      "head_sha256": "299b3581a34c806d19ce2f54203217bcde59a08f58203c35a06ef432517fa5b0",
+      "identical": true
+    },
+    "haplous/behaviors/insertion.py": {
+      "disk_sha256": "5b2978365f784d38f4739f2396061e03e31b130bfac80eef9abd3c71aa4ef62e",
+      "head_sha256": "5b2978365f784d38f4739f2396061e03e31b130bfac80eef9abd3c71aa4ef62e",
+      "identical": true
+    },
+    "haplous/behaviors/sliding.py": {
+      "disk_sha256": "3fa298aef9de20eb3bc1f8e8ad96c262808d8fbf36a2e5fa0c83bc18429f803f",
+      "head_sha256": "3fa298aef9de20eb3bc1f8e8ad96c262808d8fbf36a2e5fa0c83bc18429f803f",
+      "identical": true
+    },
+    "haplous/capabilities.py": {
+      "disk_sha256": "d2177be2e0ccd9e35a88dde66590a520485d298b508b4bc38d273f2d3f1f2099",
+      "head_sha256": "d2177be2e0ccd9e35a88dde66590a520485d298b508b4bc38d273f2d3f1f2099",
+      "identical": true
+    },
+    "haplous/constraints.py": {
+      "disk_sha256": "3e0f9ffe87ac04176d08754126d38f6f2a87040196d2840fc8d89e71f9fb312d",
+      "head_sha256": "3e0f9ffe87ac04176d08754126d38f6f2a87040196d2840fc8d89e71f9fb312d",
+      "identical": true
+    },
+    "haplous/evidence.py": {
+      "disk_sha256": "229bf61db2cce80e2badd07b310c44fc5f9b6ff04b07e43bc3c4d27865d4d87c",
+      "head_sha256": "229bf61db2cce80e2badd07b310c44fc5f9b6ff04b07e43bc3c4d27865d4d87c",
+      "identical": true
+    },
+    "haplous/evidence_store.py": {
+      "disk_sha256": "fe3cc319849d6e1f0501cc54750578cd3642fb92f4af38a0247ad24cc7f6f41a",
+      "head_sha256": "fe3cc319849d6e1f0501cc54750578cd3642fb92f4af38a0247ad24cc7f6f41a",
+      "identical": true
+    },
+    "haplous/intent.py": {
+      "disk_sha256": "b51fabb596da7ffb1a5575e21ea74206958677f22ac4c4a62c6ce7a5cba3d902",
+      "head_sha256": "b51fabb596da7ffb1a5575e21ea74206958677f22ac4c4a62c6ce7a5cba3d902",
+      "identical": true
+    },
+    "haplous/machine.py": {
+      "disk_sha256": "d910f6fbf059c1d7793d266ee1fe72cf1747e64951231e90fbc89d3d461db958",
+      "head_sha256": "d910f6fbf059c1d7793d266ee1fe72cf1747e64951231e90fbc89d3d461db958",
+      "identical": true
+    },
+    "haplous/runtime.py": {
+      "disk_sha256": "2d0701d1944880d36cbe93f4e53ca81fc00eaa835a70494a189de1c086282a0d",
+      "head_sha256": "2d0701d1944880d36cbe93f4e53ca81fc00eaa835a70494a189de1c086282a0d",
+      "identical": true
+    },
+    "haplous/state.py": {
+      "disk_sha256": "2e05d97a0acd481a0eeaaf818d9f882433d18441274cb031a117f8043f8fa292",
+      "head_sha256": "2e05d97a0acd481a0eeaaf818d9f882433d18441274cb031a117f8043f8fa292",
+      "identical": true
+    }
+  }
+}

@@ -33,6 +33,7 @@ all = [
 
 [project.scripts]
 haplous = "haplous.cli:main"
+hes = "hes.cli:main"
 
 [build-system]
 requires = ["hatchling"]
@@ -42,7 +43,7 @@ build-backend = "hatchling.build"
 path = "haplous/__init__.py"
 
 [tool.hatch.build.targets.wheel]
-packages = ["pegsim", "haplous"]
+packages = ["pegsim", "haplous", "evaluation", "benchmarks", "hes"]
 
 [tool.hatch.build.targets.sdist]
 only-packages = false
@@ -73,6 +74,6 @@ ignore = ["E501", "B008"]
 
 [tool.mypy]
 python_version = "3.12"
-files = ["haplous", "evaluation/experiment.py", "evaluation/stats.py", "evaluation/aggregate.py"]
+files = ["haplous", "hes", "evaluation/experiment.py", "evaluation/stats.py", "evaluation/aggregate.py"]
 ignore_missing_imports = true
 warn_unused_ignores = true

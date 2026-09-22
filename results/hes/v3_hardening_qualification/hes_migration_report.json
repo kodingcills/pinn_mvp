@@ -1,0 +1,31 @@
+{
+  "baseline_arm": "direct_minimal",
+  "copied_files": [
+    "episodes.parquet",
+    "failures.parquet",
+    "interventions.jsonl",
+    "forks_summary.json",
+    "metrics.json",
+    "summary.json",
+    "manifest.json",
+    "manifest.yaml",
+    "provenance.json",
+    "shards/",
+    "parity/"
+  ],
+  "historical_results_modified": false,
+  "n_episodes": 3000,
+  "n_scenarios": 1000,
+  "new_metrics_policy": "metrics that require channels absent from the historical rows are reported NOT_AVAILABLE_FROM_HISTORICAL_EVIDENCE",
+  "not_available_from_historical_evidence": [
+    "collision_metrics",
+    "decision_latency",
+    "evidence_completeness",
+    "integrated_constraint_excursion",
+    "portability_engineering_leverage",
+    "task_progress"
+  ],
+  "out": "results/hes/v3_hardening_qualification",
+  "runtime_arm": "haplous_mediated",
+  "source": "results/v3_hardening_qualification"
+}

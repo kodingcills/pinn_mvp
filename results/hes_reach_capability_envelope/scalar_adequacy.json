@@ -1,0 +1,61 @@
+{
+  "boundary_shift_factors_mm": {},
+  "criteria": {
+    "material_boundary_shift_mm": 0.25,
+    "material_effect_threshold": 0.2,
+    "max_isotonic_deviation": 0.15,
+    "max_monotone_violations": 1
+  },
+  "isotonic_series": [
+    0.3137254901960784,
+    0.28,
+    0.11764705882352941,
+    0.11764705882352941,
+    0.023809523809523808,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "material_factors": [
+    "facet_count",
+    "max_force_n",
+    "n_stale",
+    "position_tolerance_m"
+  ],
+  "max_capture_observed": 0.3137254901960784,
+  "max_downward_violation_step": 0.02854177477944997,
+  "max_isotonic_deviation": 0.02149321266968325,
+  "offset_curve_coherent": true,
+  "raw_monotone_violations_gt_0.05": 0,
+  "raw_series": [
+    0.3137254901960784,
+    0.28,
+    0.09615384615384616,
+    0.13432835820895522,
+    0.023809523809523808,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "required_generalisation": "Bounded success is not a function of offset alone: the material factors above shift capture at matched offset. The smallest generalisation supported by this evidence is to keep the scalar as a safety/refusal boundary and treat the other axes as separate feasibility constraints, not to fold them into the reach scalar.",
+  "safety_scalar_adequate": true,
+  "scalar_adequate": false,
+  "success_scalar_adequate": false,
+  "verdict": "adequate_as_safety_boundary+inadequate_as_success_predictor",
+  "verdicts": [
+    "adequate_as_safety_boundary",
+    "inadequate_as_success_predictor"
+  ],
+  "violation_rate_series": [
+    0.49019607843137253,
+    0.472,
+    0.5192307692307693,
+    0.5074626865671642,
+    0.6190476190476191,
+    0.6382978723404256,
+    0.6097560975609756,
+    0.6190476190476191
+  ],
+  "violation_risk_increasing_trend": true,
+  "violation_risk_nondecreasing_within_0.10": true
+}

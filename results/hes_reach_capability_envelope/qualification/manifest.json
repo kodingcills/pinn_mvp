@@ -1,0 +1,45 @@
+{
+  "artifact_policy": [
+    "all_summaries",
+    "all_severe_failures",
+    "all_false_refusals"
+  ],
+  "benchmark": "internal-heb",
+  "benchmark_version": "0.2.0",
+  "claims": [],
+  "derived_from": {
+    "envelope_campaign": "results/hes_reach_capability_envelope",
+    "qualification": "results/hes/v3_hardening_qualification",
+    "selected_max_initial_offset_m": 0.0035
+  },
+  "description": "Isolated reach-capability calibration of the hardened v3 candidate: Haplous-mediated rerun over the frozen qualification population with the selected max_initial_offset_m; direct and supervisor arms reused from the frozen qualification run (deterministic, reach-independent).",
+  "experiment_class": "qualification",
+  "experiment_id": "reach_capability_qualification",
+  "haplous_version": "0.5.0",
+  "hes_migrated_from": "results/v3_hardening_qualification",
+  "metrics": [
+    "task_success",
+    "system_bsr",
+    "conditional_bsr",
+    "coverage",
+    "violation_rate",
+    "violation_given_acceptance",
+    "recovery_success_rate"
+  ],
+  "policy_checkpoint": null,
+  "population": {
+    "n": 1000,
+    "seed": 20260916,
+    "slide_fraction": 0.28
+  },
+  "reference_arm": "haplous_mediated",
+  "schema_version": "haplous-experiment-v1",
+  "sharding": {
+    "shard_size": 20
+  },
+  "systems": [
+    "direct_minimal",
+    "competent_supervisor",
+    "haplous_mediated"
+  ]
+}

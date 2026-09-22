@@ -1,0 +1,82 @@
+{
+  "baseline_arm": "direct_minimal",
+  "benchmark": "internal-heb",
+  "benchmark_version": "0.2.0",
+  "experiment_id": "v3_hardening_qualification",
+  "file_sha256": {
+    "episodes.parquet": "b435a24ed477159f5fc88e8c7ce8d164b666fa2900bef970389d0c1cfeb5c8d2",
+    "forks_summary.json": "60709959c27f642152c8d363297f9a3a49cb18fd7f5df3b438687cf552ea0aeb",
+    "hes_analysis.json": "90f9e7cb6116af80b72bf3d9af39aa7b35650ceb0b68c25035dd3cce558ec8f5",
+    "hes_gates.json": "1daff59b24ac8b1bb1fb8884c70abfcaed8c0564932e713d1ca8e6d2c45c47ac",
+    "interventions.jsonl": "c78ccb1184c51f939f75f9d81882aaefa647845ba417ab8a0c7960055267f814",
+    "manifest.json": "206a147a4e72f8bf84aa98ea9572c67accfcf36b84c142d477cfd5c4cf3698bc",
+    "manifest.yaml": "2971db6cb57d02da86a265a873b2225f7a7ea8e3e8798e06ebca2a2dfb960d2b",
+    "metrics.json": "2228d823b0861032438448dfff4bb4208ab60f21500ffedb2300e0ce1fb086a0",
+    "parity/parity.json": "decd2fb3004621615d9c8b50ce32675564fdff28aaac42cb78a0072c0131b869",
+    "summary.json": "13f1faaa73f54c0e2f21d6211cb56a6cc774dd7ec6eb439753701a258875e91a"
+  },
+  "gates": {
+    "G1": {
+      "observed": [],
+      "passed": true
+    },
+    "G2": {
+      "observed": {
+        "baseline": 0.805,
+        "runtime": 0.49040139616055844
+      },
+      "passed": true
+    },
+    "G3": {
+      "observed": 0.7862595419847328,
+      "passed": false
+    },
+    "G4": {
+      "observed": 0.14883720930232558,
+      "passed": true
+    },
+    "G5": {
+      "observed": [
+        "benchmark",
+        "benchmark_version",
+        "cpu_count",
+        "dependencies",
+        "episode_schema_version",
+        "git_commit",
+        "git_dirty",
+        "haplous_version"
+      ],
+      "passed": true
+    }
+  },
+  "git_commit": "d6330193b080a0525e8b4c8dd05fdf5d95ca414b",
+  "git_dirty": true,
+  "haplous_version": "0.5.0",
+  "hes_migration": {
+    "copied_files": [
+      "episodes.parquet",
+      "failures.parquet",
+      "interventions.jsonl",
+      "forks_summary.json",
+      "metrics.json",
+      "summary.json",
+      "manifest.json",
+      "manifest.yaml",
+      "provenance.json",
+      "shards/",
+      "parity/"
+    ],
+    "historical_results_modified": false,
+    "new_metrics_policy": "NOT_AVAILABLE_FROM_HISTORICAL_EVIDENCE",
+    "source": "results/v3_hardening_qualification"
+  },
+  "immutability_note": "HES v0 qualification artifacts are historical evidence. New evidence is written only to results/hes_causal_diagnosis/ and references this identity.",
+  "manifest_sha256": "4b0df50373e2f58437c6f0f31ba8a6df14d7df0f2759042c0db48b22e61395d0",
+  "population": {
+    "n": 1000,
+    "seed": 20260916,
+    "slide_fraction": 0.28
+  },
+  "reference_arm": "haplous_mediated",
+  "report_digest_ok": null
+}

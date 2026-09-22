@@ -1,0 +1,626 @@
+{
+  "A": {
+    "3.00-3.25": {
+      "n_executed": 0,
+      "peak_abs_force_n_max": null,
+      "peak_abs_force_n_p95": null,
+      "violation_among_executed": null,
+      "violation_among_presented": {
+        "ci_high": 0.029586819632536877,
+        "ci_low": 0.0,
+        "k": 0,
+        "method": "wilson95",
+        "n": 126,
+        "value": 0.0
+      }
+    },
+    "3.25-3.50": {
+      "n_executed": 0,
+      "peak_abs_force_n_max": null,
+      "peak_abs_force_n_p95": null,
+      "violation_among_executed": null,
+      "violation_among_presented": {
+        "ci_high": 0.025134518351024853,
+        "ci_low": 0.0,
+        "k": 0,
+        "method": "wilson95",
+        "n": 149,
+        "value": 0.0
+      }
+    },
+    "3.50-3.75": {
+      "n_executed": 0,
+      "peak_abs_force_n_max": null,
+      "peak_abs_force_n_p95": null,
+      "violation_among_executed": null,
+      "violation_among_presented": {
+        "ci_high": 0.06017393047793289,
+        "ci_low": 0.0,
+        "k": 0,
+        "method": "wilson95",
+        "n": 60,
+        "value": 0.0
+      }
+    },
+    "3.75-4.00": {
+      "n_executed": 0,
+      "peak_abs_force_n_max": null,
+      "peak_abs_force_n_p95": null,
+      "violation_among_executed": null,
+      "violation_among_presented": {
+        "ci_high": 0.04637283683559951,
+        "ci_low": 0.0,
+        "k": 0,
+        "method": "wilson95",
+        "n": 79,
+        "value": 0.0
+      }
+    },
+    "4.00-4.25": {
+      "n_executed": 0,
+      "peak_abs_force_n_max": null,
+      "peak_abs_force_n_p95": null,
+      "violation_among_executed": null,
+      "violation_among_presented": {
+        "ci_high": 0.07135003417431873,
+        "ci_low": 0.0,
+        "k": 0,
+        "method": "wilson95",
+        "n": 50,
+        "value": 0.0
+      }
+    },
+    "4.25-4.50": {
+      "n_executed": 0,
+      "peak_abs_force_n_max": null,
+      "peak_abs_force_n_p95": null,
+      "violation_among_executed": null,
+      "violation_among_presented": {
+        "ci_high": 0.06758430445307662,
+        "ci_low": 0.0,
+        "k": 0,
+        "method": "wilson95",
+        "n": 53,
+        "value": 0.0
+      }
+    },
+    "4.50-4.75": {
+      "n_executed": 0,
+      "peak_abs_force_n_max": null,
+      "peak_abs_force_n_p95": null,
+      "violation_among_executed": null,
+      "violation_among_presented": {
+        "ci_high": 0.0741026511527422,
+        "ci_low": 0.0,
+        "k": 0,
+        "method": "wilson95",
+        "n": 48,
+        "value": 0.0
+      }
+    },
+    "4.75-5.00": {
+      "n_executed": 0,
+      "peak_abs_force_n_max": null,
+      "peak_abs_force_n_p95": null,
+      "violation_among_executed": null,
+      "violation_among_presented": {
+        "ci_high": 0.06758430445307662,
+        "ci_low": 0.0,
+        "k": 0,
+        "method": "wilson95",
+        "n": 53,
+        "value": 0.0
+      }
+    }
+  },
+  "B": {
+    "3.00-3.25": {
+      "n_executed": 102,
+      "peak_abs_force_n_max": 67.33329793646374,
+      "peak_abs_force_n_p95": 59.41812032547981,
+      "violation_among_executed": {
+        "ci_high": 0.5857914848773521,
+        "ci_low": 0.39531235331103515,
+        "k": 50,
+        "method": "wilson95",
+        "n": 102,
+        "value": 0.49019607843137253
+      },
+      "violation_among_presented": {
+        "ci_high": 0.48408650636430517,
+        "ci_low": 0.31566950403605964,
+        "k": 50,
+        "method": "wilson95",
+        "n": 126,
+        "value": 0.3968253968253968
+      }
+    },
+    "3.25-3.50": {
+      "n_executed": 125,
+      "peak_abs_force_n_max": 94.30551501334926,
+      "peak_abs_force_n_p95": 70.89886546815734,
+      "violation_among_executed": {
+        "ci_high": 0.559040632578226,
+        "ci_low": 0.38662908900238147,
+        "k": 59,
+        "method": "wilson95",
+        "n": 125,
+        "value": 0.472
+      },
+      "violation_among_presented": {
+        "ci_high": 0.4761666224554335,
+        "ci_low": 0.3210090155907528,
+        "k": 59,
+        "method": "wilson95",
+        "n": 149,
+        "value": 0.3959731543624161
+      }
+    },
+    "3.50-3.75": {
+      "n_executed": 52,
+      "peak_abs_force_n_max": 101.17768625985644,
+      "peak_abs_force_n_p95": 87.07074796322834,
+      "violation_among_executed": {
+        "ci_high": 0.6489610529711556,
+        "ci_low": 0.3868545397052721,
+        "k": 27,
+        "method": "wilson95",
+        "n": 52,
+        "value": 0.5192307692307693
+      },
+      "violation_among_presented": {
+        "ci_high": 0.575082854510185,
+        "ci_low": 0.33093453853760824,
+        "k": 27,
+        "method": "wilson95",
+        "n": 60,
+        "value": 0.45
+      }
+    },
+    "3.75-4.00": {
+      "n_executed": 67,
+      "peak_abs_force_n_max": 99.64890031360153,
+      "peak_abs_force_n_p95": 95.12697727324965,
+      "violation_among_executed": {
+        "ci_high": 0.6234802905283863,
+        "ci_low": 0.39063570911024414,
+        "k": 34,
+        "method": "wilson95",
+        "n": 67,
+        "value": 0.5074626865671642
+      },
+      "violation_among_presented": {
+        "ci_high": 0.5402799943969628,
+        "ci_low": 0.3269364765548295,
+        "k": 34,
+        "method": "wilson95",
+        "n": 79,
+        "value": 0.43037974683544306
+      }
+    },
+    "4.00-4.25": {
+      "n_executed": 42,
+      "peak_abs_force_n_max": 117.75308978251078,
+      "peak_abs_force_n_p95": 102.23253281397233,
+      "violation_among_executed": {
+        "ci_high": 0.7500047910121407,
+        "ci_low": 0.46813768219996377,
+        "k": 26,
+        "method": "wilson95",
+        "n": 42,
+        "value": 0.6190476190476191
+      },
+      "violation_among_presented": {
+        "ci_high": 0.6520308760449429,
+        "ci_low": 0.3851151225880844,
+        "k": 26,
+        "method": "wilson95",
+        "n": 50,
+        "value": 0.52
+      }
+    },
+    "4.25-4.50": {
+      "n_executed": 47,
+      "peak_abs_force_n_max": 97.8642065720802,
+      "peak_abs_force_n_p95": 85.30218387153204,
+      "violation_among_executed": {
+        "ci_high": 0.7603397771423157,
+        "ci_low": 0.4953563457177046,
+        "k": 30,
+        "method": "wilson95",
+        "n": 47,
+        "value": 0.6382978723404256
+      },
+      "violation_among_presented": {
+        "ci_high": 0.6904980930103964,
+        "ci_low": 0.4326511497976876,
+        "k": 30,
+        "method": "wilson95",
+        "n": 53,
+        "value": 0.5660377358490566
+      }
+    },
+    "4.50-4.75": {
+      "n_executed": 41,
+      "peak_abs_force_n_max": 126.20373733830438,
+      "peak_abs_force_n_p95": 104.97029933609407,
+      "violation_among_executed": {
+        "ci_high": 0.7434406478467289,
+        "ci_low": 0.45726583898692563,
+        "k": 25,
+        "method": "wilson95",
+        "n": 41,
+        "value": 0.6097560975609756
+      },
+      "violation_among_presented": {
+        "ci_high": 0.6552890998421255,
+        "ci_low": 0.3832899563598438,
+        "k": 25,
+        "method": "wilson95",
+        "n": 48,
+        "value": 0.5208333333333334
+      }
+    },
+    "4.75-5.00": {
+      "n_executed": 42,
+      "peak_abs_force_n_max": 120.97159753991292,
+      "peak_abs_force_n_p95": 108.56164288581725,
+      "violation_among_executed": {
+        "ci_high": 0.7500047910121407,
+        "ci_low": 0.46813768219996377,
+        "k": 26,
+        "method": "wilson95",
+        "n": 42,
+        "value": 0.6190476190476191
+      },
+      "violation_among_presented": {
+        "ci_high": 0.6211669574670219,
+        "ci_low": 0.36124029356039444,
+        "k": 26,
+        "method": "wilson95",
+        "n": 53,
+        "value": 0.49056603773584906
+      }
+    }
+  },
+  "C": {
+    "3.00-3.25": {
+      "n_executed": 126,
+      "peak_abs_force_n_max": 105.88951052135363,
+      "peak_abs_force_n_p95": 78.42642197686115,
+      "violation_among_executed": {
+        "ci_high": 0.841540575741545,
+        "ci_low": 0.6975778577959347,
+        "k": 98,
+        "method": "wilson95",
+        "n": 126,
+        "value": 0.7777777777777778
+      },
+      "violation_among_presented": {
+        "ci_high": 0.841540575741545,
+        "ci_low": 0.6975778577959347,
+        "k": 98,
+        "method": "wilson95",
+        "n": 126,
+        "value": 0.7777777777777778
+      }
+    },
+    "3.25-3.50": {
+      "n_executed": 149,
+      "peak_abs_force_n_max": 102.37439232830883,
+      "peak_abs_force_n_p95": 88.15701876619715,
+      "violation_among_executed": {
+        "ci_high": 0.8141385406519015,
+        "ci_low": 0.6765655608492607,
+        "k": 112,
+        "method": "wilson95",
+        "n": 149,
+        "value": 0.7516778523489933
+      },
+      "violation_among_presented": {
+        "ci_high": 0.8141385406519015,
+        "ci_low": 0.6765655608492607,
+        "k": 112,
+        "method": "wilson95",
+        "n": 149,
+        "value": 0.7516778523489933
+      }
+    },
+    "3.50-3.75": {
+      "n_executed": 60,
+      "peak_abs_force_n_max": 137.62196247116523,
+      "peak_abs_force_n_p95": 97.22604484681625,
+      "violation_among_executed": {
+        "ci_high": 0.9308597302169036,
+        "ci_low": 0.7583460540992789,
+        "k": 52,
+        "method": "wilson95",
+        "n": 60,
+        "value": 0.8666666666666667
+      },
+      "violation_among_presented": {
+        "ci_high": 0.9308597302169036,
+        "ci_low": 0.7583460540992789,
+        "k": 52,
+        "method": "wilson95",
+        "n": 60,
+        "value": 0.8666666666666667
+      }
+    },
+    "3.75-4.00": {
+      "n_executed": 79,
+      "peak_abs_force_n_max": 131.0687457916468,
+      "peak_abs_force_n_p95": 104.55832657508664,
+      "violation_among_executed": {
+        "ci_high": 0.9109181967901335,
+        "ci_low": 0.7529994484509047,
+        "k": 67,
+        "method": "wilson95",
+        "n": 79,
+        "value": 0.8481012658227848
+      },
+      "violation_among_presented": {
+        "ci_high": 0.9109181967901335,
+        "ci_low": 0.7529994484509047,
+        "k": 67,
+        "method": "wilson95",
+        "n": 79,
+        "value": 0.8481012658227848
+      }
+    },
+    "4.00-4.25": {
+      "n_executed": 50,
+      "peak_abs_force_n_max": 129.87709460479863,
+      "peak_abs_force_n_p95": 119.26166082776663,
+      "violation_among_executed": {
+        "ci_high": 0.9438247628937535,
+        "ci_low": 0.7619492111337642,
+        "k": 44,
+        "method": "wilson95",
+        "n": 50,
+        "value": 0.88
+      },
+      "violation_among_presented": {
+        "ci_high": 0.9438247628937535,
+        "ci_low": 0.7619492111337642,
+        "k": 44,
+        "method": "wilson95",
+        "n": 50,
+        "value": 0.88
+      }
+    },
+    "4.25-4.50": {
+      "n_executed": 53,
+      "peak_abs_force_n_max": 118.11203873183501,
+      "peak_abs_force_n_p95": 112.43401667135379,
+      "violation_among_executed": {
+        "ci_high": 0.9345222979931043,
+        "ci_low": 0.7515949119376506,
+        "k": 46,
+        "method": "wilson95",
+        "n": 53,
+        "value": 0.8679245283018868
+      },
+      "violation_among_presented": {
+        "ci_high": 0.9345222979931043,
+        "ci_low": 0.7515949119376506,
+        "k": 46,
+        "method": "wilson95",
+        "n": 53,
+        "value": 0.8679245283018868
+      }
+    },
+    "4.50-4.75": {
+      "n_executed": 48,
+      "peak_abs_force_n_max": 131.10276563933354,
+      "peak_abs_force_n_p95": 126.20373733830438,
+      "violation_among_executed": {
+        "ci_high": 0.8826985220411018,
+        "ci_low": 0.6574082647864651,
+        "k": 38,
+        "method": "wilson95",
+        "n": 48,
+        "value": 0.7916666666666666
+      },
+      "violation_among_presented": {
+        "ci_high": 0.8826985220411018,
+        "ci_low": 0.6574082647864651,
+        "k": 38,
+        "method": "wilson95",
+        "n": 48,
+        "value": 0.7916666666666666
+      }
+    },
+    "4.75-5.00": {
+      "n_executed": 53,
+      "peak_abs_force_n_max": 126.42246258305816,
+      "peak_abs_force_n_p95": 122.41533992177997,
+      "violation_among_executed": {
+        "ci_high": 0.8799552427067794,
+        "ci_low": 0.6654199754433079,
+        "k": 42,
+        "method": "wilson95",
+        "n": 53,
+        "value": 0.7924528301886793
+      },
+      "violation_among_presented": {
+        "ci_high": 0.8799552427067794,
+        "ci_low": 0.6654199754433079,
+        "k": 42,
+        "method": "wilson95",
+        "n": 53,
+        "value": 0.7924528301886793
+      }
+    }
+  },
+  "D": {
+    "3.00-3.25": {
+      "n_executed": 126,
+      "peak_abs_force_n_max": 64.67796903834123,
+      "peak_abs_force_n_p95": 28.93866387698666,
+      "violation_among_executed": {
+        "ci_high": 0.3948777736506587,
+        "ci_low": 0.23544101478078405,
+        "k": 39,
+        "method": "wilson95",
+        "n": 126,
+        "value": 0.30952380952380953
+      },
+      "violation_among_presented": {
+        "ci_high": 0.3948777736506587,
+        "ci_low": 0.23544101478078405,
+        "k": 39,
+        "method": "wilson95",
+        "n": 126,
+        "value": 0.30952380952380953
+      }
+    },
+    "3.25-3.50": {
+      "n_executed": 149,
+      "peak_abs_force_n_max": 93.37408179802608,
+      "peak_abs_force_n_p95": 56.8855741439159,
+      "violation_among_executed": {
+        "ci_high": 0.3376813605205449,
+        "ci_low": 0.19778542339168842,
+        "k": 39,
+        "method": "wilson95",
+        "n": 149,
+        "value": 0.26174496644295303
+      },
+      "violation_among_presented": {
+        "ci_high": 0.3376813605205449,
+        "ci_low": 0.19778542339168842,
+        "k": 39,
+        "method": "wilson95",
+        "n": 149,
+        "value": 0.26174496644295303
+      }
+    },
+    "3.50-3.75": {
+      "n_executed": 60,
+      "peak_abs_force_n_max": 101.17768625985644,
+      "peak_abs_force_n_p95": 79.92348599421635,
+      "violation_among_executed": {
+        "ci_high": 0.4931723263320327,
+        "ci_low": 0.2562073884620827,
+        "k": 22,
+        "method": "wilson95",
+        "n": 60,
+        "value": 0.36666666666666664
+      },
+      "violation_among_presented": {
+        "ci_high": 0.4931723263320327,
+        "ci_low": 0.2562073884620827,
+        "k": 22,
+        "method": "wilson95",
+        "n": 60,
+        "value": 0.36666666666666664
+      }
+    },
+    "3.75-4.00": {
+      "n_executed": 79,
+      "peak_abs_force_n_max": 95.12697727324965,
+      "peak_abs_force_n_p95": 72.27234113804903,
+      "violation_among_executed": {
+        "ci_high": 0.41234868328921037,
+        "ci_low": 0.2134431893931135,
+        "k": 24,
+        "method": "wilson95",
+        "n": 79,
+        "value": 0.3037974683544304
+      },
+      "violation_among_presented": {
+        "ci_high": 0.41234868328921037,
+        "ci_low": 0.2134431893931135,
+        "k": 24,
+        "method": "wilson95",
+        "n": 79,
+        "value": 0.3037974683544304
+      }
+    },
+    "4.00-4.25": {
+      "n_executed": 50,
+      "peak_abs_force_n_max": 117.75308978251078,
+      "peak_abs_force_n_p95": 102.23253281397233,
+      "violation_among_executed": {
+        "ci_high": 0.45810557136276076,
+        "ci_low": 0.20758044093999403,
+        "k": 16,
+        "method": "wilson95",
+        "n": 50,
+        "value": 0.32
+      },
+      "violation_among_presented": {
+        "ci_high": 0.45810557136276076,
+        "ci_low": 0.20758044093999403,
+        "k": 16,
+        "method": "wilson95",
+        "n": 50,
+        "value": 0.32
+      }
+    },
+    "4.25-4.50": {
+      "n_executed": 53,
+      "peak_abs_force_n_max": 97.8642065720802,
+      "peak_abs_force_n_p95": 56.59215207904271,
+      "violation_among_executed": {
+        "ci_high": 0.4157054200010772,
+        "ci_low": 0.17966135362950314,
+        "k": 15,
+        "method": "wilson95",
+        "n": 53,
+        "value": 0.2830188679245283
+      },
+      "violation_among_presented": {
+        "ci_high": 0.4157054200010772,
+        "ci_low": 0.17966135362950314,
+        "k": 15,
+        "method": "wilson95",
+        "n": 53,
+        "value": 0.2830188679245283
+      }
+    },
+    "4.50-4.75": {
+      "n_executed": 48,
+      "peak_abs_force_n_max": 126.20373733830438,
+      "peak_abs_force_n_p95": 104.97029933609407,
+      "violation_among_executed": {
+        "ci_high": 0.4533333725049633,
+        "ci_low": 0.19945512167731494,
+        "k": 15,
+        "method": "wilson95",
+        "n": 48,
+        "value": 0.3125
+      },
+      "violation_among_presented": {
+        "ci_high": 0.4533333725049633,
+        "ci_low": 0.19945512167731494,
+        "k": 15,
+        "method": "wilson95",
+        "n": 48,
+        "value": 0.3125
+      }
+    },
+    "4.75-5.00": {
+      "n_executed": 53,
+      "peak_abs_force_n_max": 120.97159753991292,
+      "peak_abs_force_n_p95": 98.00322197325892,
+      "violation_among_executed": {
+        "ci_high": 0.4157054200010772,
+        "ci_low": 0.17966135362950314,
+        "k": 15,
+        "method": "wilson95",
+        "n": 53,
+        "value": 0.2830188679245283
+      },
+      "violation_among_presented": {
+        "ci_high": 0.4157054200010772,
+        "ci_low": 0.17966135362950314,
+        "k": 15,
+        "method": "wilson95",
+        "n": 53,
+        "value": 0.2830188679245283
+      }
+    }
+  }
+}

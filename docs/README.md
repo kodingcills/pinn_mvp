@@ -6,6 +6,35 @@ explain how that state was reached.
 
 ## Current engineering reports
 
+- [HES v0 design and usage](HES.md) — the Haplous Evaluation System:
+  outcome/attainability model, metric vector, attribution, integrity
+  gates, regression, boundary search, populations, CLI, and how each part
+  maps onto the existing `evaluation/` + `benchmarks/heb/` stack.
+- [HES v0 canonical report](HES_V0_REPORT.md) — generated from
+  `results/hes/v3_hardening_qualification/` by
+  `scripts/run_hes_v0_campaign.py`; digest-checked with
+  `hes report --check`.
+- [HES v0 final report](HES_V0_FINAL_REPORT.md) — narrative conclusions
+  from the v0 campaign, including the findings that weaken Haplous's
+  registered claims.
+- [HES causal diagnosis](HES_CAUSAL_DIAGNOSIS.md) — post-HES attribution of
+  the G3 bounded-success loss to a single reach-rejection mechanism, with
+  the evaluator-mislabelling evidence and the improvement ceiling (driver:
+  `scripts/hes_causal_diagnosis.py`).
+- [HES boundary calibration](HES_BOUNDARY_CALIBRATION.md) — falsification
+  campaign on the 3.0-3.5 mm reach-rejection band: Branch B (reach
+  authorised) vs the unmediated and supervisor arms, the bounded-execution
+  evaluator repair, and the D1/E1 decision (driver:
+  `scripts/run_hes_boundary_calibration.py`, `--check` reproducible).
+- [HES reach capability envelope](HES_REACH_CAPABILITY_ENVELOPE.md) —
+  predeclared 0.25 mm-band sweep over the full 3.0-5.0 mm offset region with
+  paired authorised/direct/supervisor realizations: the capture and
+  violation-risk curves, the scalar-adequacy verdict (adequate as a safety
+  boundary, inadequate as a bounded-success predictor), the calibrated
+  `max_initial_offset_m = 0.0035` m with its isolated qualification rerun, and
+  the HES regression analysis (driver:
+  `scripts/run_hes_reach_capability_envelope.py`, `--check` reproducible;
+  qualification driver: `scripts/run_hes_reach_capability_qualification.py`).
 - [Haplous v0-sim report](HAPLOUS_V0_SIM_REPORT.md) — the clean runtime
   (Phase III), the 12-scenario semantic benchmark (Phase IV, 12/12
   conformance), fault simulation (Phase V), and the physical gate with

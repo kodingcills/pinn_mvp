@@ -1,0 +1,19 @@
+{
+  "R0_not_haplous": 159,
+  "R1_correct_prevention": 107,
+  "R2_mixed": 172,
+  "R3_haplous_caused": 33,
+  "UNKNOWN": 347,
+  "captured": 182,
+  "classes": {
+    "abort_attainability_unknown": 17,
+    "captured": 182,
+    "correct_refusal": 107,
+    "missed_demonstrated_attainable": 33,
+    "protective_stop_on_breach": 172,
+    "refusal_attainability_unknown": 288,
+    "unknown": 42,
+    "upstream_controller_physics_limit": 159
+  },
+  "interpretation": "R3 is the demonstrated bounded-success loss mass Haplous caused. R2 stops are protective but the underlying breach is upstream. R1 refusals are correct prevention on demonstrated non-attainable scenarios."
+}

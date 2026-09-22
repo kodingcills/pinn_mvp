@@ -1,0 +1,22 @@
+{
+  "baseline_arm": "direct_minimal",
+  "gate_failures": [
+    "G3"
+  ],
+  "hes_root": "results/hes/v3_hardening_qualification",
+  "historical_results_modified": false,
+  "not_available_from_historical_evidence": [
+    "collision_metrics",
+    "decision_latency",
+    "evidence_completeness",
+    "integrated_constraint_excursion",
+    "portability_engineering_leverage",
+    "task_progress"
+  ],
+  "qualified": false,
+  "report": "docs/HES_V0_REPORT.md",
+  "report_digest_message": "report matches the evidence digest",
+  "report_digest_ok": true,
+  "runtime_arm": "haplous_mediated",
+  "source": "results/v3_hardening_qualification"
+}

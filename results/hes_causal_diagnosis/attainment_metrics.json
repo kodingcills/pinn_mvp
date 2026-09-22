@@ -1,0 +1,17 @@
+{
+  "authorization_recall_over_attainable": 0.8465,
+  "coverage": {
+    "attainable_fraction": 0.215,
+    "non_attainable_fraction": 0.306,
+    "unknown_fraction": 0.479
+  },
+  "execution_capture_over_attainable": 0.8465,
+  "false_refusal_rate_over_attainable": 0.1488,
+  "hazard_rejection_over_non_attainable": 0.3497,
+  "labels": {
+    "attainable": 215,
+    "non_attainable": 306,
+    "unknown": 479
+  },
+  "note": "Every attainment-relative metric is reported only over its defensibly labelled population, with the coverage above. The 479 UNKNOWN scenarios are excluded rather than assumed either way."
+}

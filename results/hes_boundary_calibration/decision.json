@@ -1,0 +1,57 @@
+{
+  "all_paths": [
+    {
+      "claim": "max_initial_offset_m is more conservative than the bounded capture envelope",
+      "confidence": "high",
+      "evidence": {
+        "authorised_haplous_capture_among_executed": 0.26548672566371684,
+        "capture_gap_C_minus_B": -0.09647264115667459,
+        "direct_capture": 0.16901408450704225
+      },
+      "label": "calibration defect",
+      "path": "D1"
+    },
+    {
+      "claim": "the reachability constant is inconsistent with the offset population it generates",
+      "confidence": "moderate",
+      "evidence": {
+        "declared_infeasible_scenarios_with_direct_bounded_success": 24,
+        "declared_reach_cap_m": 0.003
+      },
+      "label": "benchmark/evaluator defect",
+      "path": "E1"
+    }
+  ],
+  "bounded_execution_epoch": "bounded-execution-v1",
+  "evaluator_repair_first": true,
+  "highest_information_next_experiment": "Authorized-reach sweep (Branch B vs Branch C) across the full 0.003-0.005 m offset population to estimate the bounded capture envelope and select a calibrated max_initial_offset_m with a declared safety margin; calibration is against measured physics, not benchmark score.",
+  "primary": {
+    "claim": "max_initial_offset_m is more conservative than the bounded capture envelope",
+    "confidence": "high",
+    "evidence": {
+      "authorised_haplous_capture_among_executed": 0.26548672566371684,
+      "capture_gap_C_minus_B": -0.09647264115667459,
+      "direct_capture": 0.16901408450704225
+    },
+    "label": "calibration defect",
+    "path": "D1"
+  },
+  "separate_issues_not_bundled": [
+    "deadline expected_duration_s recalibration",
+    "insert_000793 49.7 N mediation divergence"
+  ],
+  "summary_numbers": {
+    "bounded_success_created": 6,
+    "bounded_success_destroyed": 0,
+    "branch_A_capture": 0.0,
+    "branch_B_capture_among_eligible": 0.2112676056338028,
+    "branch_B_capture_among_executed": 0.26548672566371684,
+    "branch_B_execution_refusals": 10,
+    "branch_B_refusals": 29,
+    "branch_B_submit_refusals": 19,
+    "branch_C_capture": 0.16901408450704225,
+    "branch_D_capture": 0.14788732394366197,
+    "deadline_refusals_retained": 19,
+    "n_eligible": 142
+  }
+}

@@ -136,6 +136,7 @@ class HaplousSystem:
                 reason="negotiation_refusal",
                 refusal_codes=tuple(r.code for r in feasibility.reasons),
                 wall_s=time.perf_counter() - t0,
+                detail={"refusal_stage": "submit"},
             )
         evidence = runtime.execute()
         wall = time.perf_counter() - t0
@@ -143,15 +144,32 @@ class HaplousSystem:
         applied = getattr(
             realization.machine, "last_session_applied_command_times", ()
         )
+        result = outcome.payload["result"]
+        reason = outcome.payload.get("reason")
+        refusal_codes: tuple[str, ...] = ()
+        refusal_stage = "none"
+        if result == "REFUSED":
+            # Mid-execution refusal (pre-execution state invalid): the
+            # submit-time feasibility was SUPPORTED, so capture the
+            # refusal evidence so it is not silently code-less.
+            refusal_stage = "execution"
+            reason = "pre_execution_state_invalid"
+            for event in evidence.events:
+                if event.kind == "pre_execution_state_invalid":
+                    code = event.payload.get("reason")
+                    if code and code not in refusal_codes:
+                        refusal_codes = refusal_codes + (code,)
         return SystemRun(
             system=self.name,
-            disposition=outcome.payload["result"],
-            reason=outcome.payload.get("reason"),
+            disposition=result,
+            reason=reason,
+            refusal_codes=refusal_codes,
             observations=realization.machine.last_session_observations,
             wall_s=wall,
             detail={
                 "evidence_events": len(evidence.events),
                 "applied_command_times": tuple(applied),
+                "refusal_stage": refusal_stage,
             },
         )
 

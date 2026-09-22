@@ -22,11 +22,12 @@ Durable engineering evidence lives in `docs/` (index: `docs/README.md`).
 | `tests/` | Full test suite |
 | `results/` | Committed raw JSONL trials and derived evidence |
 | `docs/` | Engineering reports and campaign evidence |
+| `hes/` | Haplous Evaluation System: outcome axes, metric vector, attribution, gates, reports |
 
 ## Commands
 
 ```bash
-.venv/bin/python -m pytest tests -q          # full suite (expect 278 passed, 1 xfailed)
+.venv/bin/python -m pytest tests -q          # full suite (expect 396 passed, 1 xfailed)
 .venv/bin/python -m pytest tests/test_haplous_semantics.py -q   # runtime semantics
 .venv/bin/python -c "import haplous, pegsim" # import smoke
 ruff check .                                  # lint, if ruff is installed

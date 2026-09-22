@@ -1,0 +1,183 @@
+{
+  "candidates": {
+    "0.00300": {
+      "bounded_capture_among_authorized_executed": null,
+      "bounded_successes_in_band": 0,
+      "cap_m": 0.003,
+      "coverage_of_band": 0.0,
+      "hard_violations_in_band": 0,
+      "n_authorized": 0,
+      "n_executed": 0,
+      "violation_risk_among_authorized_executed": null
+    },
+    "0.00325": {
+      "bounded_capture_among_authorized_executed": {
+        "ci_high": 0.4091445182425097,
+        "ci_low": 0.23182840733684668,
+        "k": 32,
+        "method": "wilson95",
+        "n": 102,
+        "value": 0.3137254901960784
+      },
+      "bounded_successes_in_band": 32,
+      "cap_m": 0.00325,
+      "coverage_of_band": 0.1650485436893204,
+      "hard_violations_in_band": 50,
+      "n_authorized": 126,
+      "n_executed": 102,
+      "violation_risk_among_authorized_executed": {
+        "ci_high": 0.5857914848773521,
+        "ci_low": 0.39531235331103515,
+        "k": 50,
+        "method": "wilson95",
+        "n": 102,
+        "value": 0.49019607843137253
+      }
+    },
+    "0.00350": {
+      "bounded_capture_among_authorized_executed": {
+        "ci_high": 0.35750155688131224,
+        "ci_low": 0.23962478429809395,
+        "k": 67,
+        "method": "wilson95",
+        "n": 227,
+        "value": 0.29515418502202645
+      },
+      "bounded_successes_in_band": 67,
+      "cap_m": 0.0035,
+      "coverage_of_band": 0.3673139158576052,
+      "hard_violations_in_band": 109,
+      "n_authorized": 275,
+      "n_executed": 227,
+      "violation_risk_among_authorized_executed": {
+        "ci_high": 0.5449576264849115,
+        "ci_low": 0.4160546000808375,
+        "k": 109,
+        "method": "wilson95",
+        "n": 227,
+        "value": 0.4801762114537445
+      }
+    },
+    "0.00375": {
+      "bounded_capture_among_authorized_executed": {
+        "ci_high": 0.3124517591685668,
+        "ci_low": 0.21024928622221017,
+        "k": 72,
+        "method": "wilson95",
+        "n": 279,
+        "value": 0.25806451612903225
+      },
+      "bounded_successes_in_band": 72,
+      "cap_m": 0.00375,
+      "coverage_of_band": 0.45145631067961167,
+      "hard_violations_in_band": 136,
+      "n_authorized": 335,
+      "n_executed": 279,
+      "violation_risk_among_authorized_executed": {
+        "ci_high": 0.5458787516447352,
+        "ci_low": 0.4293724136718234,
+        "k": 136,
+        "method": "wilson95",
+        "n": 279,
+        "value": 0.4874551971326165
+      }
+    },
+    "0.00400": {
+      "bounded_capture_among_authorized_executed": {
+        "ci_high": 0.2814918733065006,
+        "ci_low": 0.19255580998788172,
+        "k": 81,
+        "method": "wilson95",
+        "n": 346,
+        "value": 0.23410404624277456
+      },
+      "bounded_successes_in_band": 81,
+      "cap_m": 0.004,
+      "coverage_of_band": 0.5598705501618123,
+      "hard_violations_in_band": 170,
+      "n_authorized": 414,
+      "n_executed": 346,
+      "violation_risk_among_authorized_executed": {
+        "ci_high": 0.5438119595229917,
+        "ci_low": 0.439037421453999,
+        "k": 170,
+        "method": "wilson95",
+        "n": 346,
+        "value": 0.4913294797687861
+      }
+    },
+    "0.00435": {
+      "bounded_capture_among_authorized_executed": {
+        "ci_high": 0.24490412280230786,
+        "ci_low": 0.1666321206804561,
+        "k": 82,
+        "method": "wilson95",
+        "n": 404,
+        "value": 0.20297029702970298
+      },
+      "bounded_successes_in_band": 82,
+      "cap_m": 0.00435,
+      "coverage_of_band": 0.6537216828478964,
+      "hard_violations_in_band": 207,
+      "n_authorized": 482,
+      "n_executed": 404,
+      "violation_risk_among_authorized_executed": {
+        "ci_high": 0.5607715840083254,
+        "ci_low": 0.4637477391798928,
+        "k": 207,
+        "method": "wilson95",
+        "n": 404,
+        "value": 0.5123762376237624
+      }
+    },
+    "0.00450": {
+      "bounded_capture_among_authorized_executed": {
+        "ci_high": 0.22792778198722416,
+        "ci_low": 0.15453732615202245,
+        "k": 82,
+        "method": "wilson95",
+        "n": 435,
+        "value": 0.18850574712643678
+      },
+      "bounded_successes_in_band": 82,
+      "cap_m": 0.0045,
+      "coverage_of_band": 0.7038834951456311,
+      "hard_violations_in_band": 226,
+      "n_authorized": 517,
+      "n_executed": 435,
+      "violation_risk_among_authorized_executed": {
+        "ci_high": 0.5661150394171588,
+        "ci_low": 0.4726233117327776,
+        "k": 226,
+        "method": "wilson95",
+        "n": 435,
+        "value": 0.5195402298850574
+      }
+    },
+    "0.00500": {
+      "bounded_capture_among_authorized_executed": {
+        "ci_high": 0.19223641646788292,
+        "ci_low": 0.12939681476550285,
+        "k": 82,
+        "method": "wilson95",
+        "n": 518,
+        "value": 0.1583011583011583
+      },
+      "bounded_successes_in_band": 82,
+      "cap_m": 0.005,
+      "coverage_of_band": 0.8381877022653722,
+      "hard_violations_in_band": 277,
+      "n_authorized": 618,
+      "n_executed": 518,
+      "violation_risk_among_authorized_executed": {
+        "ci_high": 0.5772902058680917,
+        "ci_low": 0.49169624519292,
+        "k": 277,
+        "method": "wilson95",
+        "n": 518,
+        "value": 0.5347490347490348
+      }
+    }
+  },
+  "denominator": "envelope band rows (reach calibration population); bounded capture and violation risk among authorised+executed; coverage is of the band"
+}

@@ -1,0 +1,34 @@
+{
+  "discriminator": {
+    "process_force_abort": "Task regime. On insertion (hard force limit 12-25 N) the unmediated continuation fails closed with a force blow-up (27-52 N): protective. On sliding (hard force limit 1.0-1.5 N) the nominal contact force (~1.74 N) already exceeds the declared limit, so the continuation completes the task while still violating the limit: the classifier credits 'task completion' and labels the stop HARMFUL even though no bounded success was destroyed. The observable that separates the two is (continuation_peak_force_n vs declared force limit), not the intervention itself."
+  },
+  "mechanisms": {
+    "deadline_abort": {
+      "beneficial": 0,
+      "harmful": 1,
+      "insufficient": 0,
+      "net_bounded_successes": 0,
+      "net_severity_prevented": 0,
+      "protective": 0,
+      "unnecessary": 1
+    },
+    "hold_timeout": {
+      "beneficial": 1,
+      "harmful": 0,
+      "insufficient": 0,
+      "net_bounded_successes": 0,
+      "net_severity_prevented": 1,
+      "protective": 1,
+      "unnecessary": 1
+    },
+    "process_force_abort": {
+      "beneficial": 4,
+      "harmful": 11,
+      "insufficient": 0,
+      "net_bounded_successes": 0,
+      "net_severity_prevented": 4,
+      "protective": 4,
+      "unnecessary": 4
+    }
+  }
+}

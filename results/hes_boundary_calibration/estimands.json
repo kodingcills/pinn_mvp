@@ -1,0 +1,90 @@
+{
+  "bounded_success_created_by_authorised_haplous": [
+    "fleet_insert_000010",
+    "fleet_insert_000042",
+    "fleet_insert_000323",
+    "fleet_insert_000495",
+    "fleet_insert_000797",
+    "fleet_insert_000817"
+  ],
+  "bounded_success_destroyed_by_authorised_haplous": [],
+  "bounded_success_destroyed_including_freshness_refusals": [],
+  "branch_A_capture": {
+    "ci_high": 0.02634090684688045,
+    "ci_low": 0.0,
+    "k": 0,
+    "method": "wilson95",
+    "n": 142,
+    "value": 0.0
+  },
+  "branch_A_refused": 142,
+  "branch_B_capture_among_eligible": {
+    "ci_high": 0.28555983509388483,
+    "ci_low": 0.15218632238107427,
+    "k": 30,
+    "method": "wilson95",
+    "n": 142,
+    "value": 0.2112676056338028
+  },
+  "branch_B_deadline_refusals": 19,
+  "branch_B_executed": {
+    "ci_high": 0.3536392101740843,
+    "ci_low": 0.19275522468473327,
+    "k": 30,
+    "method": "wilson95",
+    "n": 113,
+    "value": 0.26548672566371684
+  },
+  "branch_B_execution_refusals": 10,
+  "branch_B_refusals": 29,
+  "branch_B_submit_refusals": 19,
+  "branch_C_capture": {
+    "ci_high": 0.2391780410370652,
+    "ci_low": 0.1162870663122782,
+    "k": 24,
+    "method": "wilson95",
+    "n": 142,
+    "value": 0.16901408450704225
+  },
+  "branch_D_capture": {
+    "ci_high": 0.21551825234078315,
+    "ci_low": 0.09880632994575239,
+    "k": 21,
+    "method": "wilson95",
+    "n": 142,
+    "value": 0.14788732394366197
+  },
+  "n_eligible": 142,
+  "paired_B_vs_C": {
+    "B_only": 6,
+    "C_only": 0,
+    "both_bounded": 24,
+    "capture_gap_C_minus_B": -0.04225352112676056,
+    "mcnemar": {
+      "b01_B_only": 6,
+      "b10_C_only": 0,
+      "method": "exact_binomial",
+      "n_discordant": 6,
+      "p_value": 0.03125
+    },
+    "neither": 112
+  },
+  "violation_rate_among_executed": {
+    "B": {
+      "ci_high": 0.569180060326097,
+      "ci_low": 0.38802696183039537,
+      "k": 54,
+      "method": "wilson95",
+      "n": 113,
+      "value": 0.4778761061946903
+    },
+    "C": {
+      "ci_high": 0.841724961347041,
+      "ci_low": 0.7068153728237305,
+      "k": 111,
+      "method": "wilson95",
+      "n": 142,
+      "value": 0.7816901408450704
+    }
+  }
+}

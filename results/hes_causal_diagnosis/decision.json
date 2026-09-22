@@ -1,0 +1,24 @@
+{
+  "do_not": [
+    "do not change runtime semantics before the fork sweep",
+    "do not retune the classifier to flatter Haplous: make HARMFUL require a bounded-success continuation, and mark the affected historical labels superseded",
+    "do not fork the full 479 UNKNOWN mass"
+  ],
+  "fallback_path": "PATH A - if the boundary_hi fork sweep shows Haplous core genuinely cannot capture offsets the unmediated arm attains, the reach model becomes a generic Haplous defect",
+  "highest_information_next_experiment": {
+    "cost": "minutes to a few hours of managed forks; no new population, no new episodes",
+    "experiment": "single-pass fork sweep of the 142 eligible boundary_hi (3.0-3.5 mm) reach-rejections (excluding the guaranteed-abort class), plus the priority UNKNOWN subset, once each",
+    "falsifies": "that max_initial_offset_m = 0.003 matches the machine's true capture boundary",
+    "why": "It is the single mechanism behind 26/28 preservation losses and it directly tests the calibration hypothesis. If the unmediated continuation completes within contract materially more often than the 0.003 cap assumes, the constant is wrong; if not, the reach model is a genuine Haplous limitation (PATH A)."
+  },
+  "primary_path": "PATH D - evaluator defect: the counterfactual classifier mislabels HARMFUL on task success alone, and the benchmark's reachability constant max_initial_offset_m is inconsistent with the offset population it generates",
+  "r3_mass_reference": 33,
+  "rationale": [
+    "G3 loss is dominated by one reusable mechanism (reach_rejection, 26/28) whose trigger is a single per-task calibration constant, not a broad runtime defect.",
+    "The HARMFUL headline is inflated by an evaluator classifier defect: 12/12 HARMFUL continuations breach a declared hard contract, so none destroyed a bounded success. The negative evidence must be re-derived before any claim.",
+    "Fixing the evaluator is a prerequisite for measuring anything else, and the falsifying evidence is already partly in hand (direct_minimal attains 24 of 153 boundary_hi scenarios Haplous refuses)."
+  ],
+  "recommended_path": "D",
+  "why_not_primary_b": "PATH B (attainability uncertainty) is the largest raw mass (479 UNKNOWN) but it is an evidence gap, not a defect: it bounds the ceiling rather than explaining the observed G3 loss.",
+  "why_not_primary_c": "PATH C (intrinsic tradeoff) is not supported: zero BENEFICIAL forks preserved a bounded success, so no measured protection requires the reach refusal."
+}

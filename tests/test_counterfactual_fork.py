@@ -7,11 +7,18 @@ import mujoco
 import pytest
 
 from benchmarks.heb.counterfactual import (
-    HARMFUL,
-    UNNECESSARY,
+    AMBIGUOUS,
     BENEFICIAL,
+    BOUNDED_SUCCESS_PRESERVED,
+    HARMFUL,
+    INSUFFICIENT,
+    PROTECTIVE_STOP,
+    UNNECESSARY,
+    ContinuationOutcome,
     RecordingBehavior,
     classify_intervention,
+    classify_intervention_detailed,
+    legacy_classification,
 )
 from haplous.adapters.mujoco_adapter import MuJoCoMachine, MuJoCoMachineConfig
 from haplous.behaviors.insertion import insertion_behavior_factory, insertion_intent
@@ -42,14 +49,85 @@ def test_recording_behavior_carries_deep_copied_state():
     assert wrapper.snapshot.steps == 1
 
 
-def test_classification_preregistered_rules():
+def test_classification_bounded_execution_rules():
     completed = lambda peak: type("C", (), {"completed": True, "peak_force_n": peak})()
     failed = lambda peak: type("C", (), {"completed": False, "peak_force_n": peak})()
+    # Continuation breaches the contract (14.95 > 2.0) while the stop caps
+    # exposure at the limit: protective stop.
     assert classify_intervention(2.0, failed(14.95), hard_force_limit_n=2.0) == BENEFICIAL
-    assert classify_intervention(2.0, completed(2.18), hard_force_limit_n=2.0) == HARMFUL
+    # A continuation that completes while breaching the hard contract is
+    # NOT bounded success, so the stop is not harmful.
+    assert classify_intervention(2.0, completed(2.18), hard_force_limit_n=2.0) == UNNECESSARY
     assert classify_intervention(0.0, completed(2.18), hard_force_limit_n=None) == HARMFUL
     assert classify_intervention(0.0, failed(2.18), hard_force_limit_n=None) == UNNECESSARY
-    assert classify_intervention(2.0, completed(2.1), hard_force_limit_n=2.0) == HARMFUL
+    # Boundary: the expose-to-continuation is only 5% worse -> no material
+    # difference, same bounded failure.
+    assert classify_intervention(2.0, completed(2.1), hard_force_limit_n=2.0) == UNNECESSARY
+
+
+def test_historical_inversion_is_superseded_not_rewritten():
+    """Regression: the completion-only rule called a non-bounded
+    completion HARMFUL. The corrected rule must not, and the legacy
+    function must still reproduce the old label."""
+    cont = ContinuationOutcome(
+        completed=True,
+        peak_force_n=2.18,
+        max_tilt_deg=1.0,
+        wall_s=1.0,
+        task_success=True,
+        bounded_success=False,
+        violations=({"code": "process_force", "value": 2.18, "limit": 2.0},),
+    )
+    assert legacy_classification(2.0, cont, hard_force_limit_n=2.0) == HARMFUL
+    assert classify_intervention(2.0, cont, hard_force_limit_n=2.0) == UNNECESSARY
+
+
+def test_bounded_execution_subkinds_and_insufficient():
+    bounded = ContinuationOutcome(
+        completed=True, peak_force_n=1.0, max_tilt_deg=1.0, wall_s=1.0,
+        task_success=True, bounded_success=True, violations=(),
+    )
+    # A genuine stop that destroys a bounded continuation is HARMFUL.
+    harmful = classify_intervention_detailed(0.0, bounded, hard_force_limit_n=2.0)
+    assert harmful.classification == HARMFUL
+    # An intervention that bounded-succeeds where the continuation cannot
+    # is BENEFICIAL / BOUNDED_SUCCESS_PRESERVED.
+    stopped = ContinuationOutcome(
+        completed=False, peak_force_n=9.0, max_tilt_deg=1.0, wall_s=1.0,
+        task_success=False, bounded_success=False,
+        violations=({"code": "process_force", "value": 9.0, "limit": 2.0},),
+    )
+    preserved = classify_intervention_detailed(
+        0.0, stopped, hard_force_limit_n=2.0, intervention_bounded=True
+    )
+    assert preserved.classification == BENEFICIAL
+    assert preserved.beneficial_kind == BOUNDED_SUCCESS_PRESERVED
+    protective = classify_intervention_detailed(
+        2.0, stopped, hard_force_limit_n=2.0,
+        intervention_violations=(),
+    )
+    assert protective.beneficial_kind == PROTECTIVE_STOP
+    # Haplous's own exceedance is materially worse than the continuation's.
+    mild = ContinuationOutcome(
+        completed=False, peak_force_n=1.01, max_tilt_deg=1.0, wall_s=1.0,
+        task_success=False, bounded_success=False,
+        violations=({"code": "process_force", "value": 2.02, "limit": 2.0},),
+    )
+    insufficient = classify_intervention_detailed(
+        4.0, mild, hard_force_limit_n=2.0,
+        intervention_violations=(({"code": "process_force", "value": 4.0, "limit": 2.0},)),
+    )
+    assert insufficient.classification == INSUFFICIENT
+
+
+def test_ambiguous_when_evidence_absent():
+    stopped = ContinuationOutcome(
+        completed=False, peak_force_n=1.0, max_tilt_deg=1.0, wall_s=1.0
+    )
+    result = classify_intervention_detailed(
+        1.0, stopped, hard_force_limit_n=2.0, evidence_sufficient=False
+    )
+    assert result.classification == AMBIGUOUS
 
 
 def _drive(machine: MuJoCoMachine, intent, n_ticks: int) -> list[tuple]:

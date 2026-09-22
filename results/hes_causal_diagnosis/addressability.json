@@ -1,0 +1,29 @@
+{
+  "generic_haplous_addressable": 18,
+  "non_addressable": 289,
+  "note": "The 32 reach/deadline refusals are triggered by per-task calibration constants (max_initial_offset_m, expected_duration) on a generic capability check. The failure mode is generic, its trigger is task-specific. The 17 no-breach aborts are the residual generic-core candidates.",
+  "per_class": {
+    "R0_upstream": "upstream",
+    "R1_correct_refusal": "non_addressable",
+    "R2_protective_stop": "upstream",
+    "R3_capability_refusal": "task_specific_calibration",
+    "R3_generic_failure": "generic_haplous_core",
+    "UNKNOWN_breach_stop": "unknown",
+    "UNKNOWN_capability_refusal": "unknown",
+    "UNKNOWN_no_breach_abort": "generic_haplous_core",
+    "captured": "non_addressable"
+  },
+  "per_kind": {
+    "R0_upstream": 159,
+    "R1_correct_refusal": 107,
+    "R2_protective_stop": 172,
+    "R3_capability_refusal": 32,
+    "R3_generic_failure": 1,
+    "UNKNOWN_capability_refusal": 330,
+    "UNKNOWN_no_breach_abort": 17,
+    "captured": 182
+  },
+  "task_specific_calibration": 32,
+  "unknown": 330,
+  "upstream": 331
+}

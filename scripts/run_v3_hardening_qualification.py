@@ -446,7 +446,13 @@ def slim_artifacts(root: Path) -> dict:
                             for k, v in payload.items()
                             if k in ("disposition", "reason", "graded", "task_success", "bounded_success", "wall_s")
                         }
-                        | {"n_hard_violations": len(payload.get("hard_violations") or [])}
+                        | {
+                            "n_hard_violations": len(payload.get("hard_violations") or []),
+                            # Retain the bounded violation records (not just a
+                            # count) so the counterfactual adjudication can be
+                            # reproduced from the artifact without the parquet.
+                            "hard_violations": list(payload.get("hard_violations") or [])[:5],
+                        }
                         for arm, payload in (row.get("arms") or {}).items()
                     },
                     "counterfactuals": row.get("counterfactuals") or {},

@@ -1,0 +1,590 @@
+{
+  "attainability_under_authorised_reach": {
+    "attainable": 30,
+    "basis": "Branch B or Branch C bounded_success",
+    "non_attainable": 112
+  },
+  "attainability_under_declared_reach_cap": {
+    "attainable": 24,
+    "basis": "frozen direct_minimal bounded_success",
+    "non_attainable": 118
+  },
+  "declared_reach_cap_m": 0.003,
+  "documented_repair": "Frozen interventions.jsonl retained only n_hard_violations after slim_artifacts; the full records survive in episodes.parquet and are rejoined here. New artifacts preserve the full records.",
+  "frozen_forks_lost_fields": [
+    "hard_violations (only n_hard_violations retained)"
+  ],
+  "n": 142,
+  "restored_violation_evidence": {
+    "fleet_insert_000000": {
+      "direct_n_hard_violations": 0,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000005": {
+      "direct_n_hard_violations": 1,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000006": {
+      "direct_n_hard_violations": 2,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000010": {
+      "direct_n_hard_violations": 1,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000011": {
+      "direct_n_hard_violations": 4,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000029": {
+      "direct_n_hard_violations": 0,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000036": {
+      "direct_n_hard_violations": 5,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000038": {
+      "direct_n_hard_violations": 17305,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000042": {
+      "direct_n_hard_violations": 1,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000043": {
+      "direct_n_hard_violations": 1,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000052": {
+      "direct_n_hard_violations": 1,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000053": {
+      "direct_n_hard_violations": 2,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000054": {
+      "direct_n_hard_violations": 0,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000064": {
+      "direct_n_hard_violations": 1,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000086": {
+      "direct_n_hard_violations": 0,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000088": {
+      "direct_n_hard_violations": 1,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000099": {
+      "direct_n_hard_violations": 0,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000102": {
+      "direct_n_hard_violations": 6,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000117": {
+      "direct_n_hard_violations": 1,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000123": {
+      "direct_n_hard_violations": 2,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000130": {
+      "direct_n_hard_violations": 0,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000163": {
+      "direct_n_hard_violations": 1,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000170": {
+      "direct_n_hard_violations": 1,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000172": {
+      "direct_n_hard_violations": 9,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000193": {
+      "direct_n_hard_violations": 1,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000203": {
+      "direct_n_hard_violations": 0,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000214": {
+      "direct_n_hard_violations": 2,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000222": {
+      "direct_n_hard_violations": 0,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000228": {
+      "direct_n_hard_violations": 6,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000232": {
+      "direct_n_hard_violations": 14897,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000239": {
+      "direct_n_hard_violations": 0,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000245": {
+      "direct_n_hard_violations": 6,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000246": {
+      "direct_n_hard_violations": 1,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000255": {
+      "direct_n_hard_violations": 1,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000257": {
+      "direct_n_hard_violations": 17529,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000263": {
+      "direct_n_hard_violations": 0,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000271": {
+      "direct_n_hard_violations": 7,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000298": {
+      "direct_n_hard_violations": 1,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000305": {
+      "direct_n_hard_violations": 2,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000309": {
+      "direct_n_hard_violations": 19977,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000311": {
+      "direct_n_hard_violations": 1,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000313": {
+      "direct_n_hard_violations": 2,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000314": {
+      "direct_n_hard_violations": 0,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000316": {
+      "direct_n_hard_violations": 1,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000323": {
+      "direct_n_hard_violations": 1,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000327": {
+      "direct_n_hard_violations": 1,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000342": {
+      "direct_n_hard_violations": 0,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000363": {
+      "direct_n_hard_violations": 1,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000367": {
+      "direct_n_hard_violations": 0,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000374": {
+      "direct_n_hard_violations": 1,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000381": {
+      "direct_n_hard_violations": 6,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000386": {
+      "direct_n_hard_violations": 7,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000390": {
+      "direct_n_hard_violations": 1,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000398": {
+      "direct_n_hard_violations": 0,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000411": {
+      "direct_n_hard_violations": 0,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000413": {
+      "direct_n_hard_violations": 2,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000419": {
+      "direct_n_hard_violations": 0,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000426": {
+      "direct_n_hard_violations": 3,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000430": {
+      "direct_n_hard_violations": 1,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000439": {
+      "direct_n_hard_violations": 16778,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000441": {
+      "direct_n_hard_violations": 15788,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000454": {
+      "direct_n_hard_violations": 3,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000464": {
+      "direct_n_hard_violations": 0,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000466": {
+      "direct_n_hard_violations": 2,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000469": {
+      "direct_n_hard_violations": 18389,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000471": {
+      "direct_n_hard_violations": 21243,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000474": {
+      "direct_n_hard_violations": 0,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000476": {
+      "direct_n_hard_violations": 1,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000477": {
+      "direct_n_hard_violations": 6,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000478": {
+      "direct_n_hard_violations": 6,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000482": {
+      "direct_n_hard_violations": 1,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000490": {
+      "direct_n_hard_violations": 5,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000495": {
+      "direct_n_hard_violations": 7,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000502": {
+      "direct_n_hard_violations": 0,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000506": {
+      "direct_n_hard_violations": 1,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000508": {
+      "direct_n_hard_violations": 1,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000518": {
+      "direct_n_hard_violations": 1,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000525": {
+      "direct_n_hard_violations": 22804,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000534": {
+      "direct_n_hard_violations": 1,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000538": {
+      "direct_n_hard_violations": 2,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000542": {
+      "direct_n_hard_violations": 1,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000547": {
+      "direct_n_hard_violations": 0,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000555": {
+      "direct_n_hard_violations": 22968,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000565": {
+      "direct_n_hard_violations": 1,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000573": {
+      "direct_n_hard_violations": 7,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000575": {
+      "direct_n_hard_violations": 1,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000605": {
+      "direct_n_hard_violations": 1,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000609": {
+      "direct_n_hard_violations": 3,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000614": {
+      "direct_n_hard_violations": 14582,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000617": {
+      "direct_n_hard_violations": 0,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000625": {
+      "direct_n_hard_violations": 3,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000633": {
+      "direct_n_hard_violations": 14366,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000635": {
+      "direct_n_hard_violations": 0,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000642": {
+      "direct_n_hard_violations": 17602,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000648": {
+      "direct_n_hard_violations": 8,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000662": {
+      "direct_n_hard_violations": 0,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000669": {
+      "direct_n_hard_violations": 1,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000678": {
+      "direct_n_hard_violations": 16024,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000680": {
+      "direct_n_hard_violations": 0,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000683": {
+      "direct_n_hard_violations": 1,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000687": {
+      "direct_n_hard_violations": 5,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000691": {
+      "direct_n_hard_violations": 19502,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000695": {
+      "direct_n_hard_violations": 16022,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000700": {
+      "direct_n_hard_violations": 6,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000712": {
+      "direct_n_hard_violations": 3,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000721": {
+      "direct_n_hard_violations": 0,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000723": {
+      "direct_n_hard_violations": 1,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000739": {
+      "direct_n_hard_violations": 1,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000759": {
+      "direct_n_hard_violations": 0,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000763": {
+      "direct_n_hard_violations": 18841,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000767": {
+      "direct_n_hard_violations": 15027,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000768": {
+      "direct_n_hard_violations": 1,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000781": {
+      "direct_n_hard_violations": 13,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000788": {
+      "direct_n_hard_violations": 2,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000797": {
+      "direct_n_hard_violations": 2,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000801": {
+      "direct_n_hard_violations": 0,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000811": {
+      "direct_n_hard_violations": 2,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000817": {
+      "direct_n_hard_violations": 1,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000824": {
+      "direct_n_hard_violations": 1,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000831": {
+      "direct_n_hard_violations": 18299,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000841": {
+      "direct_n_hard_violations": 11,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000857": {
+      "direct_n_hard_violations": 6,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000862": {
+      "direct_n_hard_violations": 17965,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000868": {
+      "direct_n_hard_violations": 2,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000875": {
+      "direct_n_hard_violations": 1,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000879": {
+      "direct_n_hard_violations": 1,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000889": {
+      "direct_n_hard_violations": 0,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000896": {
+      "direct_n_hard_violations": 1,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000912": {
+      "direct_n_hard_violations": 2,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000918": {
+      "direct_n_hard_violations": 17549,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000922": {
+      "direct_n_hard_violations": 0,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000926": {
+      "direct_n_hard_violations": 0,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000937": {
+      "direct_n_hard_violations": 6,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000941": {
+      "direct_n_hard_violations": 1,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000945": {
+      "direct_n_hard_violations": 1,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000947": {
+      "direct_n_hard_violations": 5,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000949": {
+      "direct_n_hard_violations": 2,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000950": {
+      "direct_n_hard_violations": 2,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000960": {
+      "direct_n_hard_violations": 19835,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000968": {
+      "direct_n_hard_violations": 22335,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000977": {
+      "direct_n_hard_violations": 0,
+      "haplous_n_hard_violations": 0
+    },
+    "fleet_insert_000980": {
+      "direct_n_hard_violations": 7,
+      "haplous_n_hard_violations": 0
+    }
+  },
+  "scope": "eligible boundary_hi reach-rejection set",
+  "unreachable_goal_refusal_mass": 142
+}

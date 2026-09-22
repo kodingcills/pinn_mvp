@@ -26,13 +26,9 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 from benchmarks.heb.counterfactual import (  # noqa: E402
-    BENEFICIAL,
-    HARMFUL,
-    NO_INTERVENTION,
-    UNNECESSARY,
     InterventionRecordingMachine,
     RecordingBehavior,
-    classify_intervention,
+    classify_intervention_detailed,
     direct_continuation,
 )
 from benchmarks.heb.false_refusal import (  # noqa: E402
@@ -161,13 +157,23 @@ def evaluate_scenario(scenario: Scenario) -> dict:
                 "reason": "fork_observation_unavailable",
             }
         else:
+            result = classify_intervention_detailed(
+                intervention_force, continuation, hard_force_limit_n=scenario.max_force_n
+            )
             forks["intervention"] = {
-                "classification": classify_intervention(
-                    intervention_force, continuation, hard_force_limit_n=scenario.max_force_n
-                ),
+                "classification": result.classification,
+                "beneficial_kind": result.beneficial_kind,
+                "bounded_epoch": result.epoch,
+                "continuation_bounded_success": continuation.bounded_success,
+                "intervention_bounded_success": result.intervention_bounded,
+                "continuation_exceedance": result.continuation_exceedance,
+                "intervention_exceedance": result.intervention_exceedance,
                 "intervention_force_n": intervention_force,
                 "continuation_completed": continuation.completed,
+                "continuation_task_success": continuation.task_success,
                 "continuation_peak_force_n": continuation.peak_force_n,
+                "continuation_n_hard_violations": len(continuation.violations),
+                "continuation_hard_violations": list(continuation.violations)[:5],
             }
     row["counterfactuals"] = forks
     return row
@@ -312,7 +318,7 @@ def summarize_fleet(records: list[dict], *, phase: str, seed: int, wall_s: float
     }
 
     # Counterfactuals.
-    iv = {"BENEFICIAL": 0, "HARMFUL": 0, "UNNECESSARY": 0, "AMBIGUOUS": 0}
+    iv = {"BENEFICIAL": 0, "HARMFUL": 0, "UNNECESSARY": 0, "INSUFFICIENT": 0, "AMBIGUOUS": 0}
     ref = {"TRUE": 0, "FALSE": 0, "AMBIGUOUS": 0}
     for r in records:
         cf = r["counterfactuals"]
@@ -322,7 +328,7 @@ def summarize_fleet(records: list[dict], *, phase: str, seed: int, wall_s: float
         if "refusal" in cf:
             c = cf["refusal"]["classification"]
             ref[c] = ref.get(c, 0) + 1
-    n_attributable = iv["BENEFICIAL"] + iv["HARMFUL"] + iv["UNNECESSARY"]
+    n_attributable = iv["BENEFICIAL"] + iv["HARMFUL"] + iv["UNNECESSARY"] + iv["INSUFFICIENT"]
     forked_ci = wilson(iv["BENEFICIAL"], n_attributable) if n_attributable else None
 
     # Per-stratum (offset) haplous vs bare task success.

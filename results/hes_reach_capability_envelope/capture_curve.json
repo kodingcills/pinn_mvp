@@ -1,0 +1,786 @@
+{
+  "A": {
+    "3.00-3.25": {
+      "capture_among_executed": null,
+      "capture_among_presented": {
+        "ci_high": 0.029586819632536877,
+        "ci_low": 0.0,
+        "k": 0,
+        "method": "wilson95",
+        "n": 126,
+        "value": 0.0
+      },
+      "n_bounded_failure": 0,
+      "n_bounded_success": 0,
+      "n_executed_after_non_reach_gates": 0,
+      "n_hard_violations": 0,
+      "n_presented": 126,
+      "n_refused_other_gates": 0,
+      "n_refused_reach": 126,
+      "n_task_success": 0
+    },
+    "3.25-3.50": {
+      "capture_among_executed": null,
+      "capture_among_presented": {
+        "ci_high": 0.025134518351024853,
+        "ci_low": 0.0,
+        "k": 0,
+        "method": "wilson95",
+        "n": 149,
+        "value": 0.0
+      },
+      "n_bounded_failure": 0,
+      "n_bounded_success": 0,
+      "n_executed_after_non_reach_gates": 0,
+      "n_hard_violations": 0,
+      "n_presented": 149,
+      "n_refused_other_gates": 0,
+      "n_refused_reach": 149,
+      "n_task_success": 0
+    },
+    "3.50-3.75": {
+      "capture_among_executed": null,
+      "capture_among_presented": {
+        "ci_high": 0.06017393047793289,
+        "ci_low": 0.0,
+        "k": 0,
+        "method": "wilson95",
+        "n": 60,
+        "value": 0.0
+      },
+      "n_bounded_failure": 0,
+      "n_bounded_success": 0,
+      "n_executed_after_non_reach_gates": 0,
+      "n_hard_violations": 0,
+      "n_presented": 60,
+      "n_refused_other_gates": 0,
+      "n_refused_reach": 60,
+      "n_task_success": 0
+    },
+    "3.75-4.00": {
+      "capture_among_executed": null,
+      "capture_among_presented": {
+        "ci_high": 0.04637283683559951,
+        "ci_low": 0.0,
+        "k": 0,
+        "method": "wilson95",
+        "n": 79,
+        "value": 0.0
+      },
+      "n_bounded_failure": 0,
+      "n_bounded_success": 0,
+      "n_executed_after_non_reach_gates": 0,
+      "n_hard_violations": 0,
+      "n_presented": 79,
+      "n_refused_other_gates": 0,
+      "n_refused_reach": 79,
+      "n_task_success": 0
+    },
+    "4.00-4.25": {
+      "capture_among_executed": null,
+      "capture_among_presented": {
+        "ci_high": 0.07135003417431873,
+        "ci_low": 0.0,
+        "k": 0,
+        "method": "wilson95",
+        "n": 50,
+        "value": 0.0
+      },
+      "n_bounded_failure": 0,
+      "n_bounded_success": 0,
+      "n_executed_after_non_reach_gates": 0,
+      "n_hard_violations": 0,
+      "n_presented": 50,
+      "n_refused_other_gates": 0,
+      "n_refused_reach": 50,
+      "n_task_success": 0
+    },
+    "4.25-4.50": {
+      "capture_among_executed": null,
+      "capture_among_presented": {
+        "ci_high": 0.06758430445307662,
+        "ci_low": 0.0,
+        "k": 0,
+        "method": "wilson95",
+        "n": 53,
+        "value": 0.0
+      },
+      "n_bounded_failure": 0,
+      "n_bounded_success": 0,
+      "n_executed_after_non_reach_gates": 0,
+      "n_hard_violations": 0,
+      "n_presented": 53,
+      "n_refused_other_gates": 0,
+      "n_refused_reach": 53,
+      "n_task_success": 0
+    },
+    "4.50-4.75": {
+      "capture_among_executed": null,
+      "capture_among_presented": {
+        "ci_high": 0.0741026511527422,
+        "ci_low": 0.0,
+        "k": 0,
+        "method": "wilson95",
+        "n": 48,
+        "value": 0.0
+      },
+      "n_bounded_failure": 0,
+      "n_bounded_success": 0,
+      "n_executed_after_non_reach_gates": 0,
+      "n_hard_violations": 0,
+      "n_presented": 48,
+      "n_refused_other_gates": 0,
+      "n_refused_reach": 48,
+      "n_task_success": 0
+    },
+    "4.75-5.00": {
+      "capture_among_executed": null,
+      "capture_among_presented": {
+        "ci_high": 0.06758430445307662,
+        "ci_low": 0.0,
+        "k": 0,
+        "method": "wilson95",
+        "n": 53,
+        "value": 0.0
+      },
+      "n_bounded_failure": 0,
+      "n_bounded_success": 0,
+      "n_executed_after_non_reach_gates": 0,
+      "n_hard_violations": 0,
+      "n_presented": 53,
+      "n_refused_other_gates": 0,
+      "n_refused_reach": 53,
+      "n_task_success": 0
+    }
+  },
+  "B": {
+    "3.00-3.25": {
+      "capture_among_executed": {
+        "ci_high": 0.4091445182425097,
+        "ci_low": 0.23182840733684668,
+        "k": 32,
+        "method": "wilson95",
+        "n": 102,
+        "value": 0.3137254901960784
+      },
+      "capture_among_presented": {
+        "ci_high": 0.3364722472505656,
+        "ci_low": 0.18602285447338113,
+        "k": 32,
+        "method": "wilson95",
+        "n": 126,
+        "value": 0.25396825396825395
+      },
+      "n_bounded_failure": 70,
+      "n_bounded_success": 32,
+      "n_executed_after_non_reach_gates": 102,
+      "n_hard_violations": 50,
+      "n_presented": 126,
+      "n_refused_other_gates": 24,
+      "n_refused_reach": 0,
+      "n_task_success": 36
+    },
+    "3.25-3.50": {
+      "capture_among_executed": {
+        "ci_high": 0.36436724422986666,
+        "ci_low": 0.20875199676062098,
+        "k": 35,
+        "method": "wilson95",
+        "n": 125,
+        "value": 0.28
+      },
+      "capture_among_presented": {
+        "ci_high": 0.3091022329911635,
+        "ci_low": 0.17402278009427918,
+        "k": 35,
+        "method": "wilson95",
+        "n": 149,
+        "value": 0.2348993288590604
+      },
+      "n_bounded_failure": 90,
+      "n_bounded_success": 35,
+      "n_executed_after_non_reach_gates": 125,
+      "n_hard_violations": 59,
+      "n_presented": 149,
+      "n_refused_other_gates": 24,
+      "n_refused_reach": 0,
+      "n_task_success": 36
+    },
+    "3.50-3.75": {
+      "capture_among_executed": {
+        "ci_high": 0.20609881861160995,
+        "ci_low": 0.041773735183410265,
+        "k": 5,
+        "method": "wilson95",
+        "n": 52,
+        "value": 0.09615384615384616
+      },
+      "capture_among_presented": {
+        "ci_high": 0.18069168468112481,
+        "ci_low": 0.03611992405048589,
+        "k": 5,
+        "method": "wilson95",
+        "n": 60,
+        "value": 0.08333333333333333
+      },
+      "n_bounded_failure": 47,
+      "n_bounded_success": 5,
+      "n_executed_after_non_reach_gates": 52,
+      "n_hard_violations": 27,
+      "n_presented": 60,
+      "n_refused_other_gates": 8,
+      "n_refused_reach": 0,
+      "n_task_success": 5
+    },
+    "3.75-4.00": {
+      "capture_among_executed": {
+        "ci_high": 0.23600591774727003,
+        "ci_low": 0.0723100999598399,
+        "k": 9,
+        "method": "wilson95",
+        "n": 67,
+        "value": 0.13432835820895522
+      },
+      "capture_among_presented": {
+        "ci_high": 0.20254987324963025,
+        "ci_low": 0.06110510202849083,
+        "k": 9,
+        "method": "wilson95",
+        "n": 79,
+        "value": 0.11392405063291139
+      },
+      "n_bounded_failure": 58,
+      "n_bounded_success": 9,
+      "n_executed_after_non_reach_gates": 67,
+      "n_hard_violations": 34,
+      "n_presented": 79,
+      "n_refused_other_gates": 12,
+      "n_refused_reach": 0,
+      "n_task_success": 9
+    },
+    "4.00-4.25": {
+      "capture_among_executed": {
+        "ci_high": 0.12321481165248252,
+        "ci_low": 0.00421529549910029,
+        "k": 1,
+        "method": "wilson95",
+        "n": 42,
+        "value": 0.023809523809523808
+      },
+      "capture_among_presented": {
+        "ci_high": 0.10495686471836953,
+        "ci_low": 0.0035391680889764604,
+        "k": 1,
+        "method": "wilson95",
+        "n": 50,
+        "value": 0.02
+      },
+      "n_bounded_failure": 41,
+      "n_bounded_success": 1,
+      "n_executed_after_non_reach_gates": 42,
+      "n_hard_violations": 26,
+      "n_presented": 50,
+      "n_refused_other_gates": 8,
+      "n_refused_reach": 0,
+      "n_task_success": 1
+    },
+    "4.25-4.50": {
+      "capture_among_executed": {
+        "ci_high": 0.0755601711983887,
+        "ci_low": 6.938893903907228e-18,
+        "k": 0,
+        "method": "wilson95",
+        "n": 47,
+        "value": 0.0
+      },
+      "capture_among_presented": {
+        "ci_high": 0.06758430445307662,
+        "ci_low": 0.0,
+        "k": 0,
+        "method": "wilson95",
+        "n": 53,
+        "value": 0.0
+      },
+      "n_bounded_failure": 47,
+      "n_bounded_success": 0,
+      "n_executed_after_non_reach_gates": 47,
+      "n_hard_violations": 30,
+      "n_presented": 53,
+      "n_refused_other_gates": 6,
+      "n_refused_reach": 0,
+      "n_task_success": 0
+    },
+    "4.50-4.75": {
+      "capture_among_executed": {
+        "ci_high": 0.08567044886890744,
+        "ci_low": 0.0,
+        "k": 0,
+        "method": "wilson95",
+        "n": 41,
+        "value": 0.0
+      },
+      "capture_among_presented": {
+        "ci_high": 0.0741026511527422,
+        "ci_low": 0.0,
+        "k": 0,
+        "method": "wilson95",
+        "n": 48,
+        "value": 0.0
+      },
+      "n_bounded_failure": 41,
+      "n_bounded_success": 0,
+      "n_executed_after_non_reach_gates": 41,
+      "n_hard_violations": 25,
+      "n_presented": 48,
+      "n_refused_other_gates": 7,
+      "n_refused_reach": 0,
+      "n_task_success": 0
+    },
+    "4.75-5.00": {
+      "capture_among_executed": {
+        "ci_high": 0.08380161250916197,
+        "ci_low": 0.0,
+        "k": 0,
+        "method": "wilson95",
+        "n": 42,
+        "value": 0.0
+      },
+      "capture_among_presented": {
+        "ci_high": 0.06758430445307662,
+        "ci_low": 0.0,
+        "k": 0,
+        "method": "wilson95",
+        "n": 53,
+        "value": 0.0
+      },
+      "n_bounded_failure": 42,
+      "n_bounded_success": 0,
+      "n_executed_after_non_reach_gates": 42,
+      "n_hard_violations": 26,
+      "n_presented": 53,
+      "n_refused_other_gates": 11,
+      "n_refused_reach": 0,
+      "n_task_success": 0
+    }
+  },
+  "C": {
+    "3.00-3.25": {
+      "capture_among_executed": {
+        "ci_high": 0.26779563052932354,
+        "ci_low": 0.13147240067177074,
+        "k": 24,
+        "method": "wilson95",
+        "n": 126,
+        "value": 0.19047619047619047
+      },
+      "capture_among_presented": {
+        "ci_high": 0.26779563052932354,
+        "ci_low": 0.13147240067177074,
+        "k": 24,
+        "method": "wilson95",
+        "n": 126,
+        "value": 0.19047619047619047
+      },
+      "n_bounded_failure": 102,
+      "n_bounded_success": 24,
+      "n_executed_after_non_reach_gates": 126,
+      "n_hard_violations": 98,
+      "n_presented": 126,
+      "n_refused_other_gates": 0,
+      "n_refused_reach": 0,
+      "n_task_success": 97
+    },
+    "3.25-3.50": {
+      "capture_among_executed": {
+        "ci_high": 0.2728650659228703,
+        "ci_low": 0.14483273362908414,
+        "k": 30,
+        "method": "wilson95",
+        "n": 149,
+        "value": 0.20134228187919462
+      },
+      "capture_among_presented": {
+        "ci_high": 0.2728650659228703,
+        "ci_low": 0.14483273362908414,
+        "k": 30,
+        "method": "wilson95",
+        "n": 149,
+        "value": 0.20134228187919462
+      },
+      "n_bounded_failure": 119,
+      "n_bounded_success": 30,
+      "n_executed_after_non_reach_gates": 149,
+      "n_hard_violations": 112,
+      "n_presented": 149,
+      "n_refused_other_gates": 0,
+      "n_refused_reach": 0,
+      "n_task_success": 100
+    },
+    "3.50-3.75": {
+      "capture_among_executed": {
+        "ci_high": 0.08855338226779477,
+        "ci_low": 0.002948083860873682,
+        "k": 1,
+        "method": "wilson95",
+        "n": 60,
+        "value": 0.016666666666666666
+      },
+      "capture_among_presented": {
+        "ci_high": 0.08855338226779477,
+        "ci_low": 0.002948083860873682,
+        "k": 1,
+        "method": "wilson95",
+        "n": 60,
+        "value": 0.016666666666666666
+      },
+      "n_bounded_failure": 59,
+      "n_bounded_success": 1,
+      "n_executed_after_non_reach_gates": 60,
+      "n_hard_violations": 52,
+      "n_presented": 60,
+      "n_refused_other_gates": 0,
+      "n_refused_reach": 0,
+      "n_task_success": 30
+    },
+    "3.75-4.00": {
+      "capture_among_executed": {
+        "ci_high": 0.10580236501437063,
+        "ci_low": 0.012997851302069409,
+        "k": 3,
+        "method": "wilson95",
+        "n": 79,
+        "value": 0.0379746835443038
+      },
+      "capture_among_presented": {
+        "ci_high": 0.10580236501437063,
+        "ci_low": 0.012997851302069409,
+        "k": 3,
+        "method": "wilson95",
+        "n": 79,
+        "value": 0.0379746835443038
+      },
+      "n_bounded_failure": 76,
+      "n_bounded_success": 3,
+      "n_executed_after_non_reach_gates": 79,
+      "n_hard_violations": 67,
+      "n_presented": 79,
+      "n_refused_other_gates": 0,
+      "n_refused_reach": 0,
+      "n_task_success": 28
+    },
+    "4.00-4.25": {
+      "capture_among_executed": {
+        "ci_high": 0.10495686471836953,
+        "ci_low": 0.0035391680889764604,
+        "k": 1,
+        "method": "wilson95",
+        "n": 50,
+        "value": 0.02
+      },
+      "capture_among_presented": {
+        "ci_high": 0.10495686471836953,
+        "ci_low": 0.0035391680889764604,
+        "k": 1,
+        "method": "wilson95",
+        "n": 50,
+        "value": 0.02
+      },
+      "n_bounded_failure": 49,
+      "n_bounded_success": 1,
+      "n_executed_after_non_reach_gates": 50,
+      "n_hard_violations": 44,
+      "n_presented": 50,
+      "n_refused_other_gates": 0,
+      "n_refused_reach": 0,
+      "n_task_success": 7
+    },
+    "4.25-4.50": {
+      "capture_among_executed": {
+        "ci_high": 0.06758430445307662,
+        "ci_low": 0.0,
+        "k": 0,
+        "method": "wilson95",
+        "n": 53,
+        "value": 0.0
+      },
+      "capture_among_presented": {
+        "ci_high": 0.06758430445307662,
+        "ci_low": 0.0,
+        "k": 0,
+        "method": "wilson95",
+        "n": 53,
+        "value": 0.0
+      },
+      "n_bounded_failure": 53,
+      "n_bounded_success": 0,
+      "n_executed_after_non_reach_gates": 53,
+      "n_hard_violations": 46,
+      "n_presented": 53,
+      "n_refused_other_gates": 0,
+      "n_refused_reach": 0,
+      "n_task_success": 1
+    },
+    "4.50-4.75": {
+      "capture_among_executed": {
+        "ci_high": 0.0741026511527422,
+        "ci_low": 0.0,
+        "k": 0,
+        "method": "wilson95",
+        "n": 48,
+        "value": 0.0
+      },
+      "capture_among_presented": {
+        "ci_high": 0.0741026511527422,
+        "ci_low": 0.0,
+        "k": 0,
+        "method": "wilson95",
+        "n": 48,
+        "value": 0.0
+      },
+      "n_bounded_failure": 48,
+      "n_bounded_success": 0,
+      "n_executed_after_non_reach_gates": 48,
+      "n_hard_violations": 38,
+      "n_presented": 48,
+      "n_refused_other_gates": 0,
+      "n_refused_reach": 0,
+      "n_task_success": 0
+    },
+    "4.75-5.00": {
+      "capture_among_executed": {
+        "ci_high": 0.06758430445307662,
+        "ci_low": 0.0,
+        "k": 0,
+        "method": "wilson95",
+        "n": 53,
+        "value": 0.0
+      },
+      "capture_among_presented": {
+        "ci_high": 0.06758430445307662,
+        "ci_low": 0.0,
+        "k": 0,
+        "method": "wilson95",
+        "n": 53,
+        "value": 0.0
+      },
+      "n_bounded_failure": 53,
+      "n_bounded_success": 0,
+      "n_executed_after_non_reach_gates": 53,
+      "n_hard_violations": 42,
+      "n_presented": 53,
+      "n_refused_other_gates": 0,
+      "n_refused_reach": 0,
+      "n_task_success": 0
+    }
+  },
+  "D": {
+    "3.00-3.25": {
+      "capture_among_executed": {
+        "ci_high": 0.22353938670449916,
+        "ci_low": 0.09871172541981235,
+        "k": 19,
+        "method": "wilson95",
+        "n": 126,
+        "value": 0.15079365079365079
+      },
+      "capture_among_presented": {
+        "ci_high": 0.22353938670449916,
+        "ci_low": 0.09871172541981235,
+        "k": 19,
+        "method": "wilson95",
+        "n": 126,
+        "value": 0.15079365079365079
+      },
+      "n_bounded_failure": 107,
+      "n_bounded_success": 19,
+      "n_executed_after_non_reach_gates": 126,
+      "n_hard_violations": 39,
+      "n_presented": 126,
+      "n_refused_other_gates": 0,
+      "n_refused_reach": 0,
+      "n_task_success": 21
+    },
+    "3.25-3.50": {
+      "capture_among_executed": {
+        "ci_high": 0.26554175725985163,
+        "ci_low": 0.1390705995854052,
+        "k": 29,
+        "method": "wilson95",
+        "n": 149,
+        "value": 0.19463087248322147
+      },
+      "capture_among_presented": {
+        "ci_high": 0.26554175725985163,
+        "ci_low": 0.1390705995854052,
+        "k": 29,
+        "method": "wilson95",
+        "n": 149,
+        "value": 0.19463087248322147
+      },
+      "n_bounded_failure": 120,
+      "n_bounded_success": 29,
+      "n_executed_after_non_reach_gates": 149,
+      "n_hard_violations": 39,
+      "n_presented": 149,
+      "n_refused_other_gates": 0,
+      "n_refused_reach": 0,
+      "n_task_success": 30
+    },
+    "3.50-3.75": {
+      "capture_among_executed": {
+        "ci_high": 0.08855338226779477,
+        "ci_low": 0.002948083860873682,
+        "k": 1,
+        "method": "wilson95",
+        "n": 60,
+        "value": 0.016666666666666666
+      },
+      "capture_among_presented": {
+        "ci_high": 0.08855338226779477,
+        "ci_low": 0.002948083860873682,
+        "k": 1,
+        "method": "wilson95",
+        "n": 60,
+        "value": 0.016666666666666666
+      },
+      "n_bounded_failure": 59,
+      "n_bounded_success": 1,
+      "n_executed_after_non_reach_gates": 60,
+      "n_hard_violations": 22,
+      "n_presented": 60,
+      "n_refused_other_gates": 0,
+      "n_refused_reach": 0,
+      "n_task_success": 1
+    },
+    "3.75-4.00": {
+      "capture_among_executed": {
+        "ci_high": 0.10580236501437063,
+        "ci_low": 0.012997851302069409,
+        "k": 3,
+        "method": "wilson95",
+        "n": 79,
+        "value": 0.0379746835443038
+      },
+      "capture_among_presented": {
+        "ci_high": 0.10580236501437063,
+        "ci_low": 0.012997851302069409,
+        "k": 3,
+        "method": "wilson95",
+        "n": 79,
+        "value": 0.0379746835443038
+      },
+      "n_bounded_failure": 76,
+      "n_bounded_success": 3,
+      "n_executed_after_non_reach_gates": 79,
+      "n_hard_violations": 24,
+      "n_presented": 79,
+      "n_refused_other_gates": 0,
+      "n_refused_reach": 0,
+      "n_task_success": 3
+    },
+    "4.00-4.25": {
+      "capture_among_executed": {
+        "ci_high": 0.10495686471836953,
+        "ci_low": 0.0035391680889764604,
+        "k": 1,
+        "method": "wilson95",
+        "n": 50,
+        "value": 0.02
+      },
+      "capture_among_presented": {
+        "ci_high": 0.10495686471836953,
+        "ci_low": 0.0035391680889764604,
+        "k": 1,
+        "method": "wilson95",
+        "n": 50,
+        "value": 0.02
+      },
+      "n_bounded_failure": 49,
+      "n_bounded_success": 1,
+      "n_executed_after_non_reach_gates": 50,
+      "n_hard_violations": 16,
+      "n_presented": 50,
+      "n_refused_other_gates": 0,
+      "n_refused_reach": 0,
+      "n_task_success": 1
+    },
+    "4.25-4.50": {
+      "capture_among_executed": {
+        "ci_high": 0.06758430445307662,
+        "ci_low": 0.0,
+        "k": 0,
+        "method": "wilson95",
+        "n": 53,
+        "value": 0.0
+      },
+      "capture_among_presented": {
+        "ci_high": 0.06758430445307662,
+        "ci_low": 0.0,
+        "k": 0,
+        "method": "wilson95",
+        "n": 53,
+        "value": 0.0
+      },
+      "n_bounded_failure": 53,
+      "n_bounded_success": 0,
+      "n_executed_after_non_reach_gates": 53,
+      "n_hard_violations": 15,
+      "n_presented": 53,
+      "n_refused_other_gates": 0,
+      "n_refused_reach": 0,
+      "n_task_success": 0
+    },
+    "4.50-4.75": {
+      "capture_among_executed": {
+        "ci_high": 0.0741026511527422,
+        "ci_low": 0.0,
+        "k": 0,
+        "method": "wilson95",
+        "n": 48,
+        "value": 0.0
+      },
+      "capture_among_presented": {
+        "ci_high": 0.0741026511527422,
+        "ci_low": 0.0,
+        "k": 0,
+        "method": "wilson95",
+        "n": 48,
+        "value": 0.0
+      },
+      "n_bounded_failure": 48,
+      "n_bounded_success": 0,
+      "n_executed_after_non_reach_gates": 48,
+      "n_hard_violations": 15,
+      "n_presented": 48,
+      "n_refused_other_gates": 0,
+      "n_refused_reach": 0,
+      "n_task_success": 0
+    },
+    "4.75-5.00": {
+      "capture_among_executed": {
+        "ci_high": 0.06758430445307662,
+        "ci_low": 0.0,
+        "k": 0,
+        "method": "wilson95",
+        "n": 53,
+        "value": 0.0
+      },
+      "capture_among_presented": {
+        "ci_high": 0.06758430445307662,
+        "ci_low": 0.0,
+        "k": 0,
+        "method": "wilson95",
+        "n": 53,
+        "value": 0.0
+      },
+      "n_bounded_failure": 53,
+      "n_bounded_success": 0,
+      "n_executed_after_non_reach_gates": 53,
+      "n_hard_violations": 15,
+      "n_presented": 53,
+      "n_refused_other_gates": 0,
+      "n_refused_reach": 0,
+      "n_task_success": 0
+    }
+  }
+}

@@ -1,0 +1,562 @@
+{
+  "A": {
+    "3.00-3.25": {
+      "bounded_failure_among_executed": null,
+      "bounded_failure_among_presented": {
+        "ci_high": 0.029586819632536877,
+        "ci_low": 0.0,
+        "k": 0,
+        "method": "wilson95",
+        "n": 126,
+        "value": 0.0
+      },
+      "n_executed": 0
+    },
+    "3.25-3.50": {
+      "bounded_failure_among_executed": null,
+      "bounded_failure_among_presented": {
+        "ci_high": 0.025134518351024853,
+        "ci_low": 0.0,
+        "k": 0,
+        "method": "wilson95",
+        "n": 149,
+        "value": 0.0
+      },
+      "n_executed": 0
+    },
+    "3.50-3.75": {
+      "bounded_failure_among_executed": null,
+      "bounded_failure_among_presented": {
+        "ci_high": 0.06017393047793289,
+        "ci_low": 0.0,
+        "k": 0,
+        "method": "wilson95",
+        "n": 60,
+        "value": 0.0
+      },
+      "n_executed": 0
+    },
+    "3.75-4.00": {
+      "bounded_failure_among_executed": null,
+      "bounded_failure_among_presented": {
+        "ci_high": 0.04637283683559951,
+        "ci_low": 0.0,
+        "k": 0,
+        "method": "wilson95",
+        "n": 79,
+        "value": 0.0
+      },
+      "n_executed": 0
+    },
+    "4.00-4.25": {
+      "bounded_failure_among_executed": null,
+      "bounded_failure_among_presented": {
+        "ci_high": 0.07135003417431873,
+        "ci_low": 0.0,
+        "k": 0,
+        "method": "wilson95",
+        "n": 50,
+        "value": 0.0
+      },
+      "n_executed": 0
+    },
+    "4.25-4.50": {
+      "bounded_failure_among_executed": null,
+      "bounded_failure_among_presented": {
+        "ci_high": 0.06758430445307662,
+        "ci_low": 0.0,
+        "k": 0,
+        "method": "wilson95",
+        "n": 53,
+        "value": 0.0
+      },
+      "n_executed": 0
+    },
+    "4.50-4.75": {
+      "bounded_failure_among_executed": null,
+      "bounded_failure_among_presented": {
+        "ci_high": 0.0741026511527422,
+        "ci_low": 0.0,
+        "k": 0,
+        "method": "wilson95",
+        "n": 48,
+        "value": 0.0
+      },
+      "n_executed": 0
+    },
+    "4.75-5.00": {
+      "bounded_failure_among_executed": null,
+      "bounded_failure_among_presented": {
+        "ci_high": 0.06758430445307662,
+        "ci_low": 0.0,
+        "k": 0,
+        "method": "wilson95",
+        "n": 53,
+        "value": 0.0
+      },
+      "n_executed": 0
+    }
+  },
+  "B": {
+    "3.00-3.25": {
+      "bounded_failure_among_executed": {
+        "ci_high": 0.7681715926631534,
+        "ci_low": 0.5908554817574903,
+        "k": 70,
+        "method": "wilson95",
+        "n": 102,
+        "value": 0.6862745098039216
+      },
+      "bounded_failure_among_presented": {
+        "ci_high": 0.6393992070596883,
+        "ci_low": 0.46842447964780765,
+        "k": 70,
+        "method": "wilson95",
+        "n": 126,
+        "value": 0.5555555555555556
+      },
+      "n_executed": 102
+    },
+    "3.25-3.50": {
+      "bounded_failure_among_executed": {
+        "ci_high": 0.791248003239379,
+        "ci_low": 0.6356327557701335,
+        "k": 90,
+        "method": "wilson95",
+        "n": 125,
+        "value": 0.72
+      },
+      "bounded_failure_among_presented": {
+        "ci_high": 0.6789909844092472,
+        "ci_low": 0.5238333775445665,
+        "k": 90,
+        "method": "wilson95",
+        "n": 149,
+        "value": 0.6040268456375839
+      },
+      "n_executed": 125
+    },
+    "3.50-3.75": {
+      "bounded_failure_among_executed": {
+        "ci_high": 0.9582262648165898,
+        "ci_low": 0.79390118138839,
+        "k": 47,
+        "method": "wilson95",
+        "n": 52,
+        "value": 0.9038461538461539
+      },
+      "bounded_failure_among_presented": {
+        "ci_high": 0.8687707895359299,
+        "ci_low": 0.6637973165265748,
+        "k": 47,
+        "method": "wilson95",
+        "n": 60,
+        "value": 0.7833333333333333
+      },
+      "n_executed": 52
+    },
+    "3.75-4.00": {
+      "bounded_failure_among_executed": {
+        "ci_high": 0.92768990004016,
+        "ci_low": 0.7639940822527299,
+        "k": 58,
+        "method": "wilson95",
+        "n": 67,
+        "value": 0.8656716417910447
+      },
+      "bounded_failure_among_presented": {
+        "ci_high": 0.8190679419040057,
+        "ci_low": 0.6275675648945112,
+        "k": 58,
+        "method": "wilson95",
+        "n": 79,
+        "value": 0.7341772151898734
+      },
+      "n_executed": 67
+    },
+    "4.00-4.25": {
+      "bounded_failure_among_executed": {
+        "ci_high": 0.9957847045008997,
+        "ci_low": 0.8767851883475174,
+        "k": 41,
+        "method": "wilson95",
+        "n": 42,
+        "value": 0.9761904761904762
+      },
+      "bounded_failure_among_presented": {
+        "ci_high": 0.902299172675462,
+        "ci_low": 0.6920368054529739,
+        "k": 41,
+        "method": "wilson95",
+        "n": 50,
+        "value": 0.82
+      },
+      "n_executed": 42
+    },
+    "4.25-4.50": {
+      "bounded_failure_among_executed": {
+        "ci_high": 1.0,
+        "ci_low": 0.9244398288016114,
+        "k": 47,
+        "method": "wilson95",
+        "n": 47,
+        "value": 1.0
+      },
+      "bounded_failure_among_presented": {
+        "ci_high": 0.9470704108893132,
+        "ci_low": 0.7742322969866086,
+        "k": 47,
+        "method": "wilson95",
+        "n": 53,
+        "value": 0.8867924528301887
+      },
+      "n_executed": 47
+    },
+    "4.50-4.75": {
+      "bounded_failure_among_executed": {
+        "ci_high": 1.0,
+        "ci_low": 0.9143295511310926,
+        "k": 41,
+        "method": "wilson95",
+        "n": 41,
+        "value": 1.0
+      },
+      "bounded_failure_among_presented": {
+        "ci_high": 0.9275184258620602,
+        "ci_low": 0.7283255295714138,
+        "k": 41,
+        "method": "wilson95",
+        "n": 48,
+        "value": 0.8541666666666666
+      },
+      "n_executed": 41
+    },
+    "4.75-5.00": {
+      "bounded_failure_among_executed": {
+        "ci_high": 1.0,
+        "ci_low": 0.9161983874908382,
+        "k": 42,
+        "method": "wilson95",
+        "n": 42,
+        "value": 1.0
+      },
+      "bounded_failure_among_presented": {
+        "ci_high": 0.8799552427067794,
+        "ci_low": 0.6654199754433079,
+        "k": 42,
+        "method": "wilson95",
+        "n": 53,
+        "value": 0.7924528301886793
+      },
+      "n_executed": 42
+    }
+  },
+  "C": {
+    "3.00-3.25": {
+      "bounded_failure_among_executed": {
+        "ci_high": 0.8685275993282293,
+        "ci_low": 0.7322043694706766,
+        "k": 102,
+        "method": "wilson95",
+        "n": 126,
+        "value": 0.8095238095238095
+      },
+      "bounded_failure_among_presented": {
+        "ci_high": 0.8685275993282293,
+        "ci_low": 0.7322043694706766,
+        "k": 102,
+        "method": "wilson95",
+        "n": 126,
+        "value": 0.8095238095238095
+      },
+      "n_executed": 126
+    },
+    "3.25-3.50": {
+      "bounded_failure_among_executed": {
+        "ci_high": 0.8551672663709159,
+        "ci_low": 0.7271349340771297,
+        "k": 119,
+        "method": "wilson95",
+        "n": 149,
+        "value": 0.7986577181208053
+      },
+      "bounded_failure_among_presented": {
+        "ci_high": 0.8551672663709159,
+        "ci_low": 0.7271349340771297,
+        "k": 119,
+        "method": "wilson95",
+        "n": 149,
+        "value": 0.7986577181208053
+      },
+      "n_executed": 149
+    },
+    "3.50-3.75": {
+      "bounded_failure_among_executed": {
+        "ci_high": 0.9970519161391262,
+        "ci_low": 0.9114466177322051,
+        "k": 59,
+        "method": "wilson95",
+        "n": 60,
+        "value": 0.9833333333333333
+      },
+      "bounded_failure_among_presented": {
+        "ci_high": 0.9970519161391262,
+        "ci_low": 0.9114466177322051,
+        "k": 59,
+        "method": "wilson95",
+        "n": 60,
+        "value": 0.9833333333333333
+      },
+      "n_executed": 60
+    },
+    "3.75-4.00": {
+      "bounded_failure_among_executed": {
+        "ci_high": 0.9870021486979306,
+        "ci_low": 0.8941976349856293,
+        "k": 76,
+        "method": "wilson95",
+        "n": 79,
+        "value": 0.9620253164556962
+      },
+      "bounded_failure_among_presented": {
+        "ci_high": 0.9870021486979306,
+        "ci_low": 0.8941976349856293,
+        "k": 76,
+        "method": "wilson95",
+        "n": 79,
+        "value": 0.9620253164556962
+      },
+      "n_executed": 79
+    },
+    "4.00-4.25": {
+      "bounded_failure_among_executed": {
+        "ci_high": 0.9964608319110235,
+        "ci_low": 0.8950431352816304,
+        "k": 49,
+        "method": "wilson95",
+        "n": 50,
+        "value": 0.98
+      },
+      "bounded_failure_among_presented": {
+        "ci_high": 0.9964608319110235,
+        "ci_low": 0.8950431352816304,
+        "k": 49,
+        "method": "wilson95",
+        "n": 50,
+        "value": 0.98
+      },
+      "n_executed": 50
+    },
+    "4.25-4.50": {
+      "bounded_failure_among_executed": {
+        "ci_high": 1.0,
+        "ci_low": 0.9324156955469234,
+        "k": 53,
+        "method": "wilson95",
+        "n": 53,
+        "value": 1.0
+      },
+      "bounded_failure_among_presented": {
+        "ci_high": 1.0,
+        "ci_low": 0.9324156955469234,
+        "k": 53,
+        "method": "wilson95",
+        "n": 53,
+        "value": 1.0
+      },
+      "n_executed": 53
+    },
+    "4.50-4.75": {
+      "bounded_failure_among_executed": {
+        "ci_high": 0.9999999999999999,
+        "ci_low": 0.9258973488472576,
+        "k": 48,
+        "method": "wilson95",
+        "n": 48,
+        "value": 1.0
+      },
+      "bounded_failure_among_presented": {
+        "ci_high": 0.9999999999999999,
+        "ci_low": 0.9258973488472576,
+        "k": 48,
+        "method": "wilson95",
+        "n": 48,
+        "value": 1.0
+      },
+      "n_executed": 48
+    },
+    "4.75-5.00": {
+      "bounded_failure_among_executed": {
+        "ci_high": 1.0,
+        "ci_low": 0.9324156955469234,
+        "k": 53,
+        "method": "wilson95",
+        "n": 53,
+        "value": 1.0
+      },
+      "bounded_failure_among_presented": {
+        "ci_high": 1.0,
+        "ci_low": 0.9324156955469234,
+        "k": 53,
+        "method": "wilson95",
+        "n": 53,
+        "value": 1.0
+      },
+      "n_executed": 53
+    }
+  },
+  "D": {
+    "3.00-3.25": {
+      "bounded_failure_among_executed": {
+        "ci_high": 0.9012882745801877,
+        "ci_low": 0.7764606132955009,
+        "k": 107,
+        "method": "wilson95",
+        "n": 126,
+        "value": 0.8492063492063492
+      },
+      "bounded_failure_among_presented": {
+        "ci_high": 0.9012882745801877,
+        "ci_low": 0.7764606132955009,
+        "k": 107,
+        "method": "wilson95",
+        "n": 126,
+        "value": 0.8492063492063492
+      },
+      "n_executed": 126
+    },
+    "3.25-3.50": {
+      "bounded_failure_among_executed": {
+        "ci_high": 0.8609294004145948,
+        "ci_low": 0.7344582427401484,
+        "k": 120,
+        "method": "wilson95",
+        "n": 149,
+        "value": 0.8053691275167785
+      },
+      "bounded_failure_among_presented": {
+        "ci_high": 0.8609294004145948,
+        "ci_low": 0.7344582427401484,
+        "k": 120,
+        "method": "wilson95",
+        "n": 149,
+        "value": 0.8053691275167785
+      },
+      "n_executed": 149
+    },
+    "3.50-3.75": {
+      "bounded_failure_among_executed": {
+        "ci_high": 0.9970519161391262,
+        "ci_low": 0.9114466177322051,
+        "k": 59,
+        "method": "wilson95",
+        "n": 60,
+        "value": 0.9833333333333333
+      },
+      "bounded_failure_among_presented": {
+        "ci_high": 0.9970519161391262,
+        "ci_low": 0.9114466177322051,
+        "k": 59,
+        "method": "wilson95",
+        "n": 60,
+        "value": 0.9833333333333333
+      },
+      "n_executed": 60
+    },
+    "3.75-4.00": {
+      "bounded_failure_among_executed": {
+        "ci_high": 0.9870021486979306,
+        "ci_low": 0.8941976349856293,
+        "k": 76,
+        "method": "wilson95",
+        "n": 79,
+        "value": 0.9620253164556962
+      },
+      "bounded_failure_among_presented": {
+        "ci_high": 0.9870021486979306,
+        "ci_low": 0.8941976349856293,
+        "k": 76,
+        "method": "wilson95",
+        "n": 79,
+        "value": 0.9620253164556962
+      },
+      "n_executed": 79
+    },
+    "4.00-4.25": {
+      "bounded_failure_among_executed": {
+        "ci_high": 0.9964608319110235,
+        "ci_low": 0.8950431352816304,
+        "k": 49,
+        "method": "wilson95",
+        "n": 50,
+        "value": 0.98
+      },
+      "bounded_failure_among_presented": {
+        "ci_high": 0.9964608319110235,
+        "ci_low": 0.8950431352816304,
+        "k": 49,
+        "method": "wilson95",
+        "n": 50,
+        "value": 0.98
+      },
+      "n_executed": 50
+    },
+    "4.25-4.50": {
+      "bounded_failure_among_executed": {
+        "ci_high": 1.0,
+        "ci_low": 0.9324156955469234,
+        "k": 53,
+        "method": "wilson95",
+        "n": 53,
+        "value": 1.0
+      },
+      "bounded_failure_among_presented": {
+        "ci_high": 1.0,
+        "ci_low": 0.9324156955469234,
+        "k": 53,
+        "method": "wilson95",
+        "n": 53,
+        "value": 1.0
+      },
+      "n_executed": 53
+    },
+    "4.50-4.75": {
+      "bounded_failure_among_executed": {
+        "ci_high": 0.9999999999999999,
+        "ci_low": 0.9258973488472576,
+        "k": 48,
+        "method": "wilson95",
+        "n": 48,
+        "value": 1.0
+      },
+      "bounded_failure_among_presented": {
+        "ci_high": 0.9999999999999999,
+        "ci_low": 0.9258973488472576,
+        "k": 48,
+        "method": "wilson95",
+        "n": 48,
+        "value": 1.0
+      },
+      "n_executed": 48
+    },
+    "4.75-5.00": {
+      "bounded_failure_among_executed": {
+        "ci_high": 1.0,
+        "ci_low": 0.9324156955469234,
+        "k": 53,
+        "method": "wilson95",
+        "n": 53,
+        "value": 1.0
+      },
+      "bounded_failure_among_presented": {
+        "ci_high": 1.0,
+        "ci_low": 0.9324156955469234,
+        "k": 53,
+        "method": "wilson95",
+        "n": 53,
+        "value": 1.0
+      },
+      "n_executed": 53
+    }
+  }
+}

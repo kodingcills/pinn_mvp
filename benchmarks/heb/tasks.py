@@ -57,11 +57,17 @@ register(
         # up to 2.62 s. 2.0 s is the nominal-path expectation; larger
         # offsets carry deadline risk enforced mid-execution.
         expected_duration_s=2.0,
-        # Measured capture boundary (results/heb_sweeps_dev.json offset
-        # sweep: 3.0 mm succeeds, 3.5 mm fails, both arms) supersedes
-        # the 4.35 mm geometric search envelope for the refusal
-        # boundary.
-        max_initial_offset_m=0.003,
+        # Reach capability envelope (results/hes_reach_capability_envelope/, 664
+        # paired scenarios over 3.0-5.0 mm, seed 20260916). The scalar is
+        # adequate as a refusal/safety boundary: P(hard violation | authorised)
+        # rises with offset (0.49 -> 0.64) and bounded capture collapses after
+        # the physical knee (~4.0 mm). It is not a bounded-success predictor:
+        # facet_count, max_force_n, n_stale and position_tolerance_m shift
+        # capture at matched offset. 0.0035 m is the smallest cap clearing the
+        # declared G3 preservation floor (0.786 -> 0.969) and G4 false-refusal
+        # ceiling while holding conditional violation at the declared 0.003 m
+        # rate; the previous 0.003 m was the measured single-point dev boundary.
+        max_initial_offset_m=0.0035,
     ),
 )
 register(

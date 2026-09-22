@@ -1,0 +1,682 @@
+{
+  "by_first_intervention": {
+    "None": 13,
+    "deadline_exceeded": 63,
+    "hard_constraint_process_force": 38,
+    "machine_fault_machine_fault": 22,
+    "machine_fault_tilt_guard": 47,
+    "negotiation_refusal": 275,
+    "success_condition_unmet": 4,
+    "temporal_hold_budget_exhausted": 17
+  },
+  "by_haplous_disposition": {
+    "ABORTED": 176,
+    "COMPLETE": 15,
+    "REFUSED": 288
+  },
+  "by_relevance": {
+    "false_abort_estimate": 89,
+    "false_refusal_estimate": 275
+  },
+  "by_stratum": {
+    "normal": 15,
+    "offset:beyond": 138,
+    "offset:boundary": 196,
+    "offset:interior": 128,
+    "severe": 2
+  },
+  "decision_relevant_examples": [
+    {
+      "baseline_bounded_success": false,
+      "baseline_task_success": false,
+      "claim_relevance": [
+        "false_abort_estimate"
+      ],
+      "deadline_s": 3.0,
+      "haplous_disposition": "ABORTED",
+      "haplous_reason": "temporal_hold_budget_exhausted",
+      "initial_offset_m": 0.002628,
+      "max_force_n": 12.0,
+      "priority": true,
+      "scenario_id": "fleet_insert_000027",
+      "stratum": "offset:boundary",
+      "task_family": "peg_insertion"
+    },
+    {
+      "baseline_bounded_success": false,
+      "baseline_task_success": true,
+      "claim_relevance": [
+        "false_abort_estimate"
+      ],
+      "deadline_s": null,
+      "haplous_disposition": "ABORTED",
+      "haplous_reason": "machine_fault_tilt_guard",
+      "initial_offset_m": 0.001715,
+      "max_force_n": 15.0,
+      "priority": false,
+      "scenario_id": "fleet_insert_000028",
+      "stratum": "offset:interior",
+      "task_family": "peg_insertion"
+    },
+    {
+      "baseline_bounded_success": false,
+      "baseline_task_success": true,
+      "claim_relevance": [
+        "false_abort_estimate"
+      ],
+      "deadline_s": null,
+      "haplous_disposition": "ABORTED",
+      "haplous_reason": "machine_fault_tilt_guard",
+      "initial_offset_m": 0.002735,
+      "max_force_n": 15.0,
+      "priority": true,
+      "scenario_id": "fleet_insert_000032",
+      "stratum": "offset:boundary",
+      "task_family": "peg_insertion"
+    },
+    {
+      "baseline_bounded_success": false,
+      "baseline_task_success": false,
+      "claim_relevance": [
+        "false_abort_estimate"
+      ],
+      "deadline_s": null,
+      "haplous_disposition": "ABORTED",
+      "haplous_reason": "machine_fault_tilt_guard",
+      "initial_offset_m": 0.002848,
+      "max_force_n": 12.0,
+      "priority": true,
+      "scenario_id": "fleet_insert_000033",
+      "stratum": "offset:boundary",
+      "task_family": "peg_insertion"
+    },
+    {
+      "baseline_bounded_success": false,
+      "baseline_task_success": false,
+      "claim_relevance": [
+        "false_abort_estimate"
+      ],
+      "deadline_s": 2.0,
+      "haplous_disposition": "ABORTED",
+      "haplous_reason": "machine_fault_machine_fault",
+      "initial_offset_m": 0.002707,
+      "max_force_n": 25.0,
+      "priority": true,
+      "scenario_id": "fleet_insert_000040",
+      "stratum": "offset:boundary",
+      "task_family": "peg_insertion"
+    },
+    {
+      "baseline_bounded_success": false,
+      "baseline_task_success": false,
+      "claim_relevance": [
+        "false_abort_estimate"
+      ],
+      "deadline_s": null,
+      "haplous_disposition": "ABORTED",
+      "haplous_reason": "machine_fault_machine_fault",
+      "initial_offset_m": 0.000371,
+      "max_force_n": 15.0,
+      "priority": false,
+      "scenario_id": "fleet_insert_000046",
+      "stratum": "offset:interior",
+      "task_family": "peg_insertion"
+    },
+    {
+      "baseline_bounded_success": false,
+      "baseline_task_success": true,
+      "claim_relevance": [
+        "false_abort_estimate"
+      ],
+      "deadline_s": null,
+      "haplous_disposition": "ABORTED",
+      "haplous_reason": "machine_fault_tilt_guard",
+      "initial_offset_m": 0.002979,
+      "max_force_n": null,
+      "priority": true,
+      "scenario_id": "fleet_insert_000082",
+      "stratum": "offset:boundary",
+      "task_family": "peg_insertion"
+    },
+    {
+      "baseline_bounded_success": false,
+      "baseline_task_success": false,
+      "claim_relevance": [
+        "false_abort_estimate"
+      ],
+      "deadline_s": 2.5,
+      "haplous_disposition": "ABORTED",
+      "haplous_reason": "temporal_hold_budget_exhausted",
+      "initial_offset_m": 0.001854,
+      "max_force_n": 15.0,
+      "priority": false,
+      "scenario_id": "fleet_insert_000090",
+      "stratum": "offset:interior",
+      "task_family": "peg_insertion"
+    },
+    {
+      "baseline_bounded_success": false,
+      "baseline_task_success": false,
+      "claim_relevance": [
+        "false_abort_estimate"
+      ],
+      "deadline_s": null,
+      "haplous_disposition": "ABORTED",
+      "haplous_reason": "machine_fault_machine_fault",
+      "initial_offset_m": 0.002441,
+      "max_force_n": 15.0,
+      "priority": false,
+      "scenario_id": "fleet_insert_000091",
+      "stratum": "offset:interior",
+      "task_family": "peg_insertion"
+    },
+    {
+      "baseline_bounded_success": false,
+      "baseline_task_success": false,
+      "claim_relevance": [
+        "false_abort_estimate"
+      ],
+      "deadline_s": null,
+      "haplous_disposition": "ABORTED",
+      "haplous_reason": "machine_fault_machine_fault",
+      "initial_offset_m": 0.000559,
+      "max_force_n": 25.0,
+      "priority": false,
+      "scenario_id": "fleet_insert_000095",
+      "stratum": "offset:interior",
+      "task_family": "peg_insertion"
+    },
+    {
+      "baseline_bounded_success": false,
+      "baseline_task_success": false,
+      "claim_relevance": [
+        "false_abort_estimate"
+      ],
+      "deadline_s": 5.0,
+      "haplous_disposition": "ABORTED",
+      "haplous_reason": "machine_fault_machine_fault",
+      "initial_offset_m": 0.002669,
+      "max_force_n": 15.0,
+      "priority": true,
+      "scenario_id": "fleet_insert_000100",
+      "stratum": "offset:boundary",
+      "task_family": "peg_insertion"
+    },
+    {
+      "baseline_bounded_success": false,
+      "baseline_task_success": true,
+      "claim_relevance": [
+        "false_abort_estimate"
+      ],
+      "deadline_s": null,
+      "haplous_disposition": "ABORTED",
+      "haplous_reason": "machine_fault_tilt_guard",
+      "initial_offset_m": 0.002776,
+      "max_force_n": null,
+      "priority": true,
+      "scenario_id": "fleet_insert_000121",
+      "stratum": "offset:boundary",
+      "task_family": "peg_insertion"
+    },
+    {
+      "baseline_bounded_success": false,
+      "baseline_task_success": false,
+      "claim_relevance": [
+        "false_refusal_estimate"
+      ],
+      "deadline_s": null,
+      "haplous_disposition": "REFUSED",
+      "haplous_reason": "negotiation_refusal",
+      "initial_offset_m": 0.003286,
+      "max_force_n": 15.0,
+      "priority": true,
+      "scenario_id": "fleet_insert_000123",
+      "stratum": "offset:boundary",
+      "task_family": "peg_insertion"
+    },
+    {
+      "baseline_bounded_success": false,
+      "baseline_task_success": true,
+      "claim_relevance": [
+        "false_abort_estimate"
+      ],
+      "deadline_s": null,
+      "haplous_disposition": "ABORTED",
+      "haplous_reason": "temporal_hold_budget_exhausted",
+      "initial_offset_m": 0.001802,
+      "max_force_n": null,
+      "priority": false,
+      "scenario_id": "fleet_insert_000125",
+      "stratum": "offset:interior",
+      "task_family": "peg_insertion"
+    },
+    {
+      "baseline_bounded_success": false,
+      "baseline_task_success": true,
+      "claim_relevance": [
+        "false_refusal_estimate"
+      ],
+      "deadline_s": 1.8,
+      "haplous_disposition": "REFUSED",
+      "haplous_reason": "negotiation_refusal",
+      "initial_offset_m": 0.003855,
+      "max_force_n": 20.0,
+      "priority": true,
+      "scenario_id": "fleet_insert_000128",
+      "stratum": "offset:beyond",
+      "task_family": "peg_insertion"
+    },
+    {
+      "baseline_bounded_success": false,
+      "baseline_task_success": false,
+      "claim_relevance": [
+        "false_refusal_estimate"
+      ],
+      "deadline_s": 1.8,
+      "haplous_disposition": "REFUSED",
+      "haplous_reason": "negotiation_refusal",
+      "initial_offset_m": 0.004753,
+      "max_force_n": 20.0,
+      "priority": true,
+      "scenario_id": "fleet_insert_000129",
+      "stratum": "offset:beyond",
+      "task_family": "peg_insertion"
+    },
+    {
+      "baseline_bounded_success": false,
+      "baseline_task_success": true,
+      "claim_relevance": [
+        "false_refusal_estimate"
+      ],
+      "deadline_s": 1.8,
+      "haplous_disposition": "REFUSED",
+      "haplous_reason": "negotiation_refusal",
+      "initial_offset_m": 0.001681,
+      "max_force_n": 15.0,
+      "priority": true,
+      "scenario_id": "fleet_insert_000132",
+      "stratum": "offset:interior",
+      "task_family": "peg_insertion"
+    },
+    {
+      "baseline_bounded_success": false,
+      "baseline_task_success": false,
+      "claim_relevance": [
+        "false_refusal_estimate"
+      ],
+      "deadline_s": null,
+      "haplous_disposition": "REFUSED",
+      "haplous_reason": "negotiation_refusal",
+      "initial_offset_m": 0.004858,
+      "max_force_n": null,
+      "priority": false,
+      "scenario_id": "fleet_insert_000133",
+      "stratum": "offset:beyond",
+      "task_family": "peg_insertion"
+    },
+    {
+      "baseline_bounded_success": false,
+      "baseline_task_success": true,
+      "claim_relevance": [
+        "false_abort_estimate"
+      ],
+      "deadline_s": 3.0,
+      "haplous_disposition": "ABORTED",
+      "haplous_reason": "temporal_hold_budget_exhausted",
+      "initial_offset_m": 0.001814,
+      "max_force_n": 15.0,
+      "priority": false,
+      "scenario_id": "fleet_insert_000135",
+      "stratum": "offset:interior",
+      "task_family": "peg_insertion"
+    },
+    {
+      "baseline_bounded_success": false,
+      "baseline_task_success": false,
+      "claim_relevance": [
+        "false_abort_estimate"
+      ],
+      "deadline_s": null,
+      "haplous_disposition": "ABORTED",
+      "haplous_reason": "temporal_hold_budget_exhausted",
+      "initial_offset_m": 0.002811,
+      "max_force_n": 12.0,
+      "priority": true,
+      "scenario_id": "fleet_insert_000145",
+      "stratum": "offset:boundary",
+      "task_family": "peg_insertion"
+    },
+    {
+      "baseline_bounded_success": false,
+      "baseline_task_success": false,
+      "claim_relevance": [
+        "false_refusal_estimate"
+      ],
+      "deadline_s": null,
+      "haplous_disposition": "REFUSED",
+      "haplous_reason": "negotiation_refusal",
+      "initial_offset_m": 0.004687,
+      "max_force_n": null,
+      "priority": false,
+      "scenario_id": "fleet_insert_000149",
+      "stratum": "offset:beyond",
+      "task_family": "peg_insertion"
+    },
+    {
+      "baseline_bounded_success": false,
+      "baseline_task_success": false,
+      "claim_relevance": [
+        "false_abort_estimate"
+      ],
+      "deadline_s": null,
+      "haplous_disposition": "ABORTED",
+      "haplous_reason": "machine_fault_machine_fault",
+      "initial_offset_m": 0.002878,
+      "max_force_n": null,
+      "priority": true,
+      "scenario_id": "fleet_insert_000156",
+      "stratum": "offset:boundary",
+      "task_family": "peg_insertion"
+    },
+    {
+      "baseline_bounded_success": false,
+      "baseline_task_success": false,
+      "claim_relevance": [
+        "false_refusal_estimate"
+      ],
+      "deadline_s": 1.8,
+      "haplous_disposition": "REFUSED",
+      "haplous_reason": "negotiation_refusal",
+      "initial_offset_m": 0.000988,
+      "max_force_n": 12.0,
+      "priority": true,
+      "scenario_id": "fleet_insert_000157",
+      "stratum": "offset:interior",
+      "task_family": "peg_insertion"
+    },
+    {
+      "baseline_bounded_success": false,
+      "baseline_task_success": true,
+      "claim_relevance": [
+        "false_abort_estimate"
+      ],
+      "deadline_s": null,
+      "haplous_disposition": "ABORTED",
+      "haplous_reason": "machine_fault_tilt_guard",
+      "initial_offset_m": 0.001991,
+      "max_force_n": null,
+      "priority": false,
+      "scenario_id": "fleet_insert_000162",
+      "stratum": "offset:interior",
+      "task_family": "peg_insertion"
+    },
+    {
+      "baseline_bounded_success": false,
+      "baseline_task_success": false,
+      "claim_relevance": [
+        "false_refusal_estimate"
+      ],
+      "deadline_s": null,
+      "haplous_disposition": "REFUSED",
+      "haplous_reason": "negotiation_refusal",
+      "initial_offset_m": 0.003462,
+      "max_force_n": null,
+      "priority": true,
+      "scenario_id": "fleet_insert_000163",
+      "stratum": "offset:boundary",
+      "task_family": "peg_insertion"
+    },
+    {
+      "baseline_bounded_success": false,
+      "baseline_task_success": true,
+      "claim_relevance": [
+        "false_refusal_estimate"
+      ],
+      "deadline_s": 1.8,
+      "haplous_disposition": "REFUSED",
+      "haplous_reason": "negotiation_refusal",
+      "initial_offset_m": 0.003276,
+      "max_force_n": 15.0,
+      "priority": true,
+      "scenario_id": "fleet_insert_000170",
+      "stratum": "offset:boundary",
+      "task_family": "peg_insertion"
+    },
+    {
+      "baseline_bounded_success": false,
+      "baseline_task_success": true,
+      "claim_relevance": [
+        "false_abort_estimate"
+      ],
+      "deadline_s": null,
+      "haplous_disposition": "ABORTED",
+      "haplous_reason": "temporal_hold_budget_exhausted",
+      "initial_offset_m": 0.00149,
+      "max_force_n": null,
+      "priority": false,
+      "scenario_id": "fleet_insert_000171",
+      "stratum": "offset:interior",
+      "task_family": "peg_insertion"
+    },
+    {
+      "baseline_bounded_success": false,
+      "baseline_task_success": false,
+      "claim_relevance": [
+        "false_refusal_estimate"
+      ],
+      "deadline_s": null,
+      "haplous_disposition": "REFUSED",
+      "haplous_reason": "negotiation_refusal",
+      "initial_offset_m": 0.003176,
+      "max_force_n": 12.0,
+      "priority": true,
+      "scenario_id": "fleet_insert_000172",
+      "stratum": "offset:boundary",
+      "task_family": "peg_insertion"
+    },
+    {
+      "baseline_bounded_success": false,
+      "baseline_task_success": true,
+      "claim_relevance": [
+        "false_abort_estimate"
+      ],
+      "deadline_s": 5.0,
+      "haplous_disposition": "ABORTED",
+      "haplous_reason": "temporal_hold_budget_exhausted",
+      "initial_offset_m": 0.002594,
+      "max_force_n": 15.0,
+      "priority": true,
+      "scenario_id": "fleet_insert_000173",
+      "stratum": "offset:boundary",
+      "task_family": "peg_insertion"
+    },
+    {
+      "baseline_bounded_success": false,
+      "baseline_task_success": false,
+      "claim_relevance": [
+        "false_refusal_estimate"
+      ],
+      "deadline_s": 2.0,
+      "haplous_disposition": "REFUSED",
+      "haplous_reason": "negotiation_refusal",
+      "initial_offset_m": 0.003912,
+      "max_force_n": null,
+      "priority": false,
+      "scenario_id": "fleet_insert_000174",
+      "stratum": "offset:beyond",
+      "task_family": "peg_insertion"
+    },
+    {
+      "baseline_bounded_success": false,
+      "baseline_task_success": true,
+      "claim_relevance": [
+        "false_abort_estimate"
+      ],
+      "deadline_s": null,
+      "haplous_disposition": "ABORTED",
+      "haplous_reason": "machine_fault_tilt_guard",
+      "initial_offset_m": 0.001109,
+      "max_force_n": null,
+      "priority": false,
+      "scenario_id": "fleet_insert_000176",
+      "stratum": "offset:interior",
+      "task_family": "peg_insertion"
+    },
+    {
+      "baseline_bounded_success": false,
+      "baseline_task_success": true,
+      "claim_relevance": [
+        "false_abort_estimate"
+      ],
+      "deadline_s": null,
+      "haplous_disposition": "ABORTED",
+      "haplous_reason": "machine_fault_tilt_guard",
+      "initial_offset_m": 0.002576,
+      "max_force_n": null,
+      "priority": true,
+      "scenario_id": "fleet_insert_000178",
+      "stratum": "offset:boundary",
+      "task_family": "peg_insertion"
+    },
+    {
+      "baseline_bounded_success": false,
+      "baseline_task_success": true,
+      "claim_relevance": [
+        "false_refusal_estimate"
+      ],
+      "deadline_s": 2.0,
+      "haplous_disposition": "REFUSED",
+      "haplous_reason": "negotiation_refusal",
+      "initial_offset_m": 0.004114,
+      "max_force_n": 15.0,
+      "priority": false,
+      "scenario_id": "fleet_insert_000180",
+      "stratum": "offset:beyond",
+      "task_family": "peg_insertion"
+    },
+    {
+      "baseline_bounded_success": false,
+      "baseline_task_success": false,
+      "claim_relevance": [
+        "false_refusal_estimate"
+      ],
+      "deadline_s": 2.0,
+      "haplous_disposition": "REFUSED",
+      "haplous_reason": "negotiation_refusal",
+      "initial_offset_m": 0.004802,
+      "max_force_n": null,
+      "priority": false,
+      "scenario_id": "fleet_insert_000181",
+      "stratum": "offset:beyond",
+      "task_family": "peg_insertion"
+    },
+    {
+      "baseline_bounded_success": false,
+      "baseline_task_success": true,
+      "claim_relevance": [
+        "false_refusal_estimate"
+      ],
+      "deadline_s": 1.8,
+      "haplous_disposition": "REFUSED",
+      "haplous_reason": "negotiation_refusal",
+      "initial_offset_m": 0.001617,
+      "max_force_n": null,
+      "priority": true,
+      "scenario_id": "fleet_insert_000185",
+      "stratum": "offset:interior",
+      "task_family": "peg_insertion"
+    },
+    {
+      "baseline_bounded_success": false,
+      "baseline_task_success": false,
+      "claim_relevance": [
+        "false_refusal_estimate"
+      ],
+      "deadline_s": null,
+      "haplous_disposition": "REFUSED",
+      "haplous_reason": "negotiation_refusal",
+      "initial_offset_m": 0.004001,
+      "max_force_n": null,
+      "priority": false,
+      "scenario_id": "fleet_insert_000187",
+      "stratum": "offset:beyond",
+      "task_family": "peg_insertion"
+    },
+    {
+      "baseline_bounded_success": false,
+      "baseline_task_success": false,
+      "claim_relevance": [
+        "false_refusal_estimate"
+      ],
+      "deadline_s": null,
+      "haplous_disposition": "REFUSED",
+      "haplous_reason": "negotiation_refusal",
+      "initial_offset_m": 0.00375,
+      "max_force_n": 25.0,
+      "priority": false,
+      "scenario_id": "fleet_insert_000188",
+      "stratum": "offset:beyond",
+      "task_family": "peg_insertion"
+    },
+    {
+      "baseline_bounded_success": false,
+      "baseline_task_success": true,
+      "claim_relevance": [
+        "false_refusal_estimate"
+      ],
+      "deadline_s": null,
+      "haplous_disposition": "REFUSED",
+      "haplous_reason": "negotiation_refusal",
+      "initial_offset_m": 0.003069,
+      "max_force_n": null,
+      "priority": true,
+      "scenario_id": "fleet_insert_000193",
+      "stratum": "offset:boundary",
+      "task_family": "peg_insertion"
+    },
+    {
+      "baseline_bounded_success": false,
+      "baseline_task_success": false,
+      "claim_relevance": [
+        "false_refusal_estimate"
+      ],
+      "deadline_s": 3.0,
+      "haplous_disposition": "REFUSED",
+      "haplous_reason": "negotiation_refusal",
+      "initial_offset_m": 0.004774,
+      "max_force_n": 25.0,
+      "priority": false,
+      "scenario_id": "fleet_insert_000194",
+      "stratum": "offset:beyond",
+      "task_family": "peg_insertion"
+    },
+    {
+      "baseline_bounded_success": false,
+      "baseline_task_success": false,
+      "claim_relevance": [
+        "false_refusal_estimate"
+      ],
+      "deadline_s": 5.0,
+      "haplous_disposition": "REFUSED",
+      "haplous_reason": "negotiation_refusal",
+      "initial_offset_m": 0.003675,
+      "max_force_n": 15.0,
+      "priority": false,
+      "scenario_id": "fleet_insert_000197",
+      "stratum": "offset:beyond",
+      "task_family": "peg_insertion"
+    }
+  ],
+  "n_decision_relevant": 364,
+  "n_priority": 179,
+  "n_unknown": 479,
+  "priority_bands": {
+    "deadline_1p0_or_1p8_s": 54,
+    "offset_2p5_to_3p5mm": 196
+  },
+  "recommended_sweep": {
+    "adaptive": "Sequential forks, stop when the Benjamini-Hochberg-adjusted false-refusal estimate and capture interval widths stop changing. Do not fork the non-priority UNKNOWN mass; it cannot move a claim.",
+    "primary": "the 153 boundary_hi reach-rejections (offset 3.0-3.5 mm); they are the single mechanism behind 26/28 preservation losses",
+    "secondary": "the 179 priority UNKNOWN scenarios (offset 2.5-3.5 mm or deadline 1.0/1.8 s) that could move the false-refusal / false-abort estimates"
+  }
+}

@@ -6,6 +6,8 @@ condition) resolve through the task registry — the backend and runner
 contain no per-task branches."""
 from __future__ import annotations
 
+from dataclasses import replace
+
 from haplous.adapters.mujoco_adapter import MuJoCoMachine, MuJoCoMachineConfig
 
 from benchmarks.heb import tasks
@@ -16,6 +18,7 @@ def build_realization(
     scenario: Scenario,
     machine_factory=MuJoCoMachine,
     behavior_factory_override=None,
+    machine_config_overrides: dict | None = None,
 ) -> Realization:
     impl = tasks.implementation_for(scenario.task_family)
     bundle = impl.bundle_builder(scenario)
@@ -34,6 +37,8 @@ def build_realization(
         max_sensed_tilt_deg=45.0,
         position_resolution_m=1e-6,
     )
+    if machine_config_overrides:
+        config = replace(config, **machine_config_overrides)
     behavior_factory = (
         behavior_factory_override if behavior_factory_override is not None else impl.behavior_factory(bundle)
     )

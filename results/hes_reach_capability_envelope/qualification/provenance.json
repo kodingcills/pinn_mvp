@@ -1,0 +1,30 @@
+{
+  "benchmark": "internal-heb",
+  "benchmark_version": "0.2.0",
+  "calibration": {
+    "baseline_arms_source": "results/hes/v3_hardening_qualification/episodes.parquet",
+    "declared_max_initial_offset_m_before": 0.003,
+    "scope": "reach capability only; no other runtime semantics changed",
+    "selected_max_initial_offset_m": 0.0035
+  },
+  "cpu_count": 14,
+  "dependencies": {
+    "matplotlib": "3.11.1",
+    "mujoco": "3.11.0",
+    "numpy": "2.5.1",
+    "pyarrow": "25.0.1",
+    "yaml": "6.0.3"
+  },
+  "episode_schema_version": "haplous-episode-v1",
+  "git_commit": "e5beaa6c3fd78ca292ebaf0914e3251a2afeb3dc",
+  "git_dirty": true,
+  "haplous_version": "0.5.0",
+  "machine": "arm64",
+  "manifest_schema_version": "haplous-experiment-v1",
+  "manifest_sha256": "4b0df50373e2f58437c6f0f31ba8a6df14d7df0f2759042c0db48b22e61395d0",
+  "platform": "macOS-26.5.1-arm64-arm-64bit",
+  "policy_checkpoint": null,
+  "processor": "arm",
+  "python": "3.12.13",
+  "recorded_at_utc": "2026-09-17T19:33:40+00:00"
+}

@@ -1,0 +1,20 @@
+{
+  "attained_abort_loss": 1,
+  "boundary_hi_refused_eligible": 142,
+  "boundary_lo_haplous_capture_rate": 0.2759,
+  "conservative_generic_ceiling": 215,
+  "conservative_generic_ceiling_rate": 0.215,
+  "current_system_bsr": 182,
+  "current_system_bsr_rate": 0.182,
+  "demonstrated_attainable_refusals_recoverable": 32,
+  "note": "Conservative assumes recovered misses only reproduce already-demonstrated bounded success. Optimistic additionally assumes Haplous captures boundary_hi offsets at the boundary_lo rate. Neither assumes UNKNOWN cases are fixable, and both exclude non-attainable and upstream failure mass.",
+  "optimistic_extra_from_boundary_capture": 39,
+  "optimistic_generic_ceiling": 254,
+  "optimistic_generic_ceiling_rate": 0.254,
+  "remaining_failure_mass": {
+    "attainability_unknown": 347,
+    "correct_refusal_non_attainable": 107,
+    "protective_stop_on_breach": 172,
+    "upstream_controller_physics": 159
+  }
+}

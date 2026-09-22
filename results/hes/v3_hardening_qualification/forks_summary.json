@@ -1,0 +1,13 @@
+{
+  "fork_scenarios": 120,
+  "interventions": {
+    "BENEFICIAL": 5,
+    "HARMFUL": 12,
+    "UNNECESSARY": 6
+  },
+  "refusals": {
+    "FALSE_REFUSAL": 4,
+    "TRUE_REFUSAL": 61
+  },
+  "wall_s": 1207.8515236250096
+}

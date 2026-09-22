@@ -339,9 +339,11 @@ Of the attributable intervention forks
 ({forks.get('interventions', {}).get('BENEFICIAL', 0) +
 forks.get('interventions', {}).get('HARMFUL', 0) +
 forks.get('interventions', {}).get('UNNECESSARY', 0)}), 
-{forks.get('interventions', {}).get('HARMFUL', 0)} are HARMFUL (the direct
-continuation from the runtime stop would have breached a declared bound),
-{forks.get('interventions', {}).get('BENEFICIAL', 0)} are BENEFICIAL, and
+{forks.get('interventions', {}).get('BENEFICIAL', 0)} are BENEFICIAL (the direct
+continuation from the runtime stop would have recorded a strictly worse
+force breach), {forks.get('interventions', {}).get('HARMFUL', 0)} are HARMFUL
+(the continuation would have completed without worsening, so the stop
+destroyed productive execution), and
 {forks.get('interventions', {}).get('UNNECESSARY', 0)} are UNNECESSARY.
 False refusals are
 {forks.get('refusals', {}).get('FALSE_REFUSAL', 0)} of
