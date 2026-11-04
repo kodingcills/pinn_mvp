@@ -1,0 +1,11 @@
+E               RuntimeError: locked N5 covariance scalar radial_side_covariance_m2 drifted: expected -4.844441351432012e-13, found -4.844441351432015e-13
+E               RuntimeError: locked N5 covariance scalar radial_side_covariance_m2 drifted: expected -4.844441351432012e-13, found -4.844441351432015e-13
+E           AssertionError: assert 'penetration bias drifted' in 'locked N5 covariance scalar radial_side_covariance_m2 drifted: expected -4.844441351432012e-13, found -4.844441351432015e-13'
+E            +  where 'locked N5 covariance scalar radial_side_covariance_m2 drifted: expected -4.844441351432012e-13, found -4.844441351432015e-13' = str(RuntimeError('locked N5 covariance scalar radial_side_covariance_m2 drifted: expected -4.844441351432012e-13, found -4.844441351432015e-13'))
+E               RuntimeError: locked N5 covariance scalar radial_side_covariance_m2 drifted: expected -4.844441351432012e-13, found -4.844441351432015e-13
+E       AssertionError: assert None is not None
+FAILED tests/test_r05.py::test_g8_evidence_fingerprints_pass_on_committed_files
+FAILED tests/test_r05.py::test_g8_fingerprints_fail_closed_on_drift - Asserti...
+FAILED tests/test_r05.py::test_g5_unseatable_pair_leaves_filter_unchanged - R...
+FAILED tests/test_rollout.py::TestRunEpisode::test_capture_localization_error_within_clearance
+4 failed, 459 passed, 1 xfailed in 413.04s (0:06:53)

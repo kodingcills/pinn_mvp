@@ -224,6 +224,10 @@ def sign_approval(private_key: Ed25519PrivateKey, record: Mapping[str, Any]) -> 
     return {**body, "signature": private_key.sign(canonical_bytes(body)).hex()}
 
 
+def _decision_digest(signed: Mapping[str, Any]) -> str:
+    return sha256_hex(canonical_bytes({k: v for k, v in signed.items() if k != "signature"}))
+
+
 def verify_approval(signed: Mapping[str, Any], trusted_public_keys: set[str]) -> None:
     body = {k: v for k, v in signed.items() if k != "signature"}
     if set(body) != {"run_id", "manifest_digest", "decision", "approver", "decided_at", "public_key"}:
@@ -273,12 +277,21 @@ class Registry:
             out.append(event)
         return out
 
-    def _append(self, run_id: str | None, event: str, state: str, payload: dict[str, Any]) -> dict[str, Any]:
+    def _append(
+        self,
+        run_id: str | None,
+        event: str,
+        payload: dict[str, Any],
+        decide: Callable[[list[dict[str, Any]]], str],
+    ) -> dict[str, Any]:
+        """Append one event. `decide(history)` runs while the lock is held and returns
+        the resulting state or raises, so check-then-append cannot race."""
         # shortcut: single-host flock; a multi-host registry needs a real transactional store.
         with open(self.ledger_path, "ab") as fh:
             fcntl.flock(fh, fcntl.LOCK_EX)
             try:
                 history = self.events()
+                state = decide(history)
                 prev = history[-1] if history else None
                 at = self.clock()
                 if prev is not None and at < parse_ts(prev["at"]):
@@ -307,18 +320,22 @@ class Registry:
         return [e for e in self.events() if e["run_id"] == run_id]
 
     def state(self, run_id: str) -> str | None:
-        lifecycle = [e for e in self._run_events(run_id) if e["event"] in TRANSITIONS]
-        return lifecycle[-1]["state"] if lifecycle else None
+        return _state_in(self.events(), run_id)
 
     def _transition(self, run_id: str, event: str, payload: dict[str, Any]) -> dict[str, Any]:
         allowed_from, to_state = TRANSITIONS[event]
-        current = self.state(run_id)
-        if current not in allowed_from:
-            raise RegistryError(f"transition {event!r} refused from state {current!r} for {run_id}")
-        return self._append(run_id, event, to_state, payload)
+
+        def decide(history: list[dict[str, Any]]) -> str:
+            current = _state_in(history, run_id)
+            if current not in allowed_from:
+                raise RegistryError(f"transition {event!r} refused from state {current!r} for {run_id}")
+            return to_state
+
+        return self._append(run_id, event, payload, decide)
 
     def _reject(self, raw: bytes, errors: list[str]) -> None:
-        self._append(None, "rejected_input", "REJECTED", {"input_sha256": sha256_hex(raw), "errors": errors})
+        payload = {"input_sha256": sha256_hex(raw), "errors": errors}
+        self._append(None, "rejected_input", payload, lambda _h: "REJECTED")
         raise RegistryError(f"manifest rejected: {errors}")
 
     # ----- lifecycle -----
@@ -342,7 +359,10 @@ class Registry:
         if self.state(run_id) is not None or self.run_dir(run_id).exists():
             self._reject(raw, [f"run_id {run_id!r} already registered"])
         data = canonical_bytes(value)
-        self.run_dir(run_id).mkdir(parents=True)
+        try:
+            self.run_dir(run_id).mkdir(parents=True)
+        except FileExistsError:  # lost a race with a concurrent register of the same id
+            self._reject(raw, [f"run_id {run_id!r} already registered"])
         with open(self.run_dir(run_id) / "manifest.json", "xb") as fh:
             fh.write(data)
         digest = sha256_hex(data)
@@ -368,7 +388,21 @@ class Registry:
         verify_approval(signed, trusted_public_keys)
         if signed["run_id"] != run_id or signed["manifest_digest"] != self.manifest_digest(run_id):
             raise RegistryError("approval does not bind to this run's manifest")
-        self._append(run_id, "approval_recorded", self.state(run_id) or "REJECTED", {"approval": dict(signed)})
+
+        decision = _decision_digest(signed)
+
+        def decide(history: list[dict[str, Any]]) -> str:
+            # Replay: one decision is recorded at most once, anywhere in the ledger. Keyed on the
+            # signed body, not the signature bytes, so it does not rely on signature non-malleability.
+            if any(e["event"] == "approval_recorded" and _decision_digest(e["payload"]["approval"]) == decision
+                   for e in history):
+                raise RegistryError("approval replay: this signed decision is already recorded")
+            state = _state_in(history, run_id)
+            if state is None:
+                raise RegistryError(f"unknown run {run_id!r}")
+            return state
+
+        self._append(run_id, "approval_recorded", {"approval": dict(signed)}, decide)
 
     # ----- retrieval / verification / comparison -----
 
@@ -454,6 +488,11 @@ class Registry:
         }
 
 
+def _state_in(history: Sequence[Mapping[str, Any]], run_id: str) -> str | None:
+    lifecycle = [e for e in history if e["run_id"] == run_id and e["event"] in TRANSITIONS]
+    return lifecycle[-1]["state"] if lifecycle else None
+
+
 def _flatten(value: Any, prefix: str = "") -> dict[str, Any]:
     if isinstance(value, dict):
         out: dict[str, Any] = {}
@@ -466,6 +505,24 @@ def _flatten(value: Any, prefix: str = "") -> dict[str, Any]:
 # --------------------------------------------------------------------------
 # Recording an actual development run
 # --------------------------------------------------------------------------
+
+
+_PROBE = """
+import importlib.metadata as m, json, platform, sys
+def v(n):
+    try: return m.version(n)
+    except m.PackageNotFoundError: return None
+print(json.dumps({"python": sys.version.split()[0], "executable": sys.executable,
+                  "platform": platform.platform(), "dependencies": {n: v(n) for n in sys.argv[1:]}}))
+"""
+
+
+def probe_environment(python: str, dependencies: Sequence[str]) -> dict[str, Any]:
+    """Measured versions of a *different* interpreter (e.g. the simulator's venv)."""
+    proc = subprocess.run([python, "-I", "-c", _PROBE, *dependencies], capture_output=True, text=True, timeout=60)
+    if proc.returncode != 0:
+        raise RegistryError(f"cannot probe {python}: {proc.stderr.strip()[-200:]}")
+    return strict_loads(proc.stdout)
 
 
 def record_run(
@@ -482,11 +539,18 @@ def record_run(
     cwd: str | Path | None = None,
     env: Mapping[str, str] | None = None,
     timeout_s: float | None = None,
+    subject_python: str | None = None,
+    subject_dependencies: Sequence[str] = (),
 ) -> dict[str, Any]:
     """Register, execute `command`, capture stdout/stderr as artifacts, finish, verify.
 
-    The command may write extra artifacts to $M0_ARTIFACT_DIR.
+    The command may write extra artifacts to $M0_ARTIFACT_DIR. `provenance` describes
+    the recording process; when the subject runs under another interpreter, pass
+    `subject_python` and its measured environment is stored in config.subject_environment.
     """
+    config = dict(config or {})
+    if subject_python:
+        config["subject_environment"] = probe_environment(subject_python, subject_dependencies)
     manifest: dict[str, Any] = {
         "schema_version": "m0-run-manifest-v0",
         "run_id": run_id,
@@ -495,7 +559,7 @@ def record_run(
         "created_at": format_ts(registry.clock()),
         "purpose": purpose,
         "command": list(command),
-        "config": dict(config or {}),
+        "config": config,
         "provenance": collect_provenance(dependencies, external_sources, registry.root),
     }
     if simulator:

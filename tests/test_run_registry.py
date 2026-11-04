@@ -386,3 +386,115 @@ def test_registry_writes_do_not_mark_checkout_dirty(tmp_path, monkeypatch):
     assert rr.collect_provenance((), (), tmp_path / "elsewhere")["git_dirty"] is True  # reg dir counts
     (repo / "edited.py").write_text("x")
     assert rr.collect_provenance((), (), reg.root)["git_dirty"] is True
+
+
+# ---------------- official RFC 8785 vectors ----------------
+
+_JCS = __import__("pathlib").Path(__file__).parent / "data" / "rfc8785"
+
+
+@pytest.mark.parametrize("name", sorted(p.name for p in (_JCS / "input").glob("*.json")))
+def test_official_rfc8785_vectors(name):
+    # cyberphone/json-canonicalization testdata (reference implementation of RFC 8785).
+    got = canonical_bytes(strict_loads((_JCS / "input" / name).read_bytes()))
+    assert got == (_JCS / "output" / name).read_bytes()
+
+
+def test_official_vector_set_is_complete():
+    assert len(list((_JCS / "input").glob("*.json"))) == 6
+
+
+# ---------------- approval replay / binding ----------------
+
+
+def test_approval_replay_rejected_same_and_other_run(reg):
+    key = Ed25519PrivateKey.generate()
+    trusted = {public_key_hex(key.public_key())}
+    complete(reg, "r1", {})
+    signed = _approval(reg, key)
+    reg.record_approval("r1", signed, trusted)
+    with pytest.raises(RegistryError, match="replay"):
+        reg.record_approval("r1", copy.deepcopy(signed), trusted)
+    complete(reg, "r2", {})
+    with pytest.raises(RegistryError, match="bind"):  # replay onto another run
+        reg.record_approval("r2", signed, trusted)
+    assert len(reg.get("r1")["approvals"]) == 1 and reg.get("r2")["approvals"] == []
+
+
+@settings(max_examples=50, deadline=None)
+@given(
+    field=st.sampled_from(["run_id", "manifest_digest", "decision", "approver", "decided_at", "public_key"]),
+    data=st.data(),
+)
+def test_signature_binds_every_decision_field(tmp_path_factory, field, data):
+    reg = Registry(tmp_path_factory.mktemp("b"), clock=StepClock())
+    key = Ed25519PrivateKey.generate()
+    other = Ed25519PrivateKey.generate()
+    trusted = {public_key_hex(key.public_key()), public_key_hex(other.public_key())}
+    complete(reg, "r1", {})
+    signed = _approval(reg, key)
+    replacement = {
+        "run_id": "r1x",
+        "manifest_digest": "e" * 64,
+        "decision": "denied",
+        "approver": data.draw(st.text(min_size=1).filter(lambda t: t != "test-reviewer")),
+        "decided_at": "2026-11-05T00:00:00Z",
+        "public_key": public_key_hex(other.public_key()),  # trusted, but did not sign
+    }[field]
+    with pytest.raises(RegistryError):
+        reg.record_approval("r1", {**signed, field: replacement}, trusted)
+    with pytest.raises(RegistryError):  # unsigned extra field
+        reg.record_approval("r1", {**signed, "note": "x"}, trusted)
+
+
+# ---------------- concurrency ----------------
+
+
+class _SlowReadRegistry(Registry):
+    """Widens any check-then-act window: every ledger read sleeps after reading."""
+
+    def events(self):
+        import time
+
+        out = super().events()
+        time.sleep(0.02)
+        return out
+
+
+def _worker(args):
+    root, run_id, barrier = args
+    reg = _SlowReadRegistry(root)
+    barrier.wait()
+    try:
+        reg.start(run_id)
+        return "start"
+    except RegistryError:
+        return "refused"
+
+
+def test_concurrent_processes_cannot_double_transition(tmp_path):
+    import multiprocessing as mp
+
+    reg = Registry(tmp_path)
+    reg.register(manifest("r0"))
+    ctx = mp.get_context("spawn")
+    with ctx.Manager() as manager:
+        barrier = manager.Barrier(6)
+        with ctx.Pool(6) as pool:
+            results = pool.map(_worker, [(str(tmp_path), "r0", barrier)] * 6)
+    events = reg.events()  # chain intact after racing writers
+    assert [e["event"] for e in events if e["run_id"] == "r0"] == ["registered", "started"]
+    assert sorted(results) == ["refused"] * 5 + ["start"]
+
+
+# ---------------- subject environment provenance ----------------
+
+
+def test_subject_environment_is_measured_not_claimed(tmp_path):
+    reg = Registry(tmp_path, clock=StepClock())
+    r = record_run(reg, run_id="s", track="cpu_contract", purpose="p", command=[sys.executable, "-c", "pass"],
+                   config={"subject_environment": "forged"}, subject_python=sys.executable,
+                   subject_dependencies=("pytest", "no-such-dist"))
+    env = r["manifest"]["config"]["subject_environment"]
+    assert env["python"] == sys.version.split()[0]
+    assert env["dependencies"]["no-such-dist"] is None and env["dependencies"]["pytest"]
