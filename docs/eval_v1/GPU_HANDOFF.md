@@ -1,133 +1,130 @@
-# GPU execution handoff: Campaign 0A, first model-in-the-loop validation
+# GPU execution handoff: Campaign 0A, G1 (one π0.5 episode)
 
-**Status: NOT AUTHORIZED.** Provisioning paid GPU compute needs explicit human
-approval (see the approval request at the end). Nothing in this document has
-been run on a GPU. Every GPU-side number is an estimate, and its assumptions are
-stated.
+**Status: NOT AUTHORIZED, and checkpoint verification is BLOCKED.**
+Paid GPU compute needs explicit human approval (request at the end). Nothing
+here has run on a GPU. `huggingface.co` was still refused by this session's
+egress proxy on 2026-11-04 (06:16Z, and again after the final commit), so the
+checkpoint revision, config, parameter count and hashes are **not yet
+measured**. The tool that measures them is ready (step 0).
 
-## Why this run (the narrowest one that reduces the most uncertainty)
+LIBERO-Dynamic is pinned at `ef12443b7c1f0699356eaf2a4e1676e034f2d806`.
 
-The LIBERO-Dynamic execution-strategy comparison holds the π0.5 PyTorch
-checkpoint fixed and varies only the execution layer (sync hold / async queue /
-RTC). That is the comparison a Haplous execution arm would join. The first GPU
-job therefore checks that we can **reproduce upstream's own sync and async
-numbers on a subset** before any Haplous arm exists. If that fails, no Haplous
-comparison on this benchmark is meaningful.
+## What is already established on CPU (no GPU needed)
 
-## Requirements (source: pinned audit, `LIBERO_DYNAMIC_AUDIT.md`)
-
-| Requirement | Value | Basis |
-|---|---|---|
-| Evaluator env | Python 3.10, robosuite 1.4.0, MuJoCo 2.3.7, EGL | read + CPU-measured |
-| Policy server env | LeRobot revision exposing `lerobot.policies.pi05.modeling_pi05.PI05Policy` (0.5.x-compatible). Current `main` may need Python ≥3.12 | upstream `examples/README.md` |
-| CUDA | upstream validated torch 2.13.0 + CUDA 13.0 user space. **Host driver R580+** if we keep that stack | lock file + reproducibility notes |
-| Checkpoint | `pi05/static_official/` in `rsj2003/libero-dynamic-paper-models` (HF), or the official LeRobot π0.5 LIBERO checkpoint, plus a local PaliGemma tokenizer | upstream docs. **HF unreachable from this session; files/sizes unverified** |
-| VRAM | Estimate: π0.5 is ≈3B parameters (public model descriptions, *not verified here*), so bf16 weights ≈ 6–7 GB. With activations and the CUDA context, **≥16 GB is probably enough; 24 GB gives margin** | estimate |
-| GPU features | bf16 support (Ampere or newer). Blackwell not required | estimate |
-| Latency | Use the **published calibrated latency 0.147199 s** with `--latency-source fixed`. The simulator then advances the same simulated time whatever the GPU speed, so a slower GPU changes throughput, not the benchmark condition | upstream `results/execution_strategy_best_points.csv`; `sim_latency_decoupled_from_wallclock: true` measured in our CPU manifests |
-
-**Smallest viable configuration (recommendation):** 1× NVIDIA L4 24 GB, or
-1× RTX 4090 24 GB, with ≥8 vCPU, ≥32 GB RAM and ≥100 GB persistent disk. An
-RTX 5090 (the paper's GPU) is not needed, because latency is fixed rather than
-measured.
-
-## Cost estimate (unverified prices)
-
-Vendor pricing pages (runpod.io, lambda.ai) and huggingface.co were **blocked by
-this session's network policy**. The prices below come from third-party
-summaries found by web search (Oct 2026) and **must be re-checked on the vendor
-page at launch**:
-
-| GPU | Reported $/h (range across sources) |
+| Fact | Evidence |
 |---|---|
-| L4 24 GB (RunPod) | 0.39 – 0.49 |
-| RTX 4090 24 GB (RunPod) | 0.34 (community) – 0.89 (secure) |
+| Formal evaluator runs, is deterministic, and passes upstream acceptance | runs `c0a-smoke-l1-n4-s40-001/002/003`; traces byte-identical |
+| Fixed sync latency advances simulated time by exactly L (0.03 s, 0.147199 s; not rounded to 0.05 s control periods) | runs `c0a-latency-0.03-n1-s40-001`, `c0a-latency-0.147199-n1-s40-001`; `tests/test_libero_dynamic_evidence.py` |
+| Simulated latency is independent of wall-clock inference time | manifests `sim_latency_decoupled_from_wallclock: true`, `physics_time_quantized_to_control_steps: false` |
+| The zero policy emits 1-action chunks, so it pays latency every step. A real K=10 policy should pay it once per 10 steps | trace `merge_appended: 1`; G1 verifies the real-policy case |
 
-Time assumptions (not measured on GPU): setup and downloads 1.0–2.0 h. Per
-600-step episode: inference ≈ 60 requests (K=10) × ~0.15 s ≈ 9 s GPU, plus
-simulation/rendering with EGL, *assumed* 20–60 s. On CPU/OSMesa we measured
-44–91 s per **40-step** item, so CPU timings cannot stand in for GPU ones.
+So GPU speed changes throughput, not the benchmark condition. **GPU numerics
+are a different matter.** bf16 kernels differ across GPU types, so actions (and
+therefore outcomes) can differ.
 
-| Phase | Episodes | Est. wall time | Est. cost @ $0.35–0.90/h |
-|---|---|---|---|
-| G1 smoke (1 episode per mode, 3 modes) | 3 | 1.5–2.5 h incl. setup | $0.5 – $2.3 |
-| G2 subset (`--levels l1 --traj-indices 0`, 40 items, sync + async) | 80 | 0.5–1.5 h | $0.2 – $1.4 |
-| **Hard budget cap for G1+G2** | — | **5 h** | **≤ $5** |
-| Full population, 2 modes (later, separate approval) | 3,600 | 20–60 h (1 worker) | $7 – $54 |
+## Hardware-consistency rule (binding for every comparison)
 
-The uncertainty is dominated by per-episode simulation time on the GPU host.
-G1 measures it, and G2/full costs should be re-estimated from that value before
-continuing.
+- `provenance.gpu` is measured with `nvidia-smi` and is **required** for
+  `sim_model_in_loop` manifests (schema-enforced).
+- Every arm of a comparison runs on the **same GPU type**.
+  `Registry.compare()` reports `hardware_comparable`. Results with
+  `false` are not compared unless an explicit cross-hardware A/A check
+  (same arm, both GPU types, same seeds) has been run and recorded.
 
-## Exact commands (to run on the approved instance)
+## Step 0 (free, CPU, before approval): pin and measure the checkpoint
+
+Upstream does not say which artifact produced its π0.5-PyTorch 147.199 ms
+result. `pi05/static_official/` in `rsj2003/libero-dynamic-paper-models` is
+described as "inference parameters, checkpoint metadata, and normalization
+assets", which may be openpi/JAX rather than LeRobot safetensors. The script
+reports the actual format instead of assuming it.
 
 ```bash
-# 0. system
-sudo apt-get install -y git libegl1 libgl1 ffmpeg
-nvidia-smi   # record driver version; must be >= 580 for the cu130 stack
-# 1. evaluator (pinned)
-git clone https://github.com/renshaojie233/LIBERO-Dynamic.git && cd LIBERO-Dynamic
-git checkout ef12443b7c1f0699356eaf2a4e1676e034f2d806
-uv venv -p 3.10 ../libero-env && VIRTUAL_ENV=../libero-env uv pip install -r requirements.txt && VIRTUAL_ENV=../libero-env uv pip install -e . --no-deps
-export LIBERO_CONFIG_PATH=$PWD/libero/libero/configs MUJOCO_GL=egl
-# 2. CPU-parity check first: must reproduce our committed smoke result
-#    (from a Haplous checkout on branch claude/magical-curie-si1vjr)
-python scripts/run_libero_dynamic_cpu_smoke.py --libero-src LIBERO-Dynamic --libero-python libero-env/bin/python --run-id g1-parity-001
-# 3. policy server env (separate), per upstream examples/README.md §2
-git clone https://github.com/huggingface/lerobot.git   # pin the revision you check out; record it
-#    pip install -e ".[pi]" websockets msgpack-numpy huggingface_hub transformers sentencepiece protobuf tiktoken
-#    download checkpoint + PaliGemma tokenizer to /persist/ckpt (record sha256 of model.safetensors)
-# 4. G1 smoke, one per mode, published latency
-python examples/evaluate_pi05_pytorch.py       --openpi-root ... --server-python ... --eval-python ../libero-env/bin/python --checkpoint /persist/ckpt/pi05 --local-tokenizer /persist/ckpt/paligemma_tokenizer --output-dir /persist/out/g1-sync  --gpu 0 --calibrated-latency-seconds 0.147199
-python examples/evaluate_pi05_pytorch_async.py (same args) --output-dir /persist/out/g1-async
-python examples/evaluate_pi05_pytorch_rtc.py   (same args) --output-dir /persist/out/g1-rtc
+.venv/bin/python scripts/verify_hf_checkpoint.py --repo rsj2003/libero-dynamic-paper-models --path pi05/static_official --out results/checkpoints/pi05_static_official.json
 ```
 
-Run every step through the M0 registry (`python -m evaluation.run_registry run
---track sim_model_in_loop ...`). A `sim_model_in_loop` manifest is refused
-unless it has a `policy` block with a checkpoint URI and a real `checkpoint_sha256`.
-**Do not fill these in by hand from documentation.** Hash the file you actually
-loaded.
+```bash
+.venv/bin/python scripts/verify_hf_checkpoint.py --repo rsj2003/libero-dynamic-paper-models --path pi05/static_official --out results/checkpoints/pi05_static_official.json --download
+```
 
-`--calibrated-latency-seconds` is confirmed in `examples/_common.py:55`.
+The first command pins `revision_sha`, saves `config.json`/model card text, and
+reports the parameter count and weight bytes per dtype from the safetensors
+headers (byte-range reads, no full download), plus each file's LFS SHA-256. The
+second re-hashes every file locally (large download). Tested offline by
+`tests/test_verify_hf_checkpoint.py`.
 
-## Persistence
+**GPU sizing rule (replaces the earlier secondary-source guess):** weight bytes
+are a lower bound. Pick the smallest GPU whose VRAM is ≥ 1.5 × weight bytes +
+4 GiB. That is a heuristic margin for activations and the CUDA context; G1's
+load check then measures `torch.cuda.max_memory_allocated` on the real device.
+If step 0 finds no safetensors (JAX format), G1 must use the openpi/JAX path
+(`examples/evaluate_pi05_jax.py`) instead, and this script must be re-planned.
+Do not convert formats silently.
 
-Containers are ephemeral. Before termination:
-1. Put checkpoints and outputs on a persistent volume (`/persist`) or sync them
-   to object storage (`rclone`/`gsutil`) after every phase.
-2. Commit `results/m0_registry/` (ledger + manifests + small artifacts) to the
-   branch. Store large artifacts (videos, full traces) in object storage, keeping
-   only their SHA-256 in the M0 artifact list.
-3. Run `python -m evaluation.run_registry verify --root results/m0_registry <run>`
-   after copying, and confirm `problems: []`.
+## G1 job: exactly one episode, then report
 
-## Stopping criteria
+`scripts/gpu/g1_one_episode.sh` (syntax-checked; never executed). On the
+approved instance it:
 
-Stop and report (do not continue to the next phase) if any of these happens:
-- the G1 parity smoke does not reproduce the committed CPU smoke (any non-wall-clock field differs in `scripts/compare_libero_smoke_runs.py`);
-- any G1 episode has `status != ok` or an infrastructure error;
-- the RTC run lacks `rtc_conditioning_supported=True`. That run is then invalid as RTC evidence; record it and continue with sync/async only;
-- G2 sync success on the 40-item subset falls outside the Wilson 95% interval
-  around upstream's sync rate at the speed used. Patch `alpha_mps` the way
-  `scripts/launch_pi05_sync_speed_sweep_20260606.sh` does, e.g. 0.06 →
-  upstream 0.425 over 600 episodes. This is only a crude sanity bound: one
-  motion family × one trajectory is not a random sample of the 600. A miss is a
-  reproduction failure to diagnose. Do not use it as a finding;
-- cumulative spend reaches the approved cap.
+| Step | Action | Expected output | Hard stop |
+|---|---|---|---|
+| 0 | refuse unless LIBERO-Dynamic is at `ef12443`; record `nvidia-smi` | `g1_logs/nvidia-smi.csv` | wrong revision (exit 3) |
+| 1 | load π0.5 on the GPU, no episode | `g1_logs/load_check.json`: params, dtypes, `max_memory_allocated_bytes`, device | load failure / OOM / >15 min (exit 4) |
+| 2 | one episode: `--level l1 --trajectory 0 --task-count 1 --replan-steps 10 --max-steps 600` (default), `sync_hold`, fixed latency 0.147199 s, recorded as an M0 `sim_model_in_loop` run with the loaded file's SHA-256 | M0 run `g1-pi05-sync-1ep-001` in state `VERIFIED`; per-item manifest + `runtime-v2` trace | wall-clock cap (`timeout`) |
+| 3 | scan artifacts for OOM/CUDA errors | none | exit 5 |
+| 3 | require a trace in the expected layout | trace exists | exit 7 (else the timing tests would pass vacuously) |
+| 3 | rerun `tests/test_libero_dynamic_evidence.py` + registry integrity on the new run | latency held exactly 0.147199 s at replan boundaries only, sim time = 0.05·steps + Σlatency | exit 6 |
+| — | **stop and report** | — | no further episodes without a new approval |
+
+Task success of one episode is **not** a result. It is reported, not interpreted.
+
+**Budget enforcement (automatic):** the script computes `min(MAX_USD /
+HOURLY_USD, 2 h) − 10 min` and runs the episode under `timeout`. On *any* exit
+(success, stop, crash, timeout), an `EXIT` trap copies `results/m0_registry` and
+`g1_logs` to `PERSIST_DEST` with `rclone --checksum`, then runs `TERMINATE_CMD`
+(for example `runpodctl remove pod $RUNPOD_POD_ID`). Also set the provider's
+own spending limit / auto-terminate where it has one. The in-instance trap does
+not protect against a hung host.
+
+**Persistence:** `PERSIST_DEST` must be object storage outside the instance
+(any rclone remote). Then commit `results/m0_registry/runs/<g1 run>` to the
+branch and run `python -m evaluation.run_registry verify` on it.
+
+## Environment (from the pinned audit)
+
+| Item | Value |
+|---|---|
+| Evaluator env | Python 3.10, robosuite 1.4.0, MuJoCo 2.3.7, `MUJOCO_GL=egl` |
+| Policy server env | LeRobot revision exposing `lerobot.policies.pi05.modeling_pi05.PI05Policy` (0.5.x-compatible). Pin it and record the revision |
+| CUDA | upstream validated torch 2.13.0 + CUDA 13.0 user space, so host driver **R580+** |
+| Tokenizer | local PaliGemma tokenizer directory (avoids implicit download) |
+
+## Cost (unverified prices)
+
+Vendor pricing pages were blocked. Third-party figures (Oct 2026), to be
+re-checked at launch: L4 24 GB about $0.39–0.49/h, RTX 4090 24 GB about
+$0.34–0.89/h. G1 (setup + load + one 600-step episode): an estimated 1–2.5 h, so
+**$0.4–$2.3**. The approval cap below bounds it regardless of these estimates.
+
+## Later phases (each needs its own approval)
+
+G2: a 40-item subset, sync + async, same GPU type. Compare against upstream's
+per-speed rate only as a sanity bound (see LIBERO_DYNAMIC_AUDIT.md for how speed
+is set via `alpha_mps`). G3: the full 1,800-episode population.
 
 ## Approval request (structured)
 
 ```yaml
-request: provision paid GPU compute
-scope: Campaign 0A phases G1 + G2 only (Tier 1 development; no holdouts, no hidden seeds)
-resource: 1x L4 24GB or 1x RTX 4090 24GB, on-demand, no auto-renew, no reserved billing
+request: provision paid GPU compute for G1 only
+scope: load pi0.5 PyTorch + run exactly 1 LIBERO-Dynamic episode (Tier 1 development; no holdouts, no hidden seeds)
+prerequisite: step 0 completed (checkpoint revision, format, weight bytes and SHA-256 recorded)
+resource: 1 on-demand GPU sized by the step-0 rule; no reserved billing, no auto-renew
 budget_cap_usd: 5
-max_wall_hours: 5
-data_leaving_instance: results/m0_registry + summaries committed to branch claude/magical-curie-si1vjr
+max_wall_hours: 2
+auto_termination: in-instance timeout + EXIT trap (sync, then TERMINATE_CMD) + provider spending limit
+artifact_destination: rclone remote outside the instance (to be named by the approver)
 needs_human_decision:
-  - provider/account to use (none configured in this session)
-  - whether to allow huggingface.co and the provider's domains in this environment's network policy
-  - acceptance of the unverified price figures above (re-check at launch)
-not_requested: Tier 3 holdout execution, physical robot deployment, external publication
+  - provider/account and rclone destination
+  - allow huggingface.co (still refused in this session) so step 0 can run
+not_requested: further episodes, Tier 3 holdouts, physical robots, external claims
 ```

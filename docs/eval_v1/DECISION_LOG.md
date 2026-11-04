@@ -87,3 +87,55 @@ minimal guards". It must not be presented as market or incumbent performance.
 2. **G1 GPU smoke** (≤$5, approval needed): it measures the per-episode sim
    time on GPU, which is the dominant unknown in every cost estimate, and
    checks parity with our CPU smoke.
+
+---
+
+# Iteration 2
+
+## D8. The package is still missing, so dependent work stays stopped
+
+The assignment said the v1.1 package was at `evaluation/spec/haplous_eval_v1_1/`.
+It is not in the tree, any remote branch, any PR or the upload directories
+(ENGINEERING_STATUS.md lists every check). As instructed, I did not fabricate
+fixtures, G0 or schemas.
+
+## D9. Lock-held decisions instead of optimistic re-checks
+
+The transition check ran on a ledger read outside `flock`, so two processes
+could both observe `REGISTERED` and both append `started`. A barrier test with a
+slowed ledger read reproduces this on the old code. The fix passes a `decide(history)`
+callback that `_append` runs on the history it read under the lock. That is one
+mechanism shared by transitions, rejections and approvals, instead of a second
+re-check. Rejected: per-run lock files (more files, same guarantee on one host).
+
+## D10. Replay key = digest of the signed body, not signature bytes
+
+Ed25519 signatures are deterministic for a given key and message, but keying
+replay on the body avoids relying on signature non-malleability.
+
+## D11. GPU type is measured provenance, and required for model-in-the-loop
+
+bf16 numerics vary by GPU type, so `provenance.gpu` comes from `nvidia-smi`
+(never caller-supplied). The schema requires it to be non-empty for
+`sim_model_in_loop`. `compare()` reports `hardware_comparable`.
+
+## D12. Verify upstream's timing claim with two bounded runs, not reuse
+
+All earlier runs used latency 0, so the fixed-latency mechanism had never been
+exercised. Two 1-item runs (0.03 s, which is upstream's example, and
+0.147199 s, which is not a whole number of 2 ms substeps) confirm exact,
+unquantized holds. They also exposed that the zero policy emits 1-action chunks
+(latency charged every step). That is why G1 must re-check the real K=10 case.
+
+## D13. Checkpoint measurement from safetensors headers
+
+Parameter count and weight bytes come from tensor headers (byte-range reads),
+and hashes from HF LFS oids, with optional full-download re-hashing. This avoids
+trusting model-card prose or secondary sources. GPU size follows a stated
+heuristic, then is measured by G1's load check.
+
+## Next experiment that most reduces uncertainty (unchanged order)
+
+1. Supply the v1.1 package (unblocks the largest body of work, no compute).
+2. Allow `huggingface.co`, run checkpoint step 0 (free).
+3. G1 one episode (≤$5, approval).

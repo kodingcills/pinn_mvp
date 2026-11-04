@@ -78,3 +78,29 @@ PYTHONPATH=$PWD LIBERO_CONFIG_PATH=$PWD/libero/libero/configs`, run
 Per-artifact hashes for every run are in the ledger's `completed` event and are
 re-checked by `verify`. The ledger hash changes whenever a run is appended; that
 is expected.
+
+## Iteration 2 additions
+
+Fixed-latency timing runs (about 2–2.5 min each on 4 vCPU):
+
+```bash
+.venv/bin/python scripts/run_libero_dynamic_cpu_smoke.py --libero-src /path/libero/src --libero-python /path/libero/venv/bin/python --run-id <new-id> --limit 1 --latency-s 0.147199
+```
+
+```bash
+.venv/bin/python -m pytest tests/test_libero_dynamic_evidence.py tests/test_run_registry.py tests/test_verify_hf_checkpoint.py -q
+```
+
+Checkpoint step 0 (needs `huggingface.co` reachable; see GPU_HANDOFF.md):
+
+```bash
+.venv/bin/python scripts/verify_hf_checkpoint.py --repo rsj2003/libero-dynamic-paper-models --path pi05/static_official --out results/checkpoints/pi05_static_official.json
+```
+
+| Artifact | SHA-256 |
+|---|---|
+| `results/m0_registry/runs/c0a-latency-0.03-n1-s40-001/manifest.json` | `e242b5177da88b1d2031ffd0acc95a2840409547e03aa6202f84dcf9610f5c21` |
+| `results/m0_registry/runs/c0a-latency-0.147199-n1-s40-001/manifest.json` | `c42d2eb3b06a9be31df886dc82509480f4a2499bbbb785d934110c4900404019` |
+| `results/m0_registry/ledger.jsonl` (24 events) | `45c1194a452613b06b75a463e9ddce89ee3d9150c2200dac9a107e83d45ad927` |
+| `evaluation/schemas/run_manifest.schema.json` (adds `provenance.gpu`) | `f144167878f49fc3946b81001d69faa60e4b63368eafb43173718826abbfbbb3` |
+| RFC 8785 vectors: `tests/data/rfc8785/` | cyberphone/json-canonicalization @ `32a48195b9b20fe67b1795e39e4509f14d860b45` |

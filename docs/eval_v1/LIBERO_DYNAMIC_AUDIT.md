@@ -49,6 +49,14 @@ read from source/docs and is **[read]**.
   `async_queue`, `rtc_queue`, `vlash_future_state`) receive observation packets
   and enqueue action chunks. They never step the world. On an empty queue the
   runtime applies `hold`/`zero` and records an *underflow*.
+- **Latency model, measured (iteration 2):** runs at fixed 0.03 s and
+  0.147199 s show each synchronous hold advancing simulated time by exactly L
+  (whole 2 ms substeps plus one residual substep:
+  `render_dynamic_config_previews.py::advance_physical_dynamic_time`), not
+  `ceil(L·20 Hz)`. Every step advances 0.05 + L s, to 1e-6. The **zero policy
+  returns 1-action chunks**, so `sync_hold` requests (and pays latency) every
+  step. Behaviour with real K-action chunks is covered only by upstream unit
+  tests until G1. Checked by `tests/test_libero_dynamic_evidence.py`.
 - **Latency model** (`docs/realtime_runtime_v2.md`): synchronous inference
   latency advances MuJoCo time by `ceil(latency·control_freq)` control steps
   with robot joints held while the scene moves. `--latency-source fixed
