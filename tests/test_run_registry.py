@@ -184,9 +184,36 @@ def test_track_conditional_manifests_accepted(reg):
             track="sim_model_in_loop",
             simulator={"name": "mujoco", "version": "2.3.7"},
             policy={"name": "pi05", "checkpoint_uri": "hf://rsj2003/x", "checkpoint_sha256": "a" * 64},
+            provenance={**collect_provenance(()), "gpu": [L4]},
         )
     )
     assert {reg.state(r) for r in ("cpu", "sim", "mil")} == {"REGISTERED"}
+
+
+L4 = {"name": "NVIDIA L4", "driver_version": "580.126.18", "memory_total_mib": 23034}
+MIL = {
+    "track": "sim_model_in_loop",
+    "simulator": {"name": "mujoco", "version": "2.3.7"},
+    "policy": {"name": "pi05", "checkpoint_uri": "hf://rsj2003/x", "checkpoint_sha256": "a" * 64},
+}
+
+
+@pytest.mark.parametrize("gpu", [None, [], "missing"])
+def test_model_in_loop_requires_measured_gpu(reg, gpu):
+    prov = collect_provenance(())
+    if gpu == "missing":
+        prov.pop("gpu")
+    else:
+        prov["gpu"] = gpu
+    with pytest.raises(RegistryError):
+        reg.register(manifest(**MIL, provenance=prov))
+
+
+def test_compare_flags_different_gpu_types(reg):
+    for rid, name in (("a", "NVIDIA L4"), ("b", "NVIDIA L4"), ("c", "NVIDIA GeForce RTX 4090")):
+        reg.register(manifest(rid, **MIL, provenance={**collect_provenance(()), "gpu": [{**L4, "name": name}]}))
+    assert reg.compare("a", "b")["hardware_comparable"] is True
+    assert reg.compare("a", "c")["hardware_comparable"] is False
 
 
 def test_duplicate_run_id_rejected(reg):

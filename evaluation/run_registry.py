@@ -185,6 +185,18 @@ def _git_state(exclude: Path | None) -> tuple[str | None, bool | None]:
         return None, None
 
 
+def _gpus() -> list[dict[str, Any]] | None:
+    try:
+        out = subprocess.run(
+            ["nvidia-smi", "--query-gpu=name,driver_version,memory.total", "--format=csv,noheader,nounits"],
+            capture_output=True, text=True, timeout=20, check=True,
+        ).stdout
+    except (OSError, subprocess.SubprocessError):
+        return None
+    rows = [[c.strip() for c in line.split(",")] for line in out.splitlines() if line.strip()]
+    return [{"name": n, "driver_version": d, "memory_total_mib": int(m)} for n, d, m in rows] or None
+
+
 def collect_provenance(
     dependencies: Sequence[str] = ("numpy", "mujoco", "jsonschema", "cryptography"),
     external_sources: Sequence[Mapping[str, str]] = (),
@@ -199,6 +211,7 @@ def collect_provenance(
         "python": sys.version.split()[0],
         "platform": platform.platform(),
         "dependencies": {name: _dist_version(name) for name in dependencies},
+        "gpu": _gpus(),
     }
     if external_sources:
         prov["external_sources"] = [dict(s) for s in external_sources]
@@ -473,9 +486,12 @@ class Registry:
         flat_a, flat_b = _flatten(a["manifest"]), _flatten(b["manifest"])
         arts_a = {x["path"]: x["sha256"] for x in a["artifacts"]}
         arts_b = {x["path"]: x["sha256"] for x in b["artifacts"]}
+        gpu_a, gpu_b = a["manifest"]["provenance"].get("gpu"), b["manifest"]["provenance"].get("gpu")
         return {
             "runs": [run_a, run_b],
             "outcomes": [a["outcome"], b["outcome"]],
+            # Not comparable across GPU types without an explicit cross-hardware A/A check.
+            "hardware_comparable": [g["name"] for g in gpu_a or []] == [g["name"] for g in gpu_b or []],
             "manifest_differences": {
                 k: [flat_a.get(k), flat_b.get(k)]
                 for k in sorted(flat_a.keys() | flat_b.keys())

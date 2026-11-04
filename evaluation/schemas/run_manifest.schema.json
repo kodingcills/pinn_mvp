@@ -24,6 +24,16 @@
         "python": {"type": "string"},
         "platform": {"type": "string"},
         "dependencies": {"type": "object", "additionalProperties": {"type": ["string", "null"]}},
+        "gpu": {
+          "description": "Measured by nvidia-smi; null when no NVIDIA GPU is visible. bf16 numerics differ across GPU types, so arms are only comparable on equal values.",
+          "type": ["array", "null"],
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name", "driver_version", "memory_total_mib"],
+            "properties": {"name": {"type": "string"}, "driver_version": {"type": "string"}, "memory_total_mib": {"type": "integer"}}
+          }
+        },
         "external_sources": {
           "type": "array",
           "items": {
@@ -66,7 +76,10 @@
     },
     {
       "if": {"properties": {"track": {"const": "sim_model_in_loop"}}},
-      "then": {"required": ["simulator", "policy"]}
+      "then": {
+        "required": ["simulator", "policy"],
+        "properties": {"provenance": {"required": ["gpu"], "properties": {"gpu": {"type": "array", "minItems": 1}}}}
+      }
     }
   ]
 }
