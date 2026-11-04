@@ -50,7 +50,7 @@ def main() -> int:
     src = args.libero_src.resolve()
     rev = subprocess.run(["git", "rev-parse", "HEAD"], cwd=src, capture_output=True, text=True, check=True).stdout.strip()
     sim_versions = subprocess.run(
-        [args.libero_python, "-c", "import mujoco,robosuite;print(mujoco.__version__, robosuite.__version__)"],
+        [args.libero_python, "-c", "import mujoco,robosuite,sys,numpy;print(mujoco.__version__, robosuite.__version__, sys.version.split()[0], numpy.__version__)"],
         capture_output=True, text=True, check=True,
     ).stdout.split()
     command = [
@@ -67,14 +67,16 @@ def main() -> int:
         "LIBERO_CONFIG_PATH": str(src / "libero" / "libero" / "configs"),
     }
     reg = Registry(args.registry)
-    run = record_run(
+    # Re-derive the verdict from an already-recorded run instead of re-running it.
+    run = reg.get(args.run_id) if reg.state(args.run_id) else record_run(
         reg,
         run_id=args.run_id,
         track="sim_policy_free",
         purpose="Campaign 0A CPU policy-free smoke of LIBERO-Dynamic formal evaluator (zero policy)",
         command=command,
         config={"limit": args.limit, "max_steps": args.max_steps, "levels": ["l1"], "traj_indices": [0],
-                "env": env, "videos": False, "upstream_doc": "docs/formal_dynamic_eval.md#small-smoke-test"},
+                "env": env, "videos": False,
+                "subject_python": sim_versions[2], "subject_numpy": sim_versions[3], "upstream_doc": "docs/formal_dynamic_eval.md#small-smoke-test"},
         simulator={"name": "mujoco+robosuite", "version": f"mujoco {sim_versions[0]}; robosuite {sim_versions[1]}",
                    "render_backend": "osmesa (CPU llvmpipe)"},
         external_sources=[{"url": UPSTREAM, "revision": rev}],
@@ -86,8 +88,7 @@ def main() -> int:
     out = reg.run_dir(args.run_id) / "artifacts" / "out"
     summary_path = next(out.rglob("summary.json"), None) if out.exists() else None
     summary = json.loads(summary_path.read_text()) if summary_path else {}
-    items = [json.loads(p.read_text()) for p in sorted(out.rglob("*.json"))
-             if p.name not in ("summary.json",) and "diagnostics" in p.read_text()] if out.exists() else []
+    items = [json.loads(p.read_text()) for p in sorted(out.glob("*/*/manifests/*.json"))] if out.exists() else []
     verdict = {
         "run_id": args.run_id,
         "state": run["state"],

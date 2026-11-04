@@ -356,3 +356,33 @@ def test_record_run_reproducible_and_comparable(tmp_path):
     assert cmp_ab["artifacts_identical"] == ["stderr.txt", "stdout.txt"]
     cmp_ac = reg.compare("a", "c")
     assert "stdout.txt" in cmp_ac["artifacts_differ"] and cmp_ac["outcomes"] == ["completed", "failed"]
+
+
+def test_committed_registry_evidence_is_intact():
+    from pathlib import Path
+
+    root = Path(__file__).resolve().parents[1] / "results" / "m0_registry"
+    if not root.exists():
+        pytest.skip("no committed registry")
+    reg = Registry(root)
+    run_ids = {e["run_id"] for e in reg.events() if e["event"] == "registered"}
+    assert run_ids
+    for run_id in sorted(run_ids):
+        assert reg.check(run_id) == [], run_id
+
+
+def test_registry_writes_do_not_mark_checkout_dirty(tmp_path, monkeypatch):
+    import subprocess
+
+    import evaluation.run_registry as rr
+
+    repo = tmp_path / "repo"
+    repo.mkdir()
+    for args in (["init", "-q"], ["-c", "user.email=t@t", "-c", "user.name=t", "commit", "-q", "--allow-empty", "-m", "x"]):
+        subprocess.run(["git", *args], cwd=repo, check=True)
+    monkeypatch.setattr(rr, "REPO_ROOT", repo)
+    reg = Registry(repo / "results" / "reg", clock=StepClock())
+    assert rr.collect_provenance((), (), reg.root)["git_dirty"] is False
+    assert rr.collect_provenance((), (), tmp_path / "elsewhere")["git_dirty"] is True  # reg dir counts
+    (repo / "edited.py").write_text("x")
+    assert rr.collect_provenance((), (), reg.root)["git_dirty"] is True

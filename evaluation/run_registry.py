@@ -25,9 +25,9 @@ present in this repository when M0 was implemented.
 from __future__ import annotations
 
 import argparse
-import importlib.metadata
 import fcntl
 import hashlib
+import importlib.metadata
 import json
 import os
 import platform
@@ -47,9 +47,8 @@ from cryptography.hazmat.primitives.asymmetric.ed25519 import (
 from cryptography.hazmat.primitives.serialization import Encoding, PublicFormat
 from jsonschema import Draft202012Validator
 
-from evaluation.experiment import _git_state
-
 SCHEMA_DIR = Path(__file__).resolve().parent / "schemas"
+REPO_ROOT = Path(__file__).resolve().parents[1]
 GENESIS_HASH = "0" * 64
 
 TRANSITIONS: dict[str, tuple[tuple[str | None, ...], str]] = {
@@ -168,12 +167,32 @@ def _dist_version(name: str) -> str | None:
         return None
 
 
+def _git_state(exclude: Path | None) -> tuple[str | None, bool | None]:
+    """HEAD and dirtiness of the recorder's checkout, ignoring the registry's own writes."""
+    def git(*args: str) -> str:
+        return subprocess.run(
+            ["git", *args], cwd=REPO_ROOT, capture_output=True, text=True, timeout=10, check=True
+        ).stdout.strip()
+
+    try:
+        commit = git("rev-parse", "HEAD") or None
+        top = Path(git("rev-parse", "--show-toplevel"))
+        target = exclude.resolve() if exclude is not None else None
+        inside = target is not None and target.is_relative_to(top)
+        spec = ["--", ".", f":(exclude){target.relative_to(top)}"] if target and inside else []
+        return commit, bool(git("status", "--porcelain", *spec))
+    except (OSError, subprocess.SubprocessError):
+        return None, None
+
+
 def collect_provenance(
     dependencies: Sequence[str] = ("numpy", "mujoco", "jsonschema", "cryptography"),
     external_sources: Sequence[Mapping[str, str]] = (),
+    exclude_from_dirty: Path | None = None,
 ) -> dict[str, Any]:
-    """Actual provenance of this process; never filled from caller claims."""
-    commit, dirty = _git_state()
+    """Actual provenance of the recording process (python/platform/deps are the
+    recorder's; a subprocess under test reports its own in `config`)."""
+    commit, dirty = _git_state(exclude_from_dirty)
     prov: dict[str, Any] = {
         "git_commit": commit,
         "git_dirty": dirty,
@@ -477,7 +496,7 @@ def record_run(
         "purpose": purpose,
         "command": list(command),
         "config": dict(config or {}),
-        "provenance": collect_provenance(dependencies, external_sources),
+        "provenance": collect_provenance(dependencies, external_sources, registry.root),
     }
     if simulator:
         manifest["simulator"] = dict(simulator)
