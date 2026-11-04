@@ -88,10 +88,11 @@ def verify(repo: str, path: str, revision: str, download: bool, fetch: Fetch = h
             rec["safetensors"] = safetensors_summary(url, fetch)
             totals["params"] += rec["safetensors"]["params"]
             totals["weight_bytes"] += rec["safetensors"]["weight_bytes"]
-        elif entry["size"] < SMALL_TEXT and entry["path"].endswith((".json", ".md", ".yaml", ".txt")):
+        elif entry["size"] < SMALL_TEXT:  # small non-LFS file: hash it; keep text for readable formats
             body = fetch(url, None)
-            text[entry["path"]] = body.decode("utf-8", errors="replace")
             rec["sha256"] = rec["sha256"] or hashlib.sha256(body).hexdigest()
+            if entry["path"].endswith((".json", ".md", ".yaml", ".txt")):
+                text[entry["path"]] = body.decode("utf-8", errors="replace")
         if download:
             rec["sha256_local"] = stream_sha256(url)
             if rec["sha256"] and rec["sha256_local"] != rec["sha256"]:

@@ -1,11 +1,9 @@
 # GPU execution handoff: Campaign 0A, G1 (one π0.5 episode)
 
-**Status: NOT AUTHORIZED, and checkpoint verification is BLOCKED.**
-Paid GPU compute needs explicit human approval (request at the end). Nothing
-here has run on a GPU. `huggingface.co` was still refused by this session's
-egress proxy on 2026-11-04 (06:16Z, and again after the final commit), so the
-checkpoint revision, config, parameter count and hashes are **not yet
-measured**. The tool that measures them is ready (step 0).
+**Status (iteration 3): ACCELERATOR_DEPENDENT, not requested.** No GPU is
+available and no approval is requested this milestone. Nothing here has run on a
+GPU. Checkpoint step 0 **is now done** (2026-11-04 13:52Z; `huggingface.co`
+became reachable).
 
 LIBERO-Dynamic is pinned at `ef12443b7c1f0699356eaf2a4e1676e034f2d806`.
 
@@ -31,35 +29,45 @@ therefore outcomes) can differ.
   `false` are not compared unless an explicit cross-hardware A/A check
   (same arm, both GPU types, same seeds) has been run and recorded.
 
-## Step 0 (free, CPU, before approval): pin and measure the checkpoint
+## Step 0 (done): pinned and measured checkpoint
 
-Upstream does not say which artifact produced its π0.5-PyTorch 147.199 ms
-result. `pi05/static_official/` in `rsj2003/libero-dynamic-paper-models` is
-described as "inference parameters, checkpoint metadata, and normalization
-assets", which may be openpi/JAX rather than LeRobot safetensors. The script
-reports the actual format instead of assuming it.
+Command (one attempt, as required):
 
 ```bash
 .venv/bin/python scripts/verify_hf_checkpoint.py --repo rsj2003/libero-dynamic-paper-models --path pi05/static_official --out results/checkpoints/pi05_static_official.json
 ```
 
-```bash
-.venv/bin/python scripts/verify_hf_checkpoint.py --repo rsj2003/libero-dynamic-paper-models --path pi05/static_official --out results/checkpoints/pi05_static_official.json --download
-```
+| Item | Value | Source |
+|---|---|---|
+| Repo / path | `rsj2003/libero-dynamic-paper-models` / `pi05/static_official` | |
+| Pinned revision | `ffd700087b34b734805ca5148e278a6a61fa5a8a` | HF API `revision/main` |
+| Format | LeRobot PyTorch `safetensors` (`config.json` `"type": "pi05"`), so the **PyTorch path applies** (not JAX) | file list + config |
+| Architecture | `paligemma_variant: gemma_2b`, `action_expert_variant: gemma_300m`, config `dtype: bfloat16` | config.json |
+| Action interface | `chunk_size: 50`, `n_action_steps: 50`, `num_inference_steps: 10`, 7-D action, 8-D state, 2 images at 256×256 (+1 empty 224 camera) | config.json |
+| Parameters | **3,616,758,006** = 3,497,036,912 BF16 + 119,720,608 F32 | safetensors header (byte-range read) |
+| Weight bytes | **7,472,958,200 B = 6.96 GiB** (6,994,073,824 BF16 + 478,882,432 F32) | header dtype × shape, offsets cross-checked |
+| `model.safetensors` | 7,473,096,344 B, SHA-256 `877b3ec1130548b69af7f8aeef3ec9d3fc7738040f0b9beb490857ec970997ae` | HF LFS oid; local re-hash: see below |
+| `config.json` | SHA-256 `2f6d4b96b032593e1de65b391ee7252a70227bff398ef1b94658fea17818142f` | fetched + hashed locally |
+| normalizer / unnormalizer stats | both `a002c0df7f79c5b169c5a899ad151d4ea1bed246c7d82bd93ed1556558d517a9` (identical bytes) | LFS oid |
+| Provenance (config) | `pretrained_path: lerobot/pi05_libero`, `repo_id: pepijn223/pi05_libero_31_9_non_q` | config.json (stated by uploader, not verified) |
 
-The first command pins `revision_sha`, saves `config.json`/model card text, and
-reports the parameter count and weight bytes per dtype from the safetensors
-headers (byte-range reads, no full download), plus each file's LFS SHA-256. The
-second re-hashes every file locally (large download). Tested offline by
-`tests/test_verify_hf_checkpoint.py`.
+All hashes and the full file list are in `results/checkpoints/pi05_static_official.json`.
+The full local re-hash (streamed, `--download`, 2026-11-04) **completed: all 9 files
+match**, including `model.safetensors` against its LFS SHA-256
+(`results/checkpoints/pi05_static_official_rehashed.json`).
 
-**GPU sizing rule (replaces the earlier secondary-source guess):** weight bytes
-are a lower bound. Pick the smallest GPU whose VRAM is ≥ 1.5 × weight bytes +
-4 GiB. That is a heuristic margin for activations and the CUDA context; G1's
-load check then measures `torch.cuda.max_memory_allocated` on the real device.
-If step 0 finds no safetensors (JAX format), G1 must use the openpi/JAX path
-(`examples/evaluate_pi05_jax.py`) instead, and this script must be re-planned.
-Do not convert formats silently.
+**Still unknown:** whether this artifact is the one behind upstream's 147.199 ms
+π0.5-PyTorch result (upstream does not say). The config's `n_action_steps: 50`
+differs from the evaluation's `--replan-steps 10`. The launcher sets the executed
+horizon, and G1 must confirm which value takes effect.
+
+**GPU sizing (computed, not from secondary sources):** weights are 6.96 GiB, a
+hard lower bound. Using the stated heuristic (1.5 × weights + 4 GiB) gives
+≈ 14.4 GiB, so **a 16 GB card is the minimum candidate and 24 GB gives
+margin**. Activation memory for 10 flow steps over a 50-step chunk with three
+images has **not been measured**. G1's load-only step records
+`torch.cuda.max_memory_allocated`, and the GPU choice stays provisional until
+then.
 
 ## G1 job: exactly one episode, then report
 
@@ -77,6 +85,13 @@ approved instance it:
 | — | **stop and report** | — | no further episodes without a new approval |
 
 Task success of one episode is **not** a result. It is reported, not interpreted.
+
+**Instance termination (checked in iteration 3):** process exit alone does NOT
+stop billing. `TERMINATE_CMD` is now **required**: the script refuses to start
+without it, and the `EXIT` trap runs it with 3 attempts, logging success or
+`INSTANCE MAY STILL BE BILLING`. A test confirmed that bash runs the `EXIT` trap on
+SIGTERM, SIGINT and SIGHUP. SIGKILL and host hangs cannot be trapped, so the
+provider-side spending limit / auto-terminate remains mandatory.
 
 **Budget enforcement (automatic):** the script computes `min(MAX_USD /
 HOURLY_USD, 2 h) − 10 min` and runs the episode under `timeout`. On *any* exit
@@ -115,6 +130,7 @@ is set via `alpha_mps`). G3: the full 1,800-episode population.
 ## Approval request (structured)
 
 ```yaml
+# NOT SUBMITTED in iteration 3 (no GPU available; ACCELERATOR_DEPENDENT). Kept for when one is.
 request: provision paid GPU compute for G1 only
 scope: load pi0.5 PyTorch + run exactly 1 LIBERO-Dynamic episode (Tier 1 development; no holdouts, no hidden seeds)
 prerequisite: step 0 completed (checkpoint revision, format, weight bytes and SHA-256 recorded)
@@ -125,6 +141,6 @@ auto_termination: in-instance timeout + EXIT trap (sync, then TERMINATE_CMD) + p
 artifact_destination: rclone remote outside the instance (to be named by the approver)
 needs_human_decision:
   - provider/account and rclone destination
-  - allow huggingface.co (still refused in this session) so step 0 can run
+  - (resolved) huggingface.co reachable; step 0 done, see table above
 not_requested: further episodes, Tier 3 holdouts, physical robots, external claims
 ```

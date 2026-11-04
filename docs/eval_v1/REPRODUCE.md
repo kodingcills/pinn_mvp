@@ -104,3 +104,55 @@ Checkpoint step 0 (needs `huggingface.co` reachable; see GPU_HANDOFF.md):
 | `results/m0_registry/ledger.jsonl` (24 events) | `45c1194a452613b06b75a463e9ddce89ee3d9150c2200dac9a107e83d45ad927` |
 | `evaluation/schemas/run_manifest.schema.json` (adds `provenance.gpu`) | `f144167878f49fc3946b81001d69faa60e4b63368eafb43173718826abbfbbb3` |
 | RFC 8785 vectors: `tests/data/rfc8785/` | cyberphone/json-canonicalization @ `32a48195b9b20fe67b1795e39e4509f14d860b45` |
+
+## Iteration 3: v1.1 package, M0 reconciliation, Track B
+
+```bash
+sha256sum evaluation/spec/haplous_eval_v1_1_starter.zip
+```
+
+Expected: `9c4130709feb80684b34d8a291ca95cd37ef6522cf6629bf59788cb3db41390d`. Package self-validation (from the package directory):
+
+```bash
+cd evaluation/spec/haplous_eval_v1_1 && ../../../.venv/bin/python -I tools/validate_package.py && ../../../.venv/bin/python -m pytest tests -q -p no:cacheprovider
+```
+
+Expected: `PASS ...` and `18 passed`. Track B engine directly (no registry):
+
+```bash
+.venv/bin/python -m evaluation.track_b --fixtures evaluation/spec/haplous_eval_v1_1/fixtures/track_b_scenarios.json --out /tmp/track_b_out
+```
+
+Recorded run (canonical v1.1 manifest, M0 lifecycle, ledger projection, report copy). Use a new run id:
+
+```bash
+.venv/bin/python scripts/run_track_b.py --run-id track-b-v1.1-003
+```
+
+```bash
+.venv/bin/python -m evaluation.run_registry compare --root results/m0_registry track-b-v1.1-001 track-b-v1.1-003
+```
+
+Expected: 38/38, `VERIFIED`, and all artifacts identical with the same engine,
+fixtures and Python. Targeted tests:
+
+```bash
+.venv/bin/python -m pytest tests/test_track_b.py tests/test_m0_v11.py tests/test_run_registry.py tests/test_verify_hf_checkpoint.py -q
+```
+
+Checkpoint record (needs huggingface.co):
+
+```bash
+.venv/bin/python scripts/verify_hf_checkpoint.py --repo rsj2003/libero-dynamic-paper-models --path pi05/static_official --revision ffd700087b34b734805ca5148e278a6a61fa5a8a --out results/checkpoints/pi05_static_official.json
+```
+
+| Artifact | SHA-256 |
+|---|---|
+| `fixtures/track_b_scenarios.json` | `1474f97cd5fa392c7e080e7f021b6d8afc8bef2aacfde65416e5f6f6f580ea6d` |
+| `evaluation/track_b.py` (engine at run time) | `eb6fdafd5a635d155f04eddc7e134009bfc256dc1885d2cee49b35a01e3543d8` |
+| `runs/track-b-v1.1-001/manifest.json` | `2e6376f8e99aa04557329e064e45f937b6b6e60b92ee01499c520888fa26852a` |
+| `runs/track-b-v1.1-002/manifest.json` | `6f0f6989fd25a8e02297ed301241d4c286717e88c1c196fea24b1121b7d5c81f` |
+| `results.jsonl` (both runs) | `243bee3221e5e83ac33952127a59af710a9eeb2adda69b385975e905b07aa720` |
+| `summary.json` (both runs) | `e82e2d7397262725300627b97e7603ab8590210312dfdc20d27ef23d1e431a59` |
+| `report.md` (both runs) | `ce834fea6797c014b7e4f9c22bf4f13686c11bdb4d2dc607fe70f7aaa4bc28dd` |
+| π0.5 `model.safetensors` @ `ffd70008` | `877b3ec1130548b69af7f8aeef3ec9d3fc7738040f0b9beb490857ec970997ae` |

@@ -171,3 +171,109 @@ policy (needs G1).
 - G0: no comparison, because the definition is not present.
 - π0.5 checkpoint revision/params/hashes: `huggingface.co` refused (proxy
   `connect_rejected`, 06:16:50Z and later).
+
+---
+
+# Iteration 3 (2026-11-04)
+
+Evidence class: **verified software correctness against independently specified
+fixture truth.** No physical safety, no protective-stop behaviour, no OEM
+portability, no VLA performance. `TERMINATE`/external-stop cases are software
+semantics only (package README).
+
+## A3. Package and test suite
+
+- Package zip SHA-256 `9c4130709feb80684b34d8a291ca95cd37ef6522cf6629bf59788cb3db41390d` (matches).
+  `tools/validate_package.py` PASS; package `pytest` 18 passed (same as `VALIDATION_RESULTS.md`).
+- Repository suite: iteration-3 baseline 488 passed / 4 failed / 1 xfailed. Final: see §F3.
+
+## B3. Track B: candidate correctness vs fixture truth (population: 38 fixture cases)
+
+Two M0 runs, canonical v1.1 `contract` manifests, commit `7765148`, `git_dirty=False`:
+
+| Run | manifest SHA-256 | passed | state |
+|---|---|---|---|
+| `track-b-v1.1-001` | `2e6376f8e99aa04557329e064e45f937b6b6e60b92ee01499c520888fa26852a` | 38/38 | VERIFIED |
+| `track-b-v1.1-002` | `6f0f6989fd25a8e02297ed301241d4c286717e88c1c196fea24b1121b7d5c81f` | 38/38 | VERIFIED |
+
+All 5 output artifacts are byte-identical across the runs (`results.jsonl`
+`243bee32…`, `summary.json` `e82e2d73…`, `report.md` `ce834fea…`).
+
+| Metric | Count / denominator |
+|---|---|
+| passed (decision + reason + required details) | 38 / 38 |
+| decision correct | 38 / 38 |
+| reason correct | 38 / 38 |
+| false admissions | 0 |
+| false refusals | 0 |
+| failed terminal transitions | 0 |
+| wrong reason / wrong details | 0 / 0 |
+| multi-fault (interaction) cases correct | 8 / 8 |
+
+Confusion (expected → observed) is diagonal: ADMIT 8, REFUSE 23, SUSPEND 4,
+TERMINATE 3. Interaction cases with their decisive fault listed first:
+`external_stop_over_authority` [OEM_STOP_ACTIVE, AUTHORITY_REVOKED];
+`precedence_epoch_over_capability_and_clock` [AUTHORITY_REVOKED, CAPABILITY_UNSUPPORTED, CLOCK_INVALID];
+`precedence_capability_over_clock`, `precedence_clock_over_freshness`
+(actually clock over **command deadline**: name only, label correct),
+`precedence_command_deadline_over_obs_stale`, `precedence_epoch_over_stale`,
+`stale_ack_over_obs_stale`, `wrong_resource_with_stale_obs`.
+Full per-case traces: `results/track_b/track-b-v1.1-001_report.md`.
+
+Independent tests (`tests/test_track_b.py`, 79): single faults (17), all
+compatible fault pairs (>100), 400 random fault sets, determinism and key-order
+independence, revocation and lifecycle invariants, input completeness (28
+missing-key plus 11 malformed cases), no-silent-downgrade (500 random mode
+configurations), inclusive boundaries (200 random limits), and judge
+non-vacuity. Mutation check: 3/3 engine mutants killed (one only after adding
+the IDLE-REVOKE injector).
+
+## C3. G0 mechanism-isolation comparison (NOT competitive)
+
+`baseline_g0_minimal_guards` is a deliberately limited ablation. No advantage
+over it is an advantage over ROS 2, an OEM controller or an integrator.
+
+| | Count / 38 |
+|---|---|
+| G0 output equals its own spec label (`expected_baseline_g0`) | 38 |
+| G0 aligned with truth (ADMIT→ALLOW, REFUSE/SUSPEND→BLOCK, TERMINATE→STOP) | 19 |
+| G0 ALLOW where truth is not ADMIT (omission by construction) | 18 |
+| G0 BLOCK where truth is ADMIT | 1 (`behavioral_native_force_approved_and_verified`) |
+
+Truth × G0: ADMIT {ALLOW 7, BLOCK 1}; REFUSE {ALLOW 12, BLOCK 11};
+SUSPEND {ALLOW 4}; TERMINATE {ALLOW 2, STOP 1}. G0 implements 3 of the 20
+checks the candidate performs (external stop state, exact mode availability,
+command deadline). It does not implement the other 17 (authority owner,
+resource, epoch, lease, ACK epoch, lifecycle terminate ×2, verified+authorized
+substitution, non-substitutable authority, sensors, calibration, clock domain,
+future skew, generic and mode-specific freshness, mode handover, input
+completeness).
+
+**What this shows:** the candidate implements the specified semantics. G0's 19
+misses are checks G0 was defined not to have. **What it does not show:** any
+benefit over a competent incumbent (G1 unspecified), or any physical effect.
+
+## D3. M0 reconciliation
+
+36 tests in `tests/test_m0_v11.py` plus the retained registry tests. Key
+results: both package example manifests are schema-valid but **refused as runs**
+(placeholder digests). A forged REJECTED→APPROVED edit with a re-hashed (valid)
+ledger chain is caught only by signature re-verification. Replayed nonces are
+refused across runs. Private key material is refused. Projected ledger events
+validate against `ledger-event.schema.json`. `verified` stays unmapped.
+
+## E3. Checkpoint (one attempt; reachable)
+
+`rsj2003/libero-dynamic-paper-models` / `pi05/static_official` @
+`ffd700087b34b734805ca5148e278a6a61fa5a8a`. Format: LeRobot safetensors, so the
+PyTorch path applies. 3,616,758,006 parameters (3,497,036,912 BF16 +
+119,720,608 F32), 7,472,958,200 weight bytes (6.96 GiB). `model.safetensors`
+LFS SHA-256 `877b3ec1…0997ae`. Local streamed re-hash: see §F3.
+Peak inference memory is **not measured** (ACCELERATOR_DEPENDENT).
+
+## F3. Final verification
+
+| Check | Result |
+|---|---|
+| Full suite, final | **599 passed, 4 failed, 1 xfailed**. 599 = 488 − 4 retired provisional-format approval tests + 36 (`test_m0_v11.py`) + 79 (`test_track_b.py`). Same 4 known failures, none new |
+| Checkpoint local re-hash (streamed, 9 files incl. 7,473,096,344-byte `model.safetensors`) | **all 9 match** (8 against HF LFS/fetched hashes; `.gitattributes` has no LFS oid, local `11ad7efa…`) → `results/checkpoints/pi05_static_official_rehashed.json` |

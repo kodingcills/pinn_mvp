@@ -1,103 +1,125 @@
 # Engineering status: Haplous Generalized Execution Evaluation
 
 This is the persistent engineering state file. Update it at every iteration.
-Last update: 2026-11-04, iteration 2, branch `claude/magical-curie-si1vjr`.
+Last update: 2026-11-04, iteration 3, branch `claude/magical-curie-si1vjr`.
 
-## Iteration 2 headline
+## Iteration 3 headline
 
-The v1.1 package was reported as supplied at `evaluation/spec/haplous_eval_v1_1/`.
-**It is not accessible.** That path does not exist in the working tree, on any
-remote branch (`main`, `UI`, `claude/charming-feynman-y7k2ir`,
-`claude/magical-curie-si1vjr`; checked after `git fetch`), in any pull request
-(the repository has none), in GitHub code search for `BASELINE_SPEC`, or in the
-session upload directories. Dependent work is stopped. Nothing was substituted.
-`huggingface.co` is still refused by the egress proxy, despite being reported
-as enabled.
+- **v1.1 package located and verified.** `evaluation/spec/haplous_eval_v1_1_starter.zip`
+  has SHA-256 `9c4130709feb80684b34d8a291ca95cd37ef6522cf6629bf59788cb3db41390d`, as
+  expected. No unsafe paths. Extracted to `evaluation/spec/haplous_eval_v1_1/`. It
+  contains 4 schemas, 38 cases, defaults, BASELINE_SPEC, SIGNING_PROTOCOL,
+  CPU/GPU assignments and the validator. The package's own validation
+  reproduces before any edit: `validate_package.py` PASS, `pytest` 18 passed.
+- **Track B: 38/38** fixture cases pass (decision, reason and required details),
+  in two identical M0-recorded runs.
+- **G0** implemented exactly per BASELINE_SPEC. It matches its own spec on 38/38
+  and agrees with truth on 19/38. This is a mechanism-isolation ablation, not an
+  incumbent.
+- **M0 reconciled** to the canonical manifest, approval-envelope and signing
+  protocol, with a validated projection onto the ledger-event schema. Proven
+  earlier fixes are kept.
+- **Checkpoint pinned** (HF reachable on the single attempt): π0.5
+  `pi05/static_official` @ `ffd70008…`, LeRobot safetensors, 3,616,758,006
+  params, 6.96 GiB weights.
+- **GPU work:** `ACCELERATOR_DEPENDENT`. Nothing requested or provisioned. The G1
+  job script now *requires* an instance-termination command.
 
-## Status by required delivery item
+## Delivery status
 
-| # | Item | Status |
+| Item | Status | Evidence |
 |---|---|---|
-| 1 | M0 reconciled to canonical v1.1 schemas | **BLOCKED** (no schemas). Spec-independent requirements implemented and tested, see table below |
-| 2 | Track B execution-contract engine | **BLOCKED** (no fixtures, no BASELINE_SPEC). Not started, by design |
-| 3 | 38 cases + adversarial tests | **BLOCKED** |
-| 4 | G0 comparison | **BLOCKED** (G0 definition is in the missing BASELINE_SPEC) |
-| 5 | Manifests, raw evidence, deterministic summaries | **DONE** for Campaign 0A (7 M0 runs). Contract-track pipeline blocked with item 2 |
-| 6 | CPU/GPU instructions with verified checkpoint memory and hashes | CPU **DONE**. GPU job **READY** (`scripts/gpu/g1_one_episode.sh`). Checkpoint numbers **BLOCKED** (HF refused), tool ready and offline-tested |
-| 7 | Report separating implemented/tested/blocked/unverified | this file + EVIDENCE_REPORT.md |
-| 8 | Tier 2 / Tier 3 dependencies | below |
+| Reconciled M0 | **DONE** | table below; `tests/test_m0_v11.py` (36), `tests/test_run_registry.py` |
+| Track B engine | **DONE** (software semantics only) | `evaluation/track_b.py` |
+| 38-case results | **38/38** | runs `track-b-v1.1-001/002`, `results/track_b/` |
+| Property / adversarial tests | **DONE**, mutation-checked | `tests/test_track_b.py` (79) |
+| G0 comparison | **DONE**, labelled as ablation | report §B |
+| Manifests + evidence | **DONE**, canonical v1.1 `contract` manifests | `results/m0_registry/runs/track-b-v1.1-*` |
+| Reproduction commands | **DONE** | REPRODUCE.md, iteration 3 |
+| Full-size VLA inference | **ACCELERATOR_DEPENDENT** | GPU_HANDOFF.md |
 
-## M0 requirements checked without the canonical spec
+## M0 reconciliation against the canonical v1.1 package
 
-"Canonical requirement" can't be filled in until the package arrives. These are
-the requirements named in the iteration-2 assignment.
-
-| Requirement | Before iteration 2 | Satisfied now? | Change | Test |
+| Canonical requirement | Before (iteration 2) | Satisfied before? | Change | Regression test |
 |---|---|---|---|---|
-| Contract- vs VLA-track manifests | `cpu_contract` / `sim_policy_free` / `sim_model_in_loop` conditional schema | yes (provisional names) | model-in-loop now also requires a measured `provenance.gpu` | `test_invalid_manifests_rejected_and_logged`, `test_model_in_loop_requires_measured_gpu` |
-| RFC 8785 with official vectors | own vectors + property tests only | **yes** | vendored cyberphone testdata @ `32a48195` (6 files) | `test_official_rfc8785_vectors` (6/6 exact bytes) |
-| Duplicate-key rejection | yes | yes | — | `test_strict_loads_rejects`, `test_duplicate_key_manifest_bytes_rejected` |
-| Date-time validation | RFC 3339 + `Z` required | yes | — | 5 timestamp cases |
-| Immutable manifests | O_EXCL + digest in ledger | yes | concurrent same-id register now rejected cleanly | `test_duplicate_run_id_rejected`, `test_verify_detects_manifest_tamper` |
-| Reproducible artifact integrity | SHA-256 per file | yes | — | `test_verify_detects_corrupted_missing_and_extra_artifacts`, committed-evidence test |
-| Provenance across Python envs | recorder env only; subject env ad hoc in driver | **yes** | `record_run(subject_python=…)` → measured `config.subject_environment` | `test_subject_environment_is_measured_not_claimed` |
-| Ledger concurrency + transition invariants | **defect**: state checked outside the lock | **fixed** | decisions run on the history read under the lock | `test_concurrent_processes_cannot_double_transition` (fails on the old code, passes now) |
-| Ed25519 test signing | yes | yes (test-only) | — | approval tests |
-| Signature binds the full decision | exact field set + canonical body | yes | — | `test_signature_binds_every_decision_field` (every field, plus an extra field) |
-| Mutated / replayed authorization | mutation rejected; replay **not** rejected | **fixed** | replay refused (keyed on signed-body digest, under lock); cross-run replay refused by binding | `test_approval_replay_rejected_same_and_other_run` |
+| `manifest.schema.json` v1.1 (track-conditional; contract forbids policy/benchmark) | provisional `m0-run-manifest-v0` | **no**, different shape | new runs validated against the canonical schema with FormatChecker; v0 runs remain verifiable | `test_canonical_contract_manifest_registers`, `test_invalid_canonical_manifests_rejected` (11), `test_legacy_v0_manifests_still_accepted` |
+| "All supplied digests must identify real bytes, not placeholders" | n/a | no | zero digests / zero commits refused | `test_package_examples_are_schema_valid_but_refused_as_runs` |
+| Tier 3 disabled by default | no tier field | partial | `tier: 3` refused at registration | in `test_invalid_canonical_manifests_rejected` |
+| Strict I-JSON, duplicate keys, invalid constants, lone surrogates, FormatChecker | yes | **yes** | none | existing strict-JSON tests; `test_duplicate_key_canonical_manifest_rejected` |
+| RFC 8785 via a conformant library | yes (rfc8785 + official vectors) | **yes** | none | `test_official_rfc8785_vectors` |
+| Signing message = JCS(envelope minus `signature_ed25519_base64`) | own body format, hex signature | **no** | implemented exactly; base64 signature | `test_signing_message_is_jcs_of_envelope_without_signature` |
+| `payload_digest = "sha256:"+hex(SHA256(JCS(payload)))` over the whole payload | n/a | no | implemented; payload mutation fails | `test_mutating_payload_after_signing_fails` (property) |
+| Every signed envelope field binds (esp. `decision`) | yes for own format | partial | per canonical envelope | `test_mutating_any_signed_envelope_field_fails` (7), `test_rejected_flipped_to_approved_fails` |
+| 6(b) approver identity/permission | key trust only | **no** | `signer_key_id` maps to exactly one `approver_id` | `test_wrong_signer_untrusted_key_and_identity_binding` |
+| 6(c)/(d) request_id + recomputed digest | n/a | no | checked | mutation tests |
+| 6(e) expiry | n/a | no | `issued_at ≤ signed_at ≤ expires_at` and `now ≤ expires_at` | `test_expired_and_out_of_window_authorization` |
+| 6(f) one-time nonce | body-digest replay key | partial | nonce checked under the ledger lock, across all runs | `test_replayed_nonce_rejected_even_on_another_run` |
+| 6(g) approved digests | manifest-digest binding | partial | `analysis_code_digest` must equal the run manifest's; the other 8 payload digests have no M0 artifact and are recorded as `unchecked` (never reported as checked) | `test_analysis_digest_binding_and_legacy_runs` |
+| 6(h) preflight gates | — | **not implemented** | listed in `unchecked`; no Tier 3 runner exists | — |
+| Private keys outside agent processes | signer lived in the registry module | **no** | signing moved to tests only; registry refuses private key material | `test_private_key_material_is_refused` (2) |
+| Stored approvals re-verifiable | yes | yes | re-verified on `check(trusted_keys)` | `test_tampered_recorded_approval_detected_by_check` (forged REJECTED→APPROVED with a valid hash chain) |
+| `ledger-event.schema.json` (per-run sequence, `sha256:` prior-event digest, actor, event_type enum) | global M0 ledger, own fields | **no** | validated projection `export_v11_events()`. Storage unchanged to keep committed chains valid. M0 `verified`/`integrity_failed` have no v1.1 event_type and are listed as unmapped | `test_projection_onto_canonical_ledger_events` |
+| Append-only, ordered, concurrency-safe ledger | yes (iteration-2 lock fix) | **yes** | none | `test_concurrent_processes_cannot_double_transition` |
+| Subject-environment provenance, GPU type | M0 extensions | n/a (beyond spec) | kept | existing tests |
 
-Test-only signing is not a Tier 3 security implementation: there is no key
-management, no revocation and no environment-enforced gate.
+**Proposed smallest spec fix (not applied):** add `VERIFIED` and
+`INTEGRITY_FAILED` to `ledger-event.schema.json` `event_type`. Integrity
+verification is otherwise unrepresentable in the canonical ledger.
+
+## Track B: what the engine decides where the fixtures are silent
+
+No fixture is internally contradictory. A spec-faithful engine reproduces all 38
+labels. These behaviours are engine choices (fail-closed), documented in the
+`evaluation/track_b.py` header and pinned by tests:
+`INPUT_INVALID` (missing, unknown or ill-typed keys, including misspellings),
+`AUTHORITY_EPOCH_INVALID` (newer epoch), REVOKE / LEASE_EXPIRED while IDLE →
+REFUSE, lost lease while ACTIVE under any event → TERMINATE, the future-skew
+bound applied to the command clock too, no clock conversion is ever "proven",
+and the first authorized+verified substitute wins. **Coverage gap found:** no
+fixture exercises REVOKE while IDLE. A mutant that terminated there passed all
+38 fixtures, and a property test now covers it.
 
 ## Tests
 
-- Baseline at resume: 459 passed, 4 failed, 1 xfailed, identical to iteration 1.
-  Failure summary kept in `results/diagnostics/suite_failures_2026-11-04.txt`.
-- Final: see EVIDENCE_REPORT.md §A.
-- Undiagnosed physics failure, one timeboxed attempt
-  (`results/diagnostics/test_rollout_capture_failure.json`): the episode seats,
-  but the closest lateral approach is 0.50303 mm vs the 0.5 mm capture
-  threshold (3.03 µm outside), so `capture_step` stays `None`. Probably the same
-  platform floating-point sensitivity as the three R05 failures. Not modified.
+- Iteration-3 baseline (before edits): 488 passed, 4 failed, 1 xfailed, the same
+  4 known failures.
+- Final: see EVIDENCE_REPORT.md §A3.
+- The 4 known failures are unchanged and not debugged further (3 R05 last-ULP
+  drifts; the rollout capture misses its threshold by 3 µm,
+  `results/diagnostics/`).
 
-## Files changed in iteration 2
+## CPU simulation status (Campaign 0A, unchanged)
 
-`evaluation/run_registry.py` (lock-held decisions, replay rejection,
-`probe_environment`, `subject_python`, measured GPU, `hardware_comparable`),
-`evaluation/schemas/run_manifest.schema.json` (`provenance.gpu`),
-`scripts/run_libero_dynamic_cpu_smoke.py` (`--latency-s`, probe),
-`scripts/verify_hf_checkpoint.py`, `scripts/gpu/g1_one_episode.sh`,
-`tests/test_run_registry.py`, `tests/test_libero_dynamic_evidence.py`,
-`tests/test_verify_hf_checkpoint.py`, `tests/data/rfc8785/`,
-`results/diagnostics/`, 2 new M0 runs, docs.
+The 488-pass baseline is kept. No new physics work. **Caveat recorded:** the
+LIBERO-Dynamic zero policy returns 1-action chunks, so `sync_hold` pays the
+fixed latency at **every** control step. A real chunked VLA (π0.5 config
+`chunk_size: 50`, evaluated with `--replan-steps 10`) pays it once per chunk. So
+the dummy-policy runs **overweight latency exposure by roughly the chunk length**
+relative to a real policy, and cannot stand in for VLA timing behaviour.
 
 ## Remaining dependencies
 
-**Tier 1 (blocked on inputs, no approval needed once supplied)**
-- The v1.1 package at `evaluation/spec/haplous_eval_v1_1/` (4 schemas, 38 Track B
-  scenarios, fixture defaults, BASELINE_SPEC.md, SIGNING_PROTOCOL.md,
-  CPU_ASSIGNMENT.md, validator + tests). It unblocks M0 reconciliation, Track B, G0
-  and the contract evidence pipeline.
-- `huggingface.co` reachable from the session. It unblocks checkpoint step 0.
+**Tier 1 (CPU, no approval):** G1 incumbent specification (BASELINE_SPEC
+requires one before any competitive claim). Numeric/statistical decision logic
+(CPU_ASSIGNMENT item 6, "separate future work"). Optional adoption of the
+proposed ledger `event_type` additions.
 
-**Tier 2 (needs human approval: paid compute)**
-- G1: one π0.5 episode (≤$5, ≤2 h), then G2 subset, then G3 full population,
-  each separately approved. Provider account and an rclone destination are
-  needed.
-- Any cross-hardware A/A check, if arms ever run on different GPU types.
+**Tier 2 (approval + accelerator):** GPU step 1, the one-episode π0.5 run
+(`scripts/gpu/g1_one_episode.sh`; "g1" there is the GPU step, not the G1 incumbent), then the subset and full population, all on
+one GPU type.
 
-**Tier 3 (needs human approval; not prepared)**
-- Sealed holdout execution, hidden seeds, external performance claims,
-  physical robot deployment. Production-grade signing (key custody,
-  revocation, environment-enforced approval gates) would be needed before any
-  Tier 3 approval record could be trusted. M0's Ed25519 is test-only.
+**Tier 3 (disabled):** sealed holdouts, protected runner, preflight gates
+(6(h)), verification of the 8 payload digests M0 cannot check, production key
+custody/revocation, external claims, physical robots.
 
-## Next executable actions
+## Next justified experiment
 
-1. When the package is present: run its validator, diff its four schemas
-   against `evaluation/schemas/`, fill in the "canonical requirement" column
-   above, then implement Track B against the 38 fixtures plus property tests,
-   then G0 per BASELINE_SPEC.
-2. When HF is reachable: run step 0 from GPU_HANDOFF.md and commit
-   `results/checkpoints/*.json`.
-3. With approval: run `scripts/gpu/g1_one_episode.sh`.
+**G1 incumbent (BASELINE_SPEC "competent configured incumbent") specification on CPU (Tier 1).** Every Track B comparison so far
+is against G0, which by construction cannot show anything about competent
+practice. Specifying G1 from real software (for example ROS 2 controller-manager
+lifecycle + `ros2_control` hardware-interface claiming + a configured watchdog)
+and scoring it on the same 38 fixtures is the cheapest experiment that could
+**reject** the hypothesis that Haplous's contract layer adds anything beyond a
+well-configured incumbent. It needs no GPU. If a GPU becomes available, the
+next step is GPU step 1 (the one-episode π0.5 run) to measure peak memory and confirm the
+executed horizon.

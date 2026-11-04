@@ -54,6 +54,7 @@ def test_verify_pins_revision_and_reads_tree():
         {"type": "file", "path": "p/model.safetensors", "size": len(model),
          "lfs": {"oid": hashlib.sha256(model).hexdigest(), "size": len(model)}},
         {"type": "file", "path": "p/config.json", "size": len(cfg)},
+        {"type": "file", "path": "p/.gitattributes", "size": 3},
         {"type": "directory", "path": "p/sub"},
     ]
     fetch = _fetcher({
@@ -61,9 +62,12 @@ def test_verify_pins_revision_and_reads_tree():
         f"{HF}/api/models/o/r/tree/{sha}/p?recursive=true": json.dumps(tree).encode(),
         f"{HF}/o/r/resolve/{sha}/p/model.safetensors": model,
         f"{HF}/o/r/resolve/{sha}/p/config.json": cfg,
+        f"{HF}/o/r/resolve/{sha}/p/.gitattributes": b"*.x",
     })
     out = verify("o/r", "p", "main", download=False, fetch=fetch)
     assert out["revision_sha"] == sha
     assert out["totals_from_safetensors"] == {"params": 16, "weight_bytes": 32}
     assert out["text_files"]["p/config.json"] == '{"type": "pi05"}'
-    assert [f["sha256"] for f in out["files"]] == [hashlib.sha256(cfg).hexdigest(), tree[0]["lfs"]["oid"]]
+    assert [f["sha256"] for f in out["files"]] == [
+        hashlib.sha256(b"*.x").hexdigest(), hashlib.sha256(cfg).hexdigest(), tree[0]["lfs"]["oid"]]
+    assert ".gitattributes" not in "".join(out["text_files"])

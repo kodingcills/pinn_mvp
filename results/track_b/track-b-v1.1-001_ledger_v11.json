@@ -1,0 +1,66 @@
+{
+  "events": [
+    {
+      "actor_id": "m0-registry",
+      "actor_type": "system",
+      "details": {
+        "m0_event": "registered",
+        "m0_hash": "372e739a197d37b24106aefa64590c0b6992d5e24ee7c9728060f5f85ea7a2ec",
+        "m0_seq": 24
+      },
+      "event_id": "track-b-v1.1-001:24",
+      "event_type": "RUN_REGISTERED",
+      "evidence_digest": null,
+      "manifest_digest": "sha256:2e6376f8e99aa04557329e064e45f937b6b6e60b92ee01499c520888fa26852a",
+      "occurred_at": "2026-11-04T13:54:03.577331Z",
+      "previous_event_digest": null,
+      "run_id": "track-b-v1.1-001",
+      "schema_version": "1.1",
+      "sequence": 0
+    },
+    {
+      "actor_id": "m0-registry",
+      "actor_type": "system",
+      "details": {
+        "m0_event": "started",
+        "m0_hash": "f8bcf46ed831a4a72b9f7dabda4a6c5103bd4e363d8ab3262fe8f847916d7566",
+        "m0_seq": 25
+      },
+      "event_id": "track-b-v1.1-001:25",
+      "event_type": "RUN_STARTED",
+      "evidence_digest": null,
+      "manifest_digest": "sha256:2e6376f8e99aa04557329e064e45f937b6b6e60b92ee01499c520888fa26852a",
+      "occurred_at": "2026-11-04T13:54:03.589983Z",
+      "previous_event_digest": "sha256:a6f1669c852205ce42d66a1dbb3a4be83b2c49e12f304d5e0e6d4a95ae58cdfb",
+      "run_id": "track-b-v1.1-001",
+      "schema_version": "1.1",
+      "sequence": 1
+    },
+    {
+      "actor_id": "m0-registry",
+      "actor_type": "system",
+      "details": {
+        "exit_code": 0,
+        "m0_event": "completed",
+        "m0_hash": "f3f8c20629b52fb71995107b316586a73bb01c9c69003578c5d1a8c8361f7594",
+        "m0_seq": 26,
+        "outcome": "completed"
+      },
+      "event_id": "track-b-v1.1-001:26",
+      "event_type": "RUN_FINISHED",
+      "evidence_digest": "sha256:1ddbea468dc35e11e82ff0d9790f36fd5118e7b648edde887e23c3386565b06f",
+      "manifest_digest": "sha256:2e6376f8e99aa04557329e064e45f937b6b6e60b92ee01499c520888fa26852a",
+      "occurred_at": "2026-11-04T13:54:05.071603Z",
+      "previous_event_digest": "sha256:61f43b2f680e4eacf26e78c4b10d79f49a6482afabefce2e738ee377bc6c73f4",
+      "run_id": "track-b-v1.1-001",
+      "schema_version": "1.1",
+      "sequence": 2
+    }
+  ],
+  "unmapped_m0_events": [
+    {
+      "m0_event": "verified",
+      "m0_seq": 27
+    }
+  ]
+}

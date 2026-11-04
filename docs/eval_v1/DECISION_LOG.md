@@ -139,3 +139,68 @@ heuristic, then is measured by G1's load check.
 1. Supply the v1.1 package (unblocks the largest body of work, no compute).
 2. Allow `huggingface.co`, run checkpoint step 0 (free).
 3. G1 one episode (≤$5, approval).
+
+---
+
+# Iteration 3
+
+## D14. Canonical manifests for new runs; legacy runs stay as recorded
+
+The canonical v1.1 manifest differs in shape from the provisional v0. Registering
+by `schema_version` keeps the 7 committed v0 runs verifiable (immutability)
+while every new run uses the canonical schema. Rejected: migrating old
+manifests, which would change their digests and break the ledger's records.
+
+## D15. Ledger: validated projection, not a storage migration
+
+`ledger-event.schema.json` is per run (own sequence and `sha256:` prior-event
+digest). M0 stores one global chain. Rewriting storage would invalidate the
+committed chain, so `export_v11_events()` derives canonical events and
+schema-validates each one. M0 `verified`/`integrity_failed` have no v1.1
+`event_type`. They are listed as unmapped (not relabelled), with a proposed
+schema fix in ENGINEERING_STATUS.md.
+
+## D16. Signing only in tests; the registry refuses private keys
+
+SIGNING_PROTOCOL requires the private key to stay outside agent processes. The
+iteration-1 helper signed inside the registry module, so it was moved to the
+tests, and the registry rejects private key material outright.
+`signer_key_id` → `approver_id` binding implements 6(b) without inventing a
+permission system. The 8 payload digests M0 has no artifact for are recorded
+as `unchecked` instead of passing silently.
+
+## D17. Engine evaluates every predicate; precedence chooses
+
+Recording all fired faults (decisive + shadowed) turns every case into
+interaction evidence and makes property tests about composition possible.
+Rejected: early-return on the first failure, which leaves no trace of masked
+faults.
+
+## D18. Independent fault catalogue + mutation checks instead of trusting 38/38
+
+A first-try 38/38 proves little alone. Property tests use a catalogue of
+single-fault injections with their own expected labels from BASELINE_SPEC, and
+check composition (pairs exhaustively, random sets). Three engine mutants were
+run: two were caught immediately. The third (REVOKE while IDLE → TERMINATE)
+survived both the fixtures and the first property set. That exposed a fixture
+coverage gap, now covered by a catalogue entry.
+
+## D19. G0 implemented independently, cross-checked against the package reference
+
+G0 is three lines and could have been imported from `tools/validate_package.py`.
+It was written from BASELINE_SPEC and checked against both `expected_baseline_g0`
+and the package function (fixtures + 300 random inputs), so a disagreement in
+the spec itself would show up.
+
+## D20. Checkpoint facts from bytes, not prose
+
+Parameter count and dtype come from the safetensors header, cross-checked
+against tensor offsets. Hashes come from HF LFS oids plus a streamed local
+re-hash. GPU sizing is stated as weights (measured) plus an explicit heuristic,
+pending a real peak-memory measurement.
+
+## Next experiment that most reduces uncertainty
+
+Specify and score a **G1 competent incumbent** on the 38 fixtures (CPU, Tier 1).
+It is the first comparison able to *reject* "the contract layer adds value"; the
+G0 comparison cannot, by construction.
