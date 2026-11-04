@@ -14,6 +14,8 @@ MUJOCO_LOG.TXT
 .opencode/
 .omo/
 .codegraph
+.ua/
+.understand-anything/
 
 # R05 trace sidecars: full telemetry too large for git; pinned by sha256
 # digests in results/r05_freeze.json and referenced from every trial row.
