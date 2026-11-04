@@ -1,0 +1,382 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://haplous.dev/eval/schemas/v1.1/manifest.schema.json",
+  "title": "Haplous Eval Run Manifest v1.1",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.1"
+    },
+    "run_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "tier": {
+      "enum": [
+        0,
+        1,
+        2,
+        3
+      ]
+    },
+    "track": {
+      "enum": [
+        "vla",
+        "contract",
+        "physical",
+        "portability",
+        "other"
+      ]
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "sources": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "uri": {
+            "type": "string",
+            "minLength": 1
+          },
+          "commit": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{40}$"
+          },
+          "artifact_digest": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}$"
+          }
+        },
+        "required": [
+          "uri",
+          "commit"
+        ],
+        "additionalProperties": false
+      },
+      "minProperties": 1
+    },
+    "benchmark": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "protocol_version": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "scenario_population": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "split": {
+          "enum": [
+            "development",
+            "reference_public",
+            "sealed_confirmatory"
+          ]
+        },
+        "task_config_digest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "name",
+        "protocol_version",
+        "scenario_population",
+        "split",
+        "task_config_digest"
+      ],
+      "additionalProperties": false
+    },
+    "policy": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "checkpoint_digest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        },
+        "inference_impl": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "seed_policy": {
+          "enum": [
+            "fixed",
+            "stochastic",
+            "not_applicable"
+          ]
+        }
+      },
+      "required": [
+        "name",
+        "checkpoint_digest",
+        "inference_impl",
+        "seed_policy"
+      ],
+      "additionalProperties": false
+    },
+    "execution": {
+      "type": "object",
+      "properties": {
+        "stack": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "mode": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "config_digest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        },
+        "action_horizon": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        }
+      },
+      "required": [
+        "stack",
+        "mode"
+      ],
+      "additionalProperties": false
+    },
+    "environment": {
+      "type": "object",
+      "properties": {
+        "python": {
+          "type": "string"
+        },
+        "dependency_lock_digest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        },
+        "simulator": {
+          "type": "string"
+        },
+        "simulator_version": {
+          "type": "string"
+        },
+        "hardware": {
+          "type": "string"
+        },
+        "gpu": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "clock_semantics": {
+          "enum": [
+            "simulated",
+            "wall",
+            "mixed",
+            "not_applicable"
+          ]
+        }
+      },
+      "required": [
+        "python",
+        "hardware",
+        "clock_semantics"
+      ],
+      "additionalProperties": false
+    },
+    "run_command": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1
+    },
+    "analysis_code_digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "uri": {
+            "type": "string",
+            "minLength": 1
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          }
+        },
+        "required": [
+          "uri",
+          "sha256"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "notes": {
+      "type": "string"
+    },
+    "contract_suite": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "fixture_set_digest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        },
+        "truth_protocol_version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "baseline_profile": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "name",
+        "fixture_set_digest",
+        "truth_protocol_version",
+        "baseline_profile"
+      ]
+    }
+  },
+  "required": [
+    "schema_version",
+    "run_id",
+    "tier",
+    "track",
+    "created_at",
+    "sources",
+    "environment",
+    "run_command",
+    "analysis_code_digest",
+    "artifacts"
+  ],
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "track": {
+            "const": "contract"
+          }
+        },
+        "required": [
+          "track"
+        ]
+      },
+      "then": {
+        "required": [
+          "contract_suite",
+          "execution"
+        ],
+        "properties": {
+          "benchmark": false,
+          "policy": false,
+          "environment": {
+            "properties": {
+              "clock_semantics": {
+                "enum": [
+                  "not_applicable",
+                  "simulated",
+                  "wall"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "track": {
+            "const": "vla"
+          }
+        },
+        "required": [
+          "track"
+        ]
+      },
+      "then": {
+        "required": [
+          "benchmark",
+          "policy",
+          "execution",
+          "environment"
+        ],
+        "properties": {
+          "environment": {
+            "required": [
+              "python",
+              "dependency_lock_digest",
+              "simulator",
+              "simulator_version",
+              "hardware",
+              "gpu",
+              "clock_semantics"
+            ]
+          },
+          "execution": {
+            "required": [
+              "stack",
+              "mode",
+              "config_digest",
+              "action_horizon"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "track": {
+            "enum": [
+              "physical",
+              "portability"
+            ]
+          }
+        },
+        "required": [
+          "track"
+        ]
+      },
+      "then": {
+        "required": [
+          "benchmark",
+          "execution",
+          "environment"
+        ]
+      }
+    }
+  ],
+  "description": "v1.1 track-dependent run manifest. Contract-only CPU runs do not require VLA checkpoints, benchmark tasks, GPU, or simulator metadata. All supplied digests must identify real bytes, not placeholders."
+}

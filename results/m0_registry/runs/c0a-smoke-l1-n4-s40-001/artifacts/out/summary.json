@@ -1,0 +1,67 @@
+{
+  "runtime_version": "realtime_v2",
+  "metric_schema_version": "libero_dynamic_main_v1",
+  "total": 4,
+  "ok_status": 4,
+  "ok_status_rate": 1.0,
+  "diagnostic_ok": 4,
+  "diagnostic_ok_rate": 1.0,
+  "success_count": 0,
+  "success_rate": 0.0,
+  "control_modes": [
+    "sync_hold"
+  ],
+  "policies": [
+    "zero"
+  ],
+  "latency_sources": [
+    "fixed"
+  ],
+  "sim_latency_decoupled_from_wallclock": [
+    true
+  ],
+  "shared_policy_latency_contaminated_items": 0,
+  "runtime_metrics": {
+    "executed_actions": 160,
+    "enqueued_chunks": 160,
+    "queue_underflow_steps": 0,
+    "queue_underflow_rate": 0.0,
+    "policy_requests": 160,
+    "max_policy_latency_s": 0.000612,
+    "max_simulated_policy_latency_s": 0.0,
+    "sync_inference_latency_elapsed_s_total": 0.0,
+    "rtc_conditioning_requested_items": 0,
+    "rtc_conditioning_supported_items": 0,
+    "rtc_conditioning_used_items": 0
+  },
+  "action_metrics": {
+    "action_l2": {
+      "definition": "||a_t||_2",
+      "episodes": 4,
+      "samples": 160,
+      "mean_of_episode_means": 0.0,
+      "mean_of_episode_p95": 0.0,
+      "max": 0.0
+    },
+    "action_delta_l2": {
+      "definition": "||a_t - a_(t-1)||_2",
+      "episodes": 4,
+      "samples": 160,
+      "mean_of_episode_means": 0.0,
+      "mean_of_episode_p95": 0.0,
+      "max": 0.0
+    }
+  },
+  "physical_diagnostics": {
+    "target_count": 8,
+    "max_platform_path_error_m": 0.0,
+    "max_follow_error_m": 0.000582,
+    "max_tilt_deg": 0.39,
+    "min_relative_bottom_z_m": -2e-06,
+    "max_birdview_offscreen_ratio": 0.0,
+    "max_agentview_offscreen_ratio": 0.0,
+    "diagnostic_flag_counts": {}
+  },
+  "issues": 0,
+  "issue_items": []
+}

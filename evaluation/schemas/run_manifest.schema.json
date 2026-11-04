@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://haplous.local/schemas/run_manifest-v0.json",
+  "title": "M0 run manifest (provisional: the v1.1 package schema was not available in this repository)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "run_id", "track", "created_at", "purpose", "command", "provenance"],
+  "properties": {
+    "schema_version": {"const": "m0-run-manifest-v0"},
+    "run_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"},
+    "track": {"enum": ["cpu_contract", "sim_policy_free", "sim_model_in_loop"]},
+    "tier": {"enum": ["tier1_development"], "default": "tier1_development"},
+    "created_at": {"type": "string", "format": "date-time", "pattern": "Z$"},
+    "purpose": {"type": "string", "minLength": 1},
+    "command": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+    "config": {"type": "object"},
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["git_commit", "git_dirty", "python", "platform", "dependencies"],
+      "properties": {
+        "git_commit": {"type": ["string", "null"], "pattern": "^[0-9a-f]{40}$"},
+        "git_dirty": {"type": ["boolean", "null"]},
+        "python": {"type": "string"},
+        "platform": {"type": "string"},
+        "dependencies": {"type": "object", "additionalProperties": {"type": ["string", "null"]}},
+        "gpu": {
+          "description": "Measured by nvidia-smi; null when no NVIDIA GPU is visible. bf16 numerics differ across GPU types, so arms are only comparable on equal values.",
+          "type": ["array", "null"],
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name", "driver_version", "memory_total_mib"],
+            "properties": {"name": {"type": "string"}, "driver_version": {"type": "string"}, "memory_total_mib": {"type": "integer"}}
+          }
+        },
+        "external_sources": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["url", "revision"],
+            "properties": {
+              "url": {"type": "string", "format": "uri"},
+              "revision": {"type": "string", "pattern": "^[0-9a-f]{40}$"}
+            }
+          }
+        }
+      }
+    },
+    "simulator": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "version"],
+      "properties": {"name": {"type": "string"}, "version": {"type": "string"}, "render_backend": {"type": "string"}}
+    },
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "checkpoint_uri", "checkpoint_sha256"],
+      "properties": {
+        "name": {"type": "string"},
+        "checkpoint_uri": {"type": "string", "format": "uri"},
+        "checkpoint_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"track": {"const": "cpu_contract"}}},
+      "then": {"not": {"anyOf": [{"required": ["simulator"]}, {"required": ["policy"]}]}}
+    },
+    {
+      "if": {"properties": {"track": {"const": "sim_policy_free"}}},
+      "then": {"required": ["simulator"], "not": {"required": ["policy"]}}
+    },
+    {
+      "if": {"properties": {"track": {"const": "sim_model_in_loop"}}},
+      "then": {
+        "required": ["simulator", "policy"],
+        "properties": {"provenance": {"required": ["gpu"], "properties": {"gpu": {"type": "array", "minItems": 1}}}}
+      }
+    }
+  ]
+}

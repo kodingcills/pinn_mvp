@@ -1,0 +1,18 @@
+{
+  "run_id": "c0a-latency-0.03-n1-s40-001",
+  "state": "VERIFIED",
+  "outcome": "completed",
+  "manifest_sha256": "e242b5177da88b1d2031ffd0acc95a2840409547e03aa6202f84dcf9610f5c21",
+  "upstream_revision": "ef12443b7c1f0699356eaf2a4e1676e034f2d806",
+  "summary_path": "results/m0_registry/runs/c0a-latency-0.03-n1-s40-001/artifacts/out/summary.json",
+  "acceptance": {
+    "checks": {
+      "total_equals_limit": true,
+      "all_status_ok": true,
+      "all_targets_nonempty": true,
+      "all_diagnostics_ok": true
+    },
+    "pass": true,
+    "n_items": 1
+  }
+}

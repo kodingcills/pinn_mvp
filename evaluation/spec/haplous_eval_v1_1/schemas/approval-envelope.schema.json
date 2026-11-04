@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://haplous.dev/eval/schemas/v1.1/approval-envelope.schema.json",
+  "title": "Haplous Tier 3 Approval Envelope v1.1",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.1"
+    },
+    "request_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "payload_digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "signer_key_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "approver_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "decision": {
+      "enum": [
+        "APPROVED",
+        "REJECTED"
+      ]
+    },
+    "signed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "signature_ed25519_base64": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9+/]{86}==$",
+      "description": "64-byte Ed25519 signature as canonical standard base64 with == padding"
+    }
+  },
+  "required": [
+    "schema_version",
+    "request_id",
+    "payload_digest",
+    "signer_key_id",
+    "approver_id",
+    "decision",
+    "signed_at",
+    "signature_ed25519_base64"
+  ],
+  "description": "Ed25519 signature message = UTF-8 bytes of RFC 8785/JCS canonicalization of the entire envelope AFTER removing only signature_ed25519_base64. The signed object includes decision, request_id, payload_digest, approver_id, signer_key_id, signed_at and schema_version. The runner independently computes sha256(JCS(immutable authorization payload)), compares the payload_digest, verifies the approved public key, signed decision APPROVED, expiry and nonce one-time use. This schema alone does not verify signatures."
+}

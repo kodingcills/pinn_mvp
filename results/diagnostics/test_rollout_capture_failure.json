@@ -1,0 +1,18 @@
+{
+  "test": "tests/test_rollout.py::TestRunEpisode::test_capture_localization_error_within_clearance",
+  "symptom": "log.capture_step is None",
+  "measured": {
+    "mujoco": "3.11.0",
+    "numpy": "2.5.1",
+    "success": true,
+    "time_to_seat_s": 1.5979999999998795,
+    "radial_clearance_m": 0.0005,
+    "min_tip_lateral_before_seat_m": 0.0005030315675240363,
+    "min_tip_lateral_step": 1515,
+    "control_decimation": 1
+  },
+  "finding": "Capture condition (lateral <= radial_clearance at a control tick) never fires: closest approach is 3.03e-6 m outside the threshold, yet the peg seats. The test premise depends on a trajectory clearing a threshold by microns.",
+  "suspected_cause": "Platform floating-point sensitivity (same class as the three R05 last-ULP drift failures); versions match uv.lock, so CPU/compiler-level differences are suspected but not isolated.",
+  "measurement_note": "Lateral computed from logged tip_pos; the code tests the mouth projection along the peg axis, which was not logged. Not re-instrumented (behavior-freeze area).",
+  "action": "none; recorded per one-attempt timebox"
+}

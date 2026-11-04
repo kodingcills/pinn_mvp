@@ -1,0 +1,52 @@
+{
+  "runs": [
+    "c0a-smoke-l1-n4-s40-001",
+    "c0a-smoke-l1-n4-s40-003"
+  ],
+  "byte_identical_artifacts": [
+    "out/effective_dynamic_configs/libero_dynamic_l1.yaml",
+    "out/l1/libero_10/traces/libero_10_task00__l1__traj00--runtime-v2.jsonl",
+    "out/l1/libero_10/traces/libero_10_task01__l1__traj00--runtime-v2.jsonl",
+    "out/l1/libero_10/traces/libero_10_task02__l1__traj00--runtime-v2.jsonl",
+    "out/l1/libero_10/traces/libero_10_task03__l1__traj00--runtime-v2.jsonl",
+    "stderr.txt",
+    "stdout.txt"
+  ],
+  "byte_differing_artifacts": [
+    "out/items.json",
+    "out/l1/libero_10/manifests/libero_10_task00__l1__traj00.json",
+    "out/l1/libero_10/manifests/libero_10_task01__l1__traj00.json",
+    "out/l1/libero_10/manifests/libero_10_task02__l1__traj00.json",
+    "out/l1/libero_10/manifests/libero_10_task03__l1__traj00.json",
+    "out/manifest.jsonl",
+    "out/summary.json",
+    "out/worker_00_manifest.jsonl"
+  ],
+  "unparsed_differing_artifacts": [],
+  "differing_json_fields": [
+    "/controller_summary/policy_latency_max_s",
+    "/controller_summary/policy_latency_mean_s",
+    "/controller_summary/policy_latency_p90_s",
+    "/controller_summary/wallclock_wait_blocked_s",
+    "/effective_config_path",
+    "/elapsed_seconds",
+    "/manifest",
+    "/ready_chunks[]/metadata/wallclock_policy_elapsed_s",
+    "/ready_chunks[]/policy_elapsed_s",
+    "/runtime_metrics/max_policy_latency_s",
+    "/step_trace",
+    "[]/config_path",
+    "[]/controller_summary/policy_latency_max_s",
+    "[]/controller_summary/policy_latency_mean_s",
+    "[]/controller_summary/policy_latency_p90_s",
+    "[]/controller_summary/wallclock_wait_blocked_s",
+    "[]/effective_config_path",
+    "[]/elapsed_seconds",
+    "[]/manifest",
+    "[]/ready_chunks[]/metadata/wallclock_policy_elapsed_s",
+    "[]/ready_chunks[]/policy_elapsed_s",
+    "[]/step_trace"
+  ],
+  "differing_fields_not_wallclock_or_path": [],
+  "simulation_reproducible": true
+}

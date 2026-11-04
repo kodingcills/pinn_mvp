@@ -6,6 +6,11 @@ explain how that state was reached.
 
 ## Current engineering reports
 
+- [Generalized execution evaluation, iteration 1](eval_v1/ENGINEERING_STATUS.md):
+  M0 run registry (`evaluation/run_registry.py`), LIBERO-Dynamic pinned audit
+  and CPU policy-free smoke, GPU handoff. Track B/G0 blocked on the missing
+  v1.1 package. Companion files: `EVIDENCE_REPORT.md`, `DECISION_LOG.md`,
+  `REPRODUCE.md`, `LIBERO_DYNAMIC_AUDIT.md`, `GPU_HANDOFF.md`.
 - [HES v0 design and usage](HES.md) — the Haplous Evaluation System:
   outcome/attainability model, metric vector, attribution, integrity
   gates, regression, boundary search, populations, CLI, and how each part
