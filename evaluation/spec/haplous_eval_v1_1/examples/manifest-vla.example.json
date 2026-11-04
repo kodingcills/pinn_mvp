@@ -1,0 +1,49 @@
+{
+  "schema_version": "1.1",
+  "run_id": "SCHEMA_EXAMPLE_NOT_A_RUN",
+  "tier": 1,
+  "created_at": "2026-11-03T20:00:00Z",
+  "sources": {
+    "example": {
+      "uri": "file:///example/NOT_REAL_REPOSITORY",
+      "commit": "0000000000000000000000000000000000000000"
+    }
+  },
+  "environment": {
+    "python": "3.10",
+    "dependency_lock_digest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+    "simulator": "MuJoCo",
+    "simulator_version": "2.3.7",
+    "hardware": "GPU example",
+    "gpu": "EXAMPLE_GPU",
+    "clock_semantics": "simulated"
+  },
+  "run_command": [
+    "python",
+    "-m",
+    "pytest",
+    "-q"
+  ],
+  "analysis_code_digest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+  "artifacts": [],
+  "track": "vla",
+  "benchmark": {
+    "name": "LIBERO-Dynamic",
+    "protocol_version": "EXAMPLE",
+    "scenario_population": "development",
+    "split": "development",
+    "task_config_digest": "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "policy": {
+    "name": "EXAMPLE",
+    "checkpoint_digest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+    "inference_impl": "EXAMPLE",
+    "seed_policy": "fixed"
+  },
+  "execution": {
+    "stack": "incumbent",
+    "mode": "async",
+    "config_digest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+    "action_horizon": 4
+  }
+}

@@ -1,0 +1,115 @@
+{
+  "files": [
+    {
+      "path": "pi05/static_official/.gitattributes",
+      "sha256": null,
+      "size": 1519
+    },
+    {
+      "path": "pi05/static_official/README.md",
+      "sha256": "38d0fa60f6fbc30f96ffe9b607d000641f9f8856d1d385252f02ff92841c374f",
+      "size": 4309
+    },
+    {
+      "path": "pi05/static_official/config.json",
+      "sha256": "2f6d4b96b032593e1de65b391ee7252a70227bff398ef1b94658fea17818142f",
+      "size": 2170
+    },
+    {
+      "path": "pi05/static_official/model.safetensors",
+      "safetensors": {
+        "by_dtype": {
+          "BF16": {
+            "bytes": 6994073824,
+            "params": 3497036912,
+            "tensors": 690
+          },
+          "F32": {
+            "bytes": 478882432,
+            "params": 119720608,
+            "tensors": 122
+          }
+        },
+        "metadata": {
+          "model.paligemma_with_expert.paligemma.model.language_model.embed_tokens.weight": "model.paligemma_with_expert.paligemma.lm_head.weight"
+        },
+        "params": 3616757520,
+        "weight_bytes": 7472956256
+      },
+      "sha256": "877b3ec1130548b69af7f8aeef3ec9d3fc7738040f0b9beb490857ec970997ae",
+      "size": 7473096344
+    },
+    {
+      "path": "pi05/static_official/policy_postprocessor.json",
+      "sha256": "37d719a6584600988e6c343306d2eaee0575109f235ad500313577f73e47e8a1",
+      "size": 660
+    },
+    {
+      "path": "pi05/static_official/policy_postprocessor_step_0_unnormalizer_processor.safetensors",
+      "safetensors": {
+        "by_dtype": {
+          "F32": {
+            "bytes": 972,
+            "params": 243,
+            "tensors": 90
+          }
+        },
+        "metadata": null,
+        "params": 243,
+        "weight_bytes": 972
+      },
+      "sha256": "a002c0df7f79c5b169c5a899ad151d4ea1bed246c7d82bd93ed1556558d517a9",
+      "size": 7668
+    },
+    {
+      "path": "pi05/static_official/policy_preprocessor.json",
+      "sha256": "3d669ffc18d0364536735d8203076dcc69d3a6523aa5956ccaada3f9e1e6b748",
+      "size": 1903
+    },
+    {
+      "path": "pi05/static_official/policy_preprocessor_step_2_normalizer_processor.safetensors",
+      "safetensors": {
+        "by_dtype": {
+          "F32": {
+            "bytes": 972,
+            "params": 243,
+            "tensors": 90
+          }
+        },
+        "metadata": null,
+        "params": 243,
+        "weight_bytes": 972
+      },
+      "sha256": "a002c0df7f79c5b169c5a899ad151d4ea1bed246c7d82bd93ed1556558d517a9",
+      "size": 7668
+    },
+    {
+      "path": "pi05/static_official/train_config.json",
+      "sha256": "199518b79faeaef0877e9a1eb5f2df6884902476a7d4491c7f865142c3fe90fd",
+      "size": 5621
+    }
+  ],
+  "formats": [
+    ".json",
+    ".md",
+    ".safetensors",
+    "<none>"
+  ],
+  "note": "weight bytes only; excludes activations, CUDA context, allocator overhead",
+  "path": "pi05/static_official",
+  "repo": "rsj2003/libero-dynamic-paper-models",
+  "requested_revision": "main",
+  "revision_sha": "ffd700087b34b734805ca5148e278a6a61fa5a8a",
+  "text_files": {
+    "pi05/static_official/README.md": "---\nlanguage:\n- en\nlibrary_name: lerobot\npipeline_tag: robotics\ntags:\n- vision-language-action\n- imitation-learning\n- lerobot\ninference: false\ndatasets:\n- HuggingFaceVLA/libero\nlicense: gemma\n---\n\n# \u03c0\u2080.\u2085 (Pi05 Libero) (LeRobot)\n\n\u03c0\u2080.\u2085 is a Vision-Language-Action (VLA) model with open-world generalization from Physical Intelligence, co-trained on robot demonstrations and large-scale multimodal data to execute long-horizon tasks in unseen real-world environments.\n\nCheckpoint trained and evaluated on LIBERO tasks\n\n**Note:** This model currently supports only the flow-matching action head for \u03c0\u2080.\u2085 training and inference. \nOther components from the original work (e.g., subtask prediction, action tokenization, or RL) were not released upstream and are not included here, though the LeRobot team is actively working to support them.\n\n**Original paper:** \u03c00.5: A Vision-Language-Action Model with Open-World Generalization  \n**Reference implementation:** https://github.com/Physical-Intelligence/openpi  \n**LeRobot implementation:** Follows the original reference code for compatibility.\n\n\n## Model description\n\n- **Inputs:** images (multi-view), proprio/state, optional language instruction\n- **Outputs:** continuous actions\n- **Training objective:** flow matching\n- **Action representation:** continuous\n- **Intended use:** Base model to fine tune on your specific use case\n\n\n## Quick start (inference on a real batch)\n\n### Installation\n\n```bash\npip install \"lerobot[pi]@git+https://github.com/huggingface/lerobot.git\"\n```\nFor full installation details (including optional video dependencies such as ffmpeg for torchcodec), see the official documentation: https://huggingface.co/docs/lerobot/installation\n\n### Load model + dataset, run `select_action`\n\n```python\nimport torch\nfrom lerobot.datasets.lerobot_dataset import LeRobotDataset\nfrom lerobot.policies.factory import make_pre_post_processors\n\n# Swap this import per-policy\nfrom lerobot.policies.pi05 import PI05Policy\n\n# load a policy\nmodel_id = \"lerobot/pi05_libero_finetuned\"  # <- swap checkpoint\ndevice = torch.device(\"cuda\" if torch.cuda.is_available() else \"cpu\")\n\npolicy = PI05Policy.from_pretrained(model_id).to(device).eval()\n\npreprocess, postprocess = make_pre_post_processors(\n    policy.config,\n    model_id,\n    preprocessor_overrides={\"device_processor\": {\"device\": str(device)}},\n)\n# load a lerobotdataset\ndataset = LeRobotDataset(\"lerobot/libero\")\n\n# pick an episode\nepisode_index = 0\n\n# each episode corresponds to a contiguous range of frame indices\nfrom_idx = dataset.meta.episodes[\"dataset_from_index\"][episode_index]\nto_idx   = dataset.meta.episodes[\"dataset_to_index\"][episode_index]\n\n# get a single frame from that episode (e.g. the first frame)\nframe_index = from_idx\nframe = dict(dataset[frame_index])\n\nbatch = preprocess(frame)\nwith torch.inference_mode():\n    pred_action = policy.select_action(batch)\n    # use your policy postprocess, this post process the action\n    # for instance unnormalize the actions, detokenize it etc..\n    pred_action = postprocess(pred_action)\n```\n\n\n## Training step (loss + backward)\n\nIf you\u2019re training / fine-tuning, you typically call `forward(...)` to get a loss and then:\n\n```python\npolicy.train()\nbatch = dict(dataset[0])\nbatch = preprocess(batch)\n\nloss, outputs = policy.forward(batch)\nloss.backward()\n\n```\n\n> Notes:\n> \n> - Some policies expose `policy(**batch)` or return a dict; keep this snippet aligned with the policy API.\n> - Use your trainer script (`lerobot-train`) for full training loops.\n\n\n## How to train / fine-tune\n\n```bash\nlerobot-train \\\n  --dataset.repo_id=${HF_USER}/<dataset> \\\n  --output_dir=./outputs/[RUN_NAME] \\\n  --job_name=[RUN_NAME] \\\n  --policy.repo_id=${HF_USER}/<dataset> \\\n  --policy.path=lerobot/[BASE_CHECKPOINT] \\\n  --policy.dtype=bfloat16 \\\n  --policy.device=cuda \\\n  --steps=100000 \\\n  --batch_size=4\n```\n\nAdd policy-specific flags below:\n\n- `-policy.chunk_size=...`\n- `-policy.n_action_steps=...`\n- `-policy.max_action_tokens=...`\n- `-policy.gradient_checkpointing=true`\n\n\n## Evaluate in Simulation (LIBERO)\n\nYou can evaluate the model in Libero environment.\n\n```bash\nlerobot-eval \\\n  --policy.path=lerobot/pi05_libero_finetuned \\\n  --env.type=libero \\\n  --env.task=libero_object \\\n  --eval.batch_size=1 \\\n  --eval.n_episodes=20\n```",
+    "pi05/static_official/config.json": "{\n    \"type\": \"pi05\",\n    \"n_obs_steps\": 1,\n    \"input_features\": {\n        \"observation.images.image\": {\n            \"type\": \"VISUAL\",\n            \"shape\": [\n                3,\n                256,\n                256\n            ]\n        },\n        \"observation.images.image2\": {\n            \"type\": \"VISUAL\",\n            \"shape\": [\n                3,\n                256,\n                256\n            ]\n        },\n        \"observation.state\": {\n            \"type\": \"STATE\",\n            \"shape\": [\n                8\n            ]\n        },\n        \"observation.images.empty_camera_0\": {\n            \"type\": \"VISUAL\",\n            \"shape\": [\n                3,\n                224,\n                224\n            ]\n        }\n    },\n    \"output_features\": {\n        \"action\": {\n            \"type\": \"ACTION\",\n            \"shape\": [\n                7\n            ]\n        }\n    },\n    \"device\": \"cuda\",\n    \"use_amp\": false,\n    \"push_to_hub\": true,\n    \"repo_id\": \"pepijn223/pi05_libero_31_9_non_q\",\n    \"private\": null,\n    \"tags\": null,\n    \"license\": null,\n    \"pretrained_path\": \"lerobot/pi05_libero\",\n    \"paligemma_variant\": \"gemma_2b\",\n    \"action_expert_variant\": \"gemma_300m\",\n    \"dtype\": \"bfloat16\",\n    \"chunk_size\": 50,\n    \"n_action_steps\": 50,\n    \"max_state_dim\": 32,\n    \"max_action_dim\": 32,\n    \"num_inference_steps\": 10,\n    \"time_sampling_beta_alpha\": 1.5,\n    \"time_sampling_beta_beta\": 1.0,\n    \"time_sampling_scale\": 0.999,\n    \"time_sampling_offset\": 0.001,\n    \"min_period\": 0.004,\n    \"max_period\": 4.0,\n    \"image_resolution\": [\n        224,\n        224\n    ],\n    \"empty_cameras\": 1,\n    \"tokenizer_max_length\": 200,\n    \"normalization_mapping\": {\n        \"ACTION\": \"MEAN_STD\",\n        \"STATE\": \"MEAN_STD\",\n        \"VISUAL\": \"IDENTITY\"\n    },\n    \"gradient_checkpointing\": true,\n    \"compile_model\": true,\n    \"compile_mode\": \"max-autotune\",\n    \"optimizer_lr\": 2.5e-05,\n    \"optimizer_betas\": [\n        0.9,\n        0.95\n    ],\n    \"optimizer_eps\": 1e-08,\n    \"optimizer_weight_decay\": 0.01,\n    \"optimizer_grad_clip_norm\": 1.0,\n    \"scheduler_warmup_steps\": 1000,\n    \"scheduler_decay_steps\": 6000,\n    \"scheduler_decay_lr\": 2.5e-06\n}",
+    "pi05/static_official/policy_postprocessor.json": "{\n  \"name\": \"policy_postprocessor\",\n  \"steps\": [\n    {\n      \"registry_name\": \"unnormalizer_processor\",\n      \"config\": {\n        \"eps\": 1e-08,\n        \"features\": {\n          \"action\": {\n            \"type\": \"ACTION\",\n            \"shape\": [\n              7\n            ]\n          }\n        },\n        \"norm_map\": {\n          \"ACTION\": \"MEAN_STD\",\n          \"STATE\": \"MEAN_STD\",\n          \"VISUAL\": \"IDENTITY\"\n        }\n      },\n      \"state_file\": \"policy_postprocessor_step_0_unnormalizer_processor.safetensors\"\n    },\n    {\n      \"registry_name\": \"device_processor\",\n      \"config\": {\n        \"device\": \"cpu\",\n        \"float_dtype\": null\n      }\n    }\n  ]\n}",
+    "pi05/static_official/policy_preprocessor.json": "{\n  \"name\": \"policy_preprocessor\",\n  \"steps\": [\n    {\n      \"registry_name\": \"rename_observations_processor\",\n      \"config\": {\n        \"rename_map\": {}\n      }\n    },\n    {\n      \"registry_name\": \"to_batch_processor\",\n      \"config\": {}\n    },\n    {\n      \"registry_name\": \"normalizer_processor\",\n      \"config\": {\n        \"eps\": 1e-08,\n        \"features\": {\n          \"observation.images.image\": {\n            \"type\": \"VISUAL\",\n            \"shape\": [\n              3,\n              256,\n              256\n            ]\n          },\n          \"observation.images.image2\": {\n            \"type\": \"VISUAL\",\n            \"shape\": [\n              3,\n              256,\n              256\n            ]\n          },\n          \"observation.state\": {\n            \"type\": \"STATE\",\n            \"shape\": [\n              8\n            ]\n          },\n          \"observation.images.empty_camera_0\": {\n            \"type\": \"VISUAL\",\n            \"shape\": [\n              3,\n              224,\n              224\n            ]\n          },\n          \"action\": {\n            \"type\": \"ACTION\",\n            \"shape\": [\n              7\n            ]\n          }\n        },\n        \"norm_map\": {\n          \"ACTION\": \"MEAN_STD\",\n          \"STATE\": \"MEAN_STD\",\n          \"VISUAL\": \"IDENTITY\"\n        }\n      },\n      \"state_file\": \"policy_preprocessor_step_2_normalizer_processor.safetensors\"\n    },\n    {\n      \"registry_name\": \"pi05_prepare_state_tokenizer_processor_step\",\n      \"config\": {}\n    },\n    {\n      \"registry_name\": \"tokenizer_processor\",\n      \"config\": {\n        \"max_length\": 200,\n        \"task_key\": \"task\",\n        \"padding_side\": \"right\",\n        \"padding\": \"max_length\",\n        \"truncation\": true,\n        \"tokenizer_name\": \"google/paligemma-3b-pt-224\"\n      }\n    },\n    {\n      \"registry_name\": \"device_processor\",\n      \"config\": {\n        \"device\": \"cuda\",\n        \"float_dtype\": null\n      }\n    }\n  ]\n}",
+    "pi05/static_official/train_config.json": "{\n    \"dataset\": {\n        \"repo_id\": \"HuggingFaceVLA/libero\",\n        \"root\": null,\n        \"episodes\": null,\n        \"image_transforms\": {\n            \"enable\": false,\n            \"max_num_transforms\": 3,\n            \"random_order\": false,\n            \"tfs\": {\n                \"brightness\": {\n                    \"weight\": 1.0,\n                    \"type\": \"ColorJitter\",\n                    \"kwargs\": {\n                        \"brightness\": [\n                            0.8,\n                            1.2\n                        ]\n                    }\n                },\n                \"contrast\": {\n                    \"weight\": 1.0,\n                    \"type\": \"ColorJitter\",\n                    \"kwargs\": {\n                        \"contrast\": [\n                            0.8,\n                            1.2\n                        ]\n                    }\n                },\n                \"saturation\": {\n                    \"weight\": 1.0,\n                    \"type\": \"ColorJitter\",\n                    \"kwargs\": {\n                        \"saturation\": [\n                            0.5,\n                            1.5\n                        ]\n                    }\n                },\n                \"hue\": {\n                    \"weight\": 1.0,\n                    \"type\": \"ColorJitter\",\n                    \"kwargs\": {\n                        \"hue\": [\n                            -0.05,\n                            0.05\n                        ]\n                    }\n                },\n                \"sharpness\": {\n                    \"weight\": 1.0,\n                    \"type\": \"SharpnessJitter\",\n                    \"kwargs\": {\n                        \"sharpness\": [\n                            0.5,\n                            1.5\n                        ]\n                    }\n                }\n            }\n        },\n        \"revision\": null,\n        \"use_imagenet_stats\": true,\n        \"video_backend\": \"torchcodec\",\n        \"streaming\": false\n    },\n    \"env\": null,\n    \"policy\": {\n        \"type\": \"pi05\",\n        \"n_obs_steps\": 1,\n        \"input_features\": {\n            \"observation.images.image\": {\n                \"type\": \"VISUAL\",\n                \"shape\": [\n                    3,\n                    256,\n                    256\n                ]\n            },\n            \"observation.images.image2\": {\n                \"type\": \"VISUAL\",\n                \"shape\": [\n                    3,\n                    256,\n                    256\n                ]\n            },\n            \"observation.state\": {\n                \"type\": \"STATE\",\n                \"shape\": [\n                    8\n                ]\n            },\n            \"observation.images.empty_camera_0\": {\n                \"type\": \"VISUAL\",\n                \"shape\": [\n                    3,\n                    224,\n                    224\n                ]\n            }\n        },\n        \"output_features\": {\n            \"action\": {\n                \"type\": \"ACTION\",\n                \"shape\": [\n                    7\n                ]\n            }\n        },\n        \"device\": \"cuda\",\n        \"use_amp\": false,\n        \"push_to_hub\": true,\n        \"repo_id\": \"pepijn223/pi05_libero_31_9_non_q\",\n        \"private\": null,\n        \"tags\": null,\n        \"license\": null,\n        \"pretrained_path\": \"lerobot/pi05_libero\",\n        \"paligemma_variant\": \"gemma_2b\",\n        \"action_expert_variant\": \"gemma_300m\",\n        \"dtype\": \"bfloat16\",\n        \"chunk_size\": 50,\n        \"n_action_steps\": 50,\n        \"max_state_dim\": 32,\n        \"max_action_dim\": 32,\n        \"num_inference_steps\": 10,\n        \"time_sampling_beta_alpha\": 1.5,\n        \"time_sampling_beta_beta\": 1.0,\n        \"time_sampling_scale\": 0.999,\n        \"time_sampling_offset\": 0.001,\n        \"min_period\": 0.004,\n        \"max_period\": 4.0,\n        \"image_resolution\": [\n            224,\n            224\n        ],\n        \"empty_cameras\": 1,\n        \"tokenizer_max_length\": 200,\n        \"normalization_mapping\": {\n            \"ACTION\": \"MEAN_STD\",\n            \"STATE\": \"MEAN_STD\",\n            \"VISUAL\": \"IDENTITY\"\n        },\n        \"gradient_checkpointing\": true,\n        \"compile_model\": true,\n        \"compile_mode\": \"max-autotune\",\n        \"optimizer_lr\": 2.5e-05,\n        \"optimizer_betas\": [\n            0.9,\n            0.95\n        ],\n        \"optimizer_eps\": 1e-08,\n        \"optimizer_weight_decay\": 0.01,\n        \"optimizer_grad_clip_norm\": 1.0,\n        \"scheduler_warmup_steps\": 1000,\n        \"scheduler_decay_steps\": 6000,\n        \"scheduler_decay_lr\": 2.5e-06\n    },\n    \"output_dir\": \"/fsx/pepijn/train/pi05_libero_31_9_non_quan\",\n    \"job_name\": \"pi05_multi_newest_8_gpu_30_9\",\n    \"resume\": false,\n    \"seed\": 1000,\n    \"num_workers\": 4,\n    \"batch_size\": 32,\n    \"steps\": 6000,\n    \"eval_freq\": 20000,\n    \"log_freq\": 200,\n    \"save_checkpoint\": true,\n    \"save_freq\": 2000,\n    \"use_policy_training_preset\": true,\n    \"optimizer\": {\n        \"type\": \"adamw\",\n        \"lr\": 0.0002,\n        \"weight_decay\": 0.01,\n        \"grad_clip_norm\": 1.0,\n        \"betas\": [\n            0.9,\n            0.95\n        ],\n        \"eps\": 1e-08\n    },\n    \"scheduler\": {\n        \"type\": \"cosine_decay_with_warmup\",\n        \"num_warmup_steps\": 8000,\n        \"num_decay_steps\": 48000,\n        \"peak_lr\": 2.5e-05,\n        \"decay_lr\": 2.5e-06\n    },\n    \"eval\": {\n        \"n_episodes\": 50,\n        \"batch_size\": 50,\n        \"use_async_envs\": false\n    },\n    \"wandb\": {\n        \"enable\": true,\n        \"disable_artifact\": false,\n        \"project\": \"lerobot\",\n        \"entity\": null,\n        \"notes\": null,\n        \"run_id\": \"rzfptgzx\",\n        \"mode\": null\n    }\n}"
+  },
+  "totals_from_safetensors": {
+    "params": 3616758006,
+    "weight_bytes": 7472958200
+  },
+  "weight_gib": 6.96
+}

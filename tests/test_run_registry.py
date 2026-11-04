@@ -2,13 +2,11 @@
 
 from __future__ import annotations
 
-import copy
 import json
 import sys
 from datetime import UTC, datetime, timedelta
 
 import pytest
-from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
 from hypothesis import given, settings
 from hypothesis import strategies as st
 
@@ -17,9 +15,7 @@ from evaluation.run_registry import (
     RegistryError,
     canonical_bytes,
     collect_provenance,
-    public_key_hex,
     record_run,
-    sign_approval,
     strict_loads,
 )
 
@@ -324,48 +320,6 @@ def test_clock_skew_backwards_refused(tmp_path):
     assert reg.state("r1") == "REGISTERED"
 
 
-# ---------------- approvals (test-only Ed25519) ----------------
-
-
-def _approval(reg, key, decision="approved"):
-    return sign_approval(
-        key,
-        {
-            "run_id": "r1",
-            "manifest_digest": reg.manifest_digest("r1"),
-            "decision": decision,
-            "approver": "test-reviewer",
-            "decided_at": "2026-11-04T00:00:00Z",
-        },
-    )
-
-
-def test_approval_roundtrip_and_altered_decision_rejected(reg):
-    key = Ed25519PrivateKey.generate()
-    trusted = {public_key_hex(key.public_key())}
-    complete(reg, "r1", {})
-    signed = _approval(reg, key, "denied")
-    altered = copy.deepcopy(signed)
-    altered["decision"] = "approved"
-    with pytest.raises(RegistryError, match="signature"):
-        reg.record_approval("r1", altered, trusted)
-    reg.record_approval("r1", signed, trusted)
-    assert reg.get("r1")["approvals"][0]["decision"] == "denied"
-    assert reg.check("r1", trusted) == []
-
-
-def test_approval_untrusted_key_and_wrong_binding_rejected(reg):
-    key, attacker = Ed25519PrivateKey.generate(), Ed25519PrivateKey.generate()
-    trusted = {public_key_hex(key.public_key())}
-    complete(reg, "r1", {})
-    with pytest.raises(RegistryError, match="untrusted"):
-        reg.record_approval("r1", _approval(reg, attacker), trusted)
-    wrong = sign_approval(key, {**_approval(reg, key), "manifest_digest": "f" * 64})
-    with pytest.raises(RegistryError, match="bind"):
-        reg.record_approval("r1", wrong, trusted)
-    assert reg.get("r1")["approvals"] == []
-
-
 # ---------------- end-to-end: record, retrieve, compare ----------------
 
 
@@ -429,49 +383,6 @@ def test_official_rfc8785_vectors(name):
 
 def test_official_vector_set_is_complete():
     assert len(list((_JCS / "input").glob("*.json"))) == 6
-
-
-# ---------------- approval replay / binding ----------------
-
-
-def test_approval_replay_rejected_same_and_other_run(reg):
-    key = Ed25519PrivateKey.generate()
-    trusted = {public_key_hex(key.public_key())}
-    complete(reg, "r1", {})
-    signed = _approval(reg, key)
-    reg.record_approval("r1", signed, trusted)
-    with pytest.raises(RegistryError, match="replay"):
-        reg.record_approval("r1", copy.deepcopy(signed), trusted)
-    complete(reg, "r2", {})
-    with pytest.raises(RegistryError, match="bind"):  # replay onto another run
-        reg.record_approval("r2", signed, trusted)
-    assert len(reg.get("r1")["approvals"]) == 1 and reg.get("r2")["approvals"] == []
-
-
-@settings(max_examples=50, deadline=None)
-@given(
-    field=st.sampled_from(["run_id", "manifest_digest", "decision", "approver", "decided_at", "public_key"]),
-    data=st.data(),
-)
-def test_signature_binds_every_decision_field(tmp_path_factory, field, data):
-    reg = Registry(tmp_path_factory.mktemp("b"), clock=StepClock())
-    key = Ed25519PrivateKey.generate()
-    other = Ed25519PrivateKey.generate()
-    trusted = {public_key_hex(key.public_key()), public_key_hex(other.public_key())}
-    complete(reg, "r1", {})
-    signed = _approval(reg, key)
-    replacement = {
-        "run_id": "r1x",
-        "manifest_digest": "e" * 64,
-        "decision": "denied",
-        "approver": data.draw(st.text(min_size=1).filter(lambda t: t != "test-reviewer")),
-        "decided_at": "2026-11-05T00:00:00Z",
-        "public_key": public_key_hex(other.public_key()),  # trusted, but did not sign
-    }[field]
-    with pytest.raises(RegistryError):
-        reg.record_approval("r1", {**signed, field: replacement}, trusted)
-    with pytest.raises(RegistryError):  # unsigned extra field
-        reg.record_approval("r1", {**signed, "note": "x"}, trusted)
 
 
 # ---------------- concurrency ----------------

@@ -18,19 +18,25 @@ ledger, not wholesale rewrites by someone with write access; Ed25519 approval
 signatures here are TEST-ONLY (keys are caller-supplied, no key management) and
 are not a substitute for an environment-enforced approval gate.
 
-Schemas are provisional (evaluation/schemas/): the v1.1 package schemas were not
-present in this repository when M0 was implemented.
+Manifests: new runs use the canonical v1.1 schema (`evaluation/spec/haplous_eval_v1_1/
+schemas/manifest.schema.json`, schema_version "1.1"). Runs recorded before the package
+arrived use the provisional `m0-run-manifest-v0` schema (evaluation/schemas/) and stay
+verifiable. Approvals follow SIGNING_PROTOCOL.md v1.1. The registry only VERIFIES;
+private signing keys are refused. Tier 3 manifests are refused (Tier 3 disabled).
 """
 
 from __future__ import annotations
 
 import argparse
+import base64
+import binascii
 import fcntl
 import hashlib
 import importlib.metadata
 import json
 import os
 import platform
+import re
 import subprocess
 import sys
 from collections.abc import Callable, Mapping, Sequence
@@ -44,10 +50,13 @@ from cryptography.hazmat.primitives.asymmetric.ed25519 import (
     Ed25519PrivateKey,
     Ed25519PublicKey,
 )
-from cryptography.hazmat.primitives.serialization import Encoding, PublicFormat
 from jsonschema import Draft202012Validator
 
 SCHEMA_DIR = Path(__file__).resolve().parent / "schemas"
+SPEC_SCHEMA_DIR = Path(__file__).resolve().parent / "spec" / "haplous_eval_v1_1" / "schemas"
+# Canonical run_id allows any 1-128 chars; it is also a directory name here, so keep it path-safe.
+RUN_ID_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$")
+PLACEHOLDER_RE = re.compile(r"^(sha256:)?0{64}$|^0{40}$")
 REPO_ROOT = Path(__file__).resolve().parents[1]
 GENESIS_HASH = "0" * 64
 
@@ -119,14 +128,18 @@ def sha256_hex(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 
 
-def _validator(name: str) -> Draft202012Validator:
-    schema = strict_loads((SCHEMA_DIR / name).read_bytes())
+def _validator(name: str, directory: Path = SCHEMA_DIR) -> Draft202012Validator:
+    schema = strict_loads((directory / name).read_bytes())
     Draft202012Validator.check_schema(schema)
     return Draft202012Validator(schema, format_checker=Draft202012Validator.FORMAT_CHECKER)
 
 
 MANIFEST_VALIDATOR = _validator("run_manifest.schema.json")
 EVENT_VALIDATOR = _validator("ledger_event.schema.json")
+V11 = {
+    name: _validator(f"{name}.schema.json", SPEC_SCHEMA_DIR)
+    for name in ("manifest", "ledger-event", "approval-envelope", "authorization-payload")
+}
 
 
 def schema_errors(validator: Draft202012Validator, value: Any) -> list[str]:
@@ -219,39 +232,85 @@ def collect_provenance(
 
 
 # --------------------------------------------------------------------------
-# Test-only Ed25519 approvals
+# Approvals: SIGNING_PROTOCOL.md v1.1 verification (no signing in this process)
 # --------------------------------------------------------------------------
 
 
-def public_key_hex(key: Ed25519PublicKey) -> str:
-    return key.public_bytes(Encoding.Raw, PublicFormat.Raw).hex()
+def payload_digest(payload: Mapping[str, Any]) -> str:
+    """sha256 over JCS of the ENTIRE immutable authorization payload (protocol step 2)."""
+    return "sha256:" + sha256_hex(canonical_bytes(payload))
 
 
-def sign_approval(private_key: Ed25519PrivateKey, record: Mapping[str, Any]) -> dict[str, Any]:
-    """TEST-ONLY. Sign {run_id, manifest_digest, decision, approver, decided_at}."""
-    body = {k: record[k] for k in ("run_id", "manifest_digest", "decision", "approver", "decided_at")}
-    if body["decision"] not in ("approved", "denied"):
-        raise RegistryError("decision must be 'approved' or 'denied'")
-    parse_ts(body["decided_at"])
-    body["public_key"] = public_key_hex(private_key.public_key())
-    return {**body, "signature": private_key.sign(canonical_bytes(body)).hex()}
+def signing_message(envelope: Mapping[str, Any]) -> bytes:
+    """Exact signed bytes: JCS of the envelope with ONLY signature_ed25519_base64 removed."""
+    return canonical_bytes({k: v for k, v in envelope.items() if k != "signature_ed25519_base64"})
 
 
-def _decision_digest(signed: Mapping[str, Any]) -> str:
-    return sha256_hex(canonical_bytes({k: v for k, v in signed.items() if k != "signature"}))
+def _parse_rfc3339(text: str) -> datetime:
+    value = datetime.fromisoformat(text.replace("z", "Z"))
+    if value.tzinfo is None:
+        raise RegistryError(f"timestamp without offset: {text!r}")
+    return value
 
 
-def verify_approval(signed: Mapping[str, Any], trusted_public_keys: set[str]) -> None:
-    body = {k: v for k, v in signed.items() if k != "signature"}
-    if set(body) != {"run_id", "manifest_digest", "decision", "approver", "decided_at", "public_key"}:
-        raise RegistryError(f"approval has unexpected fields: {sorted(body)}")
-    if body["public_key"] not in trusted_public_keys:
-        raise RegistryError("approval signed by an untrusted key")
+def _public_key(material: Any) -> Ed25519PublicKey:
+    # The registry is an agent-side process: it must never hold signing keys.
+    if isinstance(material, Ed25519PrivateKey) or (isinstance(material, bytes) and len(material) != 32):
+        raise RegistryError("private or malformed key material refused; supply a 32-byte Ed25519 public key")
+    if isinstance(material, Ed25519PublicKey):
+        return material
+    if isinstance(material, bytes):
+        return Ed25519PublicKey.from_public_bytes(material)
+    raise RegistryError(f"unsupported key material type {type(material).__name__}")
+
+
+def verify_authorization(
+    payload: Mapping[str, Any],
+    envelope: Mapping[str, Any],
+    trusted_keys: Mapping[str, Mapping[str, Any]],
+    now: datetime,
+) -> dict[str, Any]:
+    """Protocol steps 1, 5 and 6(b)-(e). Raises on any failure; returns the verified decision.
+
+    trusted_keys: signer_key_id -> {"public_key": 32 raw bytes, "approver_id": str}.
+    Nonce one-time use (f) and run binding (g) need ledger state: see Registry.record_approval.
+    """
+    payload = strict_loads(canonical_bytes(payload))  # I-JSON domain (lone surrogates, big ints)
+    envelope = strict_loads(canonical_bytes(envelope))
+    for name, value in (("authorization-payload", payload), ("approval-envelope", envelope)):
+        errors = schema_errors(V11[name], value)
+        if errors:
+            raise RegistryError(f"{name} invalid: {errors}")
+    key_entry = trusted_keys.get(envelope["signer_key_id"])
+    if key_entry is None:
+        raise RegistryError(f"untrusted signer_key_id {envelope['signer_key_id']!r}")
+    key = _public_key(key_entry["public_key"])
     try:
-        key = Ed25519PublicKey.from_public_bytes(bytes.fromhex(body["public_key"]))
-        key.verify(bytes.fromhex(signed["signature"]), canonical_bytes(body))
-    except (InvalidSignature, ValueError, KeyError) as exc:
+        signature = base64.b64decode(envelope["signature_ed25519_base64"], validate=True)
+        key.verify(signature, signing_message(envelope))
+    except (InvalidSignature, binascii.Error, ValueError) as exc:
         raise RegistryError("approval signature invalid") from exc
+    if envelope["approver_id"] != key_entry["approver_id"]:
+        raise RegistryError("approver_id is not the identity bound to signer_key_id")
+    if envelope["request_id"] != payload["request_id"]:
+        raise RegistryError("request_id does not match the authorization payload")
+    if envelope["payload_digest"] != payload_digest(payload):
+        raise RegistryError("payload_digest does not match the recomputed payload digest")
+    issued, expires = _parse_rfc3339(payload["issued_at"]), _parse_rfc3339(payload["expires_at"])
+    signed_at = _parse_rfc3339(envelope["signed_at"])
+    if not issued <= signed_at <= expires:
+        raise RegistryError("approval signed outside the payload validity window")
+    if now > expires:
+        raise RegistryError("authorization expired")
+    return {"decision": envelope["decision"], "payload_digest": envelope["payload_digest"],
+            "nonce": payload["nonce"], "analysis_code_digest": payload["analysis_code_digest"]}
+
+
+# Payload digests M0 has no artifact to compare against; recorded, never reported as checked.
+UNCHECKED_AUTHORIZATION_FIELDS = (
+    "candidate_digest", "incumbent_digest", "policy_checkpoint_digest", "benchmark_digest",
+    "trusted_runner_digest", "scorer_digest", "preflight_report_digest", "variant_registry_digest",
+)
 
 
 # --------------------------------------------------------------------------
@@ -365,7 +424,10 @@ class Registry:
             value = strict_loads(raw)
         except RegistryError as exc:
             self._reject(raw, [str(exc)])
-        errors = schema_errors(MANIFEST_VALIDATOR, value)
+        if isinstance(value, dict) and value.get("schema_version") == "1.1":
+            errors = schema_errors(V11["manifest"], value) + _v11_manifest_policy_errors(value)
+        else:
+            errors = schema_errors(MANIFEST_VALIDATOR, value)
         if errors:
             self._reject(raw, errors)
         run_id = value["run_id"]
@@ -397,25 +459,46 @@ class Registry:
         payload = {"artifacts": self._hash_artifacts(run_id), "exit_code": exit_code, "summary": dict(summary or {})}
         self._transition(run_id, "completed" if success else "failed", payload)
 
-    def record_approval(self, run_id: str, signed: Mapping[str, Any], trusted_public_keys: set[str]) -> None:
-        verify_approval(signed, trusted_public_keys)
-        if signed["run_id"] != run_id or signed["manifest_digest"] != self.manifest_digest(run_id):
-            raise RegistryError("approval does not bind to this run's manifest")
+    def record_approval(
+        self,
+        run_id: str,
+        payload: Mapping[str, Any],
+        envelope: Mapping[str, Any],
+        trusted_keys: Mapping[str, Mapping[str, Any]],
+        now: datetime | None = None,
+    ) -> dict[str, Any]:
+        """Verify per SIGNING_PROTOCOL v1.1 and append the decision (APPROVED or REJECTED).
 
-        decision = _decision_digest(signed)
+        Recording is not authorization to run anything: Tier 3 stays disabled, and
+        `authorized` is true only for a verified APPROVED decision.
+        """
+        verified = verify_authorization(payload, envelope, trusted_keys, now or self.clock())
+        manifest = self.manifest(run_id)
+        if manifest.get("schema_version") != "1.1":
+            raise RegistryError("only v1.1 manifests can be bound to an authorization")
+        if manifest["analysis_code_digest"] != verified["analysis_code_digest"]:  # protocol 6(g)
+            raise RegistryError("authorization analysis_code_digest does not match the run manifest")
+        record = {
+            "payload": dict(payload),
+            "envelope": dict(envelope),
+            "payload_digest": verified["payload_digest"],
+            "decision": verified["decision"],
+            "authorized": verified["decision"] == "APPROVED",
+            "unchecked": list(UNCHECKED_AUTHORIZATION_FIELDS),
+        }
 
         def decide(history: list[dict[str, Any]]) -> str:
-            # Replay: one decision is recorded at most once, anywhere in the ledger. Keyed on the
-            # signed body, not the signature bytes, so it does not rely on signature non-malleability.
-            if any(e["event"] == "approval_recorded" and _decision_digest(e["payload"]["approval"]) == decision
+            # 6(f): one-time nonce, checked against the whole ledger under the lock.
+            if any(e["event"] == "approval_recorded" and e["payload"]["approval"]["payload"]["nonce"] == verified["nonce"]
                    for e in history):
-                raise RegistryError("approval replay: this signed decision is already recorded")
+                raise RegistryError("replayed nonce: this authorization was already used")
             state = _state_in(history, run_id)
             if state is None:
                 raise RegistryError(f"unknown run {run_id!r}")
             return state
 
-        self._append(run_id, "approval_recorded", {"approval": dict(signed)}, decide)
+        self._append(run_id, "approval_recorded", {"approval": record}, decide)
+        return record
 
     # ----- retrieval / verification / comparison -----
 
@@ -441,7 +524,7 @@ class Registry:
             "approvals": [e["payload"]["approval"] for e in events if e["event"] == "approval_recorded"],
         }
 
-    def check(self, run_id: str, trusted_public_keys: set[str] | None = None) -> list[str]:
+    def check(self, run_id: str, trusted_keys: Mapping[str, Mapping[str, Any]] | None = None) -> list[str]:
         """Read-only integrity check; returns a list of problems (empty == intact)."""
         problems: list[str] = []
         try:
@@ -465,15 +548,19 @@ class Registry:
             elif recorded[path]["sha256"] != actual[path]["sha256"]:
                 problems.append(f"artifact hash mismatch: {path}")
         for approval in record["approvals"]:
-            try:
-                verify_approval(approval, trusted_public_keys or {approval.get("public_key", "")})
-            except RegistryError as exc:
-                problems.append(str(exc))
+            if payload_digest(approval["payload"]) != approval["payload_digest"]:
+                problems.append("recorded approval payload does not match its digest")
+            if trusted_keys is not None:  # re-verify as of signing time; expiry was checked when recorded
+                try:
+                    signed_at = _parse_rfc3339(approval["envelope"]["signed_at"])
+                    verify_authorization(approval["payload"], approval["envelope"], trusted_keys, signed_at)
+                except RegistryError as exc:
+                    problems.append(str(exc))
         return problems
 
-    def verify(self, run_id: str, trusted_public_keys: set[str] | None = None) -> list[str]:
+    def verify(self, run_id: str, trusted_keys: Mapping[str, Mapping[str, Any]] | None = None) -> list[str]:
         """check() and record the verdict as a lifecycle event."""
-        problems = self.check(run_id, trusted_public_keys)
+        problems = self.check(run_id, trusted_keys)
         if self.state(run_id) in ("COMPLETED", "FAILED", "VERIFIED"):
             if problems:
                 self._transition(run_id, "integrity_failed", {"problems": problems})
@@ -486,12 +573,11 @@ class Registry:
         flat_a, flat_b = _flatten(a["manifest"]), _flatten(b["manifest"])
         arts_a = {x["path"]: x["sha256"] for x in a["artifacts"]}
         arts_b = {x["path"]: x["sha256"] for x in b["artifacts"]}
-        gpu_a, gpu_b = a["manifest"]["provenance"].get("gpu"), b["manifest"]["provenance"].get("gpu")
         return {
             "runs": [run_a, run_b],
             "outcomes": [a["outcome"], b["outcome"]],
             # Not comparable across GPU types without an explicit cross-hardware A/A check.
-            "hardware_comparable": [g["name"] for g in gpu_a or []] == [g["name"] for g in gpu_b or []],
+            "hardware_comparable": _gpu_names(a["manifest"]) == _gpu_names(b["manifest"]),
             "manifest_differences": {
                 k: [flat_a.get(k), flat_b.get(k)]
                 for k in sorted(flat_a.keys() | flat_b.keys())
@@ -504,9 +590,73 @@ class Registry:
         }
 
 
+def _v11_manifest_policy_errors(m: Mapping[str, Any]) -> list[str]:
+    """Rules the canonical schema states in prose but cannot express."""
+    errors = []
+    if not RUN_ID_RE.match(m["run_id"]):
+        errors.append(f"run_id {m['run_id']!r} is not path-safe")
+    if m["tier"] == 3:
+        errors.append("tier 3 is disabled in M0 (no protected runner)")
+    placeholders = sorted(k for k, v in _flatten(m).items() if isinstance(v, str) and PLACEHOLDER_RE.match(v))
+    if placeholders:  # "All supplied digests must identify real bytes, not placeholders."
+        errors.append(f"placeholder digests/commits: {placeholders}")
+    return errors
+
+
+def _gpu_names(m: Mapping[str, Any]) -> list[str]:
+    if m.get("schema_version") == "1.1":
+        gpu = m["environment"].get("gpu")
+        return [gpu] if gpu else []
+    return [g["name"] for g in m["provenance"].get("gpu") or []]
+
+
 def _state_in(history: Sequence[Mapping[str, Any]], run_id: str) -> str | None:
     lifecycle = [e for e in history if e["run_id"] == run_id and e["event"] in TRANSITIONS]
     return lifecycle[-1]["state"] if lifecycle else None
+
+
+_V11_EVENT_TYPES = {"registered": "RUN_REGISTERED", "started": "RUN_STARTED",
+                    "completed": "RUN_FINISHED", "failed": "RUN_FINISHED"}
+
+
+def export_v11_events(registry: Registry, run_id: str) -> dict[str, Any]:
+    """Project one run's M0 events onto ledger-event.schema.json v1.1, each schema-validated.
+
+    M0 stores one global hash-chained ledger; v1.1 events are per run with their own
+    sequence and previous_event_digest chain. M0 events with no v1.1 event_type
+    (verified, integrity_failed) are listed in `unmapped_m0_events`, not relabelled.
+    """
+    events: list[dict[str, Any]] = []
+    unmapped: list[dict[str, Any]] = []
+    prev: str | None = None
+    manifest_digest = "sha256:" + registry.manifest_digest(run_id)
+    for e in registry._run_events(run_id):
+        details: dict[str, Any] = {"m0_event": e["event"], "m0_seq": e["seq"], "m0_hash": e["hash"]}
+        evidence = None
+        if e["event"] == "approval_recorded":
+            approval = e["payload"]["approval"]
+            event_type, actor_type, actor_id = approval["decision"], "human", approval["envelope"]["approver_id"]
+            details["payload_digest"] = approval["payload_digest"]
+        elif e["event"] in _V11_EVENT_TYPES:
+            event_type, actor_type, actor_id = _V11_EVENT_TYPES[e["event"]], "system", "m0-registry"
+            if e["event"] in ("completed", "failed"):
+                details.update(outcome=e["event"], exit_code=e["payload"]["exit_code"])
+                evidence = "sha256:" + sha256_hex(canonical_bytes(e["payload"]["artifacts"]))
+        else:
+            unmapped.append({"m0_seq": e["seq"], "m0_event": e["event"]})
+            continue
+        event = {
+            "schema_version": "1.1", "event_id": f"{run_id}:{e['seq']}", "run_id": run_id,
+            "sequence": len(events), "occurred_at": e["at"], "actor_id": actor_id, "actor_type": actor_type,
+            "event_type": event_type, "previous_event_digest": prev, "manifest_digest": manifest_digest,
+            "evidence_digest": evidence, "details": details,
+        }
+        errors = schema_errors(V11["ledger-event"], event)
+        if errors:
+            raise RegistryError(f"v1.1 projection invalid for {run_id} seq {e['seq']}: {errors}")
+        prev = "sha256:" + sha256_hex(canonical_bytes(event))
+        events.append(event)
+    return {"events": events, "unmapped_m0_events": unmapped}
 
 
 def _flatten(value: Any, prefix: str = "") -> dict[str, Any]:

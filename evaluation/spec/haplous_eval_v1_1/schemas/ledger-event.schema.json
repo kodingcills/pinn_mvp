@@ -1,0 +1,107 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://haplous.dev/eval/schemas/v1.1/ledger-event.schema.json",
+  "title": "Haplous Eval Append-Only Ledger Event v1.1",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.1"
+    },
+    "event_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "run_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "sequence": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "occurred_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "actor_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "actor_type": {
+      "enum": [
+        "agent",
+        "preflight",
+        "human",
+        "runner",
+        "scorer",
+        "reporter",
+        "system"
+      ]
+    },
+    "event_type": {
+      "enum": [
+        "RUN_REGISTERED",
+        "PREFLIGHT_PASSED",
+        "PREFLIGHT_FAILED",
+        "APPROVAL_REQUESTED",
+        "APPROVED",
+        "REJECTED",
+        "RUN_STARTED",
+        "RUN_ABORTED",
+        "RUN_FINISHED",
+        "SCORED",
+        "CLAIM_ACCEPTED",
+        "CLAIM_REJECTED",
+        "INCONCLUSIVE",
+        "DETAILS_RELEASED"
+      ]
+    },
+    "previous_event_digest": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "manifest_digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "evidence_digest": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "details": {
+      "type": "object"
+    }
+  },
+  "required": [
+    "schema_version",
+    "event_id",
+    "run_id",
+    "sequence",
+    "occurred_at",
+    "actor_id",
+    "actor_type",
+    "event_type",
+    "previous_event_digest",
+    "manifest_digest",
+    "evidence_digest",
+    "details"
+  ]
+}

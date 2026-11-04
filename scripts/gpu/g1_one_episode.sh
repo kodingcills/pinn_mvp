@@ -8,11 +8,15 @@
 #   CKPT_DIR, TOKENIZER_DIR local pi0.5 PyTorch checkpoint + PaliGemma tokenizer (from the pinned HF revision)
 #   CKPT_URI                hf://<repo>@<revision_sha>/<path> recorded by scripts/verify_hf_checkpoint.py
 #   LEROBOT_PY, OPENPI_ROOT policy-server python and openpi checkout (websocket client)
-# Optional: TERMINATE_CMD   command that destroys this instance (e.g. 'runpodctl remove pod $RUNPOD_POD_ID')
+#   TERMINATE_CMD           command that DESTROYS this billable instance (e.g. 'runpodctl remove pod $RUNPOD_POD_ID').
+#                           Required: a process exit alone leaves the instance running and billing.
+# The EXIT trap runs on normal exit and on SIGTERM/SIGINT/SIGHUP (checked), NOT on SIGKILL or a
+# hung host: also set the provider's own spending limit / auto-terminate.
 set -euo pipefail
 
 : "${HOURLY_USD:?}" "${MAX_USD:?}" "${PERSIST_DEST:?}" "${CKPT_DIR:?}" "${TOKENIZER_DIR:?}" "${CKPT_URI:?}"
 : "${LEROBOT_PY:?}" "${OPENPI_ROOT:?}"
+: "${TERMINATE_CMD:?TERMINATE_CMD is required: process exit alone does not stop billing}"
 HAPLOUS=${HAPLOUS:-$PWD}
 LIBERO=${LIBERO:-$HAPLOUS/../LIBERO-Dynamic}
 LIBERO_PY=${LIBERO_PY:-$HAPLOUS/../libero-env/bin/python}
@@ -30,7 +34,11 @@ finish() {
   echo "[g1] exit=$rc; syncing evidence to $PERSIST_DEST"
   rclone copy "$OUT" "$PERSIST_DEST/m0_registry" --checksum || echo "[g1] WARNING: sync failed"
   rclone copy "$HAPLOUS/g1_logs" "$PERSIST_DEST/g1_logs" --checksum || true
-  if [ -n "${TERMINATE_CMD:-}" ]; then eval "$TERMINATE_CMD"; fi
+  for attempt in 1 2 3; do
+    if eval "$TERMINATE_CMD"; then echo "[g1] terminate command succeeded (attempt $attempt)"; return; fi
+    sleep 10
+  done
+  echo "[g1] ERROR: TERMINATE_CMD failed 3 times; INSTANCE MAY STILL BE BILLING"
 }
 trap finish EXIT
 
