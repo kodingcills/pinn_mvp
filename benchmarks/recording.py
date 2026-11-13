@@ -14,10 +14,16 @@ this in an M0 run.
 """
 from __future__ import annotations
 
+import os
+
+# Read when pyarrow first loads. Under mimalloc, recorder peak-RSS overhead grew 2.8 MB
+# from the 1.1 s to the 10.9 s slide horizon; under the system pool 0.4 MB (measured).
+# pa.set_memory_pool() after import did not help (measured).
+os.environ.setdefault("ARROW_DEFAULT_MEMORY_POOL", "system")
+
 import argparse
 import json
 import math
-import os
 import sys
 import time
 from collections.abc import Iterator
@@ -289,10 +295,6 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     if args.out is None and not args.no_record:
         parser.error("--out or $M0_ARTIFACT_DIR is required")
-    # mimalloc (Arrow's default) grabbed a fresh ~2 MB segment at the final flush of a
-    # 10.9 s slide recording, stepping peak RSS with rollout length (measured); the
-    # system pool did not. IPC compression buffers take no pool argument, hence process-wide.
-    pa.set_memory_pool(pa.system_memory_pool())
     scenario = scenario_by_id(args.scenario, args.offset_m)
     run, realization, _ = run_episode(scenario, None if args.no_record else args.out, args.chunk_ticks)
     machine = realization.machine
