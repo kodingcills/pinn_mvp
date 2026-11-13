@@ -1,0 +1,10 @@
+{
+  "attempts": 1,
+  "completed_at_utc": "2026-11-13T12:59:23.502069+00:00",
+  "episodes": 8,
+  "episodes_sha256": "59658cbe340433a482ac932f9c13de1ee2218d8209a79c5e2ca557f9ce868d78",
+  "experiment_id": "m4-hes-m4-e2-dryrun-stress",
+  "shard_id": "m4-hes-m4-e2-dryrun-stress-s00000",
+  "status": "COMPLETE",
+  "wall_s": 5.504887450999377
+}

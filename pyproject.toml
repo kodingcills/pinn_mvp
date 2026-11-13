@@ -23,6 +23,11 @@ registry = [
     "rfc8785>=0.1.4",
     "cryptography>=43",
 ]
+# Recording replay: Arrow state stream and the derived Rerun .rrd view.
+replay = [
+    "pyarrow>=25.0.1",
+    "rerun-sdk>=0.43.1",
+]
 # Development and CI tooling.
 dev = [
     "pytest>=9.1.1",
@@ -40,6 +45,7 @@ all = [
     "pyarrow>=25.0.1",
     "pyyaml>=6.0",
     "pytest>=9.1.1",
+    "rerun-sdk>=0.43.1",
 ]
 
 [project.scripts]

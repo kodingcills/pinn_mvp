@@ -1,0 +1,43 @@
+{
+  "artifact_policy": [
+    "all_summaries"
+  ],
+  "benchmark": "heb",
+  "benchmark_version": "heb-0.2.0",
+  "claims": [],
+  "description": "M4 dryrun: m4_stress@v1",
+  "experiment_class": "development",
+  "experiment_id": "m4-hes-m4-e2-dryrun-stress",
+  "haplous_version": "0.5.0",
+  "metrics": [
+    "task_success",
+    "bounded_success",
+    "coverage",
+    "violation_given_acceptance",
+    "false_refusal_rate",
+    "refusals_attainability_unknown",
+    "preservation_vs_direct",
+    "unnecessary_intervention_vs_direct",
+    "recovery_bounded_success",
+    "time_per_bounded_success",
+    "intervention_overhead_vs_direct",
+    "paired_wins_and_regressions"
+  ],
+  "policy_checkpoint": null,
+  "population": {
+    "n": 2,
+    "seed": 1113,
+    "slide_fraction": 0.28
+  },
+  "reference_arm": "bare_behavior",
+  "schema_version": "haplous-experiment-v1",
+  "sharding": {
+    "shard_size": 10
+  },
+  "systems": [
+    "bare_behavior",
+    "g1_incumbent",
+    "haplous_mediated",
+    "competent_supervisor"
+  ]
+}

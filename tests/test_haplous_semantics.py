@@ -112,6 +112,12 @@ def make_intent(**overrides):
 class HoldBehavior:
     """A scripted behavior: holds the observed pose with a fixed stiffness."""
 
+    # step() emits only a pose target with axial stiffness, never a force
+    # reference: pure impedance, which std_caps() offers.
+    required_command_modes = frozenset({CommandMode.CARTESIAN_IMPEDANCE})
+    authorized_substitutes: frozenset = frozenset()
+    non_substitutable_modes: frozenset = frozenset()
+
     def __init__(self) -> None:
         self.begin_calls = 0
         self.k_z = 1000.0

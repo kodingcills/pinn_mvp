@@ -24,3 +24,9 @@ MUJOCO_LOG.TXT
 # digests in results/r05_freeze.json and referenced from every trial row.
 results/r05_traces_dev/
 results/r05_traces_holdout/
+
+# Derived replay outputs (.rrd/.mp4); their hashes live in results/recordings/*.json
+/replays/
+
+# M4 bulk recordings: regenerable from results/m4/<phase>/replay_index.jsonl (digests + commands)
+results/m4/recordings_store/

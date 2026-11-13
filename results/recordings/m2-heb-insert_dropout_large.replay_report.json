@@ -1,0 +1,94 @@
+{
+  "derived": {
+    "mp4": {
+      "bytes": 15303,
+      "fps": 30,
+      "frames": 55,
+      "path": "replays/m2-heb-insert_dropout_large/m2-heb-insert_dropout_large.mp4",
+      "sha256": "56257e50f66a92a8e10bb55fe16d2d84750ba91f0bd03240fe7d840beededcec"
+    },
+    "rrd": {
+      "bytes": 574062,
+      "path": "replays/m2-heb-insert_dropout_large/m2-heb-insert_dropout_large.rrd",
+      "sha256": "3c4e113e0174d6ceb3fa511366cd8f8bdbd7673786890699e6113cdb458a1303"
+    }
+  },
+  "events": 11,
+  "forbidden_modules_loaded": [],
+  "format": "haplous-mujoco-recording-v1",
+  "gates": {
+    "10_aa_noninterference": true,
+    "11_planted_defects": true,
+    "1_record": true,
+    "2_m0_verified": true,
+    "3_no_runtime_imports": true,
+    "4_pose_matches": true,
+    "5_event_sync": true,
+    "6_mp4": true,
+    "7_rrd_verify": true,
+    "8_hashes_match_m0": true,
+    "9_bounded_rss": true
+  },
+  "m0_artifacts": [
+    {
+      "bytes": 2011,
+      "path": "events.jsonl",
+      "sha256": "4fd974677d7a0235bcbc49dee98eb2de490d6c2234e4aff3c344ac8dc2de91f8"
+    },
+    {
+      "bytes": 956,
+      "path": "metadata.json",
+      "sha256": "d17d51acffcd354b0dce22e23177e400e1e27fe7614ca965af0a61a5420012b2"
+    },
+    {
+      "bytes": 35717,
+      "path": "model.mjb",
+      "sha256": "eb193c452207d7d7aa42a4b95495a48eb4e1d87379f42ba0b38e8910439dfffc"
+    },
+    {
+      "bytes": 7956,
+      "path": "model.xml",
+      "sha256": "79f00c9794eee84ec9bd12266618738dd58d3f6f62282b7afba7409839b77d60"
+    },
+    {
+      "bytes": 522786,
+      "path": "state.arrow",
+      "sha256": "91fa4f1fa0e35694ce3786a231329dc65ede2d3235758de9b23c6612767c7299"
+    },
+    {
+      "bytes": 0,
+      "path": "stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 180,
+      "path": "stdout.txt",
+      "sha256": "086ef2526fcf398159987deaf8a812497e6ba02d9741601f5c4dc91a4542d9a1"
+    },
+    {
+      "bytes": 2095890,
+      "path": "telemetry.jsonl",
+      "sha256": "e4bbf4d328e1bd8797f4948c4e253caf026034cd00cd6f226c6f815c4a14f260"
+    }
+  ],
+  "m0_manifest_sha256": "12308175351db107a30129ce89755fca53821ef187e4b8023e4216099c36265d",
+  "n_ticks": 3651,
+  "outcome": {
+    "bounded_success": true,
+    "disposition": "COMPLETE",
+    "graded_disposition": "COMPLETE",
+    "hard_violations": [],
+    "reason": null,
+    "refusal_codes": [],
+    "task_success": true
+  },
+  "pose_check": {
+    "max_abs_error_m": 0.0,
+    "observations_compared": 3251,
+    "pass": true,
+    "tolerance_m": 1e-09
+  },
+  "run_id": "m2-heb-insert_dropout_large",
+  "sim_duration_s": 1.825,
+  "tracked_site": "peg_tip"
+}

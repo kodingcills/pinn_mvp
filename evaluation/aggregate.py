@@ -13,8 +13,9 @@ Row contract (per trial):
 from __future__ import annotations
 
 import json
+from collections.abc import Iterable, Mapping
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Any
 
 import numpy as np
 
@@ -24,6 +25,7 @@ from evaluation.taxonomy import classify, summarize
 __all__ = [
     "load_rows",
     "arm_summary",
+    "pair_by_scenario",
     "paired_comparison",
     "campaign_summary",
 ]
@@ -85,6 +87,39 @@ def arm_summary(rows: list[dict[str, Any]], force_limit_n: float = 25.0) -> dict
     return summary
 
 
+SCENARIO_OWNED = ("tags", "seed")  # equal for every arm that ran the same scenario
+
+
+def pair_by_scenario(
+    rows_a: Iterable[Mapping[str, Any]], rows_b: Iterable[Mapping[str, Any]]
+) -> tuple[dict[str, Mapping[str, Any]], dict[str, Mapping[str, Any]], list[str]]:
+    """Index two arms by scenario id and return (a, b, shared ids). Raises
+    ValueError on rows that would pair ambiguously or across scenarios."""
+
+    def index(rows: Iterable[Mapping[str, Any]]) -> dict[str, Mapping[str, Any]]:
+        out: dict[str, Mapping[str, Any]] = {}
+        for r in rows:
+            key = str(r.get("scenario_id") or r.get("episode_id"))
+            if key in out:
+                raise ValueError(f"cannot pair: scenario {key!r} appears twice in one arm")
+            out[key] = r
+        arms = {r.get("arm") or r.get("system") for r in out.values()} - {None}
+        if len(arms) > 1:
+            raise ValueError(f"cannot pair: one arm holds rows of {sorted(arms)}")
+        return out
+
+    def norm(v: Any) -> Any:
+        return list(v) if isinstance(v, (list, tuple)) else v  # JSON lists vs in-memory tuples
+
+    a, b = index(rows_a), index(rows_b)
+    shared = sorted(set(a) & set(b))
+    for s in shared:
+        for field in SCENARIO_OWNED:
+            if field in a[s] and field in b[s] and norm(a[s][field]) != norm(b[s][field]):
+                raise ValueError(f"cannot pair scenario {s!r}: arms disagree on {field}")
+    return a, b, shared
+
+
 def paired_comparison(
     rows_a: list[dict[str, Any]],
     rows_b: list[dict[str, Any]],
@@ -92,9 +127,7 @@ def paired_comparison(
 ) -> dict:
     """Pair rows by scenario_id: McNemar on success/bounded-success,
     paired bootstrap on a continuous metric."""
-    a = {r["scenario_id"]: r for r in rows_a}
-    b = {r["scenario_id"]: r for r in rows_b}
-    shared = sorted(set(a) & set(b))
+    a, b, shared = pair_by_scenario(rows_a, rows_b)
     if not shared:
         raise ValueError("no shared scenario ids to pair on")
 

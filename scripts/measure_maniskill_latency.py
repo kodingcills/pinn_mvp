@@ -116,6 +116,11 @@ class TimingMachine:
 
 
 class TimingBehavior:
+    # OD-1: emits the inner policy's commands, so it carries its contract.
+    required_command_modes = property(lambda self: self._inner.required_command_modes)
+    authorized_substitutes = property(lambda self: self._inner.authorized_substitutes)
+    non_substitutable_modes = property(lambda self: self._inner.non_substitutable_modes)
+
     def __init__(self, inner) -> None:
         self._inner = inner
         self.step_us: list[float] = []

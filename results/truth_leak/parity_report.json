@@ -1,0 +1,3093 @@
+{
+ "fields_compared": [
+  "reported_disposition",
+  "reason",
+  "refusal_codes",
+  "graded_disposition",
+  "task_success",
+  "bounded_success",
+  "hard_violations",
+  "observations"
+ ],
+ "fields_excluded": [
+  "wall_s",
+  "task_metrics",
+  "tags"
+ ],
+ "goal_description_after": {
+  "insert_command_rejection_persistent": "peg_insertion task under declared requirements: initial_offset_m, position_tolerance_m, state_max_age_s",
+  "insert_command_rejection_transient": "peg_insertion task under declared requirements: initial_offset_m, position_tolerance_m, state_max_age_s",
+  "insert_deadline_2s": "peg_insertion task under declared requirements: deadline_s, initial_offset_m, position_tolerance_m, state_max_age_s",
+  "insert_dropout_large": "peg_insertion task under declared requirements: initial_offset_m, position_tolerance_m, state_max_age_s",
+  "insert_dropout_small": "peg_insertion task under declared requirements: initial_offset_m, position_tolerance_m, state_max_age_s",
+  "insert_force_limit_12n": "peg_insertion task under declared requirements: initial_offset_m, max_process_force_n, position_tolerance_m, state_max_age_s",
+  "insert_force_limit_150n": "peg_insertion task under declared requirements: initial_offset_m, max_process_force_n, position_tolerance_m, state_max_age_s",
+  "insert_force_limit_2n": "peg_insertion task under declared requirements: initial_offset_m, max_process_force_n, position_tolerance_m, state_max_age_s",
+  "insert_geometry_deep_plate": "peg_insertion task under declared requirements: initial_offset_m, position_tolerance_m, state_max_age_s",
+  "insert_geometry_fine_facets": "peg_insertion task under declared requirements: initial_offset_m, position_tolerance_m, state_max_age_s",
+  "insert_geometry_tight_clearance": "peg_insertion task under declared requirements: initial_offset_m, position_tolerance_m, state_max_age_s",
+  "insert_machine_fault": "peg_insertion task under declared requirements: initial_offset_m, position_tolerance_m, state_max_age_s",
+  "insert_nominal": "peg_insertion task under declared requirements: initial_offset_m, position_tolerance_m, state_max_age_s",
+  "insert_offset_1mm": "peg_insertion task under declared requirements: initial_offset_m, position_tolerance_m, state_max_age_s",
+  "insert_offset_2mm": "peg_insertion task under declared requirements: initial_offset_m, position_tolerance_m, state_max_age_s",
+  "insert_offset_5mm_infeasible": "peg_insertion task under declared requirements: initial_offset_m, position_tolerance_m, state_max_age_s",
+  "insert_stale_mid_motion": "peg_insertion task under declared requirements: initial_offset_m, position_tolerance_m, state_max_age_s",
+  "insert_stale_persistent": "peg_insertion task under declared requirements: initial_offset_m, position_tolerance_m, state_max_age_s",
+  "slide_command_rejection_persistent": "constrained_slide task under declared requirements: initial_offset_m, max_process_force_n, min_process_force_n, position_tolerance_m, state_max_age_s",
+  "slide_deadline_infeasible": "constrained_slide task under declared requirements: deadline_s, initial_offset_m, max_process_force_n, min_process_force_n, position_tolerance_m, state_max_age_s",
+  "slide_disturbance_no_recovery": "constrained_slide task under declared requirements: initial_offset_m, max_process_force_n, min_process_force_n, position_tolerance_m, state_max_age_s",
+  "slide_disturbance_recoverable": "constrained_slide task under declared requirements: initial_offset_m, max_process_force_n, min_process_force_n, position_tolerance_m, state_max_age_s",
+  "slide_disturbance_recoverable_ceiling": "constrained_slide task under declared requirements: initial_offset_m, max_process_force_n, min_process_force_n, position_tolerance_m, state_max_age_s",
+  "slide_disturbance_severe": "constrained_slide task under declared requirements: initial_offset_m, max_process_force_n, min_process_force_n, position_tolerance_m, state_max_age_s",
+  "slide_machine_fault": "constrained_slide task under declared requirements: initial_offset_m, max_process_force_n, min_process_force_n, position_tolerance_m, state_max_age_s",
+  "slide_nominal": "constrained_slide task under declared requirements: initial_offset_m, max_process_force_n, min_process_force_n, position_tolerance_m, state_max_age_s",
+  "slide_stale_mid_slide": "constrained_slide task under declared requirements: initial_offset_m, max_process_force_n, min_process_force_n, position_tolerance_m, state_max_age_s"
+ },
+ "id_in_any_description_after": false,
+ "legitimately_differing": {
+  "ExecutionIntent.goal_description": "legacy 'HEB scenario <id>' vs task-level text",
+  "evidence.intent_summary.goal_description": "copy of the above in runtime evidence"
+ },
+ "n_differing": 0,
+ "n_scenarios": 27,
+ "n_trials": 108,
+ "trials": [
+  {
+   "after": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "073f17c8f1d9fcb51f6c33bad04d0c9d6e6b694aa1a4dc8f46486ba953b9a12f",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "073f17c8f1d9fcb51f6c33bad04d0c9d6e6b694aa1a4dc8f46486ba953b9a12f",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "insert_nominal",
+   "system": "haplous_mediated"
+  },
+  {
+   "after": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "abd0a69f13cb43250640b311a381bdcc7f6f3de7a3e86a3e742127f32a140fbc",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "abd0a69f13cb43250640b311a381bdcc7f6f3de7a3e86a3e742127f32a140fbc",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "insert_nominal",
+   "system": "competent_supervisor"
+  },
+  {
+   "after": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "abd0a69f13cb43250640b311a381bdcc7f6f3de7a3e86a3e742127f32a140fbc",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "abd0a69f13cb43250640b311a381bdcc7f6f3de7a3e86a3e742127f32a140fbc",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "insert_nominal",
+   "system": "bare_behavior"
+  },
+  {
+   "after": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "fd25ac55426d34deeabf018d0975b078a1f9e20849e0e3336758b3745e527bfd",
+    "reason": "horizon_exhausted",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": true
+   },
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "fd25ac55426d34deeabf018d0975b078a1f9e20849e0e3336758b3745e527bfd",
+    "reason": "horizon_exhausted",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": true
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "insert_nominal",
+   "system": "direct_minimal"
+  },
+  {
+   "after": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "0e44b42268dd53a02c35dd7d053b0ed627c778ba00282c849647fc7679ad8ae8",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "0e44b42268dd53a02c35dd7d053b0ed627c778ba00282c849647fc7679ad8ae8",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "insert_offset_1mm",
+   "system": "haplous_mediated"
+  },
+  {
+   "after": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "1e1fe83cde418732e220b8d2fcf19870f8f7f1493ddf44c477c013bfa7ef34e4",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "1e1fe83cde418732e220b8d2fcf19870f8f7f1493ddf44c477c013bfa7ef34e4",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "insert_offset_1mm",
+   "system": "competent_supervisor"
+  },
+  {
+   "after": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "1e1fe83cde418732e220b8d2fcf19870f8f7f1493ddf44c477c013bfa7ef34e4",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "1e1fe83cde418732e220b8d2fcf19870f8f7f1493ddf44c477c013bfa7ef34e4",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "insert_offset_1mm",
+   "system": "bare_behavior"
+  },
+  {
+   "after": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "13c72e756025c05d2d901011074399e8612b7c08f5acda585f016ebe14ecbc24",
+    "reason": "horizon_exhausted",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": true
+   },
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "13c72e756025c05d2d901011074399e8612b7c08f5acda585f016ebe14ecbc24",
+    "reason": "horizon_exhausted",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": true
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "insert_offset_1mm",
+   "system": "direct_minimal"
+  },
+  {
+   "after": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "7077f13a8b40ec35133b1e4c57d358515e0caeeb3674d7d538f183af6035f5ec",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "7077f13a8b40ec35133b1e4c57d358515e0caeeb3674d7d538f183af6035f5ec",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "insert_offset_2mm",
+   "system": "haplous_mediated"
+  },
+  {
+   "after": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "4452398aaf467642521e0cc52692a72debe48062ba356841ac88fea3135a9da0",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "4452398aaf467642521e0cc52692a72debe48062ba356841ac88fea3135a9da0",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "insert_offset_2mm",
+   "system": "competent_supervisor"
+  },
+  {
+   "after": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "4452398aaf467642521e0cc52692a72debe48062ba356841ac88fea3135a9da0",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "4452398aaf467642521e0cc52692a72debe48062ba356841ac88fea3135a9da0",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "insert_offset_2mm",
+   "system": "bare_behavior"
+  },
+  {
+   "after": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "565a3ba3f9af53f16cc75706c758eed9c387af751752a020208426988e18a94f",
+    "reason": "horizon_exhausted",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": true
+   },
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "565a3ba3f9af53f16cc75706c758eed9c387af751752a020208426988e18a94f",
+    "reason": "horizon_exhausted",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": true
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "insert_offset_2mm",
+   "system": "direct_minimal"
+  },
+  {
+   "after": {
+    "bounded_success": false,
+    "graded_disposition": "REFUSED",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d",
+    "reason": "negotiation_refusal",
+    "refusal_codes": [
+     "unreachable_goal"
+    ],
+    "reported_disposition": "REFUSED",
+    "task_success": false
+   },
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "REFUSED",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d",
+    "reason": "negotiation_refusal",
+    "refusal_codes": [
+     "unreachable_goal"
+    ],
+    "reported_disposition": "REFUSED",
+    "task_success": false
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "insert_offset_5mm_infeasible",
+   "system": "haplous_mediated"
+  },
+  {
+   "after": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "251f8bf5566266d88af6266994b5ab7aac6ae690b51feb17862e3f61a7d843c1",
+    "reason": "horizon_exhausted",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "251f8bf5566266d88af6266994b5ab7aac6ae690b51feb17862e3f61a7d843c1",
+    "reason": "horizon_exhausted",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "insert_offset_5mm_infeasible",
+   "system": "competent_supervisor"
+  },
+  {
+   "after": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "251f8bf5566266d88af6266994b5ab7aac6ae690b51feb17862e3f61a7d843c1",
+    "reason": "horizon_exhausted",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "251f8bf5566266d88af6266994b5ab7aac6ae690b51feb17862e3f61a7d843c1",
+    "reason": "horizon_exhausted",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "insert_offset_5mm_infeasible",
+   "system": "bare_behavior"
+  },
+  {
+   "after": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "251f8bf5566266d88af6266994b5ab7aac6ae690b51feb17862e3f61a7d843c1",
+    "reason": "horizon_exhausted",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "251f8bf5566266d88af6266994b5ab7aac6ae690b51feb17862e3f61a7d843c1",
+    "reason": "horizon_exhausted",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "insert_offset_5mm_infeasible",
+   "system": "direct_minimal"
+  },
+  {
+   "after": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "hard_violations_count": 1,
+    "hard_violations_sha256": "7dea5b7a1f8100ec6d858c9d9a908392cb33bf0ec99acecfbaec0a46f9fbd150",
+    "observations_sha256": "e77c090bdb79183ea761381e234dc9267d1f159ae9604987260735f2096ef4ef",
+    "reason": "hard_constraint_process_force",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "hard_violations_count": 1,
+    "hard_violations_sha256": "7dea5b7a1f8100ec6d858c9d9a908392cb33bf0ec99acecfbaec0a46f9fbd150",
+    "observations_sha256": "e77c090bdb79183ea761381e234dc9267d1f159ae9604987260735f2096ef4ef",
+    "reason": "hard_constraint_process_force",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "insert_force_limit_2n",
+   "system": "haplous_mediated"
+  },
+  {
+   "after": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "hard_violations_count": 1,
+    "hard_violations_sha256": "7dea5b7a1f8100ec6d858c9d9a908392cb33bf0ec99acecfbaec0a46f9fbd150",
+    "observations_sha256": "073d75cf62d26264f18ed87b1588fe4bd47b791a5e505b4decb6f20e433f92b2",
+    "reason": "supervisor_force_limit",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "hard_violations_count": 1,
+    "hard_violations_sha256": "7dea5b7a1f8100ec6d858c9d9a908392cb33bf0ec99acecfbaec0a46f9fbd150",
+    "observations_sha256": "073d75cf62d26264f18ed87b1588fe4bd47b791a5e505b4decb6f20e433f92b2",
+    "reason": "supervisor_force_limit",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "insert_force_limit_2n",
+   "system": "competent_supervisor"
+  },
+  {
+   "after": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "hard_violations_count": 29370,
+    "hard_violations_sha256": "7f0dabd871d196d5c9454fd8ea8f15330c909f08d3be152ebedab7ed5d71c3f8",
+    "observations_sha256": "fd25ac55426d34deeabf018d0975b078a1f9e20849e0e3336758b3745e527bfd",
+    "reason": "horizon_exhausted",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "hard_violations_count": 29370,
+    "hard_violations_sha256": "7f0dabd871d196d5c9454fd8ea8f15330c909f08d3be152ebedab7ed5d71c3f8",
+    "observations_sha256": "fd25ac55426d34deeabf018d0975b078a1f9e20849e0e3336758b3745e527bfd",
+    "reason": "horizon_exhausted",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "insert_force_limit_2n",
+   "system": "bare_behavior"
+  },
+  {
+   "after": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "hard_violations_count": 29370,
+    "hard_violations_sha256": "7f0dabd871d196d5c9454fd8ea8f15330c909f08d3be152ebedab7ed5d71c3f8",
+    "observations_sha256": "fd25ac55426d34deeabf018d0975b078a1f9e20849e0e3336758b3745e527bfd",
+    "reason": "horizon_exhausted",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "hard_violations_count": 29370,
+    "hard_violations_sha256": "7f0dabd871d196d5c9454fd8ea8f15330c909f08d3be152ebedab7ed5d71c3f8",
+    "observations_sha256": "fd25ac55426d34deeabf018d0975b078a1f9e20849e0e3336758b3745e527bfd",
+    "reason": "horizon_exhausted",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "insert_force_limit_2n",
+   "system": "direct_minimal"
+  },
+  {
+   "after": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "073f17c8f1d9fcb51f6c33bad04d0c9d6e6b694aa1a4dc8f46486ba953b9a12f",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "073f17c8f1d9fcb51f6c33bad04d0c9d6e6b694aa1a4dc8f46486ba953b9a12f",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "insert_force_limit_12n",
+   "system": "haplous_mediated"
+  },
+  {
+   "after": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "abd0a69f13cb43250640b311a381bdcc7f6f3de7a3e86a3e742127f32a140fbc",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "abd0a69f13cb43250640b311a381bdcc7f6f3de7a3e86a3e742127f32a140fbc",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "insert_force_limit_12n",
+   "system": "competent_supervisor"
+  },
+  {
+   "after": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "abd0a69f13cb43250640b311a381bdcc7f6f3de7a3e86a3e742127f32a140fbc",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "abd0a69f13cb43250640b311a381bdcc7f6f3de7a3e86a3e742127f32a140fbc",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "insert_force_limit_12n",
+   "system": "bare_behavior"
+  },
+  {
+   "after": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "hard_violations_count": 28366,
+    "hard_violations_sha256": "0438cd49b445ade1e57cb075cc2e51d6ca8fbd5abe590196cd650833f1077d22",
+    "observations_sha256": "fd25ac55426d34deeabf018d0975b078a1f9e20849e0e3336758b3745e527bfd",
+    "reason": "horizon_exhausted",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "hard_violations_count": 28366,
+    "hard_violations_sha256": "0438cd49b445ade1e57cb075cc2e51d6ca8fbd5abe590196cd650833f1077d22",
+    "observations_sha256": "fd25ac55426d34deeabf018d0975b078a1f9e20849e0e3336758b3745e527bfd",
+    "reason": "horizon_exhausted",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "insert_force_limit_12n",
+   "system": "direct_minimal"
+  },
+  {
+   "after": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "073f17c8f1d9fcb51f6c33bad04d0c9d6e6b694aa1a4dc8f46486ba953b9a12f",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "073f17c8f1d9fcb51f6c33bad04d0c9d6e6b694aa1a4dc8f46486ba953b9a12f",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "insert_force_limit_150n",
+   "system": "haplous_mediated"
+  },
+  {
+   "after": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "abd0a69f13cb43250640b311a381bdcc7f6f3de7a3e86a3e742127f32a140fbc",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "abd0a69f13cb43250640b311a381bdcc7f6f3de7a3e86a3e742127f32a140fbc",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "insert_force_limit_150n",
+   "system": "competent_supervisor"
+  },
+  {
+   "after": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "abd0a69f13cb43250640b311a381bdcc7f6f3de7a3e86a3e742127f32a140fbc",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "abd0a69f13cb43250640b311a381bdcc7f6f3de7a3e86a3e742127f32a140fbc",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "insert_force_limit_150n",
+   "system": "bare_behavior"
+  },
+  {
+   "after": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "fd25ac55426d34deeabf018d0975b078a1f9e20849e0e3336758b3745e527bfd",
+    "reason": "horizon_exhausted",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": true
+   },
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "fd25ac55426d34deeabf018d0975b078a1f9e20849e0e3336758b3745e527bfd",
+    "reason": "horizon_exhausted",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": true
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "insert_force_limit_150n",
+   "system": "direct_minimal"
+  },
+  {
+   "after": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "073f17c8f1d9fcb51f6c33bad04d0c9d6e6b694aa1a4dc8f46486ba953b9a12f",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "073f17c8f1d9fcb51f6c33bad04d0c9d6e6b694aa1a4dc8f46486ba953b9a12f",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "insert_deadline_2s",
+   "system": "haplous_mediated"
+  },
+  {
+   "after": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "abd0a69f13cb43250640b311a381bdcc7f6f3de7a3e86a3e742127f32a140fbc",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "abd0a69f13cb43250640b311a381bdcc7f6f3de7a3e86a3e742127f32a140fbc",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "insert_deadline_2s",
+   "system": "competent_supervisor"
+  },
+  {
+   "after": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "abd0a69f13cb43250640b311a381bdcc7f6f3de7a3e86a3e742127f32a140fbc",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "abd0a69f13cb43250640b311a381bdcc7f6f3de7a3e86a3e742127f32a140fbc",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "insert_deadline_2s",
+   "system": "bare_behavior"
+  },
+  {
+   "after": {
+    "bounded_success": false,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 1,
+    "hard_violations_sha256": "302dd362793ed47b2d95ad930ee27b12056d5b432d06da29c0f999b467ecd7a7",
+    "observations_sha256": "fd25ac55426d34deeabf018d0975b078a1f9e20849e0e3336758b3745e527bfd",
+    "reason": "horizon_exhausted",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": true
+   },
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 1,
+    "hard_violations_sha256": "302dd362793ed47b2d95ad930ee27b12056d5b432d06da29c0f999b467ecd7a7",
+    "observations_sha256": "fd25ac55426d34deeabf018d0975b078a1f9e20849e0e3336758b3745e527bfd",
+    "reason": "horizon_exhausted",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": true
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "insert_deadline_2s",
+   "system": "direct_minimal"
+  },
+  {
+   "after": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "97427a0718ece80c4d4a757735d13734e673a11ca9a44e84cb1511af0f8359aa",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "97427a0718ece80c4d4a757735d13734e673a11ca9a44e84cb1511af0f8359aa",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "insert_dropout_small",
+   "system": "haplous_mediated"
+  },
+  {
+   "after": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "485ef31da7fd90bf2ee8a28ff2bea473943113e46591550a6464a10ce5a4c769",
+    "reason": "supervisor_state_freshness",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "485ef31da7fd90bf2ee8a28ff2bea473943113e46591550a6464a10ce5a4c769",
+    "reason": "supervisor_state_freshness",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "insert_dropout_small",
+   "system": "competent_supervisor"
+  },
+  {
+   "after": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "076fb013d0316444a9d7ebe682d99b9a7abfd0b3373031817cd6d07d18919032",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "076fb013d0316444a9d7ebe682d99b9a7abfd0b3373031817cd6d07d18919032",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "insert_dropout_small",
+   "system": "bare_behavior"
+  },
+  {
+   "after": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "f81c6b666df0dd8361b056b026484f96d3e4b43ae97305586d1a55f97d415982",
+    "reason": "horizon_exhausted",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": true
+   },
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "f81c6b666df0dd8361b056b026484f96d3e4b43ae97305586d1a55f97d415982",
+    "reason": "horizon_exhausted",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": true
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "insert_dropout_small",
+   "system": "direct_minimal"
+  },
+  {
+   "after": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "9d8a786a6ad267263cc33416fc34c578e52f1940ca386b7aaee3986bc09251f2",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "9d8a786a6ad267263cc33416fc34c578e52f1940ca386b7aaee3986bc09251f2",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "insert_dropout_large",
+   "system": "haplous_mediated"
+  },
+  {
+   "after": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "26d5e7776443368ae8d458d583c5ff34243cce68f284e00b36d8f5a3ad8d3e3e",
+    "reason": "supervisor_state_freshness",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "26d5e7776443368ae8d458d583c5ff34243cce68f284e00b36d8f5a3ad8d3e3e",
+    "reason": "supervisor_state_freshness",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "insert_dropout_large",
+   "system": "competent_supervisor"
+  },
+  {
+   "after": {
+    "bounded_success": false,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 1,
+    "hard_violations_sha256": "78c0462b090200e5007608fff9995de96b2bad4e1be7b8751cb02b66ab302214",
+    "observations_sha256": "84f20d25b100db167752ce686f5bbba6f8f5939cc22ea0801d0b7e845c105101",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 1,
+    "hard_violations_sha256": "78c0462b090200e5007608fff9995de96b2bad4e1be7b8751cb02b66ab302214",
+    "observations_sha256": "84f20d25b100db167752ce686f5bbba6f8f5939cc22ea0801d0b7e845c105101",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "insert_dropout_large",
+   "system": "bare_behavior"
+  },
+  {
+   "after": {
+    "bounded_success": false,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 1,
+    "hard_violations_sha256": "78c0462b090200e5007608fff9995de96b2bad4e1be7b8751cb02b66ab302214",
+    "observations_sha256": "b945deb3199a2d0881a8827b711dd0138d566c2b69aa53d734dee059be6165e7",
+    "reason": "horizon_exhausted",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": true
+   },
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 1,
+    "hard_violations_sha256": "78c0462b090200e5007608fff9995de96b2bad4e1be7b8751cb02b66ab302214",
+    "observations_sha256": "b945deb3199a2d0881a8827b711dd0138d566c2b69aa53d734dee059be6165e7",
+    "reason": "horizon_exhausted",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": true
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "insert_dropout_large",
+   "system": "direct_minimal"
+  },
+  {
+   "after": {
+    "bounded_success": false,
+    "graded_disposition": "REFUSED",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d",
+    "reason": "pre_execution_state_invalid",
+    "refusal_codes": [
+     "state_too_stale"
+    ],
+    "reported_disposition": "REFUSED",
+    "task_success": false
+   },
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "REFUSED",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d",
+    "reason": "pre_execution_state_invalid",
+    "refusal_codes": [
+     "state_too_stale"
+    ],
+    "reported_disposition": "REFUSED",
+    "task_success": false
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "insert_stale_persistent",
+   "system": "haplous_mediated"
+  },
+  {
+   "after": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "b03870dbef879e1562d3f34bc2196b857b15da204b7ba47c7d4f7d32ee2da175",
+    "reason": "supervisor_state_freshness",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "b03870dbef879e1562d3f34bc2196b857b15da204b7ba47c7d4f7d32ee2da175",
+    "reason": "supervisor_state_freshness",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "insert_stale_persistent",
+   "system": "competent_supervisor"
+  },
+  {
+   "after": {
+    "bounded_success": false,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 1,
+    "hard_violations_sha256": "25c5f11aa11faad70a7e7c17510c2301aa551982627bb8f90a119aa8c1c86afd",
+    "observations_sha256": "da11be6179d1932d08925e96a96880f48aa15cccae1a466506107c51da8f9e92",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 1,
+    "hard_violations_sha256": "25c5f11aa11faad70a7e7c17510c2301aa551982627bb8f90a119aa8c1c86afd",
+    "observations_sha256": "da11be6179d1932d08925e96a96880f48aa15cccae1a466506107c51da8f9e92",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "insert_stale_persistent",
+   "system": "bare_behavior"
+  },
+  {
+   "after": {
+    "bounded_success": false,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 1,
+    "hard_violations_sha256": "f3fdba9215392723b9614f85f43e9c18584c1d76db6e7de983fc8a7cebc648d2",
+    "observations_sha256": "bc7e12c469842060dea9f0f5af1f6ee6db482d1cd34895019d6b31c0405331bf",
+    "reason": "horizon_exhausted",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": true
+   },
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 1,
+    "hard_violations_sha256": "f3fdba9215392723b9614f85f43e9c18584c1d76db6e7de983fc8a7cebc648d2",
+    "observations_sha256": "bc7e12c469842060dea9f0f5af1f6ee6db482d1cd34895019d6b31c0405331bf",
+    "reason": "horizon_exhausted",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": true
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "insert_stale_persistent",
+   "system": "direct_minimal"
+  },
+  {
+   "after": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "f51dc943cd46eed50906e9f9aa423dc7c0ce141d14de495e9de1cd16375e4736",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "f51dc943cd46eed50906e9f9aa423dc7c0ce141d14de495e9de1cd16375e4736",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "insert_stale_mid_motion",
+   "system": "haplous_mediated"
+  },
+  {
+   "after": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "0dd1fb0a956b9529e3cf3c4fe1061979adb30deaf79bac0cf0ce47cab5d08e9a",
+    "reason": "supervisor_state_freshness",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "0dd1fb0a956b9529e3cf3c4fe1061979adb30deaf79bac0cf0ce47cab5d08e9a",
+    "reason": "supervisor_state_freshness",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "insert_stale_mid_motion",
+   "system": "competent_supervisor"
+  },
+  {
+   "after": {
+    "bounded_success": false,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 1,
+    "hard_violations_sha256": "26b20db9a715b8e6d479b8624b01b8abe6de25d95c2a3708e0724849c39f6dc8",
+    "observations_sha256": "14c0748e2ecbf8576a0b50d35fc81da60e294cf2f90203bb54139d71bff56dd7",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 1,
+    "hard_violations_sha256": "26b20db9a715b8e6d479b8624b01b8abe6de25d95c2a3708e0724849c39f6dc8",
+    "observations_sha256": "14c0748e2ecbf8576a0b50d35fc81da60e294cf2f90203bb54139d71bff56dd7",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "insert_stale_mid_motion",
+   "system": "bare_behavior"
+  },
+  {
+   "after": {
+    "bounded_success": false,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 1,
+    "hard_violations_sha256": "26b20db9a715b8e6d479b8624b01b8abe6de25d95c2a3708e0724849c39f6dc8",
+    "observations_sha256": "14393eca177a2521600a807d881b38b2d977dc24526ba9cf4fabfeede2ebd457",
+    "reason": "horizon_exhausted",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": true
+   },
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 1,
+    "hard_violations_sha256": "26b20db9a715b8e6d479b8624b01b8abe6de25d95c2a3708e0724849c39f6dc8",
+    "observations_sha256": "14393eca177a2521600a807d881b38b2d977dc24526ba9cf4fabfeede2ebd457",
+    "reason": "horizon_exhausted",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": true
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "insert_stale_mid_motion",
+   "system": "direct_minimal"
+  },
+  {
+   "after": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "ce532de120a8fe508625c005a6a616a22f7dfc0377b67fbcf3718aa8a11d6c9e",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "ce532de120a8fe508625c005a6a616a22f7dfc0377b67fbcf3718aa8a11d6c9e",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "insert_command_rejection_persistent",
+   "system": "haplous_mediated"
+  },
+  {
+   "after": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "fb1b7d00bf261c8230daf5e45346ff59b27381b244dac345d6bca026d0e8efcd",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "fb1b7d00bf261c8230daf5e45346ff59b27381b244dac345d6bca026d0e8efcd",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "insert_command_rejection_persistent",
+   "system": "competent_supervisor"
+  },
+  {
+   "after": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "fb1b7d00bf261c8230daf5e45346ff59b27381b244dac345d6bca026d0e8efcd",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "fb1b7d00bf261c8230daf5e45346ff59b27381b244dac345d6bca026d0e8efcd",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "insert_command_rejection_persistent",
+   "system": "bare_behavior"
+  },
+  {
+   "after": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "9c6a0dadd198f2837b936b88839b88236f0a9aa63830525921fca3bb2f53fbb9",
+    "reason": "horizon_exhausted",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": true
+   },
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "9c6a0dadd198f2837b936b88839b88236f0a9aa63830525921fca3bb2f53fbb9",
+    "reason": "horizon_exhausted",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": true
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "insert_command_rejection_persistent",
+   "system": "direct_minimal"
+  },
+  {
+   "after": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "bde8702a0874db68ff2b117e7eefa48c65a900ff7583fecf2de2e07ce3466260",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "bde8702a0874db68ff2b117e7eefa48c65a900ff7583fecf2de2e07ce3466260",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "insert_command_rejection_transient",
+   "system": "haplous_mediated"
+  },
+  {
+   "after": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "a6333faf3cbf45ea730a09f19bb3722cb5521e6c45eeae60f08cdf5f206e9674",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "a6333faf3cbf45ea730a09f19bb3722cb5521e6c45eeae60f08cdf5f206e9674",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "insert_command_rejection_transient",
+   "system": "competent_supervisor"
+  },
+  {
+   "after": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "a6333faf3cbf45ea730a09f19bb3722cb5521e6c45eeae60f08cdf5f206e9674",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "a6333faf3cbf45ea730a09f19bb3722cb5521e6c45eeae60f08cdf5f206e9674",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "insert_command_rejection_transient",
+   "system": "bare_behavior"
+  },
+  {
+   "after": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "aa751c60d7cdaaa3c7c4c9a5108ce5a61cb5a8e30a0ce72734205c5ad371bab1",
+    "reason": "horizon_exhausted",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": true
+   },
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "aa751c60d7cdaaa3c7c4c9a5108ce5a61cb5a8e30a0ce72734205c5ad371bab1",
+    "reason": "horizon_exhausted",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": true
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "insert_command_rejection_transient",
+   "system": "direct_minimal"
+  },
+  {
+   "after": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "4bb27538cbda0a485e9fc33ccb61b8a4a14b0ecb3935ba1747ee3a8bf7ddb293",
+    "reason": "machine_fault_machine_fault",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "4bb27538cbda0a485e9fc33ccb61b8a4a14b0ecb3935ba1747ee3a8bf7ddb293",
+    "reason": "machine_fault_machine_fault",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "insert_machine_fault",
+   "system": "haplous_mediated"
+  },
+  {
+   "after": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "55a92c277ac5c42c4ffe829252965da50bc75a643ba51bf512277ca253e19d5d",
+    "reason": "machine_fault_machine_fault",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "55a92c277ac5c42c4ffe829252965da50bc75a643ba51bf512277ca253e19d5d",
+    "reason": "machine_fault_machine_fault",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "insert_machine_fault",
+   "system": "competent_supervisor"
+  },
+  {
+   "after": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "55a92c277ac5c42c4ffe829252965da50bc75a643ba51bf512277ca253e19d5d",
+    "reason": "machine_fault_machine_fault",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "55a92c277ac5c42c4ffe829252965da50bc75a643ba51bf512277ca253e19d5d",
+    "reason": "machine_fault_machine_fault",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "insert_machine_fault",
+   "system": "bare_behavior"
+  },
+  {
+   "after": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "55a92c277ac5c42c4ffe829252965da50bc75a643ba51bf512277ca253e19d5d",
+    "reason": "machine_fault_machine_fault",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "55a92c277ac5c42c4ffe829252965da50bc75a643ba51bf512277ca253e19d5d",
+    "reason": "machine_fault_machine_fault",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "insert_machine_fault",
+   "system": "direct_minimal"
+  },
+  {
+   "after": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "90a73bb1fb47c588da9bec1057b9fef09cecf4d0dff4fd6ded8e119185b71d3a",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "90a73bb1fb47c588da9bec1057b9fef09cecf4d0dff4fd6ded8e119185b71d3a",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "insert_geometry_fine_facets",
+   "system": "haplous_mediated"
+  },
+  {
+   "after": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "313fe274eb2c23fdbc84bd1d577178eb370582f08bd90450a9fbb1096399db04",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "313fe274eb2c23fdbc84bd1d577178eb370582f08bd90450a9fbb1096399db04",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "insert_geometry_fine_facets",
+   "system": "competent_supervisor"
+  },
+  {
+   "after": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "313fe274eb2c23fdbc84bd1d577178eb370582f08bd90450a9fbb1096399db04",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "313fe274eb2c23fdbc84bd1d577178eb370582f08bd90450a9fbb1096399db04",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "insert_geometry_fine_facets",
+   "system": "bare_behavior"
+  },
+  {
+   "after": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "70a10f8b759313060c667db24545ffeb058b645d4430925acd1b04f47bd1a3a0",
+    "reason": "horizon_exhausted",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": true
+   },
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "70a10f8b759313060c667db24545ffeb058b645d4430925acd1b04f47bd1a3a0",
+    "reason": "horizon_exhausted",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": true
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "insert_geometry_fine_facets",
+   "system": "direct_minimal"
+  },
+  {
+   "after": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "197eb51421e0596074eedde37c65ec867b93d791b5e68e41434081cd18e75df5",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "197eb51421e0596074eedde37c65ec867b93d791b5e68e41434081cd18e75df5",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "insert_geometry_tight_clearance",
+   "system": "haplous_mediated"
+  },
+  {
+   "after": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "db36363aa4f8513657b8b229fa51023c5c15ace4f636b0f751564f5f2f6d8e64",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "db36363aa4f8513657b8b229fa51023c5c15ace4f636b0f751564f5f2f6d8e64",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "insert_geometry_tight_clearance",
+   "system": "competent_supervisor"
+  },
+  {
+   "after": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "db36363aa4f8513657b8b229fa51023c5c15ace4f636b0f751564f5f2f6d8e64",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "db36363aa4f8513657b8b229fa51023c5c15ace4f636b0f751564f5f2f6d8e64",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "insert_geometry_tight_clearance",
+   "system": "bare_behavior"
+  },
+  {
+   "after": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "ce1203b63ec574a966c623bec64c7d4574a7f455d2d1ff16c7e3877b872e14fe",
+    "reason": "horizon_exhausted",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": true
+   },
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "ce1203b63ec574a966c623bec64c7d4574a7f455d2d1ff16c7e3877b872e14fe",
+    "reason": "horizon_exhausted",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": true
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "insert_geometry_tight_clearance",
+   "system": "direct_minimal"
+  },
+  {
+   "after": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "f031a5ee22bb65ed6696a802cfb7cc6b1b2aec037648cad5531f345d3559a788",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "f031a5ee22bb65ed6696a802cfb7cc6b1b2aec037648cad5531f345d3559a788",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "insert_geometry_deep_plate",
+   "system": "haplous_mediated"
+  },
+  {
+   "after": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "c92a6cee01dc2b87a9e6ae3e4583c8897776cec72d9f6d233ecf0f5b03b6141e",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "c92a6cee01dc2b87a9e6ae3e4583c8897776cec72d9f6d233ecf0f5b03b6141e",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "insert_geometry_deep_plate",
+   "system": "competent_supervisor"
+  },
+  {
+   "after": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "c92a6cee01dc2b87a9e6ae3e4583c8897776cec72d9f6d233ecf0f5b03b6141e",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "c92a6cee01dc2b87a9e6ae3e4583c8897776cec72d9f6d233ecf0f5b03b6141e",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "insert_geometry_deep_plate",
+   "system": "bare_behavior"
+  },
+  {
+   "after": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "7eb6ab833f9d2711c677ef94b53c3668681e6cf7366bebc96f2587c3faf76b29",
+    "reason": "horizon_exhausted",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": true
+   },
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "7eb6ab833f9d2711c677ef94b53c3668681e6cf7366bebc96f2587c3faf76b29",
+    "reason": "horizon_exhausted",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": true
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "insert_geometry_deep_plate",
+   "system": "direct_minimal"
+  },
+  {
+   "after": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "ea450074e47c320a47eb76e8b26cec1003a36edc2e97d1a0a9b5570863919aea",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "ea450074e47c320a47eb76e8b26cec1003a36edc2e97d1a0a9b5570863919aea",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "slide_nominal",
+   "system": "haplous_mediated"
+  },
+  {
+   "after": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "59444a41430abd2c7435dda2d38359a756346c454146fc126dd827031cf5959c",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "59444a41430abd2c7435dda2d38359a756346c454146fc126dd827031cf5959c",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "slide_nominal",
+   "system": "competent_supervisor"
+  },
+  {
+   "after": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "59444a41430abd2c7435dda2d38359a756346c454146fc126dd827031cf5959c",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "59444a41430abd2c7435dda2d38359a756346c454146fc126dd827031cf5959c",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "slide_nominal",
+   "system": "bare_behavior"
+  },
+  {
+   "after": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "2efad3966092efed805d526a452b124ab973cc0c9b00a76de2ccfd2f2235cd46",
+    "reason": "horizon_exhausted",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": true
+   },
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "2efad3966092efed805d526a452b124ab973cc0c9b00a76de2ccfd2f2235cd46",
+    "reason": "horizon_exhausted",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": true
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "slide_nominal",
+   "system": "direct_minimal"
+  },
+  {
+   "after": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "4829c3952d029eefe1b7e399932a2186a1b8880bf0522f26798d2fbe3938d7aa",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "4829c3952d029eefe1b7e399932a2186a1b8880bf0522f26798d2fbe3938d7aa",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "slide_disturbance_recoverable",
+   "system": "haplous_mediated"
+  },
+  {
+   "after": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "b9b4fd943825a0492328fcfa5488d584e359d5dd7ee18823e15219165a43daac",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "b9b4fd943825a0492328fcfa5488d584e359d5dd7ee18823e15219165a43daac",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "slide_disturbance_recoverable",
+   "system": "competent_supervisor"
+  },
+  {
+   "after": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "b9b4fd943825a0492328fcfa5488d584e359d5dd7ee18823e15219165a43daac",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "b9b4fd943825a0492328fcfa5488d584e359d5dd7ee18823e15219165a43daac",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "slide_disturbance_recoverable",
+   "system": "bare_behavior"
+  },
+  {
+   "after": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "f69bbc208a95162dd968f3da8589c3cbaba72c676556bdce58e2f80ff52dfe5f",
+    "reason": "horizon_exhausted",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": true
+   },
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "f69bbc208a95162dd968f3da8589c3cbaba72c676556bdce58e2f80ff52dfe5f",
+    "reason": "horizon_exhausted",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": true
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "slide_disturbance_recoverable",
+   "system": "direct_minimal"
+  },
+  {
+   "after": {
+    "bounded_success": false,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 3,
+    "hard_violations_sha256": "4980864a1f71e8367d7f56a560ff6022cbc1d3d16ec4d7bcf03d5770442fb5b4",
+    "observations_sha256": "58f639136c63fa91e25fcb01acc99287b9772a71a246d45f37f0318b177063e7",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 3,
+    "hard_violations_sha256": "4980864a1f71e8367d7f56a560ff6022cbc1d3d16ec4d7bcf03d5770442fb5b4",
+    "observations_sha256": "58f639136c63fa91e25fcb01acc99287b9772a71a246d45f37f0318b177063e7",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "slide_disturbance_recoverable_ceiling",
+   "system": "haplous_mediated"
+  },
+  {
+   "after": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "hard_violations_count": 1,
+    "hard_violations_sha256": "9061de9989c34fc53d327359adfff566fae043d5d10818b3edd39b3a5e6ab6be",
+    "observations_sha256": "cb9f79f1784490fa92a0ea1f1a39ee6963fdec4284f8a3205bf01a422ba7c24e",
+    "reason": "supervisor_force_limit",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "hard_violations_count": 1,
+    "hard_violations_sha256": "9061de9989c34fc53d327359adfff566fae043d5d10818b3edd39b3a5e6ab6be",
+    "observations_sha256": "cb9f79f1784490fa92a0ea1f1a39ee6963fdec4284f8a3205bf01a422ba7c24e",
+    "reason": "supervisor_force_limit",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "slide_disturbance_recoverable_ceiling",
+   "system": "competent_supervisor"
+  },
+  {
+   "after": {
+    "bounded_success": false,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 3,
+    "hard_violations_sha256": "55bfc01e36894a104d08657890710b641bf0e3d2388da648018ed00584a2730e",
+    "observations_sha256": "24723ead57c7a9baeab7ebc3a2a3c288d69d0580c66a686a6406a5b920c2ad56",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 3,
+    "hard_violations_sha256": "55bfc01e36894a104d08657890710b641bf0e3d2388da648018ed00584a2730e",
+    "observations_sha256": "24723ead57c7a9baeab7ebc3a2a3c288d69d0580c66a686a6406a5b920c2ad56",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "slide_disturbance_recoverable_ceiling",
+   "system": "bare_behavior"
+  },
+  {
+   "after": {
+    "bounded_success": false,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 3,
+    "hard_violations_sha256": "55bfc01e36894a104d08657890710b641bf0e3d2388da648018ed00584a2730e",
+    "observations_sha256": "8c8004616d1c7c542b9d7140018da3f4344fde8179cc591779527587cfa812e2",
+    "reason": "horizon_exhausted",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": true
+   },
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 3,
+    "hard_violations_sha256": "55bfc01e36894a104d08657890710b641bf0e3d2388da648018ed00584a2730e",
+    "observations_sha256": "8c8004616d1c7c542b9d7140018da3f4344fde8179cc591779527587cfa812e2",
+    "reason": "horizon_exhausted",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": true
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "slide_disturbance_recoverable_ceiling",
+   "system": "direct_minimal"
+  },
+  {
+   "after": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "hard_violations_count": 1,
+    "hard_violations_sha256": "0a7846d2cbe7f2eeded8793a3af4425f61c63755484cba6a2ec6f1338f21c504",
+    "observations_sha256": "904ff6cdadc69175823d7ad6a7d49c25e4b271b228e3a97b45e3c7003e6ed24d",
+    "reason": "hard_constraint_process_force",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "hard_violations_count": 1,
+    "hard_violations_sha256": "0a7846d2cbe7f2eeded8793a3af4425f61c63755484cba6a2ec6f1338f21c504",
+    "observations_sha256": "904ff6cdadc69175823d7ad6a7d49c25e4b271b228e3a97b45e3c7003e6ed24d",
+    "reason": "hard_constraint_process_force",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "slide_disturbance_no_recovery",
+   "system": "haplous_mediated"
+  },
+  {
+   "after": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "hard_violations_count": 1,
+    "hard_violations_sha256": "0a7846d2cbe7f2eeded8793a3af4425f61c63755484cba6a2ec6f1338f21c504",
+    "observations_sha256": "30da9e4dc58711e6adf4a3106fb9ef06e1d533b70ce326b967010e9f9ac9466a",
+    "reason": "supervisor_force_limit",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "hard_violations_count": 1,
+    "hard_violations_sha256": "0a7846d2cbe7f2eeded8793a3af4425f61c63755484cba6a2ec6f1338f21c504",
+    "observations_sha256": "30da9e4dc58711e6adf4a3106fb9ef06e1d533b70ce326b967010e9f9ac9466a",
+    "reason": "supervisor_force_limit",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "slide_disturbance_no_recovery",
+   "system": "competent_supervisor"
+  },
+  {
+   "after": {
+    "bounded_success": false,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 3,
+    "hard_violations_sha256": "c2ed6b0d9d6971baf36f93876caffaad1ff2e372f3d3c5aafe68832101f450dd",
+    "observations_sha256": "59444a41430abd2c7435dda2d38359a756346c454146fc126dd827031cf5959c",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 3,
+    "hard_violations_sha256": "c2ed6b0d9d6971baf36f93876caffaad1ff2e372f3d3c5aafe68832101f450dd",
+    "observations_sha256": "59444a41430abd2c7435dda2d38359a756346c454146fc126dd827031cf5959c",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "slide_disturbance_no_recovery",
+   "system": "bare_behavior"
+  },
+  {
+   "after": {
+    "bounded_success": false,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 3,
+    "hard_violations_sha256": "c2ed6b0d9d6971baf36f93876caffaad1ff2e372f3d3c5aafe68832101f450dd",
+    "observations_sha256": "2efad3966092efed805d526a452b124ab973cc0c9b00a76de2ccfd2f2235cd46",
+    "reason": "horizon_exhausted",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": true
+   },
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 3,
+    "hard_violations_sha256": "c2ed6b0d9d6971baf36f93876caffaad1ff2e372f3d3c5aafe68832101f450dd",
+    "observations_sha256": "2efad3966092efed805d526a452b124ab973cc0c9b00a76de2ccfd2f2235cd46",
+    "reason": "horizon_exhausted",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": true
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "slide_disturbance_no_recovery",
+   "system": "direct_minimal"
+  },
+  {
+   "after": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "44130516d2dba6a0df625060aa8a520bfd4515c7b9497931a344ae8614de2c56",
+    "reason": "machine_fault_tilt_guard",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "44130516d2dba6a0df625060aa8a520bfd4515c7b9497931a344ae8614de2c56",
+    "reason": "machine_fault_tilt_guard",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "slide_disturbance_severe",
+   "system": "haplous_mediated"
+  },
+  {
+   "after": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "f35c3165474482776e41a68de2c5d7308ae1569dc2301b06aeac1a191349f1a3",
+    "reason": "machine_fault_tilt_guard",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "f35c3165474482776e41a68de2c5d7308ae1569dc2301b06aeac1a191349f1a3",
+    "reason": "machine_fault_tilt_guard",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "slide_disturbance_severe",
+   "system": "competent_supervisor"
+  },
+  {
+   "after": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "f35c3165474482776e41a68de2c5d7308ae1569dc2301b06aeac1a191349f1a3",
+    "reason": "machine_fault_tilt_guard",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "f35c3165474482776e41a68de2c5d7308ae1569dc2301b06aeac1a191349f1a3",
+    "reason": "machine_fault_tilt_guard",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "slide_disturbance_severe",
+   "system": "bare_behavior"
+  },
+  {
+   "after": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "f35c3165474482776e41a68de2c5d7308ae1569dc2301b06aeac1a191349f1a3",
+    "reason": "machine_fault_tilt_guard",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "f35c3165474482776e41a68de2c5d7308ae1569dc2301b06aeac1a191349f1a3",
+    "reason": "machine_fault_tilt_guard",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "slide_disturbance_severe",
+   "system": "direct_minimal"
+  },
+  {
+   "after": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "cde0cda8d1b63f6d439ad0868105678c8039357b194f2394e3b1e74c43e60893",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "cde0cda8d1b63f6d439ad0868105678c8039357b194f2394e3b1e74c43e60893",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "slide_stale_mid_slide",
+   "system": "haplous_mediated"
+  },
+  {
+   "after": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "1e0e9749c775b485dc8a6620c11f53372b88c4e090a5e184a51712659bef7656",
+    "reason": "supervisor_state_freshness",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "1e0e9749c775b485dc8a6620c11f53372b88c4e090a5e184a51712659bef7656",
+    "reason": "supervisor_state_freshness",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "slide_stale_mid_slide",
+   "system": "competent_supervisor"
+  },
+  {
+   "after": {
+    "bounded_success": false,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 1,
+    "hard_violations_sha256": "dd96c9332245cfc1702de0c429c4d8c012ab7b3309af97980ac9624b142d70b2",
+    "observations_sha256": "7bb015675c228162d31eaf882ceda2491037f97c211e32e95ab282d76a44b93b",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 1,
+    "hard_violations_sha256": "dd96c9332245cfc1702de0c429c4d8c012ab7b3309af97980ac9624b142d70b2",
+    "observations_sha256": "7bb015675c228162d31eaf882ceda2491037f97c211e32e95ab282d76a44b93b",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "slide_stale_mid_slide",
+   "system": "bare_behavior"
+  },
+  {
+   "after": {
+    "bounded_success": false,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 1,
+    "hard_violations_sha256": "dd96c9332245cfc1702de0c429c4d8c012ab7b3309af97980ac9624b142d70b2",
+    "observations_sha256": "d8243b17bb25228aae26aa68f92a349185c817a5faa588a55c907e4e906a0a5a",
+    "reason": "horizon_exhausted",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": true
+   },
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 1,
+    "hard_violations_sha256": "dd96c9332245cfc1702de0c429c4d8c012ab7b3309af97980ac9624b142d70b2",
+    "observations_sha256": "d8243b17bb25228aae26aa68f92a349185c817a5faa588a55c907e4e906a0a5a",
+    "reason": "horizon_exhausted",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": true
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "slide_stale_mid_slide",
+   "system": "direct_minimal"
+  },
+  {
+   "after": {
+    "bounded_success": false,
+    "graded_disposition": "REFUSED",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d",
+    "reason": "negotiation_refusal",
+    "refusal_codes": [
+     "deadline_unachievable"
+    ],
+    "reported_disposition": "REFUSED",
+    "task_success": false
+   },
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "REFUSED",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d",
+    "reason": "negotiation_refusal",
+    "refusal_codes": [
+     "deadline_unachievable"
+    ],
+    "reported_disposition": "REFUSED",
+    "task_success": false
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "slide_deadline_infeasible",
+   "system": "haplous_mediated"
+  },
+  {
+   "after": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "hard_violations_count": 1,
+    "hard_violations_sha256": "f144c06fa129c95222f6f29446f567d2d7448cae84d0e596796a2767a02a1a20",
+    "observations_sha256": "2959758531224850f9ad41d96178aa02a51bf15aacfb4b90016b4af5831ecf4e",
+    "reason": "supervisor_deadline",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "hard_violations_count": 1,
+    "hard_violations_sha256": "f144c06fa129c95222f6f29446f567d2d7448cae84d0e596796a2767a02a1a20",
+    "observations_sha256": "2959758531224850f9ad41d96178aa02a51bf15aacfb4b90016b4af5831ecf4e",
+    "reason": "supervisor_deadline",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "slide_deadline_infeasible",
+   "system": "competent_supervisor"
+  },
+  {
+   "after": {
+    "bounded_success": false,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 1,
+    "hard_violations_sha256": "36ae7deb79c9021eb9070ad1cf206bbd4f41eeacb2af6cfacc61805befcbd967",
+    "observations_sha256": "c5f308d26dad1188a415ffd1f15f9fcf42ca7e8afcc9c74a3715fcdaf25e8e7a",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 1,
+    "hard_violations_sha256": "36ae7deb79c9021eb9070ad1cf206bbd4f41eeacb2af6cfacc61805befcbd967",
+    "observations_sha256": "c5f308d26dad1188a415ffd1f15f9fcf42ca7e8afcc9c74a3715fcdaf25e8e7a",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "slide_deadline_infeasible",
+   "system": "bare_behavior"
+  },
+  {
+   "after": {
+    "bounded_success": false,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 1,
+    "hard_violations_sha256": "7995bbca5a9797b3faeb462f0677f2ba8525090a0e0e91be130e19df08bfb4b7",
+    "observations_sha256": "2efad3966092efed805d526a452b124ab973cc0c9b00a76de2ccfd2f2235cd46",
+    "reason": "horizon_exhausted",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": true
+   },
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 1,
+    "hard_violations_sha256": "7995bbca5a9797b3faeb462f0677f2ba8525090a0e0e91be130e19df08bfb4b7",
+    "observations_sha256": "2efad3966092efed805d526a452b124ab973cc0c9b00a76de2ccfd2f2235cd46",
+    "reason": "horizon_exhausted",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": true
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "slide_deadline_infeasible",
+   "system": "direct_minimal"
+  },
+  {
+   "after": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "e48e81bfefcbba3e0d77dc6cd222784a5ab080d499b5d49427b6013dcfa49c60",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "e48e81bfefcbba3e0d77dc6cd222784a5ab080d499b5d49427b6013dcfa49c60",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "slide_command_rejection_persistent",
+   "system": "haplous_mediated"
+  },
+  {
+   "after": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "269be6fc9ceac07c607bf00c22b1d507eeb6b9bb18021954c8054444dfbd5392",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "269be6fc9ceac07c607bf00c22b1d507eeb6b9bb18021954c8054444dfbd5392",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "slide_command_rejection_persistent",
+   "system": "competent_supervisor"
+  },
+  {
+   "after": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "269be6fc9ceac07c607bf00c22b1d507eeb6b9bb18021954c8054444dfbd5392",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "269be6fc9ceac07c607bf00c22b1d507eeb6b9bb18021954c8054444dfbd5392",
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "slide_command_rejection_persistent",
+   "system": "bare_behavior"
+  },
+  {
+   "after": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "7dd7b85ebf6a4bdbfe221cdc3cd838e9a80e371d35a628e85ff6c413e1428dc4",
+    "reason": "horizon_exhausted",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": true
+   },
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "7dd7b85ebf6a4bdbfe221cdc3cd838e9a80e371d35a628e85ff6c413e1428dc4",
+    "reason": "horizon_exhausted",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": true
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "slide_command_rejection_persistent",
+   "system": "direct_minimal"
+  },
+  {
+   "after": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "e21a302f8a1e994ea69dc15a47f559d75f37ca23a95a3984ae22cb2e4eeaa184",
+    "reason": "machine_fault_machine_fault",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "e21a302f8a1e994ea69dc15a47f559d75f37ca23a95a3984ae22cb2e4eeaa184",
+    "reason": "machine_fault_machine_fault",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "slide_machine_fault",
+   "system": "haplous_mediated"
+  },
+  {
+   "after": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "c365284e4ab87d18f77d419c3d005da5c8d422044cf98c16c67599eeacf7abf2",
+    "reason": "machine_fault_machine_fault",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "c365284e4ab87d18f77d419c3d005da5c8d422044cf98c16c67599eeacf7abf2",
+    "reason": "machine_fault_machine_fault",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "slide_machine_fault",
+   "system": "competent_supervisor"
+  },
+  {
+   "after": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "c365284e4ab87d18f77d419c3d005da5c8d422044cf98c16c67599eeacf7abf2",
+    "reason": "machine_fault_machine_fault",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "c365284e4ab87d18f77d419c3d005da5c8d422044cf98c16c67599eeacf7abf2",
+    "reason": "machine_fault_machine_fault",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "slide_machine_fault",
+   "system": "bare_behavior"
+  },
+  {
+   "after": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "c365284e4ab87d18f77d419c3d005da5c8d422044cf98c16c67599eeacf7abf2",
+    "reason": "machine_fault_machine_fault",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "hard_violations_count": 0,
+    "hard_violations_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "observations_sha256": "c365284e4ab87d18f77d419c3d005da5c8d422044cf98c16c67599eeacf7abf2",
+    "reason": "machine_fault_machine_fault",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario": "slide_machine_fault",
+   "system": "direct_minimal"
+  }
+ ],
+ "verdict": "PASS"
+}

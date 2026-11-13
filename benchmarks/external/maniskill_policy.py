@@ -14,10 +14,23 @@ from pathlib import Path
 import h5py
 import numpy as np
 
-from haplous import ExecutionIntent, MachineCapabilities, MachineObservation, ServoCommand
+from haplous import (
+    CommandMode,
+    ExecutionIntent,
+    MachineCapabilities,
+    MachineObservation,
+    ServoCommand,
+)
 
 
 class DemoStreamPolicy:
+    # step() emits absolute pose targets with k_z=0 and no force reference;
+    # ManiSkillPegInsertionTask turns them into pd_ee_pose deltas. Impedance
+    # only, which that task offers.
+    required_command_modes = frozenset({CommandMode.CARTESIAN_IMPEDANCE})
+    authorized_substitutes: frozenset = frozenset()
+    non_substitutable_modes: frozenset = frozenset()
+
     def __init__(self, trajectory_path: Path, episode_id: int) -> None:
         with h5py.File(trajectory_path, "r") as handle:
             group = handle[f"traj_{episode_id}"]

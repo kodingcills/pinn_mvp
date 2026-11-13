@@ -24,6 +24,7 @@ from collections.abc import Mapping, Sequence
 from typing import Any
 
 from evaluation import stats as st
+from evaluation.aggregate import pair_by_scenario
 from hes.attribution import Attribution, attribute
 from hes.model import (
     Attainability,
@@ -158,11 +159,7 @@ def noninterference_metrics(
     """Reference arm (the unmediated baseline) defines already-good
     execution. Preservation is measured only on reference bounded
     successes, paired by scenario."""
-    ref = {
-        str(r.get("scenario_id") or r.get("episode_id")): r for r in reference_rows
-    }
-    arm = {str(r.get("scenario_id") or r.get("episode_id")): r for r in rows}
-    shared = sorted(set(ref) & set(arm))
+    ref, arm, shared = pair_by_scenario(reference_rows, rows)
     ref_ok = [s for s in shared if ref[s].get("bounded_success")]
     if not ref_ok:
         return {

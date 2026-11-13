@@ -22,7 +22,14 @@ from benchmarks.heb.counterfactual import (
 )
 from haplous.adapters.mujoco_adapter import MuJoCoMachine, MuJoCoMachineConfig
 from haplous.behaviors.insertion import insertion_behavior_factory, insertion_intent
+from haplous.capabilities import command_mode_admission, negotiate
 from pegsim.rollout import VALIDATED_LOOSE_V1
+
+CONTRACT_FIELDS = (
+    "required_command_modes",
+    "authorized_substitutes",
+    "non_substitutable_modes",
+)
 
 
 class _NoopBehavior:
@@ -47,6 +54,19 @@ def test_recording_behavior_carries_deep_copied_state():
     assert wrapper.snapshot.steps == 1
     inner.steps = 99
     assert wrapper.snapshot.steps == 1
+
+
+def test_recording_behavior_forwards_the_wrapped_command_contract():
+    inner = insertion_behavior_factory(VALIDATED_LOOSE_V1)()
+    wrapper = RecordingBehavior(inner)
+    for name in CONTRACT_FIELDS:
+        assert getattr(wrapper, name) == getattr(inner, name), name
+    caps = MuJoCoMachine(VALIDATED_LOOSE_V1, config=MuJoCoMachineConfig()).capabilities()
+    intent = insertion_intent(VALIDATED_LOOSE_V1.task)
+    assert negotiate(intent, caps, wrapper) == negotiate(intent, caps, inner)
+    # An undeclared inner stays undeclared through the wrapper: fail-closed.
+    refusals, _ = command_mode_admission(RecordingBehavior(_NoopBehavior()), caps)
+    assert [r.code for r in refusals] == ["command_contract_undeclared"]
 
 
 def test_classification_bounded_execution_rules():

@@ -3,8 +3,10 @@ that the machine cannot satisfy produces a structured REFUSED reason; it
 never silently degrades."""
 from __future__ import annotations
 
-from dataclasses import dataclass
+from collections.abc import Mapping
+from dataclasses import dataclass, field
 from enum import Enum
+from typing import Any
 
 from haplous.intent import ExecutionIntent, RequirementKind
 
@@ -41,12 +43,17 @@ class MachineCapabilities:
     # the commanded target). Temporal-integrity faults suspend authority
     # for at most this long before the fault is treated as definitive.
     max_hold_unobserved_s: float = 0.5
+    # (required, native) pairs with independent evidence that the native
+    # mode preserves the required behaviour. A substitute also needs the
+    # task's authorization; neither side alone admits it.
+    verified_adapters: frozenset[tuple[CommandMode, CommandMode]] = frozenset()
 
 
 @dataclass(frozen=True)
 class RefusalReason:
     code: str
     detail: str
+    data: Mapping[str, Any] = field(default_factory=dict)
 
 
 @dataclass(frozen=True)
@@ -60,11 +67,102 @@ class FeasibilityResult:
 
     outcome: str
     reasons: tuple[RefusalReason, ...]
+    # Recorded facts that do not degrade the result, e.g. a verified,
+    # authorized command-mode substitution.
+    disclosures: tuple[RefusalReason, ...] = ()
 
 
-def negotiate(intent: ExecutionIntent, caps: MachineCapabilities) -> FeasibilityResult:
+def mode_names(modes) -> list[str]:
+    """Sorted mode values; anything that is not a CommandMode (a str alias)
+    is shown by repr so it can never read as a real mode."""
+    return sorted(m.value if isinstance(m, CommandMode) else repr(m) for m in modes)
+
+
+def command_mode_admission(
+    behavior: object, caps: MachineCapabilities
+) -> tuple[list[RefusalReason], list[RefusalReason]]:
+    """OD-1 rules 1-3: (refusals, disclosures) for the behaviour's declared
+    command contract against the machine's command modes. Each required mode
+    needs a name match, or a substitute that is BOTH task-authorized and
+    machine-verified and not declared non-substitutable."""
+    required = getattr(behavior, "required_command_modes", None)
+    if not required:
+        return [
+            RefusalReason(
+                "command_contract_undeclared",
+                f"{type(behavior).__name__} declares no required command "
+                "modes; admission cannot be decided",
+            )
+        ], []
+    authorized = getattr(behavior, "authorized_substitutes", frozenset())
+    non_substitutable = getattr(behavior, "non_substitutable_modes", frozenset())
+    available = caps.command_modes
+    verified = caps.verified_adapters
+    refusals: list[RefusalReason] = []
+    disclosures: list[RefusalReason] = []
+    for r in sorted(required, key=lambda m: m.value):
+        if r in available:
+            continue
+        native = sorted(
+            {a for q, a in authorized | verified if q is r and a in available},
+            key=lambda m: m.value,
+        )
+        selected = None
+        if r not in non_substitutable:
+            selected = next(
+                (a for a in native if (r, a) in authorized and (r, a) in verified),
+                None,
+            )
+        if selected is not None:
+            disclosures.append(
+                RefusalReason(
+                    "command_mode_substituted",
+                    f"required {r.value} realized by a verified, authorized "
+                    f"adapter on native {selected.value}",
+                    {"required": r.value, "selected": selected.value},
+                )
+            )
+            continue
+        considered = None
+        if native:
+            a = native[0]
+            missing = (
+                ["substitutable"]
+                if r in non_substitutable
+                else [
+                    side
+                    for side, ok in (
+                        ("task_authorization", (r, a) in authorized),
+                        ("machine_verification", (r, a) in verified),
+                    )
+                    if not ok
+                ]
+            )
+            considered = {"pair": [r.value, a.value], "missing": missing}
+        refusals.append(
+            RefusalReason(
+                "unsupported_command_mode",
+                f"behaviour requires {r.value}; machine offers "
+                f"{mode_names(available)} and no verified, authorized substitute",
+                {
+                    "required": r.value,
+                    "available": mode_names(available),
+                    "substitute_considered": considered,
+                    "execution_started": False,
+                },
+            )
+        )
+    return refusals, disclosures
+
+
+def negotiate(
+    intent: ExecutionIntent, caps: MachineCapabilities, behavior: object
+) -> FeasibilityResult:
+    """behavior is the selected execution behaviour, or None when none is
+    registered for the intent (the runtime refuses that case itself)."""
     refusals: list[RefusalReason] = []
     degradations: list[RefusalReason] = []
+    disclosures: list[RefusalReason] = []
 
     if intent.success_condition is None:
         refusals.append(
@@ -81,6 +179,9 @@ def negotiate(intent: ExecutionIntent, caps: MachineCapabilities) -> Feasibility
                 "the machine offers no supported command mode",
             )
         )
+    elif behavior is not None:
+        mode_refusals, disclosures = command_mode_admission(behavior, caps)
+        refusals.extend(mode_refusals)
 
     for req in intent.requirements:
         if req.kind is RequirementKind.MAX_PROCESS_FORCE_N:
@@ -240,5 +341,5 @@ def negotiate(intent: ExecutionIntent, caps: MachineCapabilities) -> Feasibility
     if refusals:
         return FeasibilityResult("REFUSED", tuple(refusals))
     if degradations:
-        return FeasibilityResult("DEGRADED", tuple(degradations))
-    return FeasibilityResult("SUPPORTED", ())
+        return FeasibilityResult("DEGRADED", tuple(degradations), tuple(disclosures))
+    return FeasibilityResult("SUPPORTED", (), tuple(disclosures))

@@ -1,0 +1,181 @@
+{
+  "schema": "m4-campaign-config-v1",
+  "preregistration": "docs/eval_program/designs/M4_preregistration.md",
+  "benchmark_version": "heb-0.2.0",
+  "scoring_epoch": {
+    "name": "hes-m4-e2",
+    "note": "New epoch. Not poolable with HES v0 (docs/HES_V0_REPORT.md) or any earlier epoch.",
+    "scoring_sources": {
+      "hes/metrics.py": "6d6823e3a098911eb82ec48d6d20faa0b013a69d564c662a9ef2aea05b311c5c",
+      "hes/model.py": "7c3c1f178d34f84a79e4255a8c22dd7eb62e42d04d65cafc490a21cab34e9301",
+      "hes/run.py": "95f1c72886dc268f809c0996a79cbf8e4baeb93f8b6a73cdae2dd0089ef7e71e",
+      "hes/gates.py": "3242410b4c0eca424cdf2f1462901a03b789093cc8ddb94dc2fc67d2fcef59fe",
+      "hes/regression.py": "c5cdf1dde8d35d2ca264294dcba3ce97076e207f3fb6fdf1b11ef12072083495",
+      "hes/report.py": "f873f7630d55002e45bf3926795545788be4392b1d59269a64ce53e022dd5f2e",
+      "hes/bundle.py": "f6cc5c9e79b877293ab4bc0109f4db75c77787a3b9294428a5d741cfca8628be",
+      "hes/attribution.py": "dc4edf78d42d991ba7c80f06508d7d8d9ad44d08d0c749766fc6e68e0911c33c",
+      "hes/pareto.py": "68372dc6c1cb8f3b3c52f5298aff87410177843969d16cbf38970d8494847aba",
+      "hes/integrity.py": "34e4ace6056032626d556b5dd35e1e7881f11147325f0df9ddb2e7ef99271f58",
+      "evaluation/stats.py": "237d95ffa278be1a7d34140108e845ed3cc30591d0849d08a3c0ba5113d9d376",
+      "evaluation/aggregate.py": "c78bec315613e2c09f4d366dc0431fdcddc5d273c1c134c49120b590c59a50b3",
+      "evaluation/experiment.py": "75e73848714f50f8e24c512feafb4cab8e18c5fa2ce60ee23458ec1e5ffa68ce",
+      "benchmarks/heb/metrics.py": "fb85a0009c83b0ed7312abfbddb3a3b1edc0efa1c180fb9e4d9995d9077a97d8",
+      "scripts/m4_campaign.py": "646ccea0c59a41e52ff45fdd9b503e189ef6d3559ba37d569c3b0fb5c5ebec23",
+      "scripts/m4_recompute.py": "27d4691892f8aab569832dcb3cd14bcf7d102622bebd900dc6ebf71c01fe1144"
+    },
+    "system_sources": {
+      "benchmarks/stress_population.py": "d3145f500db2c0e6e4313c3d8a559fdebf5e1a29d471b48297f7e4800a40e9ee",
+      "hes/populations.py": "ed2c38e33bab5d277c277b9c2f5c2fc0bd34e92155dcb9f4ca71f9890efd2d52",
+      "benchmarks/heb/population.py": "7c81e64d75d17585f04f4c95004f3dbf01f5aad33fea3de7d38eeb87a6751d88",
+      "benchmarks/heb/systems.py": "6e0c13132d58646d62e0999d1a0049f5fcc94f0b65b5ab716b800e1a12711f07",
+      "benchmarks/heb/runner.py": "8215851fe66c64372f936bd0f8ac993027b8412d9388eae3537b394cd7456491",
+      "benchmarks/heb/mujoco_backend.py": "47cf3f163af80b1dc1e9daa23d037481de0695a43bec2a1c138a1644fd279b21",
+      "benchmarks/heb/tasks.py": "fdc001d5245db3a716a85801b15240750ea3ca0207c0b5ef6c3ac5d980cba056",
+      "benchmarks/heb/insertion.py": "960a7081290173b8e32a30123f42eed476384eb63dd10a390b3842b07ad65413",
+      "benchmarks/heb/sliding.py": "4ff709c76760275f46be146dfbeed8a0c47ddc342e1942caae1bc06f916a6fa4",
+      "benchmarks/incumbent.py": "6786ff04f137d4e28a8e01ca0504445b2147440ebc6b3cc7be1e9a1a0d213539",
+      "benchmarks/recording.py": "b7c87d205848f9aba782ddbafe9c68a37f3b0517eded60ed819537142c253e6f",
+      "haplous/runtime.py": "2f58f9561c17bfb291a54e8d6125f142ffec08ebea399697cb52111a5b75afc6",
+      "haplous/capabilities.py": "9879ba095e3d6062888c502be4e5742ab3680ebec3fffdb3df43f6ffb39283b8",
+      "haplous/constraints.py": "3e0f9ffe87ac04176d08754126d38f6f2a87040196d2840fc8d89e71f9fb312d",
+      "haplous/adapters/mujoco_adapter.py": "019448b47743882c441a5ccbffd997b60dfc38cc0a359c36daff41d188a7126a",
+      "haplous/behaviors/insertion.py": "c665a987796aa77ecd76a281407a3795a89d70d394c9b8d66196b5d725620959",
+      "haplous/behaviors/sliding.py": "511d22daa7976d5fd197621bb29dc0ca634e0d15ac3d1b69b85894f7926bed58"
+    }
+  },
+  "populations": {
+    "control": {
+      "hes_population": "m4_control",
+      "id": "m4_control@v1",
+      "seed": 7,
+      "n": 200,
+      "generator": "population"
+    },
+    "stress": {
+      "hes_population": "m4_stress",
+      "id": "m4_stress@v1",
+      "seed": 1113,
+      "n": 320,
+      "generator": "stress_population"
+    }
+  },
+  "arms": {
+    "all": [
+      "bare_behavior",
+      "g1_incumbent",
+      "haplous_mediated",
+      "competent_supervisor"
+    ],
+    "direct": "bare_behavior",
+    "incumbent": "g1_incumbent",
+    "runtime": "haplous_mediated",
+    "historical_reference": "competent_supervisor"
+  },
+  "comparisons": [
+    [
+      "haplous_mediated",
+      "g1_incumbent"
+    ],
+    [
+      "haplous_mediated",
+      "bare_behavior"
+    ],
+    [
+      "g1_incumbent",
+      "bare_behavior"
+    ],
+    [
+      "haplous_mediated",
+      "competent_supervisor"
+    ]
+  ],
+  "confirmatory": [
+    {
+      "id": "C1",
+      "population": "stress",
+      "candidate": "haplous_mediated",
+      "reference": "g1_incumbent",
+      "field": "bounded_success"
+    },
+    {
+      "id": "C2",
+      "population": "control",
+      "candidate": "haplous_mediated",
+      "reference": "g1_incumbent",
+      "field": "bounded_success"
+    }
+  ],
+  "statistics": {
+    "bootstrap_resamples": 10000,
+    "bootstrap_seed": 20261113,
+    "equivalence_margin": 0.05,
+    "unit": "scenario",
+    "proportion_ci": "wilson95",
+    "paired_ci": "scenario-paired percentile bootstrap 95"
+  },
+  "time": {
+    "reset_s": [
+      1.0,
+      0.0
+    ]
+  },
+  "exclusions": {
+    "scenario_ids": [
+      "slide_disturbance_no_recovery",
+      "slide_disturbance_recoverable_ceiling"
+    ],
+    "g1_unimplemented_refusal_codes": [
+      "missing_force_measurement",
+      "force_floor_unsensed",
+      "missing_tilt_observation",
+      "tilt_requirement_unsensed",
+      "missing_pose_observation",
+      "requested_tolerance_unachievable",
+      "state_too_stale"
+    ]
+  },
+  "metrics": [
+    "task_success",
+    "bounded_success",
+    "coverage",
+    "violation_given_acceptance",
+    "false_refusal_rate",
+    "refusals_attainability_unknown",
+    "preservation_vs_direct",
+    "unnecessary_intervention_vs_direct",
+    "recovery_bounded_success",
+    "time_per_bounded_success",
+    "intervention_overhead_vs_direct",
+    "paired_wins_and_regressions"
+  ],
+  "recording": {
+    "comparisons": [
+      [
+        "haplous_mediated",
+        "g1_incumbent"
+      ],
+      [
+        "haplous_mediated",
+        "bare_behavior"
+      ]
+    ],
+    "cap_pairs_per_population": 25
+  },
+  "sharding": {
+    "shard_size": 10,
+    "workers": 4
+  },
+  "stopping": {
+    "max_attempts_per_shard": 3
+  },
+  "phases": {
+    "dryrun": {
+      "n_per_population": 2,
+      "probe_pairs_per_population": 1
+    },
+    "campaign": {
+      "n_per_population": null,
+      "probe_pairs_per_population": 0
+    }
+  }
+}

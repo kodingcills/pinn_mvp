@@ -1,0 +1,67 @@
+{
+  "excluded": {
+    "fleet_slide_000041": [
+      "mesh_sensitive_slide_disturbance"
+    ],
+    "fleet_slide_000047": [
+      "mesh_sensitive_slide_disturbance"
+    ],
+    "fleet_slide_000050": [
+      "mesh_sensitive_slide_disturbance"
+    ],
+    "fleet_slide_000057": [
+      "mesh_sensitive_slide_disturbance"
+    ],
+    "fleet_slide_000065": [
+      "mesh_sensitive_slide_disturbance"
+    ],
+    "fleet_slide_000069": [
+      "mesh_sensitive_slide_disturbance"
+    ],
+    "fleet_slide_000077": [
+      "mesh_sensitive_slide_disturbance"
+    ],
+    "fleet_slide_000078": [
+      "mesh_sensitive_slide_disturbance"
+    ],
+    "fleet_slide_000089": [
+      "mesh_sensitive_slide_disturbance"
+    ],
+    "fleet_slide_000111": [
+      "mesh_sensitive_slide_disturbance"
+    ],
+    "fleet_slide_000117": [
+      "mesh_sensitive_slide_disturbance"
+    ],
+    "fleet_slide_000123": [
+      "mesh_sensitive_slide_disturbance"
+    ],
+    "fleet_slide_000130": [
+      "mesh_sensitive_slide_disturbance"
+    ],
+    "fleet_slide_000136": [
+      "mesh_sensitive_slide_disturbance"
+    ],
+    "fleet_slide_000138": [
+      "mesh_sensitive_slide_disturbance"
+    ],
+    "fleet_slide_000172": [
+      "mesh_sensitive_slide_disturbance"
+    ],
+    "fleet_slide_000183": [
+      "mesh_sensitive_slide_disturbance"
+    ],
+    "fleet_slide_000191": [
+      "mesh_sensitive_slide_disturbance"
+    ],
+    "fleet_slide_000198": [
+      "mesh_sensitive_slide_disturbance"
+    ]
+  },
+  "phase": "dryrun",
+  "population": "m4_control",
+  "scheduled": [
+    "fleet_insert_000000",
+    "fleet_insert_000001"
+  ]
+}

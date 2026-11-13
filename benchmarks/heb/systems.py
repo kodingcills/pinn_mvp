@@ -103,7 +103,12 @@ def build_intent(
     )
     return ExecutionIntent(
         behavior=scenario.task_family,
-        goal_description=f"HEB scenario {scenario.id}",
+        # Task-level only: the scenario id names its fault and stays evaluator-side
+        # (TrialRecord.scenario_id).
+        goal_description=(
+            f"{scenario.task_family} task under declared requirements: "
+            + ", ".join(sorted(r.kind.value for r in requirements))
+        ),
         goal_position_m=goal,
         start_position_m=start,
         requirements=tuple(requirements),
@@ -350,6 +355,13 @@ class BareSystem:
         )
 
 
+def _g1_incumbent() -> object:
+    # Lazy: benchmarks.incumbent imports build_intent from this module.
+    from benchmarks.incumbent import G1IncumbentSystem
+
+    return G1IncumbentSystem()
+
+
 def system_by_name(name: str) -> object:
     """Benchmark-owned system factory. The single mapping from an arm
     name to a system under test, shared by the CLI and the evaluation
@@ -359,6 +371,7 @@ def system_by_name(name: str) -> object:
         "bare_behavior": BareSystem,
         "competent_supervisor": SupervisedSystem,
         "haplous_mediated": HaplousSystem,
+        "g1_incumbent": _g1_incumbent,
     }
     try:
         return factories[name]()

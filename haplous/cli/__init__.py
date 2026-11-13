@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 from collections.abc import Sequence
+from pathlib import Path
 
 from haplous.cli.commands import doctor_command, list_command
 from haplous.cli.demo import demo_command
@@ -66,7 +67,11 @@ def _parser() -> argparse.ArgumentParser:
     replay = commands.add_parser("replay")
     replay.add_argument("run_id")
     replay.add_argument("--failures", action="store_true")
-    replay.add_argument("--ui", action="store_true")
+    replay.add_argument("--ui", action="store_true", help="for an M0 recording: export .rrd and .mp4")
+    replay.add_argument("--recordings-root", type=Path, help="M0 registry root holding recordings")
+    replay.add_argument("--rrd", type=Path, help="recording: .rrd output path")
+    replay.add_argument("--mp4", type=Path, help="recording: .mp4 output path")
+    replay.add_argument("--report", type=Path, help="recording: replay report JSON path")
     replay.set_defaults(handler=replay_command)
 
     envelope = commands.add_parser("envelope")

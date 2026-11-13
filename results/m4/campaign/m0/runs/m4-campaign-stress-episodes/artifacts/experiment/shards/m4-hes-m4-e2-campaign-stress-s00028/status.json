@@ -1,0 +1,10 @@
+{
+  "attempts": 1,
+  "completed_at_utc": "2026-11-13T17:51:59.252982+00:00",
+  "episodes": 40,
+  "episodes_sha256": "67ed8caff4f9b47369bb675c4c0a814b8643c1ed65a449bb281485097dcc7ab2",
+  "experiment_id": "m4-hes-m4-e2-campaign-stress",
+  "shard_id": "m4-hes-m4-e2-campaign-stress-s00028",
+  "status": "COMPLETE",
+  "wall_s": 81.7835199730007
+}

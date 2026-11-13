@@ -1,0 +1,1 @@
+{"artifact_bytes": 2665316, "disposition": "COMPLETE", "peak_rss_kb": 132916, "reason": null, "recorded": true, "scenario_id": "insert_dropout_large", "sim_s": 1.8249999999998545}

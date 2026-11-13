@@ -9,6 +9,8 @@ runtime. Physics-first controller + geometric state estimator; no RL is trained.
 Canonical state summary lives in `CONTEXT.md` (verify it against code; on
 conflict, the code wins). Deferred/hardware notes live in `PHASE2.md`.
 Durable engineering evidence lives in `docs/` (index: `docs/README.md`).
+The eval program (M2-M5) lives on branch `claude/magical-curie-si1vjr`, not `main`; start a
+worktree from that branch and read `docs/eval_program/PROGRAM_STATE.md` first.
 
 ## Layout
 
@@ -27,7 +29,7 @@ Durable engineering evidence lives in `docs/` (index: `docs/README.md`).
 ## Commands
 
 ```bash
-.venv/bin/python -m pytest tests -q          # full suite (expect 396 passed, 1 xfailed)
+.venv/bin/python -m pytest tests -q          # full suite (see docs/eval_program/KNOWN_ISSUES.md for the current baseline)
 .venv/bin/python -m pytest tests/test_haplous_semantics.py -q   # runtime semantics
 .venv/bin/python -c "import haplous, pegsim" # import smoke
 ruff check .                                  # lint, if ruff is installed

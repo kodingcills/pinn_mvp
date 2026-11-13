@@ -1,0 +1,113 @@
+{
+  "derived": {
+    "mp4": {
+      "bytes": 14410,
+      "fps": 30,
+      "frames": 59,
+      "path": "/tmp/claude-0/-home-user-pinn-mvp/a4419b98-d394-5c13-9a4d-5292a55f599b/scratchpad/m31-slide3/m3-heb-slide_disturbance_recoverable_ceiling.mp4",
+      "sha256": "be4806acbefe749583384ea835adce0c3774ad0b789d4cd19d8db4564d0ca4f3"
+    },
+    "rrd": {
+      "bytes": 705921,
+      "path": "/tmp/claude-0/-home-user-pinn-mvp/a4419b98-d394-5c13-9a4d-5292a55f599b/scratchpad/m31-slide3/m3-heb-slide_disturbance_recoverable_ceiling.rrd",
+      "sha256": "c2701f6518a557684348ddcef341b6ceaf9c74db077c86d6492a2280d9d4603f"
+    }
+  },
+  "events": 89,
+  "forbidden_modules_loaded": [],
+  "format": "haplous-mujoco-recording-v1",
+  "gates": {
+    "10_aa_noninterference": true,
+    "11_planted_defects": true,
+    "1_record": true,
+    "2_m0_verified": true,
+    "3_no_runtime_imports": true,
+    "4_pose_matches": true,
+    "5_event_sync": true,
+    "6_mp4": true,
+    "7_rrd_verify": true,
+    "8_hashes_match_m0": true,
+    "9_bounded_rss": true
+  },
+  "m0_artifacts": [
+    {
+      "bytes": 15496,
+      "path": "events.jsonl",
+      "sha256": "1ad68e76af9035cbb60f04643e25d0d89fe107a5651681b9790f27f019d796d4"
+    },
+    {
+      "bytes": 1406,
+      "path": "metadata.json",
+      "sha256": "bd4573ac10c54a2140a969ae486e714947cab77e28c423d03ded2b0e5fcb5a92"
+    },
+    {
+      "bytes": 35717,
+      "path": "model.mjb",
+      "sha256": "f4e502b2f5bbd737a4a91a2ff9fcba90e0e6638b4eaef975efc95e7a10d287ab"
+    },
+    {
+      "bytes": 8011,
+      "path": "model.xml",
+      "sha256": "b906b735544d0781db52c8f5a9e885ebd0481541e09ba88814841938d639b3ff"
+    },
+    {
+      "bytes": 621786,
+      "path": "state.arrow",
+      "sha256": "23bfb1b2808d902e46bee95a2212882113d4f99f37d64d081a480a748542921c"
+    },
+    {
+      "bytes": 0,
+      "path": "stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 197,
+      "path": "stdout.txt",
+      "sha256": "e6f564c575cee7c6346247871a312f70053e0f72df8cac9ccf810fc1de91cbbd"
+    },
+    {
+      "bytes": 2546864,
+      "path": "telemetry.jsonl",
+      "sha256": "ee560adb5ec79d2cd0860484782b78b8fae7913a52670148ec6c0aa34b0a7c1a"
+    }
+  ],
+  "m0_manifest_sha256": "b77f0522a5dfb29a553d3a442edb1a4e71d7936144c0d490b8f547e72cc2046d",
+  "n_ticks": 3944,
+  "outcome": {
+    "bounded_success": false,
+    "disposition": "COMPLETE",
+    "graded_disposition": "COMPLETE",
+    "hard_violations": [
+      {
+        "code": "process_force",
+        "limit": 1.5,
+        "t_s": 1.2969999999999127,
+        "value": 1.5171437394799856
+      },
+      {
+        "code": "process_force",
+        "limit": 1.5,
+        "t_s": 1.6229999999998768,
+        "value": 1.752901954689933
+      },
+      {
+        "code": "process_force",
+        "limit": 1.5,
+        "t_s": 1.7594999999998617,
+        "value": 1.6941371368092608
+      }
+    ],
+    "reason": null,
+    "refusal_codes": [],
+    "task_success": true
+  },
+  "pose_check": {
+    "max_abs_error_m": 0.0,
+    "observations_compared": 3945,
+    "pass": true,
+    "tolerance_m": 1e-09
+  },
+  "run_id": "m3-heb-slide_disturbance_recoverable_ceiling",
+  "sim_duration_s": 1.9715,
+  "tracked_site": "peg_tip"
+}

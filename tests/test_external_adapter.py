@@ -4,6 +4,16 @@ task. No external framework imports may appear in haplous/."""
 import ast
 from pathlib import Path
 
+import pytest
+
+from benchmarks.external import (
+    DemoStreamPolicy,
+    LiftPolicy,
+    ManiSkillPegInsertionTask,
+    NutAssemblyPolicy,
+    RobosuiteLiftTask,
+    RobosuiteNutAssemblyTask,
+)
 from haplous import (
     ExecutionIntent,
     ExecutionState,
@@ -18,6 +28,7 @@ from haplous.capabilities import (
     CommandMode,
     MachineCapabilities,
     SensingChannel,
+    negotiate,
 )
 from haplous.machine import (
     CommandOutcome,
@@ -27,6 +38,11 @@ from haplous.machine import (
 )
 
 ROOT = Path(__file__).resolve().parents[1]
+_ADMISSION_CODES = {
+    "command_contract_undeclared",
+    "unsupported_command_mode",
+    "unsupported_control_mode",
+}
 
 
 class FakeExternalTask:
@@ -133,6 +149,12 @@ def _fake_intent() -> ExecutionIntent:
 
 
 class _HoldBehavior(ExecutionBehavior):
+    # Commands a fixed goal pose at fixed stiffness: impedance only, which
+    # FakeExternalTask.capabilities() offers.
+    required_command_modes = frozenset({CommandMode.CARTESIAN_IMPEDANCE})
+    authorized_substitutes: frozenset = frozenset()
+    non_substitutable_modes: frozenset = frozenset()
+
     def begin(self, intent, caps, observation) -> None:
         self._target = intent.goal_position_m
 
@@ -174,6 +196,25 @@ def test_runtime_runs_over_external_adapter():
     evidence = runtime.execute()
     assert runtime.state == ExecutionState.COMPLETE
     assert any(e.kind == "execution_authorized" for e in evidence.events)
+
+
+@pytest.mark.parametrize(
+    "policy_cls, task",
+    [
+        (DemoStreamPolicy, ManiSkillPegInsertionTask(lambda: -1.0, lambda: None, 1)),
+        (NutAssemblyPolicy, RobosuiteNutAssemblyTask(lambda: -1.0)),
+        (LiftPolicy, RobosuiteLiftTask(lambda: -1.0)),
+    ],
+    ids=["maniskill", "robosuite_nut", "robosuite_lift"],
+)
+def test_external_policy_contract_admitted_on_its_task(policy_cls, task):
+    # capabilities() needs no simulator, so this runs without robosuite or
+    # ManiSkill installed. The contract is read off the class.
+    caps = ExternalMachineAdapter(task).capabilities()
+    result = negotiate(_fake_intent(), caps, policy_cls)
+    assert policy_cls.required_command_modes <= caps.command_modes
+    assert not [r for r in result.reasons if r.code in _ADMISSION_CODES]
+    assert result.disclosures == ()
 
 
 def test_no_external_framework_imports_in_haplous_package():

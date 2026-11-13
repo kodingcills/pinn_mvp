@@ -1,0 +1,21 @@
+{
+  "backend": "robosuite-1.5.2",
+  "clocks": {
+    "host_monotonic_ns": "recording host time.monotonic_ns()",
+    "t_s": "machine seconds",
+    "tick": "session step index"
+  },
+  "format": "haplous-episode-log-v1",
+  "n_observations": 35,
+  "n_ticks": 33,
+  "outcome": {
+    "disposition": "COMPLETE",
+    "reason": null,
+    "refusal_codes": [],
+    "task_success": true
+  },
+  "seed": 0,
+  "system": "haplous_mediated",
+  "task_id": "robosuite/1.5.2/Lift",
+  "timestep_s": 0.05
+}

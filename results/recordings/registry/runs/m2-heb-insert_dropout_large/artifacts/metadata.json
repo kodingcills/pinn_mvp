@@ -1,0 +1,33 @@
+{
+  "chunk_ticks": 1024,
+  "clocks": {
+    "host_monotonic_ns": "recording host time.monotonic_ns()",
+    "sim_time_s": "MjData.time (sim)",
+    "t_s": "sim seconds",
+    "tick": "physics step index (sim)"
+  },
+  "format": "haplous-mujoco-recording-v1",
+  "model_sha256": "eb193c452207d7d7aa42a4b95495a48eb4e1d87379f42ba0b38e8910439dfffc",
+  "model_xml_sha256": "79f00c9794eee84ec9bd12266618738dd58d3f6f62282b7afba7409839b77d60",
+  "mujoco_version": "3.11.0",
+  "n_observations": 3251,
+  "n_ticks": 3651,
+  "nq": 6,
+  "nv": 6,
+  "outcome": {
+    "bounded_success": true,
+    "disposition": "COMPLETE",
+    "graded_disposition": "COMPLETE",
+    "hard_violations": [],
+    "reason": null,
+    "refusal_codes": [],
+    "task_success": true
+  },
+  "scenario_id": "insert_dropout_large",
+  "state_size": 43,
+  "state_spec": 16383,
+  "state_spec_name": "mjSTATE_INTEGRATION",
+  "system": "haplous_mediated",
+  "timestep_s": 0.0005,
+  "tracked_site": "peg_tip"
+}

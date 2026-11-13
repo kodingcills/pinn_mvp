@@ -1,0 +1,1 @@
+{"artifact_bytes": 3229280, "disposition": "COMPLETE", "peak_rss_kb": 180096, "reason": null, "recorded": true, "scenario_id": "slide_disturbance_recoverable_ceiling", "sim_s": 1.9714999999998384}

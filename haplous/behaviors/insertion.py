@@ -27,6 +27,7 @@ from pegsim.rollout import (
 from pegsim.search import ArchimedeanSpiral
 
 from haplous.adapters.mujoco_adapter import MuJoCoMachine, MuJoCoMachineConfig
+from haplous.capabilities import CommandMode
 from haplous.intent import (
     ExecutionIntent,
     RecoveryPolicy,
@@ -170,6 +171,17 @@ def _make_seated(
 class InsertionExecutionBehavior:
     """Live task logic for peg insertion: the run_episode control-tick
     block, driven per supervision tick from machine observations."""
+
+    # Every phase regulates lateral pose through an impedance setpoint
+    # (spiral search and capture snap, step() 1 and 8). The committed phase
+    # is a force-controlled descent: a rate-limited axial force reference
+    # whose leash bounds contact force while the depth setpoint ramps
+    # (step() 3-7). Both modes are used; neither substitutes for the other.
+    required_command_modes = frozenset(
+        {CommandMode.CARTESIAN_IMPEDANCE, CommandMode.FORCE_CONTROLLED_DESCENT}
+    )
+    authorized_substitutes: frozenset = frozenset()
+    non_substitutable_modes: frozenset = frozenset()
 
     def __init__(self, bundle: ValidatedConfig) -> None:
         self._task = bundle.task

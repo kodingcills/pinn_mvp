@@ -1,0 +1,332 @@
+{
+  "schema": "haplous-eval-program-tasks-v1",
+  "integration_branch": "claude/magical-curie-si1vjr",
+  "rule": "one owner per task; verifier is never the author; a verdict covers one head SHA",
+  "tasks": [
+    {
+      "id": "M2.1",
+      "title": "Record one real HEB/pegsim episode and replay it from artifacts (rrd + mp4)",
+      "owner": "worker-M2.1",
+      "deps": [],
+      "status": "verified",
+      "exit_check": "docs/eval_program/PROGRAM_STATE.md#m2-gate",
+      "commit": "6201f9d4e6b4d554ffdc310264aaff278cb28247",
+      "proof": [
+        "results/recordings/m2-heb-insert_dropout_large.replay_report.json",
+        "scripts/m2_gate.py",
+        "tests/test_recording_replay.py"
+      ],
+      "retries": 0,
+      "note": "owner reports 11/11 gate items, full suite 609/4/1; recorder at benchmarks/recording.py (heb/ file set is pinned by tests/test_heb_structure.py)",
+      "integrated_as": [
+        "ad088a1",
+        "1eaa699"
+      ]
+    },
+    {
+      "id": "M2.2",
+      "title": "Independent verification of M2.1 at its head SHA",
+      "owner": "verifier-M2 (sonnet)",
+      "deps": [
+        "M2.1"
+      ],
+      "status": "pass",
+      "exit_check": "M2 gate items 1-11 reproduced by a non-author",
+      "commit": "6201f9d4e6b4d554ffdc310264aaff278cb28247",
+      "proof": [
+        "verifier re-derived gates 2-8 with its own scripts; fresh re-record gave byte-identical mp4; 7 planted defects"
+      ],
+      "retries": 0,
+      "findings": [
+        "pose-check failure is reported, not raised (evaluation/replay.py replay())",
+        "state outside observed ticks and model changes that do not move peg_tip are protected only by M0 hashes (trust root = M0 ledger)"
+      ]
+    },
+    {
+      "id": "M2.3",
+      "title": ".claude/skills/verify-haplous-eval via create-verification-skill, run for real",
+      "owner": "worker-M2.3 (opus)",
+      "deps": [
+        "M2.2"
+      ],
+      "status": "verified",
+      "exit_check": "skill journey passes; a deliberately broken recording fails it",
+      "commit": "0c28024a2c4744955eeeaa7d9cd1f2293bd005e1",
+      "proof": [
+        ".claude/skills/verify-haplous-eval/SKILL.md journey rc 0 in env -i",
+        "plant_defect.py: 3 defect kinds"
+      ],
+      "retries": 0,
+      "verdict": "PASS by sonnet verifier at 0c28024 (cold-reader journey, 5 defects incl. 2 of its own)"
+    },
+    {
+      "id": "M3.1",
+      "title": "constrained_slide through the same record/replay/M0/HES path without recorder or HES-core edits",
+      "owner": "worker-M3.1 (opus)",
+      "deps": [
+        "M2.2"
+      ],
+      "status": "verified",
+      "exit_check": "diff touches no recorder/HES-core file; slide replay passes the M2 gate",
+      "commit": "8d752f8690a0f631c3a2da76ab3e73a4100ab46d",
+      "proof": [],
+      "retries": 0,
+      "integrated_as": [
+        "b903330",
+        "a747def",
+        "2086619"
+      ],
+      "verdict": "PASS (pipeline) by sonnet verifier at 8d752f8; slide validity partial: 2/9 scenarios depend on 16-tile mesh artifact"
+    },
+    {
+      "id": "M3.2",
+      "title": "Pass-through arm + A/A vs direct across both task families",
+      "owner": "worker-M3.2 (sonnet)",
+      "deps": [
+        "M2.2"
+      ],
+      "status": "verified",
+      "exit_check": "pass-through outcome-equal to direct within A/A; each negative test fails a planted defect",
+      "commit": "809c020",
+      "proof": [
+        "results/passthrough/aa_report.json (39/39 identical, full horizon)",
+        "tests/test_passthrough_aa.py"
+      ],
+      "retries": 0,
+      "integrated_as": [
+        "38f9781"
+      ],
+      "verdict": "PASS by opus verifier at 809c020 (6 scenarios full horizon with machine-side logger + state hashes; 3 planted defects caught)"
+    },
+    {
+      "id": "M4.1",
+      "title": "Specify G1 competent incumbent per task from existing guards",
+      "owner": "worker-M4.1 (opus)",
+      "deps": [
+        "M3.1",
+        "M3.2",
+        "M3.3",
+        "M3.4",
+        "M3.5",
+        "M3.6"
+      ],
+      "status": "verified",
+      "exit_check": "G1 spec + tests; not weakened vs HEB competent_supervisor",
+      "commit": "7a91bc09f1b8decfdfa72e132a32ba511678c617",
+      "proof": [],
+      "retries": 0,
+      "note": "owner: competent_supervisor audited as strict-abort watchdog (not competent); G1 = benchmarks/incumbent.py (independent impl; imports only data types + build_intent); 25 guard tests with one-guard-off variants; smoke dispositions match Haplous on all 27 scenarios (must be explained by verifier, not assumed). Verifier (sonnet) stopped on account rate limit; resume it after reset.",
+      "integrated_as": [
+        "(cherry-pick of 7a91bc0)"
+      ],
+      "verdict": "PASS by sonnet verifier: G1 independent (thresholds from declared machine/intent info), no guard artificially weak (mildly strong), audit confirmed; 27/27 dispositions match Haplous (19 C / 5 A / 3 R) because HEB scenarios sit where all competent guards agree; static truth-leak gap found"
+    },
+    {
+      "id": "M3.3",
+      "title": "Negative tests: truth leakage at the execution boundary, wrong units/frames, wrong scenario pairing, unsupported capability claim; also: document and test that re-sealed events.jsonl tampering is caught only by trust_root (verify-haplous-eval SKILL.md \"How to read it\")",
+      "owner": "worker-M3.3 (opus)",
+      "deps": [
+        "M3.1"
+      ],
+      "status": "verified",
+      "exit_check": "each negative test fails a planted defect",
+      "commit": "ae4318f",
+      "proof": [
+        "tests/test_negative_truth_leak.py",
+        "tests/test_negative_recording.py",
+        "tests/test_negative_pairing.py",
+        "tests/test_negative_capability.py"
+      ],
+      "retries": 0,
+      "verdict": "PASS by sonnet verifier at ae4318f (revert checks, HES output byte-identical to e868d1c, both findings confirmed)"
+    },
+    {
+      "id": "M3.4",
+      "title": "Scenario lookup through the HEB task registry (no hard-coded pack list in benchmarks/recording.py:276); gate 9 plain comparator includes grade_run",
+      "owner": "worker-M3.4b (opus, fix round)",
+      "deps": [
+        "M3.1"
+      ],
+      "status": "verified",
+      "exit_check": "adding a third registered pack needs no recorder edit (test with a stub registration); gate 9 compares graded vs graded",
+      "commit": "9af7b21",
+      "proof": [
+        "tests/test_scenario_registry_lookup.py",
+        "gate 9 graded-vs-graded"
+      ],
+      "retries": 1,
+      "note": "lookup scans private tasks._REGISTRY (shortcut: HEB pinned, no public listing)",
+      "verdict": "PASS by sonnet verifier at 9af7b21 (P1-P3 + 2 own plants, 27-id equality, both M2 gates 11/11)"
+    },
+    {
+      "id": "M3.5",
+      "title": "Stop the scenario id (which names faults) reaching intent.goal_description in benchmarks/heb/systems.py build_intent; flip M3.3's strict xfail test_scenario_id_does_not_cross_execution_boundary to a passing test",
+      "owner": "worker-M3.5 (sonnet)",
+      "deps": [
+        "M3.3"
+      ],
+      "status": "verified",
+      "exit_check": "xfail becomes pass; HEB dispositions/grades unchanged for all insertion+slide scenarios (paired before/after table)",
+      "commit": "3fa0ec5 (on b4ea44d)",
+      "proof": [],
+      "retries": 1,
+      "note": "code fix done (108/108 parity, HES identical, xfail flipped); evidence report 11.6 MB -> fix round shrinks it to digests. INTEGRATE SQUASHED (cherry-pick -n b4ea44d + fix) so the 11.6 MB blob never enters integration history.",
+      "integrated_as": [
+        "53d4cb0 (squashed b4ea44d+3fa0ec5)"
+      ],
+      "verdict": "PASS by opus verifier at 3fa0ec5: 27/27 intents leaked before, 0/27 after; independent parity 108/108; HES rendered output byte-identical"
+    },
+    {
+      "id": "M3.6",
+      "title": "Implement locked design OD-1: contract-driven command-mode admission (docs/eval_program/designs/OD1_command_mode_admission.md)",
+      "owner": "worker-M3.6 (opus)",
+      "deps": [],
+      "status": "verified",
+      "exit_check": "design section 6 parity bar, all items",
+      "commit": "ea70b7e (on 00ab6ea)",
+      "proof": [],
+      "retries": 1,
+      "note": "design implemented and parity met (108/108, HES identical, M2 11/11, Track B differential 96 cases); fail-closed refuses 2 undeclared test fakes (39 failures) + unmigrated callers; fix round migrates all callers. Insertion and slide both declare {CARTESIAN_IMPEDANCE, FORCE_CONTROLLED_DESCENT}; slide declaration is the stricter choice for an ambiguous force-hold phase. Fix round: all runtime-reaching behaviours declare truthful contracts; wrappers forward; suite 775/4/2.",
+      "integrated_as": [
+        "8f2ede0..763883d (5 commits)"
+      ],
+      "verdict": "PASS by sonnet verifier at ea70b7e: design S1-S5 conform, Track B differential 96/96, independent parity 108/108, refusals open no session, mid-run loss stops with 0 commands after loss tick, 2 planted defects caught"
+    },
+    {
+      "id": "M4.1b",
+      "title": "Static guard: systems under test may not read evaluator-only Scenario attributes in decision code; correct G1 design doc section 3",
+      "owner": "worker-M4.1b (sonnet)",
+      "deps": [
+        "M4.1"
+      ],
+      "status": "verified",
+      "exit_check": "AST test passes; planted scenario read in G1 fails it",
+      "commit": "54fff7f",
+      "proof": [],
+      "retries": 0,
+      "verdict": "PASS by opus verifier at 54fff7f: partition correct over all 31 Scenario fields; alias/getattr/helper evasions caught; locals() and shadowed allow-listed callee missed (deliberate evasions only)"
+    },
+    {
+      "id": "M4.2a",
+      "title": "Pre-registration (populations incl. stress beyond hold budget, arms, estimands, statistics, exclusions, epoch) + campaign driver + independent recompute + planted mismatch test + 2-scenario dry run; NO comparative results",
+      "owner": "worker-M4.2a (opus)",
+      "deps": [
+        "M4.1"
+      ],
+      "status": "verified",
+      "exit_check": "prereg committed before any results; coordinator reviews prereg before M4.2b",
+      "commit": "11eeae6 (r2 prereg 4502e59 before r2 dry run)",
+      "proof": [],
+      "retries": 1,
+      "note": "coordinator prereg review: decision rules overlap (lo>0 & hi<=0.05 is both better and tie) -> ordered first-match rules in r2; exclusion counts must be reported; git_dirty provenance from in-repo outputs; recordings (~140 MB) out of git with hashes + regeneration, <=1 rescued + 1 harmed exemplar per population committed; adapters untested in M4; reset_s 1.0 with 0 s sensitivity | r2: ordered rules in decide/decision (13 cases x2), exclusion counts per rule, git_dirty false via patched private _git_state (risk), gitignored recording store + host-clock-free digests + regenerate-on-validate, epoch hes-m4-e2, config d69d8e62. Verifier must confirm HES check is against a committed file (section 1 reworded).",
+      "integrated_as": [
+        "7e0d59b (protocol r2)",
+        "5fa6965 (r2 dry-run results)"
+      ],
+      "verdict": "PASS by sonnet verifier at 11eeae6: r1->r2 changed only agreed items; drift refusal works; HES check against committed report (not circular); decide==decision on 20,015 intervals; exclusions recounted (19 control); 67% of stress windows exceed 0.5 s hold budget; store regeneration + corruption detection work"
+    },
+    {
+      "id": "M4.2b",
+      "title": "Execute the pre-registered campaign (direct / G1 / Haplous, control + stress populations), HES metrics under a new scoring epoch, independent recompute, rescued/harmed replays",
+      "owner": "worker-M4.2b (opus)",
+      "deps": [
+        "M4.2a",
+        "M4.1b"
+      ],
+      "status": "verified",
+      "exit_check": "independent recompute equals report; planted score/trace mismatch fails; slide_disturbance_no_recovery and slide_disturbance_recoverable_ceiling excluded from scientific estimates (mesh artifact, KNOWN_ISSUES) unless re-run on a validated finer mesh in a new scoring epoch; any pass-through/A-A around HaplousSystem must compare machine-received commands+outcomes (benchmarks/passthrough.py _Tap records emitted commands only); HES report must be regenerated under an explicit new scoring epoch and checked against a committed file (not a self-rendered temp file): docs/HES_V0_REPORT.md is stale on main (digest 90e7aafe vs computed dc913cf8)",
+      "commit": "092962f",
+      "proof": [
+        "docs/eval_program/M4_REPORT.md",
+        "results/m4/campaign/official_metrics.json",
+        "results/m4/campaign/raw_rows.jsonl"
+      ],
+      "retries": 1,
+      "integrated_as": [
+        "a7209f7"
+      ],
+      "note": "owner paused by usage limit and resumed; first launch killed at ~15 min before any outcome read (tool timeout), relaunched --fresh; Step 0 nominal 8/8 bounded_success. Result: C1 stress and C2 control both TIE (Haplous-G1 0.0 [0,0], no discordant pairs, 2004 rows). Stress HES G3 non_interference FAIL 0.625; control qualified.",
+      "verdict": "PASS by sonnet verifier at 092962f: diff = results + renderer + its test + report only; validate passes; recompute 0 metric mismatches; own recount matches every cell; render --check matches; M0 verify []; git_dirty false; replay 0.0 m error; suite 871/4 known/1 xfailed; no binaries"
+    },
+    {
+      "id": "M5.1",
+      "title": "Fresh-agent cold start: pick next unblocked task from this ledger, ship it with independent verdict",
+      "owner": "worker-M5.1 (opus)",
+      "deps": [
+        "M2.3",
+        "M4.2b"
+      ],
+      "status": "verified",
+      "exit_check": "PR with verification receipt by a non-author at head SHA",
+      "commit": "0a926fa",
+      "proof": [],
+      "retries": 0,
+      "note": "fresh agent with no briefing picked M5.2 from the ledger and shipped it with a non-author verdict. Cold-start gaps found and fixed: AGENTS.md now names the integration branch (worktrees cut from main lack docs/eval_program); stale baselines; outdated robosuite row",
+      "verdict": "PASS (same verifier verdict as M5.2 at 0a926fa; the three doc gaps confirmed)"
+    },
+    {
+      "id": "M5.2",
+      "title": "Record telemetry+events at the machine-session boundary for any backend; MuJoCo state stream optional",
+      "owner": "worker-M5.1 cold start (opus)",
+      "deps": [],
+      "status": "verified",
+      "exit_check": "same log from MuJoCo and one external adapter; A/A identical on both; M2 gate 11/11",
+      "design": "docs/eval_program/designs/M5_backend_neutral_episode_log.md",
+      "commit": "0a926fa",
+      "proof": [
+        "results/m5/episode_log_mujoco.json",
+        "results/m5/episode_log_robosuite.json",
+        "tests/test_episode_log.py",
+        "M2 gate 11/11 --existing on both committed recordings"
+      ],
+      "retries": 0,
+      "integrated_as": [
+        "d12278d",
+        "429e01c"
+      ],
+      "verdict": "PASS by sonnet verifier at 0a926fa: no haplous/pegsim change; wrappers pass values through; fresh M2 recording byte-identical to committed; mujoco A/A reproduced; robosuite from committed evidence only (no venv); M2 gate 11/11; suite 880/4 known/1 xfailed; planted 1e-9 N perturbation caught"
+    },
+    {
+      "id": "M5.3",
+      "title": "haplous timeline <run>: plots + Haplous decision markers from the episode log only",
+      "owner": null,
+      "deps": [
+        "M5.2"
+      ],
+      "status": "pending",
+      "exit_check": "renders without importing any backend; tested on a committed recording",
+      "design": "docs/eval_program/designs/M5_backend_neutral_episode_log.md",
+      "commit": null,
+      "proof": [],
+      "retries": 0
+    },
+    {
+      "id": "M5.4",
+      "title": "MCAP export of the episode log (JSONL stays canonical)",
+      "owner": null,
+      "deps": [
+        "M5.2"
+      ],
+      "status": "pending",
+      "exit_check": "round-trip test; opens with per-channel schemas",
+      "design": "docs/eval_program/designs/M5_backend_neutral_episode_log.md",
+      "commit": null,
+      "proof": [],
+      "retries": 0
+    },
+    {
+      "id": "M5.5",
+      "title": "Import real-robot ROS 2 bag / MCAP into the episode log",
+      "owner": null,
+      "deps": [
+        "M5.2"
+      ],
+      "status": "blocked",
+      "exit_check": "BLOCKED on operator: which robot or dataset",
+      "design": "docs/eval_program/designs/M5_backend_neutral_episode_log.md",
+      "commit": null,
+      "proof": [],
+      "retries": 0
+    }
+  ]
+}

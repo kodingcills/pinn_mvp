@@ -9,7 +9,13 @@ from __future__ import annotations
 from enum import Enum, auto
 from typing import assert_never
 
-from haplous import ExecutionIntent, MachineCapabilities, MachineObservation, ServoCommand
+from haplous import (
+    CommandMode,
+    ExecutionIntent,
+    MachineCapabilities,
+    MachineObservation,
+    ServoCommand,
+)
 
 
 class _Phase(Enum):
@@ -20,6 +26,13 @@ class _Phase(Enum):
 
 
 class LiftPolicy:
+    # step() emits a per-phase pose target at fixed stiffness and no force
+    # reference; RobosuiteLiftTask maps it to an OSC position delta.
+    # Impedance only, which that task offers.
+    required_command_modes = frozenset({CommandMode.CARTESIAN_IMPEDANCE})
+    authorized_substitutes: frozenset = frozenset()
+    non_substitutable_modes: frozenset = frozenset()
+
     def __init__(self) -> None:
         self._phase = _Phase.ABOVE_CUBE
         self._phase_steps = 0

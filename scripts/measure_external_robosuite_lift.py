@@ -103,18 +103,8 @@ def _direct_trial(seed: int) -> Trial:
     )
 
 
-def _haplous_trial(seed: int) -> Trial:
-    policy = LiftPolicy()
-    task = RobosuiteLiftTask(lambda: policy.gripper_action)
-    started = time.perf_counter()
-    task.reset(seed=seed)
-    observation = task.observe()
-    assert observation is not None
-    runtime = HaplousRuntime(
-        ExternalMachineAdapter(task),
-        behaviors={"robosuite_lift": lambda: policy},
-    )
-    intent = ExecutionIntent(
+def lift_intent(observation) -> ExecutionIntent:
+    return ExecutionIntent(
         behavior="robosuite_lift",
         goal_description="grasp the cube and lift it",
         goal_position_m=observation.pose_m,
@@ -127,7 +117,20 @@ def _haplous_trial(seed: int) -> Trial:
         ),
         success_condition=SuccessCondition("cube_lifted", _success, window_s=0.25),
     )
-    feasibility = runtime.submit(intent)
+
+
+def _haplous_trial(seed: int) -> Trial:
+    policy = LiftPolicy()
+    task = RobosuiteLiftTask(lambda: policy.gripper_action)
+    started = time.perf_counter()
+    task.reset(seed=seed)
+    observation = task.observe()
+    assert observation is not None
+    runtime = HaplousRuntime(
+        ExternalMachineAdapter(task),
+        behaviors={"robosuite_lift": lambda: policy},
+    )
+    feasibility = runtime.submit(lift_intent(observation))
     evidence = runtime.execute() if feasibility.outcome != "REFUSED" else runtime.evidence
     wall_s = time.perf_counter() - started
     result = task.task_result()

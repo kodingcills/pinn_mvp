@@ -1,0 +1,11 @@
+{"clock": "sim", "kind": "dropout_window_start", "payload": {"end_s": 1.2, "start_s": 1.0}, "source": "machine", "t_s": 1.0, "tick": 2000}
+{"clock": "sim", "kind": "dropout_window_end", "payload": {"end_s": 1.2, "start_s": 1.0}, "source": "machine", "t_s": 1.2, "tick": 2400}
+{"clock": "sim", "kind": "feasibility", "payload": {"capabilities": {"command_modes": ["cartesian_impedance", "force_controlled_descent"], "execution_horizon_s": 16.3, "max_initial_offset_m": 0.0035, "max_sensed_force_n": 100.0, "position_resolution_m": 1e-06, "sensing": ["force_z", "pose", "tilt"], "state_max_age_s": 0.02, "state_period_s": 0.0005, "supports_stop": true}, "outcome": "SUPPORTED", "reasons": []}, "seq": 0, "source": "haplous", "t_s": 0.0, "tick": 0}
+{"clock": "sim", "kind": "execution_authorized", "payload": {"observation_age_s": 0.0}, "seq": 1, "source": "haplous", "t_s": 0.0, "tick": 0}
+{"clock": "sim", "kind": "motion_started", "payload": {"state_period_s": 0.0005}, "seq": 2, "source": "haplous", "t_s": 0.0, "tick": 0}
+{"clock": "sim", "kind": "temporal_hold_entered", "payload": {"cause": "observation_loss"}, "seq": 3, "source": "haplous", "t_s": 0.9994999999999453, "tick": 1999}
+{"clock": "sim", "kind": "state_transition", "payload": {"to": "degraded"}, "seq": 4, "source": "haplous", "t_s": 0.9994999999999453, "tick": 1999}
+{"clock": "sim", "kind": "measurement_loss", "payload": {"gap_s": 0.20099999999997797, "state_max_age_s": 0.02}, "seq": 5, "source": "haplous", "t_s": 1.2004999999999233, "tick": 2401}
+{"clock": "sim", "kind": "temporal_revalidation_resumed", "payload": {"cause": "fresh_state"}, "seq": 6, "source": "haplous", "t_s": 1.2004999999999233, "tick": 2401}
+{"clock": "sim", "kind": "state_transition", "payload": {"to": "executing"}, "seq": 7, "source": "haplous", "t_s": 1.2004999999999233, "tick": 2401}
+{"clock": "sim", "kind": "outcome", "payload": {"result": "COMPLETE", "success_condition": "seated"}, "seq": 8, "source": "haplous", "t_s": 1.8249999999998545, "tick": 3650}

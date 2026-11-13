@@ -13,7 +13,14 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Callable, Mapping, Optional
 
 from haplous.behavior import ExecutionBehavior
-from haplous.capabilities import FeasibilityResult, MachineCapabilities, RefusalReason, negotiate
+from haplous.capabilities import (
+    FeasibilityResult,
+    MachineCapabilities,
+    RefusalReason,
+    command_mode_admission,
+    mode_names,
+    negotiate,
+)
 from haplous.constraints import Constraint, build_constraints
 from haplous.evidence import ExecutionEvidence
 from haplous.intent import ExecutionIntent, RequirementKind
@@ -25,6 +32,13 @@ if TYPE_CHECKING:
 
 _GAP_TOLERANCE_FACTOR = 1.5
 _COMMAND_REJECTION_LIMIT = 3
+
+
+def _reason_record(r: RefusalReason) -> dict:
+    record = {"code": r.code, "detail": r.detail}
+    if r.data:
+        record["data"] = dict(r.data)
+    return record
 
 
 class HaplousRuntime:
@@ -50,6 +64,7 @@ class HaplousRuntime:
         self._archive_seq = 0
         self._flushed = 0
         self._intent: Optional[ExecutionIntent] = None
+        self._behavior: ExecutionBehavior | None = None
         self._feasibility: Optional[FeasibilityResult] = None
         self._recoveries_used = 0
         self._recovery_episode_open_t: dict[str, float] = {}
@@ -101,8 +116,12 @@ class HaplousRuntime:
             ],
             "has_recovery_policy": intent.recovery_policy is not None,
         }
-        feasibility = negotiate(intent, caps)
-        if intent.behavior not in self._behaviors:
+        # The selected behaviour is built here so its command contract is
+        # admitted before any session opens; execute() runs this instance.
+        factory = self._behaviors.get(intent.behavior)
+        self._behavior = factory() if factory is not None else None
+        feasibility = negotiate(intent, caps, self._behavior)
+        if factory is None:
             feasibility = FeasibilityResult(
                 "REFUSED",
                 feasibility.reasons
@@ -115,15 +134,19 @@ class HaplousRuntime:
                 ),
             )
         self._feasibility = feasibility
+        extra = (
+            {"disclosures": [_reason_record(r) for r in feasibility.disclosures]}
+            if feasibility.disclosures
+            else {}
+        )
         self._evidence.append(
             "feasibility",
             t_s=0.0,
             outcome=feasibility.outcome,
-            reasons=[
-                {"code": r.code, "detail": r.detail} for r in feasibility.reasons
-            ],
+            reasons=[_reason_record(r) for r in feasibility.reasons],
+            **extra,
             capabilities={
-                "command_modes": sorted(m.value for m in caps.command_modes),
+                "command_modes": mode_names(caps.command_modes),
                 "sensing": sorted(s.value for s in caps.sensing),
                 "max_sensed_force_n": caps.max_sensed_force_n,
                 "position_resolution_m": caps.position_resolution_m,
@@ -196,7 +219,8 @@ class HaplousRuntime:
                 detail=str(exc)[:200],
             )
             return self._evidence
-        behavior = self._behaviors[self._intent.behavior]()
+        behavior = self._behavior
+        assert behavior is not None
         self._tracker.transition(ExecutionState.EXECUTING)
         self._execute_live(session, behavior, caps)
         return self._evidence
@@ -212,6 +236,7 @@ class HaplousRuntime:
                 self._flushed += 1
         self._evidence = ExecutionEvidence()
         self._intent = None
+        self._behavior = None
         self._feasibility = None
         self._recoveries_used = 0
         self._recovery_episode_open_t = {}
@@ -287,6 +312,26 @@ class HaplousRuntime:
                 obs = session.observe()
                 if session.fault is not None:
                     self._abort_machine_fault(session, last_source)
+                    return
+                # OD-1 section 4: a required command mode that is no longer
+                # satisfied is a defined safe stop, never silent continuation.
+                live_caps = self._machine.capabilities()
+                lost, _ = command_mode_admission(behavior, live_caps)
+                if lost:
+                    self._machine.stop()
+                    self._tracker.transition(ExecutionState.ABORTED)
+                    self._evidence.append(
+                        "command_capability_lost",
+                        t_s=last_source,
+                        required=[r.data["required"] for r in lost],
+                        available=mode_names(live_caps.command_modes),
+                    )
+                    self._evidence.append(
+                        "outcome",
+                        t_s=last_source,
+                        result="ABORTED",
+                        reason="command_capability_lost",
+                    )
                     return
                 if obs is None:
                     # No observation this tick: no fresh state, so no new
