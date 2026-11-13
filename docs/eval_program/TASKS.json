@@ -176,12 +176,12 @@
       "title": "Implement locked design OD-1: contract-driven command-mode admission (docs/eval_program/designs/OD1_command_mode_admission.md)",
       "owner": "worker-M3.6 (opus)",
       "deps": [],
-      "status": "fix_round",
+      "status": "awaiting_verification",
       "exit_check": "design section 6 parity bar, all items",
-      "commit": "00ab6ea162d0c00fb02fce00dfdc30400b76853e",
+      "commit": "ea70b7e (on 00ab6ea)",
       "proof": [],
       "retries": 1,
-      "note": "design implemented and parity met (108/108, HES identical, M2 11/11, Track B differential 96 cases); fail-closed refuses 2 undeclared test fakes (39 failures) + unmigrated callers; fix round migrates all callers. Insertion and slide both declare {CARTESIAN_IMPEDANCE, FORCE_CONTROLLED_DESCENT}; slide declaration is the stricter choice for an ambiguous force-hold phase."
+      "note": "design implemented and parity met (108/108, HES identical, M2 11/11, Track B differential 96 cases); fail-closed refuses 2 undeclared test fakes (39 failures) + unmigrated callers; fix round migrates all callers. Insertion and slide both declare {CARTESIAN_IMPEDANCE, FORCE_CONTROLLED_DESCENT}; slide declaration is the stricter choice for an ambiguous force-hold phase. Fix round: all runtime-reaching behaviours declare truthful contracts; wrappers forward; suite 775/4/2."
     },
     {
       "id": "M4.2",
