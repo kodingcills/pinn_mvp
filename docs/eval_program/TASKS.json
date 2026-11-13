@@ -213,22 +213,27 @@
       "deps": [
         "M4.1"
       ],
-      "status": "awaiting_verification",
+      "status": "verified",
       "exit_check": "prereg committed before any results; coordinator reviews prereg before M4.2b",
       "commit": "11eeae6 (r2 prereg 4502e59 before r2 dry run)",
       "proof": [],
       "retries": 1,
-      "note": "coordinator prereg review: decision rules overlap (lo>0 & hi<=0.05 is both better and tie) -> ordered first-match rules in r2; exclusion counts must be reported; git_dirty provenance from in-repo outputs; recordings (~140 MB) out of git with hashes + regeneration, <=1 rescued + 1 harmed exemplar per population committed; adapters untested in M4; reset_s 1.0 with 0 s sensitivity | r2: ordered rules in decide/decision (13 cases x2), exclusion counts per rule, git_dirty false via patched private _git_state (risk), gitignored recording store + host-clock-free digests + regenerate-on-validate, epoch hes-m4-e2, config d69d8e62. Verifier must confirm HES check is against a committed file (section 1 reworded)."
+      "note": "coordinator prereg review: decision rules overlap (lo>0 & hi<=0.05 is both better and tie) -> ordered first-match rules in r2; exclusion counts must be reported; git_dirty provenance from in-repo outputs; recordings (~140 MB) out of git with hashes + regeneration, <=1 rescued + 1 harmed exemplar per population committed; adapters untested in M4; reset_s 1.0 with 0 s sensitivity | r2: ordered rules in decide/decision (13 cases x2), exclusion counts per rule, git_dirty false via patched private _git_state (risk), gitignored recording store + host-clock-free digests + regenerate-on-validate, epoch hes-m4-e2, config d69d8e62. Verifier must confirm HES check is against a committed file (section 1 reworded).",
+      "integrated_as": [
+        "7e0d59b (protocol r2)",
+        "5fa6965 (r2 dry-run results)"
+      ],
+      "verdict": "PASS by sonnet verifier at 11eeae6: r1->r2 changed only agreed items; drift refusal works; HES check against committed report (not circular); decide==decision on 20,015 intervals; exclusions recounted (19 control); 67% of stress windows exceed 0.5 s hold budget; store regeneration + corruption detection work"
     },
     {
       "id": "M4.2b",
       "title": "Execute the pre-registered campaign (direct / G1 / Haplous, control + stress populations), HES metrics under a new scoring epoch, independent recompute, rescued/harmed replays",
-      "owner": null,
+      "owner": "worker-M4.2b (opus)",
       "deps": [
         "M4.2a",
         "M4.1b"
       ],
-      "status": "pending",
+      "status": "in_progress",
       "exit_check": "independent recompute equals report; planted score/trace mismatch fails; slide_disturbance_no_recovery and slide_disturbance_recoverable_ceiling excluded from scientific estimates (mesh artifact, KNOWN_ISSUES) unless re-run on a validated finer mesh in a new scoring epoch; any pass-through/A-A around HaplousSystem must compare machine-received commands+outcomes (benchmarks/passthrough.py _Tap records emitted commands only); HES report must be regenerated under an explicit new scoring epoch and checked against a committed file (not a self-rendered temp file): docs/HES_V0_REPORT.md is stale on main (digest 90e7aafe vs computed dc913cf8)",
       "commit": null,
       "proof": [],

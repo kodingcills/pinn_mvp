@@ -14,7 +14,7 @@ Read this first in a new session. Then `TASKS.json` (DAG and ownership), `DECISI
 |---|---|---|
 | M2 record → replay → verify | **DONE.** M2.1 **verified** (gate 11/11 by a non-author at 6201f9d); M2.3 verify skill **verified** (cold-reader journey by a non-author at 0c28024) | `results/recordings/m2-heb-insert_dropout_large.replay_report.json`, `scripts/m2_gate.py`, `tests/test_recording_replay.py` |
 | M3 two task packs, one pipeline | **DONE.** M3.1-M3.6 each verified by a non-author; integrated head suite 776 passed / 4 known failures / 1 xfailed | `tests/test_slide_recording.py`, `tests/test_passthrough_aa.py`, `tests/test_negative_*.py`, `tests/test_scenario_registry_lookup.py`, `tests/test_od1_admission.py`, `results/passthrough/`, `results/truth_leak/`, `results/od1/` |
-| M4 direct / G1 / Haplous campaign | M4.1 **verified** (G1 independent; matches Haplous 27/27 on committed HEB, which cannot discriminate); M4.1b static leak guard + M4.2a pre-registration running; M4.2b campaign gated on prereg review | `designs/G1_incumbent.md`, `benchmarks/incumbent.py`, `tests/test_g1_incumbent.py` |
+| M4 direct / G1 / Haplous campaign | M4.1, M4.1b, M4.2a **verified** (G1 incumbent, static leak guard, pre-registration r2 `designs/M4_preregistration.md`, config d69d8e62); M4.2b campaign execution running | `designs/G1_incumbent.md`, `designs/M4_preregistration.md`, `scripts/m4_campaign.py`, `scripts/m4_recompute.py`, `results/m4/dryrun/` |
 | M5 fresh-agent cold start | pending | |
 
 ## Architecture decisions in force (details in DECISIONS.tsv)
