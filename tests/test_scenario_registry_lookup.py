@@ -1,6 +1,6 @@
 """A task pack registered in HEB's registry is found by the recorder with no recorder edit."""
-from dataclasses import dataclass, replace
 from collections.abc import Callable
+from dataclasses import dataclass, replace
 
 import pytest
 
