@@ -110,11 +110,11 @@
     {
       "id": "M3.3",
       "title": "Negative tests: truth leakage at the execution boundary, wrong units/frames, wrong scenario pairing, unsupported capability claim; also: document and test that re-sealed events.jsonl tampering is caught only by trust_root (verify-haplous-eval SKILL.md \"How to read it\")",
-      "owner": null,
+      "owner": "worker-M3.3 (opus)",
       "deps": [
         "M3.1"
       ],
-      "status": "pending",
+      "status": "in_progress",
       "exit_check": "each negative test fails a planted defect",
       "commit": null,
       "proof": [],
@@ -123,11 +123,11 @@
     {
       "id": "M3.4",
       "title": "Scenario lookup through the HEB task registry (no hard-coded pack list in benchmarks/recording.py:276); gate 9 plain comparator includes grade_run",
-      "owner": null,
+      "owner": "worker-M3.4 (sonnet)",
       "deps": [
         "M3.1"
       ],
-      "status": "pending",
+      "status": "in_progress",
       "exit_check": "adding a third registered pack needs no recorder edit (test with a stub registration); gate 9 compares graded vs graded",
       "commit": null,
       "proof": [],
