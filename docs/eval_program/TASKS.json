@@ -252,6 +252,60 @@
       "commit": null,
       "proof": [],
       "retries": 0
+    },
+    {
+      "id": "M5.2",
+      "title": "Record telemetry+events at the machine-session boundary for any backend; MuJoCo state stream optional",
+      "owner": null,
+      "deps": [],
+      "status": "pending",
+      "exit_check": "same log from MuJoCo and one external adapter; A/A identical on both; M2 gate 11/11",
+      "design": "docs/eval_program/designs/M5_backend_neutral_episode_log.md",
+      "commit": null,
+      "proof": [],
+      "retries": 0
+    },
+    {
+      "id": "M5.3",
+      "title": "haplous timeline <run>: plots + Haplous decision markers from the episode log only",
+      "owner": null,
+      "deps": [
+        "M5.2"
+      ],
+      "status": "pending",
+      "exit_check": "renders without importing any backend; tested on a committed recording",
+      "design": "docs/eval_program/designs/M5_backend_neutral_episode_log.md",
+      "commit": null,
+      "proof": [],
+      "retries": 0
+    },
+    {
+      "id": "M5.4",
+      "title": "MCAP export of the episode log (JSONL stays canonical)",
+      "owner": null,
+      "deps": [
+        "M5.2"
+      ],
+      "status": "pending",
+      "exit_check": "round-trip test; opens with per-channel schemas",
+      "design": "docs/eval_program/designs/M5_backend_neutral_episode_log.md",
+      "commit": null,
+      "proof": [],
+      "retries": 0
+    },
+    {
+      "id": "M5.5",
+      "title": "Import real-robot ROS 2 bag / MCAP into the episode log",
+      "owner": null,
+      "deps": [
+        "M5.2"
+      ],
+      "status": "blocked",
+      "exit_check": "BLOCKED on operator: which robot or dataset",
+      "design": "docs/eval_program/designs/M5_backend_neutral_episode_log.md",
+      "commit": null,
+      "proof": [],
+      "retries": 0
     }
   ]
 }
