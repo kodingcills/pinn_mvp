@@ -37,7 +37,7 @@ import mujoco
 import numpy as np
 import pyarrow as pa
 
-from benchmarks.heb import mujoco_backend, systems
+from benchmarks.heb import mujoco_backend, systems, tasks
 from benchmarks.heb.insertion import insertion_scenarios
 from benchmarks.heb.metrics import grade_run
 from benchmarks.heb.protocol import Scenario, SystemRun
@@ -262,7 +262,9 @@ def run_episode(scenario: Scenario, out_dir: Path | None, chunk_ticks: int = 102
     given. Returns (SystemRun, realization, metadata or None)."""
     if out_dir is None:
         realization = mujoco_backend.build_realization(scenario)
-        return systems.HaplousSystem().run(realization, scenario), realization, None
+        run = systems.HaplousSystem().run(realization, scenario)
+        grade_run(scenario, realization.bundle, run)  # same work as the recorded path, so RSS comparisons isolate recording
+        return run, realization, None
     recorder = EpisodeRecorder(out_dir, chunk_ticks)
     realization = mujoco_backend.build_realization(scenario, machine_factory=recorder.machine_factory)
     with _capture_runtime() as runtimes:
@@ -273,7 +275,11 @@ def run_episode(scenario: Scenario, out_dir: Path | None, chunk_ticks: int = 102
 
 
 def scenario_by_id(scenario_id: str, offset_m: float | None = None) -> Scenario:
-    found = {s.id: s for s in insertion_scenarios() + sliding_scenarios()}[scenario_id]
+    # HEB's registry has no per-family scenario enumeration, so the built-in packs stay listed; a
+    # further pack registers a tasks.TaskImplementation subclass carrying `scenarios` (a callable).
+    # shortcut: reads tasks._REGISTRY because HEB (pinned by test_heb_structure) has no public listing.
+    extra = [s for impl in tasks._REGISTRY.values() if hasattr(impl, "scenarios") for s in impl.scenarios()]
+    found = {s.id: s for s in insertion_scenarios() + sliding_scenarios() + extra}[scenario_id]
     return found if offset_m is None else replace(found, id=f"{found.id}@offset={offset_m}", initial_offset_m=offset_m)
 
 
