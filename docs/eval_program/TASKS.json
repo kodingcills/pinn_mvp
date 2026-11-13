@@ -3,14 +3,114 @@
   "integration_branch": "claude/magical-curie-si1vjr",
   "rule": "one owner per task; verifier is never the author; a verdict covers one head SHA",
   "tasks": [
-    {"id": "M2.1", "title": "Record one real HEB/pegsim episode and replay it from artifacts (rrd + mp4)", "owner": "worker-M2.1", "deps": [], "status": "in_progress",
-     "exit_check": "docs/eval_program/PROGRAM_STATE.md#m2-gate", "commit": null, "proof": [], "retries": 0},
-    {"id": "M2.2", "title": "Independent verification of M2.1 at its head SHA", "owner": "verifier-M2", "deps": ["M2.1"], "status": "pending", "exit_check": "M2 gate items 1-11 reproduced by a non-author", "commit": null, "proof": [], "retries": 0},
-    {"id": "M2.3", "title": ".claude/skills/verify-haplous-eval via create-verification-skill, run for real", "owner": null, "deps": ["M2.2"], "status": "pending", "exit_check": "skill journey passes; a deliberately broken recording fails it", "commit": null, "proof": [], "retries": 0},
-    {"id": "M3.1", "title": "constrained_slide through the same record/replay/M0/HES path without recorder or HES-core edits", "owner": null, "deps": ["M2.2"], "status": "pending", "exit_check": "diff touches no recorder/HES-core file; slide replay passes the M2 gate", "commit": null, "proof": [], "retries": 0},
-    {"id": "M3.2", "title": "Pass-through arm + A/A; negative tests for truth leakage, units/frames, scenario pairing, unsupported capability", "owner": null, "deps": ["M2.2"], "status": "pending", "exit_check": "pass-through outcome-equal to direct within A/A; each negative test fails a planted defect", "commit": null, "proof": [], "retries": 0},
-    {"id": "M4.1", "title": "Specify G1 competent incumbent per task from existing guards", "owner": null, "deps": ["M3.1", "M3.2"], "status": "pending", "exit_check": "G1 spec + tests; not weakened vs HEB competent_supervisor", "commit": null, "proof": [], "retries": 0},
-    {"id": "M4.2", "title": "Matched direct/G1/Haplous dev campaign, nominal+faulted, HES metrics recomputed from raw rows", "owner": null, "deps": ["M4.1"], "status": "pending", "exit_check": "independent recompute equals report; planted score/trace mismatch fails", "commit": null, "proof": [], "retries": 0},
-    {"id": "M5.1", "title": "Fresh-agent cold start: pick next unblocked task from this ledger, ship it with independent verdict", "owner": null, "deps": ["M2.3", "M4.2"], "status": "pending", "exit_check": "PR with verification receipt by a non-author at head SHA", "commit": null, "proof": [], "retries": 0}
+    {
+      "id": "M2.1",
+      "title": "Record one real HEB/pegsim episode and replay it from artifacts (rrd + mp4)",
+      "owner": "worker-M2.1",
+      "deps": [],
+      "status": "awaiting_verification",
+      "exit_check": "docs/eval_program/PROGRAM_STATE.md#m2-gate",
+      "commit": "6201f9d4e6b4d554ffdc310264aaff278cb28247",
+      "proof": [
+        "results/recordings/m2-heb-insert_dropout_large.replay_report.json",
+        "scripts/m2_gate.py",
+        "tests/test_recording_replay.py"
+      ],
+      "retries": 0,
+      "note": "owner reports 11/11 gate items, full suite 609/4/1; recorder at benchmarks/recording.py (heb/ file set is pinned by tests/test_heb_structure.py)"
+    },
+    {
+      "id": "M2.2",
+      "title": "Independent verification of M2.1 at its head SHA",
+      "owner": "verifier-M2 (sonnet)",
+      "deps": [
+        "M2.1"
+      ],
+      "status": "in_progress",
+      "exit_check": "M2 gate items 1-11 reproduced by a non-author",
+      "commit": null,
+      "proof": [],
+      "retries": 0
+    },
+    {
+      "id": "M2.3",
+      "title": ".claude/skills/verify-haplous-eval via create-verification-skill, run for real",
+      "owner": null,
+      "deps": [
+        "M2.2"
+      ],
+      "status": "pending",
+      "exit_check": "skill journey passes; a deliberately broken recording fails it",
+      "commit": null,
+      "proof": [],
+      "retries": 0
+    },
+    {
+      "id": "M3.1",
+      "title": "constrained_slide through the same record/replay/M0/HES path without recorder or HES-core edits",
+      "owner": null,
+      "deps": [
+        "M2.2"
+      ],
+      "status": "pending",
+      "exit_check": "diff touches no recorder/HES-core file; slide replay passes the M2 gate",
+      "commit": null,
+      "proof": [],
+      "retries": 0
+    },
+    {
+      "id": "M3.2",
+      "title": "Pass-through arm + A/A; negative tests for truth leakage, units/frames, scenario pairing, unsupported capability",
+      "owner": null,
+      "deps": [
+        "M2.2"
+      ],
+      "status": "pending",
+      "exit_check": "pass-through outcome-equal to direct within A/A; each negative test fails a planted defect",
+      "commit": null,
+      "proof": [],
+      "retries": 0
+    },
+    {
+      "id": "M4.1",
+      "title": "Specify G1 competent incumbent per task from existing guards",
+      "owner": null,
+      "deps": [
+        "M3.1",
+        "M3.2"
+      ],
+      "status": "pending",
+      "exit_check": "G1 spec + tests; not weakened vs HEB competent_supervisor",
+      "commit": null,
+      "proof": [],
+      "retries": 0
+    },
+    {
+      "id": "M4.2",
+      "title": "Matched direct/G1/Haplous dev campaign, nominal+faulted, HES metrics recomputed from raw rows",
+      "owner": null,
+      "deps": [
+        "M4.1"
+      ],
+      "status": "pending",
+      "exit_check": "independent recompute equals report; planted score/trace mismatch fails",
+      "commit": null,
+      "proof": [],
+      "retries": 0
+    },
+    {
+      "id": "M5.1",
+      "title": "Fresh-agent cold start: pick next unblocked task from this ledger, ship it with independent verdict",
+      "owner": null,
+      "deps": [
+        "M2.3",
+        "M4.2"
+      ],
+      "status": "pending",
+      "exit_check": "PR with verification receipt by a non-author at head SHA",
+      "commit": null,
+      "proof": [],
+      "retries": 0
+    }
   ]
 }
