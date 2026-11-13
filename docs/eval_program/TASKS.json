@@ -122,7 +122,7 @@
       "deps": [
         "M3.1"
       ],
-      "status": "awaiting_verification",
+      "status": "verified",
       "exit_check": "each negative test fails a planted defect",
       "commit": "ae4318f",
       "proof": [
@@ -131,7 +131,8 @@
         "tests/test_negative_pairing.py",
         "tests/test_negative_capability.py"
       ],
-      "retries": 0
+      "retries": 0,
+      "verdict": "PASS by sonnet verifier at ae4318f (revert checks, HES output byte-identical to e868d1c, both findings confirmed)"
     },
     {
       "id": "M3.4",
@@ -154,11 +155,11 @@
     {
       "id": "M3.5",
       "title": "Stop the scenario id (which names faults) reaching intent.goal_description in benchmarks/heb/systems.py build_intent; flip M3.3's strict xfail test_scenario_id_does_not_cross_execution_boundary to a passing test",
-      "owner": null,
+      "owner": "worker-M3.5 (sonnet)",
       "deps": [
         "M3.3"
       ],
-      "status": "pending",
+      "status": "in_progress",
       "exit_check": "xfail becomes pass; HEB dispositions/grades unchanged for all insertion+slide scenarios (paired before/after table)",
       "commit": null,
       "proof": [],
