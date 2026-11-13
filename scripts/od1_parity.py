@@ -57,7 +57,8 @@ def collect(out: Path) -> None:
                 "task_success": success,
                 "bounded_success": bounded,
                 "hard_violations": violations,
-                "task_metrics": metrics,
+                # wall_s is wall-clock time, never reproducible across runs.
+                "task_metrics": {k: v for k, v in metrics.items() if k != "wall_s"},
                 "n_observations": len(run.observations),
                 "observations_sha256": hashlib.sha256(blob).hexdigest(),
             })
