@@ -110,11 +110,12 @@
         "M3.5",
         "M3.6"
       ],
-      "status": "in_progress",
+      "status": "awaiting_verification",
       "exit_check": "G1 spec + tests; not weakened vs HEB competent_supervisor",
-      "commit": null,
+      "commit": "7a91bc09f1b8decfdfa72e132a32ba511678c617",
       "proof": [],
-      "retries": 0
+      "retries": 0,
+      "note": "owner: competent_supervisor audited as strict-abort watchdog (not competent); G1 = benchmarks/incumbent.py (independent impl; imports only data types + build_intent); 25 guard tests with one-guard-off variants; smoke dispositions match Haplous on all 27 scenarios (must be explained by verifier, not assumed). Verifier (sonnet) stopped on account rate limit; resume it after reset."
     },
     {
       "id": "M3.3",
