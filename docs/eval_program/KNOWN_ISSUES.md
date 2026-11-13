@@ -26,3 +26,4 @@ Baseline on `main` @ `4ca4e71`, 2026-11-13: **599 passed, 4 failed, 1 xfailed** 
 | `benchmarks/recording.py:276` hard-codes `insertion_scenarios() + sliding_scenarios()` | M3.1 verifier | assigned to M3.4 |
 | Gate 9 plain comparator skips `grade_run` (recorded runs grade): overstates recorder RSS growth by ~0.65 MB at the long horizon (conservative) | M3.1 owner + verifier, measured | assigned to M3.4 |
 | Replay pose tolerance 1e-9 m: a re-sealed 1e-10 m pose shift and edits to non-pose state columns (e.g. time) are not caught by the pose check | M3.1 verifier, planted defects | documented limit (trust root = M0 ledger) |
+| `benchmarks/passthrough.py` `_Tap` compares commands the behaviour EMITS, not what the machine RECEIVES: dropping/altering a command the machine would reject is invisible (no effect on BareSystem outcomes, which ignore command outcomes) | M3.2 verifier, planted probe | M4 requirement before reusing the wrapper around HaplousSystem |

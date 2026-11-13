@@ -85,14 +85,18 @@
       "deps": [
         "M2.2"
       ],
-      "status": "awaiting_verification",
+      "status": "verified",
       "exit_check": "pass-through outcome-equal to direct within A/A; each negative test fails a planted defect",
       "commit": "809c020",
       "proof": [
         "results/passthrough/aa_report.json (39/39 identical, full horizon)",
         "tests/test_passthrough_aa.py"
       ],
-      "retries": 0
+      "retries": 0,
+      "integrated_as": [
+        "38f9781"
+      ],
+      "verdict": "PASS by opus verifier at 809c020 (6 scenarios full horizon with machine-side logger + state hashes; 3 planted defects caught)"
     },
     {
       "id": "M4.1",
@@ -130,15 +134,16 @@
       "deps": [
         "M3.1"
       ],
-      "status": "awaiting_verification",
+      "status": "fix_round",
       "exit_check": "adding a third registered pack needs no recorder edit (test with a stub registration); gate 9 compares graded vs graded",
       "commit": "03ed038",
       "proof": [
         "tests/test_scenario_registry_lookup.py",
         "gate 9 graded-vs-graded"
       ],
-      "retries": 0,
-      "note": "lookup scans private tasks._REGISTRY (shortcut: HEB pinned, no public listing)"
+      "retries": 1,
+      "note": "lookup scans private tasks._REGISTRY (shortcut: HEB pinned, no public listing)",
+      "verdict": "FAIL at 03ed038: malformed registration breaks all lookups; duplicate id silently shadows built-in; registration without scenarios silently skipped"
     },
     {
       "id": "M4.2",
@@ -148,7 +153,7 @@
         "M4.1"
       ],
       "status": "pending",
-      "exit_check": "independent recompute equals report; planted score/trace mismatch fails; slide_disturbance_no_recovery and slide_disturbance_recoverable_ceiling excluded from scientific estimates (mesh artifact, KNOWN_ISSUES) unless re-run on a validated finer mesh in a new scoring epoch",
+      "exit_check": "independent recompute equals report; planted score/trace mismatch fails; slide_disturbance_no_recovery and slide_disturbance_recoverable_ceiling excluded from scientific estimates (mesh artifact, KNOWN_ISSUES) unless re-run on a validated finer mesh in a new scoring epoch; any pass-through/A-A around HaplousSystem must compare machine-received commands+outcomes (benchmarks/passthrough.py _Tap records emitted commands only)",
       "commit": null,
       "proof": [],
       "retries": 0
