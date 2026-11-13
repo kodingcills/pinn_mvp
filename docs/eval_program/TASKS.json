@@ -107,7 +107,8 @@
         "M3.2",
         "M3.3",
         "M3.4",
-        "M3.5"
+        "M3.5",
+        "M3.6"
       ],
       "status": "pending",
       "exit_check": "G1 spec + tests; not weakened vs HEB competent_supervisor",
@@ -166,6 +167,17 @@
       "retries": 0
     },
     {
+      "id": "M3.6",
+      "title": "Implement locked design OD-1: contract-driven command-mode admission (docs/eval_program/designs/OD1_command_mode_admission.md)",
+      "owner": "worker-M3.6 (opus)",
+      "deps": [],
+      "status": "in_progress",
+      "exit_check": "design section 6 parity bar, all items",
+      "commit": null,
+      "proof": [],
+      "retries": 0
+    },
+    {
       "id": "M4.2",
       "title": "Matched direct/G1/Haplous dev campaign, nominal+faulted, HES metrics recomputed from raw rows",
       "owner": null,
@@ -173,7 +185,7 @@
         "M4.1"
       ],
       "status": "pending",
-      "exit_check": "independent recompute equals report; planted score/trace mismatch fails; slide_disturbance_no_recovery and slide_disturbance_recoverable_ceiling excluded from scientific estimates (mesh artifact, KNOWN_ISSUES) unless re-run on a validated finer mesh in a new scoring epoch; any pass-through/A-A around HaplousSystem must compare machine-received commands+outcomes (benchmarks/passthrough.py _Tap records emitted commands only); report must disclose that Haplous capability negotiation does not check the behaviour-required command mode (OD-1 default)",
+      "exit_check": "independent recompute equals report; planted score/trace mismatch fails; slide_disturbance_no_recovery and slide_disturbance_recoverable_ceiling excluded from scientific estimates (mesh artifact, KNOWN_ISSUES) unless re-run on a validated finer mesh in a new scoring epoch; any pass-through/A-A around HaplousSystem must compare machine-received commands+outcomes (benchmarks/passthrough.py _Tap records emitted commands only)",
       "commit": null,
       "proof": [],
       "retries": 0
