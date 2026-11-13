@@ -160,12 +160,16 @@
       "deps": [
         "M3.3"
       ],
-      "status": "awaiting_verification",
+      "status": "verified",
       "exit_check": "xfail becomes pass; HEB dispositions/grades unchanged for all insertion+slide scenarios (paired before/after table)",
       "commit": "3fa0ec5 (on b4ea44d)",
       "proof": [],
       "retries": 1,
-      "note": "code fix done (108/108 parity, HES identical, xfail flipped); evidence report 11.6 MB -> fix round shrinks it to digests. INTEGRATE SQUASHED (cherry-pick -n b4ea44d + fix) so the 11.6 MB blob never enters integration history."
+      "note": "code fix done (108/108 parity, HES identical, xfail flipped); evidence report 11.6 MB -> fix round shrinks it to digests. INTEGRATE SQUASHED (cherry-pick -n b4ea44d + fix) so the 11.6 MB blob never enters integration history.",
+      "integrated_as": [
+        "53d4cb0 (squashed b4ea44d+3fa0ec5)"
+      ],
+      "verdict": "PASS by opus verifier at 3fa0ec5: 27/27 intents leaked before, 0/27 after; independent parity 108/108; HES rendered output byte-identical"
     },
     {
       "id": "M3.6",
@@ -187,7 +191,7 @@
         "M4.1"
       ],
       "status": "pending",
-      "exit_check": "independent recompute equals report; planted score/trace mismatch fails; slide_disturbance_no_recovery and slide_disturbance_recoverable_ceiling excluded from scientific estimates (mesh artifact, KNOWN_ISSUES) unless re-run on a validated finer mesh in a new scoring epoch; any pass-through/A-A around HaplousSystem must compare machine-received commands+outcomes (benchmarks/passthrough.py _Tap records emitted commands only)",
+      "exit_check": "independent recompute equals report; planted score/trace mismatch fails; slide_disturbance_no_recovery and slide_disturbance_recoverable_ceiling excluded from scientific estimates (mesh artifact, KNOWN_ISSUES) unless re-run on a validated finer mesh in a new scoring epoch; any pass-through/A-A around HaplousSystem must compare machine-received commands+outcomes (benchmarks/passthrough.py _Tap records emitted commands only); HES report must be regenerated under an explicit new scoring epoch and checked against a committed file (not a self-rendered temp file): docs/HES_V0_REPORT.md is stale on main (digest 90e7aafe vs computed dc913cf8)",
       "commit": null,
       "proof": [],
       "retries": 0
