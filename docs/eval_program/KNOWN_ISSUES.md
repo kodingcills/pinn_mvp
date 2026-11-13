@@ -1,7 +1,7 @@
 # Known issues (pre-existing; do not count as regressions)
 
 Baseline on `main` @ `4ca4e71`, 2026-11-13: **599 passed, 4 failed, 1 xfailed** (`pytest tests -q`).
-Current head of `claude/magical-curie-si1vjr` (M5.3 + M5.4 integrated, 2026-11-13): **895 passed, 4 failed, 1 xfailed**, the same 4 failures.
+Current head of `claude/magical-curie-si1vjr` (M5.5 integrated, 2026-11-13): **915 passed, 4 failed, 1 xfailed**, the same 4 failures.
 
 | Test | Cause (diagnosed in docs/eval_v1, results/diagnostics) |
 |---|---|
