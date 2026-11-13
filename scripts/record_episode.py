@@ -1,4 +1,4 @@
-"""Record one real HEB haplous_mediated episode as an M0 run.
+"""Record one real HEB haplous_mediated episode (any registered task family) as an M0 run.
 
     .venv/bin/python scripts/record_episode.py --root results/recordings/registry \
         --run-id m2-heb-insert_dropout_large
@@ -34,7 +34,7 @@ def main(argv: list[str] | None = None) -> int:
         Registry(args.root),
         run_id=args.run_id,
         track="sim_policy_free",
-        purpose=f"M2.1 recording of HEB scenario {args.scenario} (haplous_mediated)",
+        purpose=f"Recording of HEB scenario {args.scenario} (haplous_mediated)",
         command=command,
         config={"scenario": args.scenario, "system": "haplous_mediated", "chunk_ticks": args.chunk_ticks},
         simulator={"name": "mujoco", "version": mujoco.__version__},

@@ -35,6 +35,7 @@ from benchmarks.heb import mujoco_backend, systems
 from benchmarks.heb.insertion import insertion_scenarios
 from benchmarks.heb.metrics import grade_run
 from benchmarks.heb.protocol import Scenario, SystemRun
+from benchmarks.heb.sliding import sliding_scenarios
 from evaluation import replay as fmt
 from haplous.adapters.mujoco_adapter import MuJoCoMachine, _MuJoCoSession
 from haplous.machine import CommandOutcome, MachineObservation, ServoCommand
@@ -266,7 +267,7 @@ def run_episode(scenario: Scenario, out_dir: Path | None, chunk_ticks: int = 102
 
 
 def scenario_by_id(scenario_id: str, offset_m: float | None = None) -> Scenario:
-    found = {s.id: s for s in insertion_scenarios()}[scenario_id]
+    found = {s.id: s for s in insertion_scenarios() + sliding_scenarios()}[scenario_id]
     return found if offset_m is None else replace(found, id=f"{found.id}@offset={offset_m}", initial_offset_m=offset_m)
 
 
@@ -288,6 +289,10 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     if args.out is None and not args.no_record:
         parser.error("--out or $M0_ARTIFACT_DIR is required")
+    # mimalloc (Arrow's default) grabbed a fresh ~2 MB segment at the final flush of a
+    # 10.9 s slide recording, stepping peak RSS with rollout length (measured); the
+    # system pool did not. IPC compression buffers take no pool argument, hence process-wide.
+    pa.set_memory_pool(pa.system_memory_pool())
     scenario = scenario_by_id(args.scenario, args.offset_m)
     run, realization, _ = run_episode(scenario, None if args.no_record else args.out, args.chunk_ticks)
     machine = realization.machine

@@ -68,16 +68,16 @@ def test_recording_does_not_perturb_the_episode(scenario_id, tmp_path):
     assert metadata["n_observations"] == len(plain.observations)
 
 
-def _reseal(root: Path, new_id: str, mutate) -> None:
+def _reseal(root: Path, new_id: str, mutate, source: str = RUN_ID) -> None:
     """Copy the recording, plant a defect, and register it as a fresh,
     M0-intact run so replay's own checks (not only M0 hashes) must catch it."""
     registry = Registry(root)
-    manifest = registry.manifest(RUN_ID)
+    manifest = registry.manifest(source)
     manifest["run_id"] = new_id
     registry.register(manifest)
     registry.start(new_id)
     art = registry.run_dir(new_id) / "artifacts"
-    shutil.copytree(registry.run_dir(RUN_ID) / "artifacts", art)
+    shutil.copytree(registry.run_dir(source) / "artifacts", art)
     mutate(art)
     registry.finish(new_id, success=True, exit_code=0)
     assert registry.verify(new_id) == []
@@ -103,18 +103,18 @@ def _set_meta(art: Path, **changes) -> None:
     (art / rp.METADATA).write_text(json.dumps(meta))
 
 
-@pytest.mark.parametrize(
-    ("name", "mutate", "message"),
-    [
-        ("corrupt-model", lambda art: _flip_byte(art / rp.MODEL_MJB, 4096), "model asset digest mismatch"),
-        ("clipped-stream", lambda art: _rewrite_stream(art, lambda t: t < 3000), "state stream clipped"),
-        ("truncated-file", lambda art: (art / rp.STATE).write_bytes((art / rp.STATE).read_bytes()[:-4096]),
-         "state stream unreadable"),
-        ("missing-sample", lambda art: _rewrite_stream(art, lambda t: t != 1500),
-         "missing sample at tick 1500"),
-        ("other-mujoco", lambda art: _set_meta(art, mujoco_version="0.0.0"), "mujoco version mismatch"),
-    ],
-)
+DEFECTS = [
+    ("corrupt-model", lambda art: _flip_byte(art / rp.MODEL_MJB, 4096), "model asset digest mismatch"),
+    ("clipped-stream", lambda art: _rewrite_stream(art, lambda t: t < 3000), "state stream clipped"),
+    ("truncated-file", lambda art: (art / rp.STATE).write_bytes((art / rp.STATE).read_bytes()[:-4096]),
+     "state stream unreadable"),
+    ("missing-sample", lambda art: _rewrite_stream(art, lambda t: t != 1500),
+     "missing sample at tick 1500"),
+    ("other-mujoco", lambda art: _set_meta(art, mujoco_version="0.0.0"), "mujoco version mismatch"),
+]
+
+
+@pytest.mark.parametrize(("name", "mutate", "message"), DEFECTS)
 def test_planted_defects_make_replay_refuse(recorded, name, mutate, message):
     _reseal(recorded, f"defect-{name}", mutate)
     with pytest.raises(rp.ReplayRefused, match=message):

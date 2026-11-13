@@ -5,6 +5,9 @@ one JSON verdict per item.
     .venv/bin/python scripts/m2_gate.py --workdir W --keep    # keep outputs
     .venv/bin/python scripts/m2_gate.py --root results/recordings/registry \
         --run-id m2-heb-insert_dropout_large --existing      # gate an existing recording
+    .venv/bin/python scripts/m2_gate.py --root results/recordings/registry \
+        --run-id m3-heb-slide_disturbance_recoverable_ceiling --existing \
+        --rss-scenarios slide_machine_fault slide_stale_mid_slide --tests tests/test_slide_recording.py
 
 Every step shells out to the committed command a user would run, so the
 recording process exits before replay starts.
@@ -30,7 +33,7 @@ from evaluation.run_registry import Registry  # noqa: E402
 PY = sys.executable
 RRD_POSE_TOLERANCE_M = 1e-6  # rerun stores Transform3D translations as float32
 RSS_GROWTH_BUDGET_KB = 2048  # allocator slack on top of the fixed chunk buffers
-RSS_HORIZONS = (("insert_machine_fault", None), ("insert_nominal", 0.0035))
+RSS_HORIZONS = ("insert_machine_fault", "insert_nominal:0.0035")  # short, long; name[:offset_m]
 
 
 def sh(*cmd: str) -> subprocess.CompletedProcess:
@@ -87,15 +90,17 @@ def gate6_video(mp4: Path, report: dict) -> dict:
             "frames": len(md5), "distinct_frames": len(set(md5))}
 
 
-def gate9_rss(workdir: Path) -> dict:
+def gate9_rss(workdir: Path, horizons: tuple[str, str]) -> dict:
     rows = []
-    for scenario, offset in RSS_HORIZONS:
+    for spec in horizons:
+        scenario, _, offset = spec.partition(":")
+        offset = offset or None
         row = {"scenario": scenario, "offset_m": offset}
         for recorded in (True, False):
             out = workdir / f"rss-{scenario}"
             shutil.rmtree(out, ignore_errors=True)
             cmd = [PY, "-m", "benchmarks.recording", "--scenario", scenario, "--out", str(out)]
-            cmd += ["--offset-m", str(offset)] if offset is not None else []
+            cmd += ["--offset-m", offset] if offset is not None else []
             cmd += [] if recorded else ["--no-record"]
             res = json.loads(sh(*cmd).stdout)
             row["sim_s"] = res["sim_s"]
@@ -110,7 +115,8 @@ def gate9_rss(workdir: Path) -> dict:
             "overhead_growth_kb": growth, "budget_kb": RSS_GROWTH_BUDGET_KB}
 
 
-def run_gates(workdir: Path, root: Path, run_id: str, existing: bool, scenario: str) -> dict:
+def run_gates(workdir: Path, root: Path, run_id: str, existing: bool, scenario: str,
+              rss_horizons: tuple[str, str] = RSS_HORIZONS, tests: str = "tests/test_recording_replay.py") -> dict:
     g: dict[str, dict] = {}
     if existing:
         g["1_record"] = {"pass": Registry(root).state(run_id) is not None, "detail": "existing recording"}
@@ -139,10 +145,10 @@ def run_gates(workdir: Path, root: Path, run_id: str, existing: bool, scenario: 
     problems = Registry(root).check(run_id)
     g["8_hashes_match_m0"] = {"pass": problems == [] and report["m0_artifacts"] == Registry(root).get(run_id)["artifacts"],
                               "problems": problems, "artifacts": len(report["m0_artifacts"])}
-    g["9_bounded_rss"] = gate9_rss(workdir)
-    res = sh(PY, "-m", "pytest", "-q", "tests/test_recording_replay.py", "-k", "perturb")
+    g["9_bounded_rss"] = gate9_rss(workdir, rss_horizons)
+    res = sh(PY, "-m", "pytest", "-q", tests, "-k", "perturb")
     g["10_aa_noninterference"] = {"pass": res.returncode == 0, "pytest": res.stdout.strip().splitlines()[-1]}
-    res = sh(PY, "-m", "pytest", "-q", "tests/test_recording_replay.py", "-k", "defect or tampered or no_runtime")
+    res = sh(PY, "-m", "pytest", "-q", tests, "-k", "defect or tampered or no_runtime")
     g["11_planted_defects"] = {"pass": res.returncode == 0, "pytest": res.stdout.strip().splitlines()[-1]}
     g["_report"] = report
     return g
@@ -156,12 +162,16 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--scenario", default="insert_dropout_large")
     parser.add_argument("--existing", action="store_true", help="gate an already recorded run")
     parser.add_argument("--keep", action="store_true")
+    parser.add_argument("--rss-scenarios", nargs=2, default=RSS_HORIZONS, metavar=("SHORT", "LONG"),
+                        help="gate 9 horizons of the same task pack, each name[:offset_m]")
+    parser.add_argument("--tests", default="tests/test_recording_replay.py",
+                        help="pytest file holding this pack's A/A (gate 10) and planted-defect (gate 11) tests")
     parser.add_argument("--report-out", type=Path, help="also write the replay report here")
     args = parser.parse_args(argv)
     workdir = args.workdir or Path(tempfile.mkdtemp(prefix="m2-gate-"))
     workdir.mkdir(parents=True, exist_ok=True)
     root = args.root or workdir / "registry"
-    gates = run_gates(workdir, root, args.run_id, args.existing, args.scenario)
+    gates = run_gates(workdir, root, args.run_id, args.existing, args.scenario, tuple(args.rss_scenarios), args.tests)
     report = gates.pop("_report", None)
     if args.report_out and report is not None:
         args.report_out.parent.mkdir(parents=True, exist_ok=True)
