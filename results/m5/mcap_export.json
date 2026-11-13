@@ -3,10 +3,11 @@
   "mujoco": {
     "deterministic": true,
     "log_dir": "results/recordings/registry/runs/m2-heb-insert_dropout_large/artifacts",
-    "mcap_bytes": 399111,
-    "mcap_sha256": "aff4f32c543283a82a22ef5736d00f55036e6aa99c63b1ac8e350e597677ec6d",
+    "mcap_bytes": 399864,
+    "mcap_sha256": "92edc7b97aa47b9093155b99ad41f4b2f15444a5dcde48a72c78f3499fd3e73a",
     "messages": {
       "/episode/command": 3248,
+      "/episode/dataset_events": 0,
       "/episode/haplous_events": 9,
       "/episode/machine_events": 2,
       "/episode/observation": 3652
@@ -20,10 +21,11 @@
   "robosuite": {
     "deterministic": true,
     "log_dir": "results/m5/robosuite-log",
-    "mcap_bytes": 11115,
-    "mcap_sha256": "cbff12a133f0cf03a5089645e4cb101105ea3a3cdc5cf667eb9512e663838a10",
+    "mcap_bytes": 11782,
+    "mcap_sha256": "e8fe7a03099ebae992ff498538b70888d4a4930503298c6b847678b9923e711d",
     "messages": {
       "/episode/command": 33,
+      "/episode/dataset_events": 0,
       "/episode/haplous_events": 4,
       "/episode/machine_events": 0,
       "/episode/observation": 35

@@ -3,8 +3,9 @@ docs/eval_program/designs/M5_backend_neutral_episode_log.md).
 
 Reads `telemetry.jsonl`, `events.jsonl` and `metadata.json` (written by
 `benchmarks.episode_log`) and renders force, pose and command over time with
-every Haplous evidence event and machine fault window on one time axis: a
-Rerun `.rrd` (time series + text markers) and a matplotlib PNG. No simulator,
+every Haplous evidence event, dataset segment event (imported real-robot logs)
+and machine fault window on one time axis: a Rerun `.rrd` (time series + text
+markers) and a matplotlib PNG. No simulator,
 runtime, controller or benchmark is imported; `FORBIDDEN_MODULES` is checked
 at the end of every render and reported.
 
@@ -138,9 +139,9 @@ def write_png(tl: dict[str, Any], path: Path, title: str) -> None:
         for w in tl["windows"]:
             ax.axvspan(w["start_s"], w["end_s"], color="tab:red", alpha=0.15)
         for e in tl["events"]:
-            if e["source"] == "haplous":
+            if e["source"] != "machine":  # haplous decisions, dataset segment labels
                 ax.axvline(e["t_s"], color="tab:purple", lw=0.6, ls="--")
-    for n, e in enumerate(x for x in tl["events"] if x["source"] == "haplous"):
+    for n, e in enumerate(x for x in tl["events"] if x["source"] != "machine"):
         axes[0].annotate(e["kind"], (e["t_s"], 1.0), xycoords=("data", "axes fraction"),
                          xytext=(2, -10 - 9 * (n % 6)), textcoords="offset points", fontsize=6, color="tab:purple")
     for w in tl["windows"]:

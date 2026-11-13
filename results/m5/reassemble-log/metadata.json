@@ -1,0 +1,64 @@
+{
+  "attribution": "REASSEMBLE: A Multimodal Dataset for Contact-rich Robotic Assembly and Disassembly. Sliwowski, Daniel Jan; Jadav, Shail; Stanovcic, Sergej; Orbik, Jedrzej; Heidersberger, Johannes; Lee, Dongheui. TU Wien, 2025. DOI 10.48436/0ewrv-8cb44, arXiv:2502.05086. Used via the LeRobot-v3 derivative robot-lev/reassemble (reformatted and resampled), CC-BY-4.0. This episode log is a further reformatting: one episode cut to annotated segments.",
+  "backend": "real Franka Emika Panda (REASSEMBLE, NIST Assembly Task Board), offline log",
+  "claims": "no evaluator-only ground truth and no Haplous evidence exist for this log: it is a recorded real-robot dataset that Haplous never ran on",
+  "clocks": {
+    "host_monotonic_ns": "null: imported offline, there was no recording host",
+    "stamp.source_s": "dataset timestamp, seconds since episode start (resampled hand-camera clock); received_s repeats it because no consumer clock was recorded",
+    "t_s": "tick * timestep_s, seconds since the first imported frame",
+    "tick": "frame index from the first imported frame (dataset 30 Hz frame clock)"
+  },
+  "format": "haplous-episode-log-v1",
+  "ground_truth": null,
+  "haplous_evidence": null,
+  "licence": "CC-BY-4.0",
+  "n_observations": 376,
+  "n_ticks": 376,
+  "outcome": {
+    "dataset_segment_success": {
+      "2": true
+    },
+    "disposition": null,
+    "note": "disposition is null because Haplous did not run; dataset_segment_success is the dataset's own segment.success annotation, not evaluator-only ground truth"
+  },
+  "provenance": {
+    "episode_index": 1,
+    "file": "data/chunk-000/file-000.parquet",
+    "original": "REASSEMBLE, TU Wien, https://doi.org/10.48436/0ewrv-8cb44",
+    "repo": "robot-lev/reassemble",
+    "revision": "37d242d3532fb17b6f749a26dad6d7aaacf810cd",
+    "segment_index": [
+      2
+    ],
+    "sha256": "310dddd1802a032374ae16e6f7adbaefc7b7f82d05212a475e2fba6b20b3fceb",
+    "tasks_file": "meta/tasks.parquet",
+    "tasks_sha256": "ad2c9ee4738183a0b2d49a882a7e28ebdb279f92933657ca5435276a63b47e1e",
+    "url": "https://huggingface.co/datasets/robot-lev/reassemble/tree/37d242d3532fb17b6f749a26dad6d7aaacf810cd"
+  },
+  "segments": [
+    {
+      "end_tick": 376,
+      "episode_frame": 498,
+      "episode_t_s": 16.6,
+      "label": "Insert round peg 2.",
+      "segment_index": 2,
+      "segment_success": true,
+      "start_tick": 0,
+      "task_index": 32
+    }
+  ],
+  "signals": {
+    "command.extra": "action[3:7] target quaternion (w,x,y,z), action[7:9] gripper",
+    "command.k_z_n_per_m": "null: no stiffness in the dataset",
+    "command.target_pose_m": "action[0:3], the dataset's next absolute EE target position",
+    "observation.extra": "remaining force.base / torque.base axes, measured EE quaternion (w,x,y,z)",
+    "observation.force_z_n": "observation.force.base[2], gravity/bias-compensated F/T z (N); chosen over observation.force because it reads ~0 out of contact",
+    "observation.pose_m": "observation.state.ee_pose[0:3], measured EE position (m)",
+    "observation.tilt_deg": "derived: angle between measured EE z axis and world -z",
+    "outcome": "null: the robot reported no command acceptance"
+  },
+  "system": "none: recorded real-robot dataset; Haplous did not run",
+  "task_id": "reassemble/episode-1/segments-2-2",
+  "timestamp_note": "LeRobot-v3 derivative: every sensor nearest-neighbour resampled onto the 30 Hz hand-camera clock (F/T measured ~1.7 kHz, base F/T ~0.5 kHz, downsampled)",
+  "timestep_s": 0.03333333333333333
+}

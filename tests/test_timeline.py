@@ -19,6 +19,7 @@ M2_RUN = "m2-heb-insert_dropout_large"
 LOGS = {
     "mujoco": (["timeline", M2_RUN, "--recordings-root", str(ROOT)], ROOT / "runs" / M2_RUN / "artifacts"),
     "robosuite": (["timeline", str(REPO / "results/m5/robosuite-log")], REPO / "results/m5/robosuite-log"),
+    "reassemble": (["timeline", str(REPO / "results/m5/reassemble-log")], REPO / "results/m5/reassemble-log"),
 }
 # Loads a module in this process, runs the timeline renderer, then lists what got imported.
 _IMPORT_PROBE = """

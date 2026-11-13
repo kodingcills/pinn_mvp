@@ -3,7 +3,7 @@
 The JSONL episode log (`benchmarks.episode_log`) stays canonical; this is a
 derived view that opens in Foxglove next to real-robot bags. Each JSONL row
 becomes one JSON-encoded MCAP message whose data is the row's exact bytes,
-on one of four channels, each with a JSON Schema. Log and publish time are
+on one of five channels, each with a JSON Schema. Log and publish time are
 sim time, tick * timestep_s in ns, never host time. A message's `sequence` is
 its line index in its source file, so `read_mcap` rebuilds both files exactly.
 metadata.json goes in verbatim as the metadata record `episode_log`.
@@ -24,7 +24,8 @@ METADATA_NAME = "episode_log"
 _NUM = {"type": "number"}
 _INT = {"type": "integer"}
 _VEC3 = {"type": "array", "items": _NUM, "minItems": 3, "maxItems": 3}
-_HOST = {"type": "integer", "description": "recording host time.monotonic_ns(); not the log clock"}
+_HOST = {"type": ["integer", "null"],
+         "description": "recording host time.monotonic_ns(); not the log clock; null for an imported log"}
 
 
 def _row(kind_key: str, kind: Any, properties: dict[str, Any], title: str) -> dict[str, Any]:
@@ -33,8 +34,8 @@ def _row(kind_key: str, kind: Any, properties: dict[str, Any], title: str) -> di
             "required": sorted({kind_key, "tick", *properties})}
 
 
-def _event(source: str) -> dict[str, Any]:
-    props = {"clock": {"const": "sim"}, "kind": {"type": "string"}, "t_s": _NUM, "payload": {"type": "object"}}
+def _event(source: str, clock: str = "sim") -> dict[str, Any]:
+    props = {"clock": {"const": clock}, "kind": {"type": "string"}, "t_s": _NUM, "payload": {"type": "object"}}
     schema = _row("source", {"const": source}, props, f"haplous.episode_log.{source}_event")
     if source == "haplous":
         schema["properties"]["seq"] = _INT
@@ -48,8 +49,8 @@ _OBSERVATION = {"type": ["object", "null"], "required": ["extra", "force_z_n", "
                                "stamp": {"type": "object", "required": ["received_s", "source_s"],
                                          "properties": {"received_s": _NUM, "source_s": _NUM}}}}
 _COMMAND = {"type": "object", "required": ["k_z_n_per_m", "target_pose_m"],
-            "properties": {"target_pose_m": _VEC3, "k_z_n_per_m": _NUM}}
-_OUTCOME = {"type": "object", "required": ["accepted", "reason"],
+            "properties": {"target_pose_m": _VEC3, "k_z_n_per_m": {"type": ["number", "null"]}}}
+_OUTCOME = {"type": ["object", "null"], "required": ["accepted", "reason"],
             "properties": {"accepted": {"type": "boolean"}, "reason": {"type": ["string", "null"]}}}
 
 # (source file, routing key, routing value) -> topic, JSON Schema
@@ -62,6 +63,8 @@ CHANNELS: dict[tuple[str, str, str], tuple[str, dict[str, Any]]] = {
         "haplous.episode_log.command")),
     (EVENTS, "source", "haplous"): ("/episode/haplous_events", _event("haplous")),
     (EVENTS, "source", "machine"): ("/episode/machine_events", _event("machine")),
+    # Imported recordings (benchmarks.realdata.reassemble_episode_log): annotation events on the dataset clock.
+    (EVENTS, "source", "dataset"): ("/episode/dataset_events", _event("dataset", clock="dataset")),
 }
 _ROUTE = {file: key for file, key, _ in CHANNELS}
 _FILE_OF_TOPIC = {topic: file for (file, _, _), (topic, _) in CHANNELS.items()}

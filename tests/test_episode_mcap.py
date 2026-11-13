@@ -16,6 +16,7 @@ REPO = Path(__file__).resolve().parents[1]
 LOGS = {
     "mujoco": REPO / "results/recordings/registry/runs/m2-heb-insert_dropout_large/artifacts",
     "robosuite": REPO / "results/m5/robosuite-log",
+    "reassemble": REPO / "results/m5/reassemble-log",
 }
 
 
