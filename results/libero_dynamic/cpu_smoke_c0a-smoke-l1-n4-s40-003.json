@@ -1,0 +1,18 @@
+{
+  "run_id": "c0a-smoke-l1-n4-s40-003",
+  "state": "VERIFIED",
+  "outcome": "completed",
+  "manifest_sha256": "2f69e73a7000b7dddca84a3b6b636bb9fe1ede99d32c2f42ec36014f8d59f76e",
+  "upstream_revision": "ef12443b7c1f0699356eaf2a4e1676e034f2d806",
+  "summary_path": "results/m0_registry/runs/c0a-smoke-l1-n4-s40-003/artifacts/out/summary.json",
+  "acceptance": {
+    "checks": {
+      "total_equals_limit": true,
+      "all_status_ok": true,
+      "all_targets_nonempty": true,
+      "all_diagnostics_ok": true
+    },
+    "pass": true,
+    "n_items": 4
+  }
+}

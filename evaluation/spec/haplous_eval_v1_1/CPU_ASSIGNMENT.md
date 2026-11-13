@@ -1,0 +1,12 @@
+# Claude Assignment A — CPU: M0 + Track B v1.1
+
+Work only with development fixtures. There is **no sealed holdout** and **no production machine-control API** in this assignment. Do not implement or enable Tier 3.
+
+1. Read `CLAUDE_WORK_ORDER.md`, `BASELINE_SPEC.md`, `SIGNING_PROTOCOL.md`, `fixtures/track_b_scenarios.json`, and four JSON schemas. Run `python tools/validate_package.py` and `pytest -q` before editing. Pin dependencies and record real hashes of code, fixtures and environment; do not copy placeholder digests from `examples/` into actual run records.
+2. Implement strict I-JSON input parsing with duplicate-key rejection (`object_pairs_hook`), invalid constant rejection and draft-2020-12 schema validation **with** `FormatChecker`. Build M0 minimal append-only development run/manifest registry and SHA256 artifact verification. A rejected duplicate or corrupt manifest must never turn into a valid run.
+3. Implement Track B's minimal deterministic execution contract engine against the fixture truth. Required results include `TERMINATE`, precedence, clock-skew boundaries, late acknowledgments, interaction-dependent freshness, and **both** application-authorized and machine-verified behavioral equivalence.
+4. Implement the explicitly limited `baseline_g0_minimal_guards` rules in `BASELINE_SPEC.md`. Generate two separate reports: (a) candidate correctness vs independently specified truth and (b) G0 component-ablation coverage vs truth. Do not claim the G0 comparison proves Haplous is better than normal industrial software.
+5. Produce per-case reason traces, counts and mismatch IDs. Save an actual Track B manifest using `track="contract"` with real source/dependency/fixture digests (never invented VLA checkpoint or simulator identifiers). Add targeted property/fuzz tests for conflicting conditions.
+6. Show the RFC 8785/Ed25519 signing protocol in test-only code with maintained dependencies, but do not expose real signing secrets or build Tier 3 orchestration. Numeric/statistical decision logic is separate future work.
+
+**Acceptance:** contract fixture set passes; schema/date/duplicate-key adversarial tests pass; manifest records correctly; repeat runs produce consistent deterministic outputs; `TERMINATE` and substitution trace are covered; Tier 3 remains disabled. Summarize what is implemented, what remains unverified, and whether new evidence supports or rejects any Haplous design hypothesis.

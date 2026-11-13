@@ -47,3 +47,5 @@ new failures.
   a locked design and tests proving parity.
 - Generated evidence belongs in `results/` (JSON/JSONL) with a driver in `scripts/`.
 - Do not commit virtualenvs, caches, editor config, or agent-tool config.
+  Exception: `.claude/skills/` and `.claude/agents/` vendor the pstack plugin
+  (MIT) for cloud sessions; see `.claude/skills/PSTACK_VENDORED.md`.

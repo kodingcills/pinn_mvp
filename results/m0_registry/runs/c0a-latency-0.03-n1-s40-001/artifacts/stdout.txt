@@ -1,0 +1,6 @@
+[worker 0] [1/1] libero_10_task00__l1__traj00
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+[Warning]: datasets path /tmp/claude-0/-home-user-pinn-mvp/a4419b98-d394-5c13-9a4d-5292a55f599b/scratchpad/libero/src/libero/datasets does not exist!
+[Warning]: datasets path /tmp/claude-0/-home-user-pinn-mvp/a4419b98-d394-5c13-9a4d-5292a55f599b/scratchpad/libero/src/libero/datasets does not exist!
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+[worker 0] libero_10_task00__l1__traj00 status=ok success=False diag_ok=True

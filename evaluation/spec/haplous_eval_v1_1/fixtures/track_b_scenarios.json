@@ -1,0 +1,525 @@
+{
+  "fixture_version": "1.1",
+  "purpose": "CPU-only contract truth fixtures: illustrative logical semantics, not physical capability certification, controller fidelity, or production force/clock limits.",
+  "defaults": {
+    "clock_domain": "sim_mono",
+    "observation_clock_domain": "sim_mono",
+    "command_clock_domain": "sim_mono",
+    "future_skew_tolerance_ms": 2,
+    "contract_max_obs_age_ms": 100,
+    "command_deadline_ms": 200,
+    "required_mode": "cartesian_position",
+    "resource_id": "robot_1",
+    "command_resource_id": "robot_1",
+    "active_epoch": 2,
+    "command_epoch": 2,
+    "ack_epoch": 2,
+    "authority_owner": "planner_1",
+    "command_owner": "planner_1",
+    "lease_valid": true,
+    "available_modes": [
+      "cartesian_position"
+    ],
+    "allowed_mode_equivalents": {},
+    "verified_mode_equivalents": {},
+    "required_sensors": [],
+    "available_sensors": [
+      "joint_position"
+    ],
+    "mode_specific_max_obs_age_ms": {},
+    "calibration_valid": true,
+    "mode_switch_confirmed": true,
+    "oem_stop_active": false,
+    "observation_age_ms": 10,
+    "command_age_ms": 20,
+    "event": "COMMAND",
+    "execution_state": "IDLE",
+    "non_substitutable_modes": [
+      "joint_torque"
+    ]
+  },
+  "cases": [
+    {
+      "id": "nominal_admission",
+      "overrides": {
+        "observation_age_ms": 10,
+        "command_age_ms": 20,
+        "command_epoch": 2
+      },
+      "expected": "ADMIT",
+      "reason": "OK",
+      "expected_baseline_g0": "ALLOW"
+    },
+    {
+      "id": "obs_too_old",
+      "overrides": {
+        "observation_age_ms": 150,
+        "command_age_ms": 20,
+        "command_epoch": 2
+      },
+      "expected": "SUSPEND",
+      "reason": "STATE_STALE",
+      "expected_baseline_g0": "ALLOW"
+    },
+    {
+      "id": "command_expired",
+      "overrides": {
+        "observation_age_ms": 10,
+        "command_age_ms": 250,
+        "command_epoch": 2
+      },
+      "expected": "REFUSE",
+      "reason": "COMMAND_EXPIRED",
+      "expected_baseline_g0": "BLOCK"
+    },
+    {
+      "id": "old_epoch_replay",
+      "overrides": {
+        "observation_age_ms": 10,
+        "command_age_ms": 20,
+        "command_epoch": 1
+      },
+      "expected": "REFUSE",
+      "reason": "AUTHORITY_REVOKED",
+      "expected_baseline_g0": "ALLOW"
+    },
+    {
+      "id": "unsupported_force_mode",
+      "overrides": {
+        "observation_age_ms": 10,
+        "command_age_ms": 20,
+        "command_epoch": 2,
+        "required_mode": "joint_torque"
+      },
+      "expected": "REFUSE",
+      "reason": "CAPABILITY_UNSUPPORTED",
+      "expected_baseline_g0": "BLOCK"
+    },
+    {
+      "id": "native_force_eligible",
+      "overrides": {
+        "observation_age_ms": 10,
+        "command_age_ms": 20,
+        "command_epoch": 2,
+        "required_mode": "native_force",
+        "available_modes": [
+          "cartesian_position",
+          "native_force"
+        ]
+      },
+      "expected": "ADMIT",
+      "reason": "OK",
+      "expected_baseline_g0": "ALLOW"
+    },
+    {
+      "id": "conflicting_owner",
+      "overrides": {
+        "observation_age_ms": 10,
+        "command_age_ms": 20,
+        "command_epoch": 2,
+        "command_owner": "planner_2"
+      },
+      "expected": "REFUSE",
+      "reason": "AUTHORITY_CONFLICT",
+      "expected_baseline_g0": "ALLOW"
+    },
+    {
+      "id": "ack_for_revoked_epoch",
+      "overrides": {
+        "observation_age_ms": 10,
+        "command_age_ms": 20,
+        "command_epoch": 2,
+        "event": "ACK",
+        "ack_epoch": 1
+      },
+      "expected": "REFUSE",
+      "reason": "STALE_ACK",
+      "expected_baseline_g0": "ALLOW"
+    },
+    {
+      "id": "sensor_required_absent",
+      "overrides": {
+        "observation_age_ms": 10,
+        "command_age_ms": 20,
+        "command_epoch": 2,
+        "required_sensors": [
+          "wrench"
+        ],
+        "available_sensors": [
+          "joint_position"
+        ]
+      },
+      "expected": "REFUSE",
+      "reason": "OBSERVATION_UNAVAILABLE",
+      "expected_baseline_g0": "ALLOW"
+    },
+    {
+      "id": "calibration_invalid",
+      "overrides": {
+        "observation_age_ms": 10,
+        "command_age_ms": 20,
+        "command_epoch": 2,
+        "calibration_valid": false
+      },
+      "expected": "REFUSE",
+      "reason": "CALIBRATION_INVALID",
+      "expected_baseline_g0": "ALLOW"
+    },
+    {
+      "id": "fresh_boundary_accepted",
+      "overrides": {
+        "observation_age_ms": 100,
+        "command_age_ms": 20,
+        "command_epoch": 2
+      },
+      "expected": "ADMIT",
+      "reason": "OK",
+      "expected_baseline_g0": "ALLOW"
+    },
+    {
+      "id": "future_timestamp_invalid",
+      "overrides": {
+        "observation_age_ms": -200,
+        "command_age_ms": 20,
+        "command_epoch": 2
+      },
+      "expected": "REFUSE",
+      "reason": "CLOCK_INVALID",
+      "expected_baseline_g0": "ALLOW"
+    },
+    {
+      "id": "precedence_epoch_over_stale",
+      "overrides": {
+        "command_epoch": 1,
+        "observation_age_ms": 160
+      },
+      "expected": "REFUSE",
+      "reason": "AUTHORITY_REVOKED",
+      "expected_baseline_g0": "ALLOW"
+    },
+    {
+      "id": "precedence_epoch_over_capability_and_clock",
+      "overrides": {
+        "command_epoch": 1,
+        "required_mode": "joint_torque",
+        "observation_age_ms": -200
+      },
+      "expected": "REFUSE",
+      "reason": "AUTHORITY_REVOKED",
+      "expected_baseline_g0": "BLOCK"
+    },
+    {
+      "id": "precedence_capability_over_clock",
+      "overrides": {
+        "required_mode": "joint_torque",
+        "observation_age_ms": -200
+      },
+      "expected": "REFUSE",
+      "reason": "CAPABILITY_UNSUPPORTED",
+      "expected_baseline_g0": "BLOCK"
+    },
+    {
+      "id": "precedence_clock_over_freshness",
+      "overrides": {
+        "observation_age_ms": -200,
+        "command_age_ms": 250
+      },
+      "expected": "REFUSE",
+      "reason": "CLOCK_INVALID",
+      "expected_baseline_g0": "BLOCK"
+    },
+    {
+      "id": "precedence_command_deadline_over_obs_stale",
+      "overrides": {
+        "command_age_ms": 201,
+        "observation_age_ms": 150
+      },
+      "expected": "REFUSE",
+      "reason": "COMMAND_EXPIRED",
+      "expected_baseline_g0": "BLOCK"
+    },
+    {
+      "id": "joint_torque_not_silently_native_force",
+      "overrides": {
+        "required_mode": "joint_torque",
+        "available_modes": [
+          "native_force"
+        ]
+      },
+      "expected": "REFUSE",
+      "reason": "CAPABILITY_UNSUPPORTED",
+      "expected_baseline_g0": "BLOCK"
+    },
+    {
+      "id": "claimed_equivalence_not_verified",
+      "overrides": {
+        "required_mode": "joint_torque",
+        "available_modes": [
+          "native_force"
+        ],
+        "allowed_mode_equivalents": {
+          "joint_torque": [
+            "native_force"
+          ]
+        }
+      },
+      "expected": "REFUSE",
+      "reason": "CAPABILITY_UNSUPPORTED",
+      "expected_baseline_g0": "BLOCK"
+    },
+    {
+      "id": "behavioral_native_force_unapproved",
+      "overrides": {
+        "required_mode": "bounded_cartesian_compliance",
+        "available_modes": [
+          "native_force"
+        ],
+        "verified_mode_equivalents": {
+          "bounded_cartesian_compliance": [
+            "native_force"
+          ]
+        }
+      },
+      "expected": "REFUSE",
+      "reason": "CAPABILITY_UNSUPPORTED",
+      "expected_baseline_g0": "BLOCK"
+    },
+    {
+      "id": "behavioral_native_force_approved_and_verified",
+      "overrides": {
+        "required_mode": "bounded_cartesian_compliance",
+        "available_modes": [
+          "native_force"
+        ],
+        "allowed_mode_equivalents": {
+          "bounded_cartesian_compliance": [
+            "native_force"
+          ]
+        },
+        "verified_mode_equivalents": {
+          "bounded_cartesian_compliance": [
+            "native_force"
+          ]
+        }
+      },
+      "expected": "ADMIT",
+      "reason": "AUTHORIZED_EQUIVALENCE",
+      "expected_details": {
+        "selected_mode": "native_force",
+        "trace_contains": [
+          "BEHAVIORAL_SUBSTITUTION"
+        ]
+      },
+      "expected_baseline_g0": "BLOCK"
+    },
+    {
+      "id": "mode_dependent_freshness",
+      "overrides": {
+        "required_mode": "native_force",
+        "available_modes": [
+          "native_force"
+        ],
+        "observation_age_ms": 50,
+        "mode_specific_max_obs_age_ms": {
+          "native_force": 20
+        }
+      },
+      "expected": "SUSPEND",
+      "reason": "STATE_STALE_FOR_MODE",
+      "expected_baseline_g0": "ALLOW"
+    },
+    {
+      "id": "active_lease_expires",
+      "overrides": {
+        "execution_state": "ACTIVE",
+        "event": "LEASE_EXPIRED",
+        "lease_valid": false
+      },
+      "expected": "TERMINATE",
+      "reason": "AUTHORITY_LEASE_EXPIRED",
+      "expected_baseline_g0": "ALLOW"
+    },
+    {
+      "id": "active_authority_revoked",
+      "overrides": {
+        "execution_state": "ACTIVE",
+        "event": "REVOKE"
+      },
+      "expected": "TERMINATE",
+      "reason": "AUTHORITY_REVOKED",
+      "expected_baseline_g0": "ALLOW"
+    },
+    {
+      "id": "inactive_lease_invalid",
+      "overrides": {
+        "lease_valid": false
+      },
+      "expected": "REFUSE",
+      "reason": "AUTHORITY_LEASE_EXPIRED",
+      "expected_baseline_g0": "ALLOW"
+    },
+    {
+      "id": "stale_ack_over_obs_stale",
+      "overrides": {
+        "event": "ACK",
+        "ack_epoch": 1,
+        "observation_age_ms": 150
+      },
+      "expected": "REFUSE",
+      "reason": "STALE_ACK",
+      "expected_baseline_g0": "ALLOW"
+    },
+    {
+      "id": "future_one_ms_allowed",
+      "overrides": {
+        "observation_age_ms": -1
+      },
+      "expected": "ADMIT",
+      "reason": "OK",
+      "expected_baseline_g0": "ALLOW"
+    },
+    {
+      "id": "future_three_ms_rejected",
+      "overrides": {
+        "observation_age_ms": -3
+      },
+      "expected": "REFUSE",
+      "reason": "CLOCK_INVALID",
+      "expected_baseline_g0": "ALLOW"
+    },
+    {
+      "id": "command_deadline_boundary_allowed",
+      "overrides": {
+        "command_age_ms": 200
+      },
+      "expected": "ADMIT",
+      "reason": "OK",
+      "expected_baseline_g0": "ALLOW"
+    },
+    {
+      "id": "observation_clock_mismatch",
+      "overrides": {
+        "observation_clock_domain": "external_unmapped"
+      },
+      "expected": "REFUSE",
+      "reason": "CLOCK_DOMAIN_MISMATCH",
+      "expected_baseline_g0": "ALLOW"
+    },
+    {
+      "id": "mode_switch_unconfirmed",
+      "overrides": {
+        "required_mode": "native_force",
+        "available_modes": [
+          "native_force"
+        ],
+        "mode_switch_confirmed": false
+      },
+      "expected": "SUSPEND",
+      "reason": "MODE_SWITCH_UNCONFIRMED",
+      "expected_baseline_g0": "ALLOW"
+    },
+    {
+      "id": "unrequested_sensor_absent_still_valid",
+      "overrides": {
+        "available_sensors": [],
+        "required_sensors": []
+      },
+      "expected": "ADMIT",
+      "reason": "OK",
+      "expected_baseline_g0": "ALLOW"
+    },
+    {
+      "id": "wrong_resource_with_stale_obs",
+      "overrides": {
+        "command_resource_id": "robot_2",
+        "observation_age_ms": 150
+      },
+      "expected": "REFUSE",
+      "reason": "AUTHORITY_RESOURCE_MISMATCH",
+      "expected_baseline_g0": "ALLOW"
+    },
+    {
+      "id": "external_stop_over_authority",
+      "overrides": {
+        "oem_stop_active": true,
+        "command_epoch": 1
+      },
+      "expected": "TERMINATE",
+      "reason": "OEM_STOP_ACTIVE",
+      "expected_baseline_g0": "STOP"
+    },
+    {
+      "id": "valid_sensor_for_force",
+      "overrides": {
+        "required_mode": "native_force",
+        "available_modes": [
+          "native_force"
+        ],
+        "required_sensors": [
+          "wrench"
+        ],
+        "available_sensors": [
+          "joint_position",
+          "wrench"
+        ]
+      },
+      "expected": "ADMIT",
+      "reason": "OK",
+      "expected_baseline_g0": "ALLOW"
+    },
+    {
+      "id": "fresh_command_but_stale_observation",
+      "overrides": {
+        "observation_age_ms": 101,
+        "command_age_ms": 10
+      },
+      "expected": "SUSPEND",
+      "reason": "STATE_STALE",
+      "expected_baseline_g0": "ALLOW"
+    },
+    {
+      "id": "expired_command_but_fresh_observation",
+      "overrides": {
+        "observation_age_ms": 10,
+        "command_age_ms": 201
+      },
+      "expected": "REFUSE",
+      "reason": "COMMAND_EXPIRED",
+      "expected_baseline_g0": "BLOCK"
+    },
+    {
+      "id": "direct_torque_cannot_be_declared_equivalent",
+      "overrides": {
+        "required_mode": "joint_torque",
+        "available_modes": [
+          "native_force"
+        ],
+        "allowed_mode_equivalents": {
+          "joint_torque": [
+            "native_force"
+          ]
+        },
+        "verified_mode_equivalents": {
+          "joint_torque": [
+            "native_force"
+          ]
+        }
+      },
+      "expected": "REFUSE",
+      "reason": "CONTROL_AUTHORITY_NOT_EQUIVALENT",
+      "expected_baseline_g0": "BLOCK"
+    }
+  ],
+  "precedence": [
+    "0. OEM protective-stop/interlock status: TERMINATE OEM_STOP_ACTIVE (independent external authority; not a Haplous safety function).",
+    "1. Authority and lifecycle: active revocation/lease expiration TERMINATE; invalid owner/resource/epoch/ACK REFUSE; authority wins over capability/time.",
+    "2. Capabilities and admission: required control behavior, sensor, calibration and verified+authorized substitutions. Never silently downgrade.",
+    "3. Clock-domain validity and bounded future-skew: invalid mapped clock/refusal before age-based checks.",
+    "4. Command deadline: expired command REFUSE.",
+    "5. Observation validity: stale SUSPEND, including selected-mode-specific freshness requirement.",
+    "6. Execution mode handover: pending/unconfirmed mode switch SUSPEND.",
+    "7. Otherwise ADMIT; report actual selected mode and verified substitution if applicable."
+  ],
+  "mode_semantics": "Mode equality is allowed; a behavioral alternative requires BOTH explicit contract authorization and independently verified machine equivalence for the same required behavior. joint_torque (literal low-level torque authority) is NOT equivalent to native_force merely by policy preference. Positive example is behavior bounded_cartesian_compliance -> verified native_force.",
+  "baseline_profile": "baseline_g0_minimal_guards (non-competitive component ablation; timeout/mode availability/external stop only). See BASELINE_SPEC.md."
+}

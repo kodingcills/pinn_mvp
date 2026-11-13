@@ -1,0 +1,1856 @@
+[
+  {
+    "item_id": "libero_10_task00__l1__traj00",
+    "suite": "libero_10",
+    "task_id": 0,
+    "level": "l1",
+    "traj_index": 0,
+    "variant_name": "traj00",
+    "variant_id": "libero_10_task00__l1__traj00",
+    "config_path": "/home/user/pinn_mvp/results/m0_registry/runs/c0a-latency-0.147199-n1-s40-001/artifacts/out/effective_dynamic_configs/libero_dynamic_l1.yaml",
+    "task_cfg": {
+      "enabled": true,
+      "perturb_type": "dynamic_motion",
+      "dynamic_role": "target_object_dynamic",
+      "motion": {
+        "type": "zigzag_waypoints",
+        "trajectory": "zigzag_waypoints",
+        "editor_motion_type": "conveyor_pingpong",
+        "waypoints_xyz": [
+          [
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            -0.12156927687496122,
+            0.08297727331539884,
+            0.0
+          ]
+        ],
+        "alpha_mps": 0.06,
+        "loop": true,
+        "start_step": 30,
+        "end_step": 1000000,
+        "planner": "manual_json_independent_path_preserve_accepted_pose"
+      },
+      "carrier": {
+        "enabled": true,
+        "type": "physical_conveyor_patch",
+        "visible": false,
+        "surface_z": 0.9,
+        "release_height_margin_m": 0.04,
+        "exclude_static_support_contact": true,
+        "kinematic_mode": "slide_joints",
+        "drive_mode": "velocity",
+        "cover_motion_path": true,
+        "contact_all_target_geoms": true,
+        "surface_epsilon_m": 0.0,
+        "bottom_contact_margin_m": 0.0015
+      },
+      "latency": {
+        "type": "zigzag_waypoints",
+        "trajectory": "zigzag_waypoints",
+        "editor_motion_type": "conveyor_pingpong",
+        "waypoints_xyz": [
+          [
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            -0.12156927687496122,
+            0.08297727331539884,
+            0.0
+          ]
+        ],
+        "alpha_mps": 0.06,
+        "loop": true,
+        "start_step": 30,
+        "end_step": 1000000,
+        "planner": "manual_json_independent_path_preserve_accepted_pose"
+      },
+      "logging": {
+        "enabled": true,
+        "run_id": "libero_10_task00__l1__traj00_manual"
+      },
+      "model_input_video": {
+        "enabled": true,
+        "output_dir_name": "model_input_observation_videos",
+        "fps": 2
+      },
+      "finalize": {
+        "enabled": true,
+        "mode": "episode_watcher",
+        "output_dir_name": "dynamic_real_time_videos",
+        "num_steps_wait": 30,
+        "fps": 24,
+        "min_latency_seconds": 0.05,
+        "cleanup_latency_frames": true,
+        "poll_interval_seconds": 0.5,
+        "wait_timeout_seconds": 600
+      },
+      "target_object_name": "alphabet_soup_1",
+      "target_joint_name": "alphabet_soup_1_joint0",
+      "target_kind": "movable_object",
+      "target_objects": [
+        {
+          "target_object_name": "alphabet_soup_1",
+          "target_joint_name": "alphabet_soup_1_joint0",
+          "motion": {
+            "type": "zigzag_waypoints",
+            "trajectory": "zigzag_waypoints",
+            "editor_motion_type": "conveyor_pingpong",
+            "waypoints_xyz": [
+              [
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                -0.12156927687496122,
+                0.08297727331539884,
+                0.0
+              ]
+            ],
+            "alpha_mps": 0.06,
+            "loop": true,
+            "start_step": 30,
+            "end_step": 1000000,
+            "planner": "manual_json_independent_path_preserve_accepted_pose"
+          },
+          "latency": {
+            "type": "zigzag_waypoints",
+            "trajectory": "zigzag_waypoints",
+            "editor_motion_type": "conveyor_pingpong",
+            "waypoints_xyz": [
+              [
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                -0.12156927687496122,
+                0.08297727331539884,
+                0.0
+              ]
+            ],
+            "alpha_mps": 0.06,
+            "loop": true,
+            "start_step": 30,
+            "end_step": 1000000,
+            "planner": "manual_json_independent_path_preserve_accepted_pose"
+          },
+          "contact_all_target_geoms": false,
+          "surface_epsilon_m": 0.001,
+          "bottom_contact_margin_m": 0.0015,
+          "exclude_static_support_contact": false
+        },
+        {
+          "target_object_name": "tomato_sauce_1",
+          "target_joint_name": "tomato_sauce_1_joint0",
+          "motion": {
+            "type": "zigzag_waypoints",
+            "trajectory": "zigzag_waypoints",
+            "editor_motion_type": "conveyor_pingpong",
+            "waypoints_xyz": [
+              [
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                -0.13774670342793027,
+                0.028515464392996348,
+                0.0
+              ]
+            ],
+            "alpha_mps": 0.06,
+            "loop": true,
+            "start_step": 30,
+            "end_step": 1000000,
+            "planner": "manual_json_independent_path_preserve_accepted_pose"
+          },
+          "latency": {
+            "type": "zigzag_waypoints",
+            "trajectory": "zigzag_waypoints",
+            "editor_motion_type": "conveyor_pingpong",
+            "waypoints_xyz": [
+              [
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                -0.13774670342793027,
+                0.028515464392996348,
+                0.0
+              ]
+            ],
+            "alpha_mps": 0.06,
+            "loop": true,
+            "start_step": 30,
+            "end_step": 1000000,
+            "planner": "manual_json_independent_path_preserve_accepted_pose"
+          },
+          "contact_all_target_geoms": false,
+          "surface_epsilon_m": 0.001,
+          "bottom_contact_margin_m": 0.0015,
+          "exclude_static_support_contact": false
+        },
+        {
+          "target_object_name": "basket_1",
+          "target_joint_name": "basket_1_joint0",
+          "motion": {
+            "type": "zigzag_waypoints",
+            "trajectory": "zigzag_waypoints",
+            "editor_motion_type": "conveyor_pingpong",
+            "waypoints_xyz": [
+              [
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                -0.15279554868087342,
+                -0.019042950475066878,
+                0.0
+              ]
+            ],
+            "alpha_mps": 0.06,
+            "loop": true,
+            "start_step": 30,
+            "end_step": 1000000,
+            "planner": "manual_json_independent_path_preserve_accepted_pose"
+          },
+          "latency": {
+            "type": "zigzag_waypoints",
+            "trajectory": "zigzag_waypoints",
+            "editor_motion_type": "conveyor_pingpong",
+            "waypoints_xyz": [
+              [
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                -0.15279554868087342,
+                -0.019042950475066878,
+                0.0
+              ]
+            ],
+            "alpha_mps": 0.06,
+            "loop": true,
+            "start_step": 30,
+            "end_step": 1000000,
+            "planner": "manual_json_independent_path_preserve_accepted_pose"
+          },
+          "contact_all_target_geoms": false,
+          "surface_epsilon_m": 0.001,
+          "bottom_contact_margin_m": 0.0015,
+          "exclude_static_support_contact": false,
+          "stability_proxy_enabled": true,
+          "stability_proxy_size": "auto",
+          "stability_proxy_thickness_m": 0.0015,
+          "stability_proxy_bottom_epsilon_m": 0.00015
+        }
+      ],
+      "candidate_id": "libero_10_task00__l1__traj00_manual",
+      "candidate_role": "manual_120base_5traj",
+      "initial_scene_adjustments": {
+        "enabled": true,
+        "settle_steps": 500,
+        "freeze_robot_during_settle": true,
+        "object_offsets": {
+          "alphabet_soup_1": {
+            "offset_xyz": [
+              0.013322827054238318,
+              -0.003047287986164604,
+              0.0
+            ],
+            "yaw_delta_rad": 0.0
+          },
+          "cream_cheese_1": {
+            "offset_xyz": [
+              -0.0018148647784919925,
+              7.50579307567667e-05,
+              0.0
+            ],
+            "yaw_delta_rad": 0.0
+          },
+          "tomato_sauce_1": {
+            "offset_xyz": [
+              0.04110393316097348,
+              0.0006087392193523389,
+              0.0
+            ],
+            "yaw_delta_rad": 0.0
+          },
+          "basket_1": {
+            "offset_xyz": [
+              0.007602712719407776,
+              0.011241711377524999,
+              0.0
+            ],
+            "yaw_delta_rad": 0.0
+          }
+        },
+        "planner_note": "Generated from final 120-base x 5-trajectory manual annotation batch."
+      },
+      "manual_review": {
+        "source_variant_id": "libero_10_task00__l1__traj00",
+        "base_annotation_id": "libero_10_task00__l1",
+        "trajectory_variant_id": 0,
+        "trajectory_variant_count": 5,
+        "target_object_from_editor": "alphabet_soup_1",
+        "target_names": [
+          "alphabet_soup_1",
+          "tomato_sauce_1",
+          "basket_1"
+        ],
+        "review_label": "001/120 · 轨迹 1/5 · libero_10_task00__l1 · targets=alphabet_soup_1,tomato_sauce_1",
+        "z_motion": {
+          "type": "none",
+          "amplitude_m": 0
+        }
+      },
+      "safety": {
+        "workspace_xyz": {
+          "min": [
+            -0.282172980083469,
+            -0.23506305808001937,
+            0.3
+          ],
+          "max": [
+            -0.0068374607100694235,
+            0.009102836653238564,
+            1.1
+          ]
+        },
+        "manual_editor_report": {
+          "language": "put both the alphabet soup and the tomato sauce in the basket  [轨迹 1/5]",
+          "target_object": "alphabet_soup_1",
+          "waypoints_xy": [
+            [
+              -0.08683746071006943,
+              -0.15506305808001936
+            ],
+            [
+              -0.20217298008346904,
+              -0.07089716334676144
+            ]
+          ],
+          "closed_loop": false
+        }
+      },
+      "activation_variants": [
+        {
+          "variant_name": "traj00",
+          "variant_id": "libero_10_task00__l1__traj00",
+          "target_object_name": "alphabet_soup_1",
+          "target_joint_name": "alphabet_soup_1_joint0",
+          "target_kind": "movable_object",
+          "dynamic_role": "target_object_dynamic",
+          "motion": {
+            "type": "zigzag_waypoints",
+            "trajectory": "zigzag_waypoints",
+            "editor_motion_type": "conveyor_pingpong",
+            "waypoints_xyz": [
+              [
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                -0.12156927687496122,
+                0.08297727331539884,
+                0.0
+              ]
+            ],
+            "alpha_mps": 0.06,
+            "loop": true,
+            "start_step": 30,
+            "end_step": 1000000,
+            "planner": "manual_json_independent_path_preserve_accepted_pose"
+          },
+          "latency": {
+            "type": "zigzag_waypoints",
+            "trajectory": "zigzag_waypoints",
+            "editor_motion_type": "conveyor_pingpong",
+            "waypoints_xyz": [
+              [
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                -0.12156927687496122,
+                0.08297727331539884,
+                0.0
+              ]
+            ],
+            "alpha_mps": 0.06,
+            "loop": true,
+            "start_step": 30,
+            "end_step": 1000000,
+            "planner": "manual_json_independent_path_preserve_accepted_pose"
+          },
+          "target_objects": [
+            {
+              "target_object_name": "alphabet_soup_1",
+              "target_joint_name": "alphabet_soup_1_joint0",
+              "motion": {
+                "type": "zigzag_waypoints",
+                "trajectory": "zigzag_waypoints",
+                "editor_motion_type": "conveyor_pingpong",
+                "waypoints_xyz": [
+                  [
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    -0.12156927687496122,
+                    0.08297727331539884,
+                    0.0
+                  ]
+                ],
+                "alpha_mps": 0.06,
+                "loop": true,
+                "start_step": 30,
+                "end_step": 1000000,
+                "planner": "manual_json_independent_path_preserve_accepted_pose"
+              },
+              "latency": {
+                "type": "zigzag_waypoints",
+                "trajectory": "zigzag_waypoints",
+                "editor_motion_type": "conveyor_pingpong",
+                "waypoints_xyz": [
+                  [
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    -0.12156927687496122,
+                    0.08297727331539884,
+                    0.0
+                  ]
+                ],
+                "alpha_mps": 0.06,
+                "loop": true,
+                "start_step": 30,
+                "end_step": 1000000,
+                "planner": "manual_json_independent_path_preserve_accepted_pose"
+              },
+              "contact_all_target_geoms": false,
+              "surface_epsilon_m": 0.0,
+              "bottom_contact_margin_m": 0.0015
+            },
+            {
+              "target_object_name": "tomato_sauce_1",
+              "target_joint_name": "tomato_sauce_1_joint0",
+              "motion": {
+                "type": "zigzag_waypoints",
+                "trajectory": "zigzag_waypoints",
+                "editor_motion_type": "conveyor_pingpong",
+                "waypoints_xyz": [
+                  [
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    -0.13774670342793027,
+                    0.028515464392996348,
+                    0.0
+                  ]
+                ],
+                "alpha_mps": 0.06,
+                "loop": true,
+                "start_step": 30,
+                "end_step": 1000000,
+                "planner": "manual_json_independent_path_preserve_accepted_pose"
+              },
+              "latency": {
+                "type": "zigzag_waypoints",
+                "trajectory": "zigzag_waypoints",
+                "editor_motion_type": "conveyor_pingpong",
+                "waypoints_xyz": [
+                  [
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    -0.13774670342793027,
+                    0.028515464392996348,
+                    0.0
+                  ]
+                ],
+                "alpha_mps": 0.06,
+                "loop": true,
+                "start_step": 30,
+                "end_step": 1000000,
+                "planner": "manual_json_independent_path_preserve_accepted_pose"
+              },
+              "contact_all_target_geoms": false,
+              "surface_epsilon_m": 0.0,
+              "bottom_contact_margin_m": 0.0015
+            },
+            {
+              "target_object_name": "basket_1",
+              "target_joint_name": "basket_1_joint0",
+              "motion": {
+                "type": "zigzag_waypoints",
+                "trajectory": "zigzag_waypoints",
+                "editor_motion_type": "conveyor_pingpong",
+                "waypoints_xyz": [
+                  [
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    -0.15279554868087342,
+                    -0.019042950475066878,
+                    0.0
+                  ]
+                ],
+                "alpha_mps": 0.06,
+                "loop": true,
+                "start_step": 30,
+                "end_step": 1000000,
+                "planner": "manual_json_independent_path_preserve_accepted_pose"
+              },
+              "latency": {
+                "type": "zigzag_waypoints",
+                "trajectory": "zigzag_waypoints",
+                "editor_motion_type": "conveyor_pingpong",
+                "waypoints_xyz": [
+                  [
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    -0.15279554868087342,
+                    -0.019042950475066878,
+                    0.0
+                  ]
+                ],
+                "alpha_mps": 0.06,
+                "loop": true,
+                "start_step": 30,
+                "end_step": 1000000,
+                "planner": "manual_json_independent_path_preserve_accepted_pose"
+              },
+              "contact_all_target_geoms": false,
+              "surface_epsilon_m": 0.0,
+              "bottom_contact_margin_m": 0.0015
+            }
+          ],
+          "candidate_id": "libero_10_task00__l1__traj00_manual",
+          "candidate_role": "manual_120base_5traj",
+          "initial_scene_adjustments": {
+            "enabled": true,
+            "settle_steps": 500,
+            "freeze_robot_during_settle": true,
+            "object_offsets": {
+              "alphabet_soup_1": {
+                "offset_xyz": [
+                  0.013322827054238318,
+                  -0.003047287986164604,
+                  0.0
+                ],
+                "yaw_delta_rad": 0.0
+              },
+              "cream_cheese_1": {
+                "offset_xyz": [
+                  -0.0018148647784919925,
+                  7.50579307567667e-05,
+                  0.0
+                ],
+                "yaw_delta_rad": 0.0
+              },
+              "tomato_sauce_1": {
+                "offset_xyz": [
+                  0.04110393316097348,
+                  0.0006087392193523389,
+                  0.0
+                ],
+                "yaw_delta_rad": 0.0
+              },
+              "basket_1": {
+                "offset_xyz": [
+                  0.007602712719407776,
+                  0.011241711377524999,
+                  0.0
+                ],
+                "yaw_delta_rad": 0.0
+              }
+            },
+            "planner_note": "Generated from final 120-base x 5-trajectory manual annotation batch."
+          },
+          "manual_review": {
+            "source_variant_id": "libero_10_task00__l1__traj00",
+            "base_annotation_id": "libero_10_task00__l1",
+            "trajectory_variant_id": 0,
+            "trajectory_variant_count": 5,
+            "target_object_from_editor": "alphabet_soup_1",
+            "target_names": [
+              "alphabet_soup_1",
+              "tomato_sauce_1",
+              "basket_1"
+            ],
+            "review_label": "001/120 · 轨迹 1/5 · libero_10_task00__l1 · targets=alphabet_soup_1,tomato_sauce_1",
+            "z_motion": {
+              "type": "none",
+              "amplitude_m": 0
+            }
+          },
+          "logging": {
+            "enabled": true,
+            "run_id": "libero_10_task00__l1__traj00_manual"
+          },
+          "safety": {
+            "workspace_xyz": {
+              "min": [
+                -0.282172980083469,
+                -0.23506305808001937,
+                0.3
+              ],
+              "max": [
+                -0.0068374607100694235,
+                0.009102836653238564,
+                1.1
+              ]
+            },
+            "manual_editor_report": {
+              "language": "put both the alphabet soup and the tomato sauce in the basket  [轨迹 1/5]",
+              "target_object": "alphabet_soup_1",
+              "waypoints_xy": [
+                [
+                  -0.08683746071006943,
+                  -0.15506305808001936
+                ],
+                [
+                  -0.20217298008346904,
+                  -0.07089716334676144
+                ]
+              ],
+              "closed_loop": false
+            }
+          },
+          "manual_fix_notes": [
+            {
+              "date": "2026-05-29",
+              "reason": "Canonicalized runtime waypoints from manual_editor_report.waypoints_xy so rendered trajectory matches annotation tool.",
+              "max_previous_waypoint_error_m": 0.109374
+            }
+          ]
+        },
+        {
+          "variant_name": "traj01",
+          "variant_id": "libero_10_task00__l1__traj01",
+          "target_object_name": "alphabet_soup_1",
+          "target_joint_name": "alphabet_soup_1_joint0",
+          "target_kind": "movable_object",
+          "dynamic_role": "target_object_dynamic",
+          "motion": {
+            "type": "zigzag_waypoints",
+            "trajectory": "zigzag_waypoints",
+            "editor_motion_type": "conveyor_pingpong",
+            "waypoints_xyz": [
+              [
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                -0.12156927687496122,
+                0.08297727331539884,
+                0.0
+              ]
+            ],
+            "alpha_mps": 0.06,
+            "loop": true,
+            "start_step": 30,
+            "end_step": 1000000,
+            "planner": "manual_json_independent_path_preserve_accepted_pose"
+          },
+          "latency": {
+            "type": "zigzag_waypoints",
+            "trajectory": "zigzag_waypoints",
+            "editor_motion_type": "conveyor_pingpong",
+            "waypoints_xyz": [
+              [
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                -0.12156927687496122,
+                0.08297727331539884,
+                0.0
+              ]
+            ],
+            "alpha_mps": 0.06,
+            "loop": true,
+            "start_step": 30,
+            "end_step": 1000000,
+            "planner": "manual_json_independent_path_preserve_accepted_pose"
+          },
+          "target_objects": [
+            {
+              "target_object_name": "alphabet_soup_1",
+              "target_joint_name": "alphabet_soup_1_joint0",
+              "motion": {
+                "type": "zigzag_waypoints",
+                "trajectory": "zigzag_waypoints",
+                "editor_motion_type": "conveyor_pingpong",
+                "waypoints_xyz": [
+                  [
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    -0.12156927687496122,
+                    0.08297727331539884,
+                    0.0
+                  ]
+                ],
+                "alpha_mps": 0.06,
+                "loop": true,
+                "start_step": 30,
+                "end_step": 1000000,
+                "planner": "manual_json_independent_path_preserve_accepted_pose"
+              },
+              "latency": {
+                "type": "zigzag_waypoints",
+                "trajectory": "zigzag_waypoints",
+                "editor_motion_type": "conveyor_pingpong",
+                "waypoints_xyz": [
+                  [
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    -0.12156927687496122,
+                    0.08297727331539884,
+                    0.0
+                  ]
+                ],
+                "alpha_mps": 0.06,
+                "loop": true,
+                "start_step": 30,
+                "end_step": 1000000,
+                "planner": "manual_json_independent_path_preserve_accepted_pose"
+              },
+              "contact_all_target_geoms": false,
+              "surface_epsilon_m": 0.0,
+              "bottom_contact_margin_m": 0.0015
+            },
+            {
+              "target_object_name": "tomato_sauce_1",
+              "target_joint_name": "tomato_sauce_1_joint0",
+              "motion": {
+                "type": "zigzag_waypoints",
+                "trajectory": "zigzag_waypoints",
+                "editor_motion_type": "conveyor_pingpong",
+                "waypoints_xyz": [
+                  [
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    -0.12156927687496122,
+                    0.08297727331539884,
+                    0.0
+                  ]
+                ],
+                "alpha_mps": 0.06,
+                "loop": true,
+                "start_step": 30,
+                "end_step": 1000000,
+                "planner": "manual_json_independent_path_preserve_accepted_pose"
+              },
+              "latency": {
+                "type": "zigzag_waypoints",
+                "trajectory": "zigzag_waypoints",
+                "editor_motion_type": "conveyor_pingpong",
+                "waypoints_xyz": [
+                  [
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    -0.12156927687496122,
+                    0.08297727331539884,
+                    0.0
+                  ]
+                ],
+                "alpha_mps": 0.06,
+                "loop": true,
+                "start_step": 30,
+                "end_step": 1000000,
+                "planner": "manual_json_independent_path_preserve_accepted_pose"
+              },
+              "contact_all_target_geoms": false,
+              "surface_epsilon_m": 0.0,
+              "bottom_contact_margin_m": 0.0015
+            },
+            {
+              "target_object_name": "basket_1",
+              "target_joint_name": "basket_1_joint0",
+              "motion": {
+                "type": "zigzag_waypoints",
+                "trajectory": "zigzag_waypoints",
+                "editor_motion_type": "conveyor_pingpong",
+                "waypoints_xyz": [
+                  [
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    0.13736024538101432,
+                    0.00604154147800684,
+                    0.0
+                  ]
+                ],
+                "alpha_mps": 0.06,
+                "loop": true,
+                "start_step": 30,
+                "end_step": 1000000,
+                "planner": "manual_json_independent_path_preserve_accepted_pose"
+              },
+              "latency": {
+                "type": "zigzag_waypoints",
+                "trajectory": "zigzag_waypoints",
+                "editor_motion_type": "conveyor_pingpong",
+                "waypoints_xyz": [
+                  [
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    0.13736024538101432,
+                    0.00604154147800684,
+                    0.0
+                  ]
+                ],
+                "alpha_mps": 0.06,
+                "loop": true,
+                "start_step": 30,
+                "end_step": 1000000,
+                "planner": "manual_json_independent_path_preserve_accepted_pose"
+              },
+              "contact_all_target_geoms": false,
+              "surface_epsilon_m": 0.0,
+              "bottom_contact_margin_m": 0.0015
+            }
+          ],
+          "candidate_id": "libero_10_task00__l1__traj01_manual",
+          "candidate_role": "manual_120base_5traj",
+          "initial_scene_adjustments": {
+            "enabled": true,
+            "settle_steps": 500,
+            "freeze_robot_during_settle": true,
+            "object_offsets": {
+              "alphabet_soup_1": {
+                "offset_xyz": [
+                  0.003974216134357639,
+                  -0.0007573676568143894,
+                  0.0
+                ],
+                "yaw_delta_rad": 0.0
+              },
+              "tomato_sauce_1": {
+                "offset_xyz": [
+                  0.006948761371720291,
+                  0.002732259917338928,
+                  0.0
+                ],
+                "yaw_delta_rad": 0.0
+              },
+              "basket_1": {
+                "offset_xyz": [
+                  -0.11106830261439674,
+                  0.002758248168221622,
+                  0.0
+                ],
+                "yaw_delta_rad": 0.0
+              }
+            },
+            "planner_note": "Generated from final 120-base x 5-trajectory manual annotation batch."
+          },
+          "manual_review": {
+            "source_variant_id": "libero_10_task00__l1__traj01",
+            "base_annotation_id": "libero_10_task00__l1",
+            "trajectory_variant_id": 1,
+            "trajectory_variant_count": 5,
+            "target_object_from_editor": "alphabet_soup_1",
+            "target_names": [
+              "alphabet_soup_1",
+              "tomato_sauce_1",
+              "basket_1"
+            ],
+            "review_label": "001/120 · 轨迹 2/5 · libero_10_task00__l1 · targets=alphabet_soup_1,tomato_sauce_1",
+            "z_motion": {
+              "type": "none",
+              "amplitude_m": 0
+            }
+          },
+          "logging": {
+            "enabled": true,
+            "run_id": "libero_10_task00__l1__traj01_manual"
+          },
+          "safety": {
+            "workspace_xyz": {
+              "min": [
+                -0.29152159100334984,
+                -0.23277313775066916,
+                0.3
+              ],
+              "max": [
+                -0.016186071629950102,
+                0.011392756982588903,
+                1.1
+              ]
+            },
+            "manual_editor_report": {
+              "language": "put both the alphabet soup and the tomato sauce in the basket  [轨迹 2/5]",
+              "target_object": "alphabet_soup_1",
+              "waypoints_xy": [
+                [
+                  -0.0961860716299501,
+                  -0.15277313775066914
+                ],
+                [
+                  -0.21152159100334983,
+                  -0.0686072430174111
+                ]
+              ],
+              "closed_loop": false
+            }
+          },
+          "manual_fix_notes": [
+            {
+              "date": "2026-05-29",
+              "reason": "Canonicalized runtime waypoints from manual_editor_report.waypoints_xy so rendered trajectory matches annotation tool.",
+              "max_previous_waypoint_error_m": 0.26079
+            }
+          ]
+        },
+        {
+          "variant_name": "traj02",
+          "variant_id": "libero_10_task00__l1__traj02",
+          "target_object_name": "alphabet_soup_1",
+          "target_joint_name": "alphabet_soup_1_joint0",
+          "target_kind": "movable_object",
+          "dynamic_role": "target_object_dynamic",
+          "motion": {
+            "type": "zigzag_waypoints",
+            "trajectory": "zigzag_waypoints",
+            "editor_motion_type": "conveyor_pingpong",
+            "waypoints_xyz": [
+              [
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                -0.1002103713440956,
+                -0.10375539299826775,
+                0.0
+              ]
+            ],
+            "alpha_mps": 0.06,
+            "loop": true,
+            "start_step": 30,
+            "end_step": 1000000,
+            "planner": "manual_json_independent_path_preserve_accepted_pose"
+          },
+          "latency": {
+            "type": "zigzag_waypoints",
+            "trajectory": "zigzag_waypoints",
+            "editor_motion_type": "conveyor_pingpong",
+            "waypoints_xyz": [
+              [
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                -0.1002103713440956,
+                -0.10375539299826775,
+                0.0
+              ]
+            ],
+            "alpha_mps": 0.06,
+            "loop": true,
+            "start_step": 30,
+            "end_step": 1000000,
+            "planner": "manual_json_independent_path_preserve_accepted_pose"
+          },
+          "target_objects": [
+            {
+              "target_object_name": "alphabet_soup_1",
+              "target_joint_name": "alphabet_soup_1_joint0",
+              "motion": {
+                "type": "zigzag_waypoints",
+                "trajectory": "zigzag_waypoints",
+                "editor_motion_type": "conveyor_pingpong",
+                "waypoints_xyz": [
+                  [
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    -0.1002103713440956,
+                    -0.10375539299826775,
+                    0.0
+                  ]
+                ],
+                "alpha_mps": 0.06,
+                "loop": true,
+                "start_step": 30,
+                "end_step": 1000000,
+                "planner": "manual_json_independent_path_preserve_accepted_pose"
+              },
+              "latency": {
+                "type": "zigzag_waypoints",
+                "trajectory": "zigzag_waypoints",
+                "editor_motion_type": "conveyor_pingpong",
+                "waypoints_xyz": [
+                  [
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    -0.1002103713440956,
+                    -0.10375539299826775,
+                    0.0
+                  ]
+                ],
+                "alpha_mps": 0.06,
+                "loop": true,
+                "start_step": 30,
+                "end_step": 1000000,
+                "planner": "manual_json_independent_path_preserve_accepted_pose"
+              },
+              "contact_all_target_geoms": false,
+              "surface_epsilon_m": 0.0,
+              "bottom_contact_margin_m": 0.0015
+            },
+            {
+              "target_object_name": "tomato_sauce_1",
+              "target_joint_name": "tomato_sauce_1_joint0",
+              "motion": {
+                "type": "zigzag_waypoints",
+                "trajectory": "zigzag_waypoints",
+                "editor_motion_type": "conveyor_pingpong",
+                "waypoints_xyz": [
+                  [
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    -0.15172693379738722,
+                    -0.0294280431673557,
+                    0.0
+                  ]
+                ],
+                "alpha_mps": 0.06,
+                "loop": true,
+                "start_step": 30,
+                "end_step": 1000000,
+                "planner": "manual_json_independent_path_preserve_accepted_pose"
+              },
+              "latency": {
+                "type": "zigzag_waypoints",
+                "trajectory": "zigzag_waypoints",
+                "editor_motion_type": "conveyor_pingpong",
+                "waypoints_xyz": [
+                  [
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    -0.15172693379738722,
+                    -0.0294280431673557,
+                    0.0
+                  ]
+                ],
+                "alpha_mps": 0.06,
+                "loop": true,
+                "start_step": 30,
+                "end_step": 1000000,
+                "planner": "manual_json_independent_path_preserve_accepted_pose"
+              },
+              "contact_all_target_geoms": false,
+              "surface_epsilon_m": 0.0,
+              "bottom_contact_margin_m": 0.0015
+            },
+            {
+              "target_object_name": "basket_1",
+              "target_joint_name": "basket_1_joint0",
+              "motion": {
+                "type": "zigzag_waypoints",
+                "trajectory": "zigzag_waypoints",
+                "editor_motion_type": "conveyor_pingpong",
+                "waypoints_xyz": [
+                  [
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    0.16092938872195806,
+                    -0.0034243368158315413,
+                    0.0
+                  ]
+                ],
+                "alpha_mps": 0.06,
+                "loop": true,
+                "start_step": 30,
+                "end_step": 1000000,
+                "planner": "manual_json_independent_path_preserve_accepted_pose"
+              },
+              "latency": {
+                "type": "zigzag_waypoints",
+                "trajectory": "zigzag_waypoints",
+                "editor_motion_type": "conveyor_pingpong",
+                "waypoints_xyz": [
+                  [
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    0.16092938872195806,
+                    -0.0034243368158315413,
+                    0.0
+                  ]
+                ],
+                "alpha_mps": 0.06,
+                "loop": true,
+                "start_step": 30,
+                "end_step": 1000000,
+                "planner": "manual_json_independent_path_preserve_accepted_pose"
+              },
+              "contact_all_target_geoms": false,
+              "surface_epsilon_m": 0.0,
+              "bottom_contact_margin_m": 0.0015
+            }
+          ],
+          "candidate_id": "libero_10_task00__l1__traj02_manual",
+          "candidate_role": "manual_120base_5traj",
+          "initial_scene_adjustments": {
+            "enabled": true,
+            "settle_steps": 500,
+            "freeze_robot_during_settle": true,
+            "object_offsets": {
+              "alphabet_soup_1": {
+                "offset_xyz": [
+                  0.002147818498004217,
+                  -0.005986221966523764,
+                  0.0
+                ],
+                "yaw_delta_rad": 0.0
+              },
+              "tomato_sauce_1": {
+                "offset_xyz": [
+                  0.0071604980693420195,
+                  0.006694344841551653,
+                  0.0
+                ],
+                "yaw_delta_rad": 0.0
+              },
+              "basket_1": {
+                "offset_xyz": [
+                  -0.15669470240688485,
+                  -0.010238121807512712,
+                  0.0
+                ],
+                "yaw_delta_rad": 0.0
+              }
+            },
+            "planner_note": "Generated from final 120-base x 5-trajectory manual annotation batch."
+          },
+          "manual_review": {
+            "source_variant_id": "libero_10_task00__l1__traj02",
+            "base_annotation_id": "libero_10_task00__l1",
+            "trajectory_variant_id": 2,
+            "trajectory_variant_count": 5,
+            "target_object_from_editor": "alphabet_soup_1",
+            "target_names": [
+              "alphabet_soup_1",
+              "tomato_sauce_1",
+              "basket_1"
+            ],
+            "review_label": "001/120 · 轨迹 3/5 · libero_10_task00__l1 · targets=alphabet_soup_1,tomato_sauce_1",
+            "z_motion": {
+              "type": "none",
+              "amplitude_m": 0
+            }
+          },
+          "logging": {
+            "enabled": true,
+            "run_id": "libero_10_task00__l1__traj02_manual"
+          },
+          "safety": {
+            "workspace_xyz": {
+              "min": [
+                -0.2749248752250604,
+                -0.34369446649846813,
+                0.3
+              ],
+              "max": [
+                -0.018012469266303524,
+                -0.07800199206037851,
+                1.1
+              ]
+            },
+            "manual_editor_report": {
+              "language": "put both the alphabet soup and the tomato sauce in the basket  [轨迹 3/5]",
+              "target_object": "alphabet_soup_1",
+              "waypoints_xy": [
+                [
+                  -0.09801246926630353,
+                  -0.15800199206037852
+                ],
+                [
+                  -0.19492487522506044,
+                  -0.2636944664984681
+                ]
+              ],
+              "closed_loop": false
+            }
+          },
+          "manual_fix_notes": [
+            {
+              "date": "2026-05-29",
+              "reason": "Canonicalized runtime waypoints from manual_editor_report.waypoints_xy so rendered trajectory matches annotation tool.",
+              "max_previous_waypoint_error_m": 0.273274
+            }
+          ]
+        },
+        {
+          "variant_name": "traj03",
+          "variant_id": "libero_10_task00__l1__traj03",
+          "target_object_name": "alphabet_soup_1",
+          "target_joint_name": "alphabet_soup_1_joint0",
+          "target_kind": "movable_object",
+          "dynamic_role": "target_object_dynamic",
+          "motion": {
+            "type": "zigzag_waypoints",
+            "trajectory": "zigzag_waypoints",
+            "editor_motion_type": "conveyor_pingpong",
+            "waypoints_xyz": [
+              [
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.03615505914825201,
+                0.1662268926426026,
+                0.0
+              ]
+            ],
+            "alpha_mps": 0.06,
+            "loop": true,
+            "start_step": 30,
+            "end_step": 1000000,
+            "planner": "manual_json_independent_path_preserve_accepted_pose"
+          },
+          "latency": {
+            "type": "zigzag_waypoints",
+            "trajectory": "zigzag_waypoints",
+            "editor_motion_type": "conveyor_pingpong",
+            "waypoints_xyz": [
+              [
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.03615505914825201,
+                0.1662268926426026,
+                0.0
+              ]
+            ],
+            "alpha_mps": 0.06,
+            "loop": true,
+            "start_step": 30,
+            "end_step": 1000000,
+            "planner": "manual_json_independent_path_preserve_accepted_pose"
+          },
+          "target_objects": [
+            {
+              "target_object_name": "alphabet_soup_1",
+              "target_joint_name": "alphabet_soup_1_joint0",
+              "motion": {
+                "type": "zigzag_waypoints",
+                "trajectory": "zigzag_waypoints",
+                "editor_motion_type": "conveyor_pingpong",
+                "waypoints_xyz": [
+                  [
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    0.03615505914825201,
+                    0.1662268926426026,
+                    0.0
+                  ]
+                ],
+                "alpha_mps": 0.06,
+                "loop": true,
+                "start_step": 30,
+                "end_step": 1000000,
+                "planner": "manual_json_independent_path_preserve_accepted_pose"
+              },
+              "latency": {
+                "type": "zigzag_waypoints",
+                "trajectory": "zigzag_waypoints",
+                "editor_motion_type": "conveyor_pingpong",
+                "waypoints_xyz": [
+                  [
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    0.03615505914825201,
+                    0.1662268926426026,
+                    0.0
+                  ]
+                ],
+                "alpha_mps": 0.06,
+                "loop": true,
+                "start_step": 30,
+                "end_step": 1000000,
+                "planner": "manual_json_independent_path_preserve_accepted_pose"
+              },
+              "contact_all_target_geoms": false,
+              "surface_epsilon_m": 0.0,
+              "bottom_contact_margin_m": 0.0015
+            },
+            {
+              "target_object_name": "tomato_sauce_1",
+              "target_joint_name": "tomato_sauce_1_joint0",
+              "motion": {
+                "type": "zigzag_waypoints",
+                "trajectory": "zigzag_waypoints",
+                "editor_motion_type": "conveyor_pingpong",
+                "waypoints_xyz": [
+                  [
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    0.16082399107279888,
+                    0.006000301148988196,
+                    0.0
+                  ]
+                ],
+                "alpha_mps": 0.06,
+                "loop": true,
+                "start_step": 30,
+                "end_step": 1000000,
+                "planner": "manual_json_independent_path_preserve_accepted_pose"
+              },
+              "latency": {
+                "type": "zigzag_waypoints",
+                "trajectory": "zigzag_waypoints",
+                "editor_motion_type": "conveyor_pingpong",
+                "waypoints_xyz": [
+                  [
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    0.16082399107279888,
+                    0.006000301148988196,
+                    0.0
+                  ]
+                ],
+                "alpha_mps": 0.06,
+                "loop": true,
+                "start_step": 30,
+                "end_step": 1000000,
+                "planner": "manual_json_independent_path_preserve_accepted_pose"
+              },
+              "contact_all_target_geoms": false,
+              "surface_epsilon_m": 0.0,
+              "bottom_contact_margin_m": 0.0015
+            },
+            {
+              "target_object_name": "basket_1",
+              "target_joint_name": "basket_1_joint0",
+              "motion": {
+                "type": "zigzag_waypoints",
+                "trajectory": "zigzag_waypoints",
+                "editor_motion_type": "conveyor_pingpong",
+                "waypoints_xyz": [
+                  [
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    0.24804531159886745,
+                    -0.00043596919248556354,
+                    0.0
+                  ]
+                ],
+                "alpha_mps": 0.06,
+                "loop": true,
+                "start_step": 30,
+                "end_step": 1000000,
+                "planner": "manual_json_independent_path_preserve_accepted_pose"
+              },
+              "latency": {
+                "type": "zigzag_waypoints",
+                "trajectory": "zigzag_waypoints",
+                "editor_motion_type": "conveyor_pingpong",
+                "waypoints_xyz": [
+                  [
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    0.24804531159886745,
+                    -0.00043596919248556354,
+                    0.0
+                  ]
+                ],
+                "alpha_mps": 0.06,
+                "loop": true,
+                "start_step": 30,
+                "end_step": 1000000,
+                "planner": "manual_json_independent_path_preserve_accepted_pose"
+              },
+              "contact_all_target_geoms": false,
+              "surface_epsilon_m": 0.0,
+              "bottom_contact_margin_m": 0.0015
+            }
+          ],
+          "candidate_id": "libero_10_task00__l1__traj03_manual",
+          "candidate_role": "manual_120base_5traj",
+          "initial_scene_adjustments": {
+            "enabled": true,
+            "settle_steps": 500,
+            "freeze_robot_during_settle": true,
+            "object_offsets": {
+              "alphabet_soup_1": {
+                "offset_xyz": [
+                  -0.049336897167585714,
+                  -0.10563912643672252,
+                  0.0
+                ],
+                "yaw_delta_rad": 0.0
+              },
+              "tomato_sauce_1": {
+                "offset_xyz": [
+                  -0.14155157212610656,
+                  -0.008975399135730491,
+                  0.0
+                ],
+                "yaw_delta_rad": 0.0
+              },
+              "basket_1": {
+                "offset_xyz": [
+                  -0.2283933306522229,
+                  -0.0004908443257121142,
+                  0.0
+                ],
+                "yaw_delta_rad": 0.0
+              }
+            },
+            "planner_note": "Generated from final 120-base x 5-trajectory manual annotation batch."
+          },
+          "manual_review": {
+            "source_variant_id": "libero_10_task00__l1__traj03",
+            "base_annotation_id": "libero_10_task00__l1",
+            "trajectory_variant_id": 3,
+            "trajectory_variant_count": 5,
+            "target_object_from_editor": "alphabet_soup_1",
+            "target_names": [
+              "alphabet_soup_1",
+              "tomato_sauce_1",
+              "basket_1"
+            ],
+            "review_label": "001/120 · 轨迹 4/5 · libero_10_task00__l1 · targets=alphabet_soup_1,tomato_sauce_1",
+            "z_motion": {
+              "type": "none",
+              "amplitude_m": 0
+            }
+          },
+          "logging": {
+            "enabled": true,
+            "run_id": "libero_10_task00__l1__traj03_manual"
+          },
+          "safety": {
+            "workspace_xyz": {
+              "min": [
+                -0.22949718493189347,
+                -0.3376548965305773,
+                0.3
+              ],
+              "max": [
+                -0.033155032697359255,
+                -0.008546937429633944,
+                1.1
+              ]
+            },
+            "manual_editor_report": {
+              "language": "put both the alphabet soup and the tomato sauce in the basket  [轨迹 4/5]",
+              "target_object": "alphabet_soup_1",
+              "waypoints_xy": [
+                [
+                  -0.14949718493189346,
+                  -0.25765489653057727
+                ],
+                [
+                  -0.11315503269735926,
+                  -0.08854693742963395
+                ]
+              ],
+              "closed_loop": false
+            }
+          },
+          "manual_fix_notes": [
+            {
+              "date": "2026-05-29",
+              "reason": "Canonicalized runtime waypoints from manual_editor_report.waypoints_xy so rendered trajectory matches annotation tool.",
+              "max_previous_waypoint_error_m": 0.265615
+            }
+          ]
+        },
+        {
+          "variant_name": "traj04",
+          "variant_id": "libero_10_task00__l1__traj04",
+          "target_object_name": "alphabet_soup_1",
+          "target_joint_name": "alphabet_soup_1_joint0",
+          "target_kind": "movable_object",
+          "dynamic_role": "target_object_dynamic",
+          "motion": {
+            "type": "zigzag_waypoints",
+            "trajectory": "zigzag_waypoints",
+            "editor_motion_type": "conveyor_pingpong",
+            "waypoints_xyz": [
+              [
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                -0.16556082929213956,
+                0.07452779621952066,
+                0.0
+              ]
+            ],
+            "alpha_mps": 0.06,
+            "loop": true,
+            "start_step": 30,
+            "end_step": 1000000,
+            "planner": "manual_json_independent_path_preserve_accepted_pose"
+          },
+          "latency": {
+            "type": "zigzag_waypoints",
+            "trajectory": "zigzag_waypoints",
+            "editor_motion_type": "conveyor_pingpong",
+            "waypoints_xyz": [
+              [
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                -0.16556082929213956,
+                0.07452779621952066,
+                0.0
+              ]
+            ],
+            "alpha_mps": 0.06,
+            "loop": true,
+            "start_step": 30,
+            "end_step": 1000000,
+            "planner": "manual_json_independent_path_preserve_accepted_pose"
+          },
+          "target_objects": [
+            {
+              "target_object_name": "alphabet_soup_1",
+              "target_joint_name": "alphabet_soup_1_joint0",
+              "motion": {
+                "type": "zigzag_waypoints",
+                "trajectory": "zigzag_waypoints",
+                "editor_motion_type": "conveyor_pingpong",
+                "waypoints_xyz": [
+                  [
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    -0.16556082929213956,
+                    0.07452779621952066,
+                    0.0
+                  ]
+                ],
+                "alpha_mps": 0.06,
+                "loop": true,
+                "start_step": 30,
+                "end_step": 1000000,
+                "planner": "manual_json_independent_path_preserve_accepted_pose"
+              },
+              "latency": {
+                "type": "zigzag_waypoints",
+                "trajectory": "zigzag_waypoints",
+                "editor_motion_type": "conveyor_pingpong",
+                "waypoints_xyz": [
+                  [
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    -0.16556082929213956,
+                    0.07452779621952066,
+                    0.0
+                  ]
+                ],
+                "alpha_mps": 0.06,
+                "loop": true,
+                "start_step": 30,
+                "end_step": 1000000,
+                "planner": "manual_json_independent_path_preserve_accepted_pose"
+              },
+              "contact_all_target_geoms": false,
+              "surface_epsilon_m": 0.0,
+              "bottom_contact_margin_m": 0.0015
+            },
+            {
+              "target_object_name": "tomato_sauce_1",
+              "target_joint_name": "tomato_sauce_1_joint0",
+              "motion": {
+                "type": "zigzag_waypoints",
+                "trajectory": "zigzag_waypoints",
+                "editor_motion_type": "conveyor_pingpong",
+                "waypoints_xyz": [
+                  [
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    -0.15192618699003324,
+                    -0.01161086015605517,
+                    0.0
+                  ]
+                ],
+                "alpha_mps": 0.06,
+                "loop": true,
+                "start_step": 30,
+                "end_step": 1000000,
+                "planner": "manual_json_independent_path_preserve_accepted_pose"
+              },
+              "latency": {
+                "type": "zigzag_waypoints",
+                "trajectory": "zigzag_waypoints",
+                "editor_motion_type": "conveyor_pingpong",
+                "waypoints_xyz": [
+                  [
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    -0.15192618699003324,
+                    -0.01161086015605517,
+                    0.0
+                  ]
+                ],
+                "alpha_mps": 0.06,
+                "loop": true,
+                "start_step": 30,
+                "end_step": 1000000,
+                "planner": "manual_json_independent_path_preserve_accepted_pose"
+              },
+              "contact_all_target_geoms": false,
+              "surface_epsilon_m": 0.0,
+              "bottom_contact_margin_m": 0.0015
+            },
+            {
+              "target_object_name": "basket_1",
+              "target_joint_name": "basket_1_joint0",
+              "motion": {
+                "type": "zigzag_waypoints",
+                "trajectory": "zigzag_waypoints",
+                "editor_motion_type": "conveyor_pingpong",
+                "waypoints_xyz": [
+                  [
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    -0.15192618699003324,
+                    -0.01161086015605517,
+                    0.0
+                  ]
+                ],
+                "alpha_mps": 0.06,
+                "loop": true,
+                "start_step": 30,
+                "end_step": 1000000,
+                "planner": "manual_json_independent_path_preserve_accepted_pose"
+              },
+              "latency": {
+                "type": "zigzag_waypoints",
+                "trajectory": "zigzag_waypoints",
+                "editor_motion_type": "conveyor_pingpong",
+                "waypoints_xyz": [
+                  [
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    -0.15192618699003324,
+                    -0.01161086015605517,
+                    0.0
+                  ]
+                ],
+                "alpha_mps": 0.06,
+                "loop": true,
+                "start_step": 30,
+                "end_step": 1000000,
+                "planner": "manual_json_independent_path_preserve_accepted_pose"
+              },
+              "contact_all_target_geoms": false,
+              "surface_epsilon_m": 0.0,
+              "bottom_contact_margin_m": 0.0015
+            }
+          ],
+          "candidate_id": "libero_10_task00__l1__traj04_manual",
+          "candidate_role": "manual_120base_5traj",
+          "initial_scene_adjustments": {
+            "enabled": true,
+            "settle_steps": 500,
+            "freeze_robot_during_settle": true,
+            "object_offsets": {
+              "alphabet_soup_1": {
+                "offset_xyz": [
+                  0.035461458046326944,
+                  0.009112702953203461,
+                  0.0
+                ],
+                "yaw_delta_rad": 0.0
+              },
+              "tomato_sauce_1": {
+                "offset_xyz": [
+                  0.049559692025546165,
+                  0.03085263402861871,
+                  0.0
+                ],
+                "yaw_delta_rad": 0.0
+              },
+              "basket_1": {
+                "offset_xyz": [
+                  0.007602712719407776,
+                  0.011241711377524999,
+                  0.0
+                ],
+                "yaw_delta_rad": 0.0
+              }
+            },
+            "planner_note": "Generated from final 120-base x 5-trajectory manual annotation batch."
+          },
+          "manual_review": {
+            "source_variant_id": "libero_10_task00__l1__traj04",
+            "base_annotation_id": "libero_10_task00__l1",
+            "trajectory_variant_id": 4,
+            "trajectory_variant_count": 5,
+            "target_object_from_editor": "alphabet_soup_1",
+            "target_names": [
+              "alphabet_soup_1",
+              "tomato_sauce_1",
+              "basket_1"
+            ],
+            "review_label": "001/120 · 轨迹 5/5 · libero_10_task00__l1 · targets=alphabet_soup_1,tomato_sauce_1",
+            "z_motion": {
+              "type": "none",
+              "amplitude_m": 0
+            }
+          },
+          "logging": {
+            "enabled": true,
+            "run_id": "libero_10_task00__l1__traj04_manual"
+          },
+          "safety": {
+            "workspace_xyz": {
+              "min": [
+                -0.30218148940096057,
+                -0.22290306714065128,
+                0.3
+              ],
+              "max": [
+                0.015301170282019202,
+                0.012591557457984015,
+                1.1
+              ]
+            },
+            "manual_editor_report": {
+              "language": "put both the alphabet soup and the tomato sauce in the basket  [轨迹 5/5]",
+              "target_object": "alphabet_soup_1",
+              "waypoints_xy": [
+                [
+                  -0.0646988297179808,
+                  -0.1429030671406513
+                ],
+                [
+                  -0.22218148940096055,
+                  -0.06740844254201599
+                ]
+              ],
+              "closed_loop": false
+            }
+          },
+          "manual_fix_notes": [
+            {
+              "date": "2026-05-29",
+              "reason": "Canonicalized runtime waypoints from manual_editor_report.waypoints_xy so rendered trajectory matches annotation tool.",
+              "max_previous_waypoint_error_m": 0.088408
+            }
+          ]
+        }
+      ],
+      "selection_policy": {
+        "type": "activation_variant",
+        "env_var_id": "LIBERO_DYNAMIC_VARIANT_ID",
+        "env_var_name": "LIBERO_DYNAMIC_VARIANT_NAME",
+        "default_variant_id": "libero_10_task00__l1__traj00"
+      },
+      "selected_variant_name": "traj00",
+      "selected_variant_id": "libero_10_task00__l1__traj00"
+    }
+  }
+]

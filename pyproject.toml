@@ -17,6 +17,12 @@ eval = [
     "pyarrow>=25.0.1",
     "pyyaml>=6.0",
 ]
+# M0 run registry: schema validation (with format checkers), RFC 8785, Ed25519.
+registry = [
+    "jsonschema[format-nongpl]>=4.23",
+    "rfc8785>=0.1.4",
+    "cryptography>=43",
+]
 # Development and CI tooling.
 dev = [
     "pytest>=9.1.1",
@@ -25,6 +31,11 @@ dev = [
 ]
 # Everything needed to run the full repository test suite.
 all = [
+    "h5py>=3.11",
+    "jsonschema[format-nongpl]>=4.23",
+    "rfc8785>=0.1.4",
+    "cryptography>=43",
+    "hypothesis>=6.100",
     "matplotlib>=3.11.1",
     "pyarrow>=25.0.1",
     "pyyaml>=6.0",
