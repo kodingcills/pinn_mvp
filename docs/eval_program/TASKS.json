@@ -110,7 +110,7 @@
         "M3.5",
         "M3.6"
       ],
-      "status": "pending",
+      "status": "ready",
       "exit_check": "G1 spec + tests; not weakened vs HEB competent_supervisor",
       "commit": null,
       "proof": [],
@@ -176,12 +176,16 @@
       "title": "Implement locked design OD-1: contract-driven command-mode admission (docs/eval_program/designs/OD1_command_mode_admission.md)",
       "owner": "worker-M3.6 (opus)",
       "deps": [],
-      "status": "awaiting_verification",
+      "status": "verified",
       "exit_check": "design section 6 parity bar, all items",
       "commit": "ea70b7e (on 00ab6ea)",
       "proof": [],
       "retries": 1,
-      "note": "design implemented and parity met (108/108, HES identical, M2 11/11, Track B differential 96 cases); fail-closed refuses 2 undeclared test fakes (39 failures) + unmigrated callers; fix round migrates all callers. Insertion and slide both declare {CARTESIAN_IMPEDANCE, FORCE_CONTROLLED_DESCENT}; slide declaration is the stricter choice for an ambiguous force-hold phase. Fix round: all runtime-reaching behaviours declare truthful contracts; wrappers forward; suite 775/4/2."
+      "note": "design implemented and parity met (108/108, HES identical, M2 11/11, Track B differential 96 cases); fail-closed refuses 2 undeclared test fakes (39 failures) + unmigrated callers; fix round migrates all callers. Insertion and slide both declare {CARTESIAN_IMPEDANCE, FORCE_CONTROLLED_DESCENT}; slide declaration is the stricter choice for an ambiguous force-hold phase. Fix round: all runtime-reaching behaviours declare truthful contracts; wrappers forward; suite 775/4/2.",
+      "integrated_as": [
+        "8f2ede0..763883d (5 commits)"
+      ],
+      "verdict": "PASS by sonnet verifier at ea70b7e: design S1-S5 conform, Track B differential 96/96, independent parity 108/108, refusals open no session, mid-run loss stops with 0 commands after loss tick, 2 planted defects caught"
     },
     {
       "id": "M4.2",
