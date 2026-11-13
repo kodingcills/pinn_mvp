@@ -101,7 +101,7 @@
     {
       "id": "M4.1",
       "title": "Specify G1 competent incumbent per task from existing guards",
-      "owner": null,
+      "owner": "worker-M4.1 (opus)",
       "deps": [
         "M3.1",
         "M3.2",
@@ -110,7 +110,7 @@
         "M3.5",
         "M3.6"
       ],
-      "status": "ready",
+      "status": "in_progress",
       "exit_check": "G1 spec + tests; not weakened vs HEB competent_supervisor",
       "commit": null,
       "proof": [],
