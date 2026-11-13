@@ -209,10 +209,6 @@ def test_detector_catches_planted_truth_leak(system):
     assert any(".reason" in path for f, path in found if f == "expected_disposition"), found
 
 
-@pytest.mark.xfail(strict=True, reason=(
-    "M3.3 finding: benchmarks/heb/systems.py build_intent puts the scenario id into "
-    "ExecutionIntent.goal_description, and hand-written ids name the fault "
-    "(insert_dropout_large). Fixing it edits HEB, outside M3.3's write scope."))
 def test_scenario_id_does_not_cross_execution_boundary():
     scenario = _scenario("insert_dropout_large")
     assert [hit for hit in leaks(_run(scenario, "haplous_mediated"), scenario) if hit[0] == "id"] == []

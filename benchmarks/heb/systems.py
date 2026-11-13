@@ -103,7 +103,12 @@ def build_intent(
     )
     return ExecutionIntent(
         behavior=scenario.task_family,
-        goal_description=f"HEB scenario {scenario.id}",
+        # Task-level only: the scenario id names its fault and stays evaluator-side
+        # (TrialRecord.scenario_id).
+        goal_description=(
+            f"{scenario.task_family} task under declared requirements: "
+            + ", ".join(sorted(r.kind.value for r in requirements))
+        ),
         goal_position_m=goal,
         start_position_m=start,
         requirements=tuple(requirements),
