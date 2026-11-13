@@ -1,7 +1,7 @@
 # Known issues (pre-existing; do not count as regressions)
 
 Baseline on `main` @ `4ca4e71`, 2026-11-13: **599 passed, 4 failed, 1 xfailed** (`pytest tests -q`).
-Current head of `claude/magical-curie-si1vjr` (M5.2 integrated, 2026-11-13): **880 passed, 4 failed, 1 xfailed**, the same 4 failures.
+Current head of `claude/magical-curie-si1vjr` (M5.3 + M5.4 integrated, 2026-11-13): **895 passed, 4 failed, 1 xfailed**, the same 4 failures.
 
 | Test | Cause (diagnosed in docs/eval_v1, results/diagnostics) |
 |---|---|
@@ -61,3 +61,5 @@ Current head of `claude/magical-curie-si1vjr` (M5.2 integrated, 2026-11-13): **8
 | `ExternalMachineAdapter.health()` returns the task's `ground_truth()`: grader truth reachable through the Machine protocol (pre-existing; LoggingMachine passes it through) | M5.2 owner | open; truth-leak risk for external tasks |
 | MCAP export not opened in a real Foxglove (unavailable here); fitness judged from the MCAP well-known encodings (`json` + `jsonschema`) only. The MCAP is a derived view, not M0-hashed: never a trust root | M5.4 owner + verifier | open |
 | `tests/test_episode_mcap.py` (like the pyarrow-based replay tests) imports an optional extra at module top: without `.[replay]` the suite stops at collection | M5.4 verifier | consistent with existing tests; optional `pytest.importorskip` |
+| Timeline PNG bridges null-observation gaps (e.g. a dropout) with a straight line; the window is shaded but the line can read as measured data. The `.rrd` correctly has no samples there | M5.3 verifier | open; one-line fix (insert NaN at gaps) |
+| Timeline `.rrd` has no Rerun blueprint (viewer default layout); `rerun rrd verify` cannot be planted red from the renderer | M5.3 owner | minor |

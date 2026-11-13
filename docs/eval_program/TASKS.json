@@ -293,12 +293,20 @@
       "deps": [
         "M5.2"
       ],
-      "status": "in_progress",
+      "status": "verified",
       "exit_check": "renders without importing any backend; tested on a committed recording",
       "design": "docs/eval_program/designs/M5_backend_neutral_episode_log.md",
-      "commit": null,
-      "proof": [],
-      "retries": 0
+      "commit": "23686f2",
+      "proof": [
+        "evaluation/timeline.py",
+        "tests/test_timeline.py",
+        "haplous/cli/inspection.py"
+      ],
+      "retries": 0,
+      "integrated_as": [
+        "1dae61a"
+      ],
+      "verdict": "PASS by sonnet verifier at 23686f2: CLI wiring only; old text timeline byte-identical to base; rrd read independently: series counts = telemetry, every event a marker at its tick; rrd verify ok; PNGs viewed (dropout shaded 1.0-1.2 s); no backend modules loaded; tamper refused; planted defect caught"
     },
     {
       "id": "M5.4",
@@ -322,7 +330,7 @@
       "integrated_as": [
         "f0e4528"
       ],
-      "verdict": "PASS by sonnet verifier at efce593: diff scope clean; round trip exact and deterministic across processes on both logs; committed MCAP equals fresh export; independent make_reader read: 4 channels json/jsonschema, log_time = tick*dt; planted defect caught. Full suite deferred to the combined M5.3+M5.4 integration run (owner: 889/4/1)"
+      "verdict": "PASS by sonnet verifier at efce593: diff scope clean; round trip exact and deterministic across processes on both logs; committed MCAP equals fresh export; independent make_reader read: 4 channels json/jsonschema, log_time = tick*dt; planted defect caught. Full suite deferred to the combined M5.3+M5.4 integration run (owner: 889/4/1); combined suite after M5.3+M5.4 integration: 895 passed / 4 known / 1 xfailed"
     },
     {
       "id": "M5.5",
