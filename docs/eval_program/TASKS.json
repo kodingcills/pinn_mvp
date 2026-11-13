@@ -110,12 +110,16 @@
         "M3.5",
         "M3.6"
       ],
-      "status": "awaiting_verification",
+      "status": "verified",
       "exit_check": "G1 spec + tests; not weakened vs HEB competent_supervisor",
       "commit": "7a91bc09f1b8decfdfa72e132a32ba511678c617",
       "proof": [],
       "retries": 0,
-      "note": "owner: competent_supervisor audited as strict-abort watchdog (not competent); G1 = benchmarks/incumbent.py (independent impl; imports only data types + build_intent); 25 guard tests with one-guard-off variants; smoke dispositions match Haplous on all 27 scenarios (must be explained by verifier, not assumed). Verifier (sonnet) stopped on account rate limit; resume it after reset."
+      "note": "owner: competent_supervisor audited as strict-abort watchdog (not competent); G1 = benchmarks/incumbent.py (independent impl; imports only data types + build_intent); 25 guard tests with one-guard-off variants; smoke dispositions match Haplous on all 27 scenarios (must be explained by verifier, not assumed). Verifier (sonnet) stopped on account rate limit; resume it after reset.",
+      "integrated_as": [
+        "(cherry-pick of 7a91bc0)"
+      ],
+      "verdict": "PASS by sonnet verifier: G1 independent (thresholds from declared machine/intent info), no guard artificially weak (mildly strong), audit confirmed; 27/27 dispositions match Haplous (19 C / 5 A / 3 R) because HEB scenarios sit where all competent guards agree; static truth-leak gap found"
     },
     {
       "id": "M3.3",
@@ -189,11 +193,38 @@
       "verdict": "PASS by sonnet verifier at ea70b7e: design S1-S5 conform, Track B differential 96/96, independent parity 108/108, refusals open no session, mid-run loss stops with 0 commands after loss tick, 2 planted defects caught"
     },
     {
-      "id": "M4.2",
-      "title": "Matched direct/G1/Haplous dev campaign, nominal+faulted, HES metrics recomputed from raw rows",
-      "owner": null,
+      "id": "M4.1b",
+      "title": "Static guard: systems under test may not read evaluator-only Scenario attributes in decision code; correct G1 design doc section 3",
+      "owner": "worker-M4.1b (sonnet)",
       "deps": [
         "M4.1"
+      ],
+      "status": "in_progress",
+      "exit_check": "AST test passes; planted scenario read in G1 fails it",
+      "commit": null,
+      "proof": [],
+      "retries": 0
+    },
+    {
+      "id": "M4.2a",
+      "title": "Pre-registration (populations incl. stress beyond hold budget, arms, estimands, statistics, exclusions, epoch) + campaign driver + independent recompute + planted mismatch test + 2-scenario dry run; NO comparative results",
+      "owner": "worker-M4.2a (opus)",
+      "deps": [
+        "M4.1"
+      ],
+      "status": "in_progress",
+      "exit_check": "prereg committed before any results; coordinator reviews prereg before M4.2b",
+      "commit": null,
+      "proof": [],
+      "retries": 0
+    },
+    {
+      "id": "M4.2b",
+      "title": "Execute the pre-registered campaign (direct / G1 / Haplous, control + stress populations), HES metrics under a new scoring epoch, independent recompute, rescued/harmed replays",
+      "owner": null,
+      "deps": [
+        "M4.2a",
+        "M4.1b"
       ],
       "status": "pending",
       "exit_check": "independent recompute equals report; planted score/trace mismatch fails; slide_disturbance_no_recovery and slide_disturbance_recoverable_ceiling excluded from scientific estimates (mesh artifact, KNOWN_ISSUES) unless re-run on a validated finer mesh in a new scoring epoch; any pass-through/A-A around HaplousSystem must compare machine-received commands+outcomes (benchmarks/passthrough.py _Tap records emitted commands only); HES report must be regenerated under an explicit new scoring epoch and checked against a committed file (not a self-rendered temp file): docs/HES_V0_REPORT.md is stale on main (digest 90e7aafe vs computed dc913cf8)",
@@ -207,7 +238,7 @@
       "owner": null,
       "deps": [
         "M2.3",
-        "M4.2"
+        "M4.2b"
       ],
       "status": "pending",
       "exit_check": "PR with verification receipt by a non-author at head SHA",
