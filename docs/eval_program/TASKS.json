@@ -199,9 +199,9 @@
       "deps": [
         "M4.1"
       ],
-      "status": "in_progress",
+      "status": "awaiting_verification",
       "exit_check": "AST test passes; planted scenario read in G1 fails it",
-      "commit": null,
+      "commit": "54fff7f",
       "proof": [],
       "retries": 0
     },
