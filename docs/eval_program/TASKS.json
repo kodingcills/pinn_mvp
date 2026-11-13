@@ -233,11 +233,20 @@
         "M4.2a",
         "M4.1b"
       ],
-      "status": "in_progress",
+      "status": "verified",
       "exit_check": "independent recompute equals report; planted score/trace mismatch fails; slide_disturbance_no_recovery and slide_disturbance_recoverable_ceiling excluded from scientific estimates (mesh artifact, KNOWN_ISSUES) unless re-run on a validated finer mesh in a new scoring epoch; any pass-through/A-A around HaplousSystem must compare machine-received commands+outcomes (benchmarks/passthrough.py _Tap records emitted commands only); HES report must be regenerated under an explicit new scoring epoch and checked against a committed file (not a self-rendered temp file): docs/HES_V0_REPORT.md is stale on main (digest 90e7aafe vs computed dc913cf8)",
-      "commit": null,
-      "proof": [],
-      "retries": 0
+      "commit": "092962f",
+      "proof": [
+        "docs/eval_program/M4_REPORT.md",
+        "results/m4/campaign/official_metrics.json",
+        "results/m4/campaign/raw_rows.jsonl"
+      ],
+      "retries": 1,
+      "integrated_as": [
+        "a7209f7"
+      ],
+      "note": "owner paused by usage limit and resumed; first launch killed at ~15 min before any outcome read (tool timeout), relaunched --fresh; Step 0 nominal 8/8 bounded_success. Result: C1 stress and C2 control both TIE (Haplous-G1 0.0 [0,0], no discordant pairs, 2004 rows). Stress HES G3 non_interference FAIL 0.625; control qualified.",
+      "verdict": "PASS by sonnet verifier at 092962f: diff = results + renderer + its test + report only; validate passes; recompute 0 metric mismatches; own recount matches every cell; render --check matches; M0 verify []; git_dirty false; replay 0.0 m error; suite 871/4 known/1 xfailed; no binaries"
     },
     {
       "id": "M5.1",
