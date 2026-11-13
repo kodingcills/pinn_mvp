@@ -71,6 +71,12 @@ class RecordingBehavior:
     the inner behavior's state, so the exact task-logic state at a
     runtime stop can be carried into the counterfactual continuation."""
 
+    # OD-1: the wrapper emits the inner behaviour's commands, so it carries
+    # the inner contract. An undeclared inner stays undeclared (refused).
+    required_command_modes = property(lambda self: self._inner.required_command_modes)
+    authorized_substitutes = property(lambda self: self._inner.authorized_substitutes)
+    non_substitutable_modes = property(lambda self: self._inner.non_substitutable_modes)
+
     def __init__(self, inner) -> None:
         self._inner = inner
         self.snapshot = None

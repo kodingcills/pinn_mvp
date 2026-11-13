@@ -50,8 +50,16 @@ def test_existing_behaviors_declare_both_modes():
         assert behavior.authorized_substitutes == frozenset()
 
 
+class UndeclaredHold:
+    """HoldBehavior's commands without any command contract."""
+
+    __init__ = HoldBehavior.__init__
+    begin = HoldBehavior.begin
+    step = HoldBehavior.step
+
+
 def test_undeclared_contract_is_refused():
-    runtime, machine, result = submit(HoldBehavior, std_caps())
+    runtime, machine, result = submit(UndeclaredHold, std_caps())
     assert result.outcome == "REFUSED"
     assert [r.code for r in result.reasons] == ["command_contract_undeclared"]
     assert runtime.state is ExecutionState.REFUSED
