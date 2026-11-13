@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import json
+import subprocess
+import sys
 import webbrowser
 from argparse import Namespace
 from collections.abc import Mapping
@@ -158,7 +160,32 @@ def timeline_command(args: Namespace) -> int:
     return 0
 
 
+_REPO_ROOT = Path(__file__).resolve().parents[2]
+_RECORDINGS_ROOT = _REPO_ROOT / "results" / "recordings" / "registry"
+
+
+def _replay_recording(args: Namespace, root: Path) -> int:
+    """An M0 recording replays in a fresh process that loads only the
+    archive, so no runtime, controller or benchmark module is imported."""
+    out = _REPO_ROOT / "replays" / args.run_id
+    rrd = args.rrd or out / f"{args.run_id}.rrd"
+    command = [sys.executable, "-m", "evaluation.replay", args.run_id, "--root", str(root),
+               "--report", str(args.report or out / "replay_report.json")]
+    if args.ui or args.rrd:
+        command += ["--rrd", str(rrd)]
+    if args.ui or args.mp4:
+        command += ["--mp4", str(args.mp4 or out / f"{args.run_id}.mp4")]
+    code = subprocess.run(command, cwd=_REPO_ROOT).returncode
+    if code == 0 and (args.ui or args.rrd):
+        # shortcut: headless sessions only export; open the viewer by hand
+        print(f"viewer: rerun {rrd}")
+    return code
+
+
 def replay_command(args: Namespace) -> int:
+    root = args.recordings_root or _RECORDINGS_ROOT
+    if (root / "runs" / args.run_id / "manifest.json").is_file():
+        return _replay_recording(args, root)
     rows = _load_trials(RunRegistry().resolve(args.run_id).trials)
     selected = [row for row in rows if not row.get("bounded_success")] if args.failures else rows
     _table(
