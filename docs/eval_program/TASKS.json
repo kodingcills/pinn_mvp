@@ -8,7 +8,7 @@
       "title": "Record one real HEB/pegsim episode and replay it from artifacts (rrd + mp4)",
       "owner": "worker-M2.1",
       "deps": [],
-      "status": "awaiting_verification",
+      "status": "verified",
       "exit_check": "docs/eval_program/PROGRAM_STATE.md#m2-gate",
       "commit": "6201f9d4e6b4d554ffdc310264aaff278cb28247",
       "proof": [
@@ -17,7 +17,11 @@
         "tests/test_recording_replay.py"
       ],
       "retries": 0,
-      "note": "owner reports 11/11 gate items, full suite 609/4/1; recorder at benchmarks/recording.py (heb/ file set is pinned by tests/test_heb_structure.py)"
+      "note": "owner reports 11/11 gate items, full suite 609/4/1; recorder at benchmarks/recording.py (heb/ file set is pinned by tests/test_heb_structure.py)",
+      "integrated_as": [
+        "ad088a1",
+        "1eaa699"
+      ]
     },
     {
       "id": "M2.2",
@@ -26,11 +30,17 @@
       "deps": [
         "M2.1"
       ],
-      "status": "in_progress",
+      "status": "pass",
       "exit_check": "M2 gate items 1-11 reproduced by a non-author",
-      "commit": null,
-      "proof": [],
-      "retries": 0
+      "commit": "6201f9d4e6b4d554ffdc310264aaff278cb28247",
+      "proof": [
+        "verifier re-derived gates 2-8 with its own scripts; fresh re-record gave byte-identical mp4; 7 planted defects"
+      ],
+      "retries": 0,
+      "findings": [
+        "pose-check failure is reported, not raised (evaluation/replay.py replay())",
+        "state outside observed ticks and model changes that do not move peg_tip are protected only by M0 hashes (trust root = M0 ledger)"
+      ]
     },
     {
       "id": "M2.3",
