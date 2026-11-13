@@ -1,0 +1,52 @@
+{
+  "chunk_ticks": 1024,
+  "clocks": {
+    "host_monotonic_ns": "recording host time.monotonic_ns()",
+    "sim_time_s": "MjData.time (sim)",
+    "t_s": "sim seconds",
+    "tick": "physics step index (sim)"
+  },
+  "format": "haplous-mujoco-recording-v1",
+  "model_sha256": "f4e502b2f5bbd737a4a91a2ff9fcba90e0e6638b4eaef975efc95e7a10d287ab",
+  "model_xml_sha256": "b906b735544d0781db52c8f5a9e885ebd0481541e09ba88814841938d639b3ff",
+  "mujoco_version": "3.11.0",
+  "n_observations": 3945,
+  "n_ticks": 3944,
+  "nq": 6,
+  "nv": 6,
+  "outcome": {
+    "bounded_success": false,
+    "disposition": "COMPLETE",
+    "graded_disposition": "COMPLETE",
+    "hard_violations": [
+      {
+        "code": "process_force",
+        "limit": 1.5,
+        "t_s": 1.2969999999999127,
+        "value": 1.5171437394799856
+      },
+      {
+        "code": "process_force",
+        "limit": 1.5,
+        "t_s": 1.6229999999998768,
+        "value": 1.752901954689933
+      },
+      {
+        "code": "process_force",
+        "limit": 1.5,
+        "t_s": 1.7594999999998617,
+        "value": 1.6941371368092608
+      }
+    ],
+    "reason": null,
+    "refusal_codes": [],
+    "task_success": true
+  },
+  "scenario_id": "slide_disturbance_recoverable_ceiling",
+  "state_size": 43,
+  "state_spec": 16383,
+  "state_spec_name": "mjSTATE_INTEGRATION",
+  "system": "haplous_mediated",
+  "timestep_s": 0.0005,
+  "tracked_site": "peg_tip"
+}

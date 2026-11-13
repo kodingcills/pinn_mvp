@@ -1,0 +1,89 @@
+{"clock": "sim", "kind": "disturbance_applied", "payload": {"scheduled_s": 1.1}, "source": "machine", "t_s": 1.1005, "tick": 2201}
+{"clock": "sim", "kind": "feasibility", "payload": {"capabilities": {"command_modes": ["cartesian_impedance", "force_controlled_descent"], "execution_horizon_s": 16.3, "max_initial_offset_m": 0.004375, "max_sensed_force_n": 100.0, "position_resolution_m": 1e-06, "sensing": ["force_z", "pose", "tilt"], "state_max_age_s": 0.02, "state_period_s": 0.0005, "supports_stop": true}, "outcome": "SUPPORTED", "reasons": []}, "seq": 0, "source": "haplous", "t_s": 0.0, "tick": 0}
+{"clock": "sim", "kind": "execution_authorized", "payload": {"observation_age_s": 0.0}, "seq": 1, "source": "haplous", "t_s": 0.0, "tick": 0}
+{"clock": "sim", "kind": "motion_started", "payload": {"state_period_s": 0.0005}, "seq": 2, "source": "haplous", "t_s": 0.0, "tick": 0}
+{"clock": "sim", "kind": "constraint_violation", "payload": {"code": "process_force_floor", "hard": false, "limit": -0.06, "value": -0.0}, "seq": 3, "source": "haplous", "t_s": 0.0, "tick": 0}
+{"clock": "sim", "kind": "state_transition", "payload": {"to": "constrained"}, "seq": 4, "source": "haplous", "t_s": 0.0, "tick": 0}
+{"clock": "sim", "kind": "state_transition", "payload": {"to": "executing"}, "seq": 5, "source": "haplous", "t_s": 0.538999999999996, "tick": 1078}
+{"clock": "sim", "kind": "constraint_violation", "payload": {"code": "process_force_floor", "hard": false, "limit": -0.06, "value": -0.0}, "seq": 6, "source": "haplous", "t_s": 0.966499999999949, "tick": 1933}
+{"clock": "sim", "kind": "state_transition", "payload": {"to": "constrained"}, "seq": 7, "source": "haplous", "t_s": 0.966499999999949, "tick": 1933}
+{"clock": "sim", "kind": "state_transition", "payload": {"to": "executing"}, "seq": 8, "source": "haplous", "t_s": 0.9669999999999489, "tick": 1934}
+{"clock": "sim", "kind": "constraint_violation", "payload": {"code": "process_force_floor", "hard": false, "limit": -0.06, "value": -0.0}, "seq": 9, "source": "haplous", "t_s": 1.0069999999999446, "tick": 2014}
+{"clock": "sim", "kind": "state_transition", "payload": {"to": "constrained"}, "seq": 10, "source": "haplous", "t_s": 1.0069999999999446, "tick": 2014}
+{"clock": "sim", "kind": "state_transition", "payload": {"to": "executing"}, "seq": 11, "source": "haplous", "t_s": 1.0074999999999446, "tick": 2015}
+{"clock": "sim", "kind": "constraint_violation", "payload": {"code": "process_force_floor", "hard": false, "limit": -0.06, "value": -0.0}, "seq": 12, "source": "haplous", "t_s": 1.0409999999999409, "tick": 2082}
+{"clock": "sim", "kind": "state_transition", "payload": {"to": "constrained"}, "seq": 13, "source": "haplous", "t_s": 1.0409999999999409, "tick": 2082}
+{"clock": "sim", "kind": "state_transition", "payload": {"to": "executing"}, "seq": 14, "source": "haplous", "t_s": 1.0414999999999408, "tick": 2083}
+{"clock": "sim", "kind": "constraint_violation", "payload": {"code": "process_force_floor", "hard": false, "limit": -0.06, "value": -0.0}, "seq": 15, "source": "haplous", "t_s": 1.0709999999999376, "tick": 2142}
+{"clock": "sim", "kind": "state_transition", "payload": {"to": "constrained"}, "seq": 16, "source": "haplous", "t_s": 1.0709999999999376, "tick": 2142}
+{"clock": "sim", "kind": "state_transition", "payload": {"to": "executing"}, "seq": 17, "source": "haplous", "t_s": 1.0714999999999375, "tick": 2143}
+{"clock": "sim", "kind": "constraint_violation", "payload": {"code": "process_force_floor", "hard": false, "limit": -0.06, "value": -0.0}, "seq": 18, "source": "haplous", "t_s": 1.1144999999999328, "tick": 2229}
+{"clock": "sim", "kind": "state_transition", "payload": {"to": "constrained"}, "seq": 19, "source": "haplous", "t_s": 1.1144999999999328, "tick": 2229}
+{"clock": "sim", "kind": "state_transition", "payload": {"to": "executing"}, "seq": 20, "source": "haplous", "t_s": 1.1149999999999327, "tick": 2230}
+{"clock": "sim", "kind": "constraint_violation", "payload": {"code": "process_force_floor", "hard": false, "limit": -0.06, "value": -0.0}, "seq": 21, "source": "haplous", "t_s": 1.1434999999999296, "tick": 2287}
+{"clock": "sim", "kind": "state_transition", "payload": {"to": "constrained"}, "seq": 22, "source": "haplous", "t_s": 1.1434999999999296, "tick": 2287}
+{"clock": "sim", "kind": "state_transition", "payload": {"to": "executing"}, "seq": 23, "source": "haplous", "t_s": 1.1439999999999295, "tick": 2288}
+{"clock": "sim", "kind": "constraint_violation", "payload": {"code": "process_force_floor", "hard": false, "limit": -0.06, "value": -0.0}, "seq": 24, "source": "haplous", "t_s": 1.1924999999999242, "tick": 2385}
+{"clock": "sim", "kind": "state_transition", "payload": {"to": "constrained"}, "seq": 25, "source": "haplous", "t_s": 1.1924999999999242, "tick": 2385}
+{"clock": "sim", "kind": "state_transition", "payload": {"to": "executing"}, "seq": 26, "source": "haplous", "t_s": 1.1929999999999241, "tick": 2386}
+{"clock": "sim", "kind": "constraint_violation", "payload": {"code": "process_force_floor", "hard": false, "limit": -0.06, "value": -0.0}, "seq": 27, "source": "haplous", "t_s": 1.2319999999999198, "tick": 2464}
+{"clock": "sim", "kind": "state_transition", "payload": {"to": "constrained"}, "seq": 28, "source": "haplous", "t_s": 1.2319999999999198, "tick": 2464}
+{"clock": "sim", "kind": "state_transition", "payload": {"to": "executing"}, "seq": 29, "source": "haplous", "t_s": 1.2324999999999198, "tick": 2465}
+{"clock": "sim", "kind": "constraint_violation", "payload": {"code": "process_force_floor", "hard": false, "limit": -0.06, "value": -0.0}, "seq": 30, "source": "haplous", "t_s": 1.266999999999916, "tick": 2534}
+{"clock": "sim", "kind": "state_transition", "payload": {"to": "constrained"}, "seq": 31, "source": "haplous", "t_s": 1.266999999999916, "tick": 2534}
+{"clock": "sim", "kind": "state_transition", "payload": {"to": "executing"}, "seq": 32, "source": "haplous", "t_s": 1.267499999999916, "tick": 2535}
+{"clock": "sim", "kind": "constraint_violation", "payload": {"code": "process_force", "hard": true, "limit": 1.5, "value": 1.5171437394799856}, "seq": 33, "source": "haplous", "t_s": 1.2969999999999127, "tick": 2594}
+{"clock": "sim", "kind": "recovery_decision", "payload": {"action": "re_reference", "attempt": 1, "condition": "process_force"}, "seq": 34, "source": "haplous", "t_s": 1.2969999999999127, "tick": 2594}
+{"clock": "sim", "kind": "state_transition", "payload": {"to": "recovering"}, "seq": 35, "source": "haplous", "t_s": 1.2969999999999127, "tick": 2594}
+{"clock": "sim", "kind": "state_transition", "payload": {"to": "executing"}, "seq": 36, "source": "haplous", "t_s": 1.2974999999999126, "tick": 2595}
+{"clock": "sim", "kind": "constraint_violation", "payload": {"code": "process_force_floor", "hard": false, "limit": -0.06, "value": -0.0}, "seq": 37, "source": "haplous", "t_s": 1.2974999999999126, "tick": 2595}
+{"clock": "sim", "kind": "state_transition", "payload": {"to": "constrained"}, "seq": 38, "source": "haplous", "t_s": 1.2974999999999126, "tick": 2595}
+{"clock": "sim", "kind": "state_transition", "payload": {"to": "executing"}, "seq": 39, "source": "haplous", "t_s": 1.3009999999999122, "tick": 2602}
+{"clock": "sim", "kind": "constraint_violation", "payload": {"code": "process_force_floor", "hard": false, "limit": -0.06, "value": -0.0}, "seq": 40, "source": "haplous", "t_s": 1.4094999999999003, "tick": 2819}
+{"clock": "sim", "kind": "state_transition", "payload": {"to": "constrained"}, "seq": 41, "source": "haplous", "t_s": 1.4094999999999003, "tick": 2819}
+{"clock": "sim", "kind": "state_transition", "payload": {"to": "executing"}, "seq": 42, "source": "haplous", "t_s": 1.4099999999999002, "tick": 2820}
+{"clock": "sim", "kind": "constraint_violation", "payload": {"code": "process_force_floor", "hard": false, "limit": -0.06, "value": -0.0}, "seq": 43, "source": "haplous", "t_s": 1.4444999999998964, "tick": 2889}
+{"clock": "sim", "kind": "state_transition", "payload": {"to": "constrained"}, "seq": 44, "source": "haplous", "t_s": 1.4444999999998964, "tick": 2889}
+{"clock": "sim", "kind": "state_transition", "payload": {"to": "executing"}, "seq": 45, "source": "haplous", "t_s": 1.4449999999998964, "tick": 2890}
+{"clock": "sim", "kind": "constraint_violation", "payload": {"code": "process_force_floor", "hard": false, "limit": -0.06, "value": -0.0}, "seq": 46, "source": "haplous", "t_s": 1.4714999999998934, "tick": 2943}
+{"clock": "sim", "kind": "state_transition", "payload": {"to": "constrained"}, "seq": 47, "source": "haplous", "t_s": 1.4714999999998934, "tick": 2943}
+{"clock": "sim", "kind": "state_transition", "payload": {"to": "executing"}, "seq": 48, "source": "haplous", "t_s": 1.4719999999998934, "tick": 2944}
+{"clock": "sim", "kind": "constraint_violation", "payload": {"code": "process_force_floor", "hard": false, "limit": -0.06, "value": -0.0}, "seq": 49, "source": "haplous", "t_s": 1.5044999999998898, "tick": 3009}
+{"clock": "sim", "kind": "state_transition", "payload": {"to": "constrained"}, "seq": 50, "source": "haplous", "t_s": 1.5044999999998898, "tick": 3009}
+{"clock": "sim", "kind": "state_transition", "payload": {"to": "executing"}, "seq": 51, "source": "haplous", "t_s": 1.5049999999998898, "tick": 3010}
+{"clock": "sim", "kind": "constraint_violation", "payload": {"code": "process_force_floor", "hard": false, "limit": -0.06, "value": -0.0}, "seq": 52, "source": "haplous", "t_s": 1.538499999999886, "tick": 3077}
+{"clock": "sim", "kind": "state_transition", "payload": {"to": "constrained"}, "seq": 53, "source": "haplous", "t_s": 1.538499999999886, "tick": 3077}
+{"clock": "sim", "kind": "state_transition", "payload": {"to": "executing"}, "seq": 54, "source": "haplous", "t_s": 1.538999999999886, "tick": 3078}
+{"clock": "sim", "kind": "constraint_violation", "payload": {"code": "process_force_floor", "hard": false, "limit": -0.06, "value": -0.0}, "seq": 55, "source": "haplous", "t_s": 1.575999999999882, "tick": 3152}
+{"clock": "sim", "kind": "state_transition", "payload": {"to": "constrained"}, "seq": 56, "source": "haplous", "t_s": 1.575999999999882, "tick": 3152}
+{"clock": "sim", "kind": "state_transition", "payload": {"to": "executing"}, "seq": 57, "source": "haplous", "t_s": 1.5764999999998819, "tick": 3153}
+{"clock": "sim", "kind": "constraint_violation", "payload": {"code": "process_force_floor", "hard": false, "limit": -0.06, "value": -0.0}, "seq": 58, "source": "haplous", "t_s": 1.5869999999998807, "tick": 3174}
+{"clock": "sim", "kind": "state_transition", "payload": {"to": "constrained"}, "seq": 59, "source": "haplous", "t_s": 1.5869999999998807, "tick": 3174}
+{"clock": "sim", "kind": "state_transition", "payload": {"to": "executing"}, "seq": 60, "source": "haplous", "t_s": 1.5874999999998807, "tick": 3175}
+{"clock": "sim", "kind": "constraint_violation", "payload": {"code": "process_force", "hard": true, "limit": 1.5, "value": 1.752901954689933}, "seq": 61, "source": "haplous", "t_s": 1.6229999999998768, "tick": 3246}
+{"clock": "sim", "kind": "recovery_decision", "payload": {"action": "re_reference", "attempt": 2, "condition": "process_force"}, "seq": 62, "source": "haplous", "t_s": 1.6229999999998768, "tick": 3246}
+{"clock": "sim", "kind": "state_transition", "payload": {"to": "recovering"}, "seq": 63, "source": "haplous", "t_s": 1.6229999999998768, "tick": 3246}
+{"clock": "sim", "kind": "state_transition", "payload": {"to": "executing"}, "seq": 64, "source": "haplous", "t_s": 1.6234999999998767, "tick": 3247}
+{"clock": "sim", "kind": "constraint_violation", "payload": {"code": "process_force_floor", "hard": false, "limit": -0.06, "value": -0.0}, "seq": 65, "source": "haplous", "t_s": 1.6234999999998767, "tick": 3247}
+{"clock": "sim", "kind": "state_transition", "payload": {"to": "constrained"}, "seq": 66, "source": "haplous", "t_s": 1.6234999999998767, "tick": 3247}
+{"clock": "sim", "kind": "state_transition", "payload": {"to": "executing"}, "seq": 67, "source": "haplous", "t_s": 1.6274999999998763, "tick": 3255}
+{"clock": "sim", "kind": "constraint_violation", "payload": {"code": "process_force_floor", "hard": false, "limit": -0.06, "value": -0.0}, "seq": 68, "source": "haplous", "t_s": 1.656499999999873, "tick": 3313}
+{"clock": "sim", "kind": "state_transition", "payload": {"to": "constrained"}, "seq": 69, "source": "haplous", "t_s": 1.656499999999873, "tick": 3313}
+{"clock": "sim", "kind": "state_transition", "payload": {"to": "executing"}, "seq": 70, "source": "haplous", "t_s": 1.656999999999873, "tick": 3314}
+{"clock": "sim", "kind": "constraint_violation", "payload": {"code": "process_force_floor", "hard": false, "limit": -0.06, "value": -0.0}, "seq": 71, "source": "haplous", "t_s": 1.666499999999872, "tick": 3333}
+{"clock": "sim", "kind": "state_transition", "payload": {"to": "constrained"}, "seq": 72, "source": "haplous", "t_s": 1.666499999999872, "tick": 3333}
+{"clock": "sim", "kind": "state_transition", "payload": {"to": "executing"}, "seq": 73, "source": "haplous", "t_s": 1.666999999999872, "tick": 3334}
+{"clock": "sim", "kind": "constraint_violation", "payload": {"code": "process_force_floor", "hard": false, "limit": -0.06, "value": -0.0}, "seq": 74, "source": "haplous", "t_s": 1.7079999999998674, "tick": 3416}
+{"clock": "sim", "kind": "state_transition", "payload": {"to": "constrained"}, "seq": 75, "source": "haplous", "t_s": 1.7079999999998674, "tick": 3416}
+{"clock": "sim", "kind": "state_transition", "payload": {"to": "executing"}, "seq": 76, "source": "haplous", "t_s": 1.7084999999998673, "tick": 3417}
+{"clock": "sim", "kind": "constraint_violation", "payload": {"code": "process_force_floor", "hard": false, "limit": -0.06, "value": -0.0}, "seq": 77, "source": "haplous", "t_s": 1.738499999999864, "tick": 3477}
+{"clock": "sim", "kind": "state_transition", "payload": {"to": "constrained"}, "seq": 78, "source": "haplous", "t_s": 1.738499999999864, "tick": 3477}
+{"clock": "sim", "kind": "state_transition", "payload": {"to": "executing"}, "seq": 79, "source": "haplous", "t_s": 1.738999999999864, "tick": 3478}
+{"clock": "sim", "kind": "constraint_violation", "payload": {"code": "process_force", "hard": true, "limit": 1.5, "value": 1.6941371368092608}, "seq": 80, "source": "haplous", "t_s": 1.7594999999998617, "tick": 3519}
+{"clock": "sim", "kind": "recovery_decision", "payload": {"action": "re_reference", "attempt": 3, "condition": "process_force"}, "seq": 81, "source": "haplous", "t_s": 1.7594999999998617, "tick": 3519}
+{"clock": "sim", "kind": "state_transition", "payload": {"to": "recovering"}, "seq": 82, "source": "haplous", "t_s": 1.7594999999998617, "tick": 3519}
+{"clock": "sim", "kind": "state_transition", "payload": {"to": "executing"}, "seq": 83, "source": "haplous", "t_s": 1.7599999999998617, "tick": 3520}
+{"clock": "sim", "kind": "constraint_violation", "payload": {"code": "process_force_floor", "hard": false, "limit": -0.06, "value": -0.0}, "seq": 84, "source": "haplous", "t_s": 1.7599999999998617, "tick": 3520}
+{"clock": "sim", "kind": "state_transition", "payload": {"to": "constrained"}, "seq": 85, "source": "haplous", "t_s": 1.7599999999998617, "tick": 3520}
+{"clock": "sim", "kind": "state_transition", "payload": {"to": "executing"}, "seq": 86, "source": "haplous", "t_s": 1.7639999999998612, "tick": 3528}
+{"clock": "sim", "kind": "outcome", "payload": {"result": "COMPLETE", "success_condition": "path_completed"}, "seq": 87, "source": "haplous", "t_s": 1.9714999999998384, "tick": 3943}
