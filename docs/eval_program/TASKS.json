@@ -339,12 +339,22 @@
       "deps": [
         "M5.2"
       ],
-      "status": "in_progress",
+      "status": "verified",
       "exit_check": "real REASSEMBLE insertion segments (HF robot-lev/reassemble, CC-BY-4.0, pinned revision) imported into the episode log format; haplous timeline and MCAP export run on it; attribution recorded; no evaluator truth claimed",
       "design": "docs/eval_program/designs/M5_backend_neutral_episode_log.md",
-      "commit": null,
-      "proof": [],
-      "retries": 0
+      "commit": "c66d144",
+      "proof": [
+        "benchmarks/realdata/reassemble_episode_log.py",
+        "scripts/m55_reassemble_import.py",
+        "results/m5/reassemble-log/",
+        "results/m5/reassemble_import.json",
+        "tests/test_reassemble_import.py"
+      ],
+      "retries": 0,
+      "integrated_as": [
+        "7a34d69"
+      ],
+      "verdict": "PASS by sonnet verifier at c66d144: no haplous/pegsim change; loader filter identical; pinned sha256 match; fresh import byte-identical to committed sample; own pyarrow check of pose/force.base/action mapping and segment ep1/seg2 \"Insert round peg 2.\"; no Haplous/truth claims; CC-BY attribution adequate; MCAP round trip exact on all three logs; timeline rrd verify ok, no backend loaded; planted defect caught"
     }
   ]
 }
