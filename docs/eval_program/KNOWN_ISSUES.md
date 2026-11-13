@@ -33,3 +33,4 @@ Baseline on `main` @ `4ca4e71`, 2026-11-13: **599 passed, 4 failed, 1 xfailed** 
 | Truth-leak detector matches canary VALUES: a scaled secret (`fault_at_s*1000`) or a secret formatted into a string (`f"t={fault_at_s}"` in `CommandOutcome.reason`) is not found | M3.3 verifier, planted leaks | documented limit |
 | No negative test isolates the replay timestep guard (`evaluation/replay.py:114`): its case is also caught by the sim_time guard, so deleting the guard fails no test | M3.3 verifier | open, small |
 | Capability negative test: only the empty-mode-set case is a clean refusal; the str alias is a crash after negotiation accepts it; descent-only is a strict xfail (OD-1) | M3.3 verifier | documented |
+| A task family whose `scenarios` callable raises or returns non-list makes every lookup fail loudly, but the error does not name the family | M3.4 verifier | minor, open |

@@ -141,7 +141,7 @@
       "deps": [
         "M3.1"
       ],
-      "status": "awaiting_verification",
+      "status": "verified",
       "exit_check": "adding a third registered pack needs no recorder edit (test with a stub registration); gate 9 compares graded vs graded",
       "commit": "9af7b21",
       "proof": [
@@ -150,7 +150,7 @@
       ],
       "retries": 1,
       "note": "lookup scans private tasks._REGISTRY (shortcut: HEB pinned, no public listing)",
-      "verdict": "FAIL at 03ed038: malformed registration breaks all lookups; duplicate id silently shadows built-in; registration without scenarios silently skipped"
+      "verdict": "PASS by sonnet verifier at 9af7b21 (P1-P3 + 2 own plants, 27-id equality, both M2 gates 11/11)"
     },
     {
       "id": "M3.5",

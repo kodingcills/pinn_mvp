@@ -13,7 +13,7 @@ Read this first in a new session. Then `TASKS.json` (DAG and ownership), `DECISI
 | Milestone | Status | Proof |
 |---|---|---|
 | M2 record → replay → verify | **DONE.** M2.1 **verified** (gate 11/11 by a non-author at 6201f9d); M2.3 verify skill **verified** (cold-reader journey by a non-author at 0c28024) | `results/recordings/m2-heb-insert_dropout_large.replay_report.json`, `scripts/m2_gate.py`, `tests/test_recording_replay.py` |
-| M3 two task packs, one pipeline | M3.1 **verified** (slide through unchanged replay/format); M3.2 **verified**; M3.3 **verified** (negative tests, pairing + clock guards); M3.4 fix round awaiting verdict; M3.5 running | `results/recordings/m3-heb-slide_disturbance_recoverable_ceiling.replay_report.json`, `tests/test_slide_recording.py` |
+| M3 two task packs, one pipeline | M3.1 **verified** (slide through unchanged replay/format); M3.2 **verified**; M3.3 **verified** (negative tests, pairing + clock guards); M3.4 **verified** (scenarios declared in the HEB registry); M3.5 running | `results/recordings/m3-heb-slide_disturbance_recoverable_ceiling.replay_report.json`, `tests/test_slide_recording.py` |
 | M4 direct / G1 / Haplous campaign | pending | |
 | M5 fresh-agent cold start | pending | |
 
