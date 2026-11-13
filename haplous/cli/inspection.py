@@ -142,8 +142,22 @@ def inspect_command(args: Namespace) -> int:
     return 0
 
 
+def _episode_timeline(args: Namespace, source: list[str], name: str) -> int:
+    """An episode log renders in a fresh process that imports no backend,
+    as `haplous replay` does for recordings."""
+    out = _REPO_ROOT / "replays" / name
+    command = [sys.executable, "-m", "evaluation.timeline", *source,
+               "--rrd", str(args.rrd or out / "timeline.rrd"), "--png", str(args.png or out / "timeline.png")]
+    return subprocess.run(command, cwd=_REPO_ROOT).returncode
+
+
 def timeline_command(args: Namespace) -> int:
     path = Path(args.source)
+    root = args.recordings_root or _RECORDINGS_ROOT
+    if (path / "telemetry.jsonl").is_file():
+        return _episode_timeline(args, [str(path.resolve())], path.resolve().name)
+    if (root / "runs" / args.source / "manifest.json").is_file():
+        return _episode_timeline(args, [args.source, "--root", str(root.resolve())], args.source)
     bundles: list[dict[str, Any]]
     if path.is_file():
         evidence = json.loads(path.read_text(encoding="utf-8"))

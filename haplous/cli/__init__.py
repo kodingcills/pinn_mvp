@@ -83,9 +83,13 @@ def _parser() -> argparse.ArgumentParser:
     inspect.add_argument("--json", action="store_true", help="machine-readable output")
     inspect.set_defaults(handler=inspect_command)
 
-    timeline = commands.add_parser("timeline", help="normalized execution timeline from a run or evidence JSON")
-    timeline.add_argument("source")
+    timeline = commands.add_parser(
+        "timeline", help="execution timeline from a run or evidence JSON; plots (.rrd + .png) from an episode log")
+    timeline.add_argument("source", help="run id, evidence JSON, M0 recording run id, or episode-log directory")
     timeline.add_argument("--json", action="store_true", help="machine-readable output")
+    timeline.add_argument("--recordings-root", type=Path, help="M0 registry root holding recordings")
+    timeline.add_argument("--rrd", type=Path, help="episode log: .rrd output path")
+    timeline.add_argument("--png", type=Path, help="episode log: .png output path")
     timeline.set_defaults(handler=timeline_command)
     return parser
 
