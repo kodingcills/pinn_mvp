@@ -22,6 +22,7 @@ from pegsim.rollout import (
     ValidatedConfig,
 )
 
+from haplous.capabilities import CommandMode
 from haplous.intent import ExecutionIntent, RequirementKind
 from haplous.machine import MachineObservation, ServoCommand
 
@@ -31,6 +32,19 @@ _Z_FLOOR_M = -0.002
 
 
 class SlideExecutionBehavior:
+    # Lateral setpoint advances along the arc as an impedance pose target
+    # (step(), theta/xy). Axially, the approach descends to contact and the
+    # engaged phase regulates normal force with an integral trim around the
+    # contact reference (step(), engaged branch). The axial regulation holds
+    # force while sliding rather than descending, so mapping it onto
+    # FORCE_CONTROLLED_DESCENT is a judgement; the stricter declaration
+    # (both modes) is taken.
+    required_command_modes = frozenset(
+        {CommandMode.CARTESIAN_IMPEDANCE, CommandMode.FORCE_CONTROLLED_DESCENT}
+    )
+    authorized_substitutes: frozenset = frozenset()
+    non_substitutable_modes: frozenset = frozenset()
+
     def __init__(self, bundle: ValidatedConfig) -> None:
         self._k_z = bundle.gains.k_z
         self._k_z_approach = bundle.insertion.k_z_search
