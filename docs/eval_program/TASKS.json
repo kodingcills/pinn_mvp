@@ -289,11 +289,11 @@
     {
       "id": "M5.3",
       "title": "haplous timeline <run>: plots + Haplous decision markers from the episode log only",
-      "owner": null,
+      "owner": "worker-M5.3 (opus)",
       "deps": [
         "M5.2"
       ],
-      "status": "pending",
+      "status": "in_progress",
       "exit_check": "renders without importing any backend; tested on a committed recording",
       "design": "docs/eval_program/designs/M5_backend_neutral_episode_log.md",
       "commit": null,
@@ -303,11 +303,11 @@
     {
       "id": "M5.4",
       "title": "MCAP export of the episode log (JSONL stays canonical)",
-      "owner": null,
+      "owner": "worker-M5.4 (opus)",
       "deps": [
         "M5.2"
       ],
-      "status": "pending",
+      "status": "in_progress",
       "exit_check": "round-trip test; opens with per-channel schemas",
       "design": "docs/eval_program/designs/M5_backend_neutral_episode_log.md",
       "commit": null,
