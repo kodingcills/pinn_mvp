@@ -1,0 +1,1696 @@
+{
+  "analysis": {
+    "arms": [
+      "bare_behavior",
+      "competent_supervisor",
+      "g1_incumbent",
+      "haplous_mediated"
+    ],
+    "attainability": {
+      "counts": {
+        "UNKNOWN": 2
+      },
+      "n": 2,
+      "provenance": {
+        "NONE": 2
+      }
+    },
+    "baseline_arm": "bare_behavior",
+    "experiment_id": "m4-hes-m4-e2-dryrun-control",
+    "intervention": {
+      "ambiguous_rate": {
+        "n": 0,
+        "reason": "NOT_AVAILABLE",
+        "value": null
+      },
+      "beneficial_kinds": {},
+      "bounded_successes_destroyed": 0,
+      "bounded_successes_recovered": 0,
+      "counts": {
+        "AMBIGUOUS": 0,
+        "BENEFICIAL": 0,
+        "HARMFUL": 0,
+        "INSUFFICIENT": 0,
+        "UNNECESSARY": 0
+      },
+      "harmful_intervention_rate": {
+        "n": 0,
+        "reason": "NOT_AVAILABLE",
+        "value": null
+      },
+      "intervention_precision": {
+        "n": 0,
+        "reason": "NOT_AVAILABLE",
+        "value": null
+      },
+      "n_attributable": 0,
+      "unnecessary_intervention_rate": {
+        "n": 0,
+        "reason": "NOT_AVAILABLE",
+        "value": null
+      }
+    },
+    "metric_arm_vector": {
+      "bare_behavior": {
+        "attribution": {
+          "by_confidence_band": {
+            "high": 1,
+            "low": 1
+          },
+          "by_layer": {
+            "UNKNOWN": 1,
+            "UPSTREAM_POLICY": 1
+          },
+          "by_runtime_subcause": {},
+          "n_failures": 2,
+          "n_unknown": 1
+        },
+        "authority": {
+          "authorization_precision": {
+            "ci_high": 0.6576197724933469,
+            "ci_low": 0.0,
+            "method": "wilson95",
+            "n": 2,
+            "value": 0.0
+          },
+          "authorization_recall": {
+            "n": 0,
+            "reason": "NOT_AVAILABLE",
+            "value": null
+          },
+          "execution_capture": {
+            "n": 0,
+            "reason": "NOT_AVAILABLE",
+            "value": null
+          },
+          "false_abort_rate": {
+            "n": 0,
+            "reason": "NOT_AVAILABLE",
+            "value": null
+          },
+          "false_refusal_rate": {
+            "n": 0,
+            "reason": "NOT_AVAILABLE",
+            "value": null
+          },
+          "hazard_rejection": {
+            "n": 0,
+            "reason": "no_scenario_demonstrated_non_attainable",
+            "value": null
+          },
+          "n_accepted": 2,
+          "n_demonstrated_attainable": 0,
+          "n_presented": 2,
+          "n_refused": 0,
+          "violation_given_acceptance": {
+            "ci_high": 1.0,
+            "ci_low": 0.34238022750665303,
+            "method": "wilson95",
+            "n": 2,
+            "value": 1.0
+          }
+        },
+        "caveats": [],
+        "failure_pareto": [
+          {
+            "addressability": "unknown",
+            "cause_key": "UNKNOWN/-",
+            "confidence": "low",
+            "count": 1,
+            "example_scenarios": [
+              "fleet_insert_000000"
+            ],
+            "fraction_of_all_episodes": 0.5,
+            "fraction_of_failures": 0.5,
+            "haplous_responsibility": 0.0,
+            "primary_cause": "UNKNOWN",
+            "priority": 0.0,
+            "runtime_subcause": null,
+            "severity": {
+              "S3": 1
+            }
+          },
+          {
+            "addressability": "upstream",
+            "cause_key": "UPSTREAM_POLICY/-",
+            "confidence": "high",
+            "count": 1,
+            "example_scenarios": [
+              "fleet_insert_000001"
+            ],
+            "fraction_of_all_episodes": 0.5,
+            "fraction_of_failures": 0.5,
+            "haplous_responsibility": 0.0,
+            "primary_cause": "UPSTREAM_POLICY",
+            "priority": 0.0,
+            "runtime_subcause": null,
+            "severity": {
+              "S3": 1
+            }
+          }
+        ],
+        "non_interference": {
+          "note": "baseline arm has no non-interference comparison"
+        },
+        "physical": {
+          "collision_count": "NOT_AVAILABLE",
+          "collision_severity": "NOT_AVAILABLE",
+          "force_exceedance_n": "NOT_AVAILABLE",
+          "integrated_constraint_excursion": "NOT_AVAILABLE",
+          "max_tilt_deg": {
+            "max": 0.16453341105204702,
+            "mean": 0.1277543296392251,
+            "n": 2,
+            "p50": 0.1277543296392251,
+            "p90": 0.15717759476948265,
+            "p95": 0.16085550291076484,
+            "p99": 0.1637978294237906,
+            "p999": 0.16445985288922138
+          },
+          "peak_force_n": {
+            "max": 14.950595431019446,
+            "mean": 8.915846581428218,
+            "n": 2,
+            "p50": 8.915846581428218,
+            "p90": 13.743645661101201,
+            "p95": 14.347120546060323,
+            "p99": 14.829900454027621,
+            "p999": 14.938525933320264
+          }
+        },
+        "responsibility": {
+          "benchmark_evaluator": 0,
+          "correct_refusal": 0,
+          "false_refusal_loss": 0,
+          "haplous_caused_loss": 0,
+          "haplous_unprevented_violation": 0,
+          "infrastructure": 0,
+          "runtime_refusal_attainability_unknown": 0,
+          "unknown": 1,
+          "upstream_controller_physics_limit": 1
+        },
+        "system": {
+          "authority_axis_counts": {
+            "ABORTED": 1,
+            "ACCEPTED": 1
+          },
+          "bounded_success": {
+            "ci_high": 0.6576197724933469,
+            "ci_low": 0.0,
+            "method": "wilson95",
+            "n": 2,
+            "value": 0.0
+          },
+          "conditional_bsr": {
+            "ci_high": 0.6576197724933469,
+            "ci_low": 0.0,
+            "method": "wilson95",
+            "n": 2,
+            "value": 0.0
+          },
+          "contract_axis_counts": {
+            "VIOLATED": 2
+          },
+          "coverage": {
+            "ci_high": 1.0,
+            "ci_low": 0.34238022750665303,
+            "method": "wilson95",
+            "n": 2,
+            "value": 1.0
+          },
+          "n": 2,
+          "system_bsr": {
+            "ci_high": 0.6576197724933469,
+            "ci_low": 0.0,
+            "method": "wilson95",
+            "n": 2,
+            "value": 0.0
+          },
+          "task_axis_counts": {
+            "SUCCESS": 2
+          },
+          "task_success": {
+            "ci_high": 1.0,
+            "ci_low": 0.34238022750665303,
+            "method": "wilson95",
+            "n": 2,
+            "value": 1.0
+          }
+        },
+        "timing": {
+          "decision_latency": "NOT_AVAILABLE",
+          "fault_to_intervention_latency": "NOT_AVAILABLE",
+          "state_age_at_authorization": "NOT_AVAILABLE",
+          "wall_s": {
+            "max": 51.8071644849997,
+            "n": 2,
+            "p50": 27.968610714999613,
+            "p90": 47.03945373099968,
+            "p99": "NOT_AVAILABLE"
+          }
+        }
+      },
+      "competent_supervisor": {
+        "attribution": {
+          "by_confidence_band": {
+            "high": 2
+          },
+          "by_layer": {
+            "EXECUTION_RUNTIME": 2
+          },
+          "by_runtime_subcause": {
+            "freshness_rejection": 2
+          },
+          "n_failures": 2,
+          "n_unknown": 0
+        },
+        "authority": {
+          "authorization_precision": {
+            "ci_high": 0.6576197724933469,
+            "ci_low": 0.0,
+            "method": "wilson95",
+            "n": 2,
+            "value": 0.0
+          },
+          "authorization_recall": {
+            "n": 0,
+            "reason": "NOT_AVAILABLE",
+            "value": null
+          },
+          "execution_capture": {
+            "n": 0,
+            "reason": "NOT_AVAILABLE",
+            "value": null
+          },
+          "false_abort_rate": {
+            "n": 0,
+            "reason": "NOT_AVAILABLE",
+            "value": null
+          },
+          "false_refusal_rate": {
+            "n": 0,
+            "reason": "NOT_AVAILABLE",
+            "value": null
+          },
+          "hazard_rejection": {
+            "n": 0,
+            "reason": "no_scenario_demonstrated_non_attainable",
+            "value": null
+          },
+          "n_accepted": 2,
+          "n_demonstrated_attainable": 0,
+          "n_presented": 2,
+          "n_refused": 0,
+          "violation_given_acceptance": {
+            "ci_high": 0.6576197724933469,
+            "ci_low": 0.0,
+            "method": "wilson95",
+            "n": 2,
+            "value": 0.0
+          }
+        },
+        "caveats": [],
+        "failure_pareto": [
+          {
+            "addressability": "generically_addressable",
+            "cause_key": "EXECUTION_RUNTIME/freshness_rejection",
+            "confidence": "high",
+            "count": 2,
+            "example_scenarios": [
+              "fleet_insert_000000",
+              "fleet_insert_000001"
+            ],
+            "fraction_of_all_episodes": 1.0,
+            "fraction_of_failures": 1.0,
+            "haplous_responsibility": 1.0,
+            "primary_cause": "EXECUTION_RUNTIME",
+            "priority": 2.0,
+            "runtime_subcause": "freshness_rejection",
+            "severity": {
+              "S2": 2
+            }
+          }
+        ],
+        "non_interference": {
+          "bounded_success_regression_rate": {
+            "n": 0,
+            "reason": "NOT_AVAILABLE",
+            "value": null
+          },
+          "completion_time_tax_s": {
+            "n": 0,
+            "reason": "NOT_AVAILABLE",
+            "value": null
+          },
+          "n_reference_bounded_success": 0,
+          "preservation_rate": {
+            "n": 0,
+            "reason": "NOT_AVAILABLE",
+            "value": null
+          },
+          "task_success_regression_rate": {
+            "n": 0,
+            "reason": "NOT_AVAILABLE",
+            "value": null
+          },
+          "unnecessary_intervention_rate": {
+            "n": 0,
+            "reason": "NOT_AVAILABLE",
+            "value": null
+          }
+        },
+        "physical": {
+          "collision_count": "NOT_AVAILABLE",
+          "collision_severity": "NOT_AVAILABLE",
+          "force_exceedance_n": "NOT_AVAILABLE",
+          "integrated_constraint_excursion": "NOT_AVAILABLE",
+          "max_tilt_deg": {
+            "max": 0.0,
+            "mean": 0.0,
+            "n": 2,
+            "p50": 0.0,
+            "p90": 0.0,
+            "p95": 0.0,
+            "p99": 0.0,
+            "p999": 0.0
+          },
+          "peak_force_n": {
+            "max": 0.0,
+            "mean": 0.0,
+            "n": 2,
+            "p50": 0.0,
+            "p90": 0.0,
+            "p95": 0.0,
+            "p99": 0.0,
+            "p999": 0.0
+          }
+        },
+        "responsibility": null,
+        "system": {
+          "authority_axis_counts": {
+            "ABORTED": 2
+          },
+          "bounded_success": {
+            "ci_high": 0.6576197724933469,
+            "ci_low": 0.0,
+            "method": "wilson95",
+            "n": 2,
+            "value": 0.0
+          },
+          "conditional_bsr": {
+            "ci_high": 0.6576197724933469,
+            "ci_low": 0.0,
+            "method": "wilson95",
+            "n": 2,
+            "value": 0.0
+          },
+          "contract_axis_counts": {
+            "BOUNDED": 2
+          },
+          "coverage": {
+            "ci_high": 1.0,
+            "ci_low": 0.34238022750665303,
+            "method": "wilson95",
+            "n": 2,
+            "value": 1.0
+          },
+          "n": 2,
+          "system_bsr": {
+            "ci_high": 0.6576197724933469,
+            "ci_low": 0.0,
+            "method": "wilson95",
+            "n": 2,
+            "value": 0.0
+          },
+          "task_axis_counts": {
+            "FAILURE": 2
+          },
+          "task_success": {
+            "ci_high": 0.6576197724933469,
+            "ci_low": 0.0,
+            "method": "wilson95",
+            "n": 2,
+            "value": 0.0
+          }
+        },
+        "timing": {
+          "decision_latency": "NOT_AVAILABLE",
+          "fault_to_intervention_latency": "NOT_AVAILABLE",
+          "state_age_at_authorization": "NOT_AVAILABLE",
+          "wall_s": {
+            "max": 0.20508767000046646,
+            "n": 2,
+            "p50": 0.16320987400058584,
+            "p90": 0.19671211080049034,
+            "p99": "NOT_AVAILABLE"
+          }
+        }
+      },
+      "g1_incumbent": {
+        "attribution": {
+          "by_confidence_band": {
+            "high": 2
+          },
+          "by_layer": {
+            "CONTROLLER": 1,
+            "UPSTREAM_POLICY": 1
+          },
+          "by_runtime_subcause": {},
+          "n_failures": 2,
+          "n_unknown": 0
+        },
+        "authority": {
+          "authorization_precision": {
+            "ci_high": 0.6576197724933469,
+            "ci_low": 0.0,
+            "method": "wilson95",
+            "n": 2,
+            "value": 0.0
+          },
+          "authorization_recall": {
+            "n": 0,
+            "reason": "NOT_AVAILABLE",
+            "value": null
+          },
+          "execution_capture": {
+            "n": 0,
+            "reason": "NOT_AVAILABLE",
+            "value": null
+          },
+          "false_abort_rate": {
+            "n": 0,
+            "reason": "NOT_AVAILABLE",
+            "value": null
+          },
+          "false_refusal_rate": {
+            "n": 0,
+            "reason": "NOT_AVAILABLE",
+            "value": null
+          },
+          "hazard_rejection": {
+            "n": 0,
+            "reason": "no_scenario_demonstrated_non_attainable",
+            "value": null
+          },
+          "n_accepted": 2,
+          "n_demonstrated_attainable": 0,
+          "n_presented": 2,
+          "n_refused": 0,
+          "violation_given_acceptance": {
+            "ci_high": 0.9054687942657693,
+            "ci_low": 0.09453120573423074,
+            "method": "wilson95",
+            "n": 2,
+            "value": 0.5
+          }
+        },
+        "caveats": [],
+        "failure_pareto": [
+          {
+            "addressability": "upstream",
+            "cause_key": "UPSTREAM_POLICY/-",
+            "confidence": "high",
+            "count": 1,
+            "example_scenarios": [
+              "fleet_insert_000000"
+            ],
+            "fraction_of_all_episodes": 0.5,
+            "fraction_of_failures": 0.5,
+            "haplous_responsibility": 0.0,
+            "primary_cause": "UPSTREAM_POLICY",
+            "priority": 0.0,
+            "runtime_subcause": null,
+            "severity": {
+              "S3": 1
+            }
+          },
+          {
+            "addressability": "technically_addressable",
+            "cause_key": "CONTROLLER/-",
+            "confidence": "high",
+            "count": 1,
+            "example_scenarios": [
+              "fleet_insert_000001"
+            ],
+            "fraction_of_all_episodes": 0.5,
+            "fraction_of_failures": 0.5,
+            "haplous_responsibility": 0.0,
+            "primary_cause": "CONTROLLER",
+            "priority": 0.0,
+            "runtime_subcause": null,
+            "severity": {
+              "S2": 1
+            }
+          }
+        ],
+        "non_interference": {
+          "bounded_success_regression_rate": {
+            "n": 0,
+            "reason": "NOT_AVAILABLE",
+            "value": null
+          },
+          "completion_time_tax_s": {
+            "n": 0,
+            "reason": "NOT_AVAILABLE",
+            "value": null
+          },
+          "n_reference_bounded_success": 0,
+          "preservation_rate": {
+            "n": 0,
+            "reason": "NOT_AVAILABLE",
+            "value": null
+          },
+          "task_success_regression_rate": {
+            "n": 0,
+            "reason": "NOT_AVAILABLE",
+            "value": null
+          },
+          "unnecessary_intervention_rate": {
+            "n": 0,
+            "reason": "NOT_AVAILABLE",
+            "value": null
+          }
+        },
+        "physical": {
+          "collision_count": "NOT_AVAILABLE",
+          "collision_severity": "NOT_AVAILABLE",
+          "force_exceedance_n": "NOT_AVAILABLE",
+          "integrated_constraint_excursion": "NOT_AVAILABLE",
+          "max_tilt_deg": {
+            "max": 85.48962309091017,
+            "mean": 44.2058519257158,
+            "n": 2,
+            "p50": 44.2058519257158,
+            "p90": 77.2328688578713,
+            "p95": 81.36124597439073,
+            "p99": 84.66394766760628,
+            "p999": 85.40705554857979
+          },
+          "peak_force_n": {
+            "max": 13.558516062574371,
+            "mean": 7.57316859737595,
+            "n": 2,
+            "p50": 7.57316859737595,
+            "p90": 12.361446569534687,
+            "p95": 12.95998131605453,
+            "p99": 13.438809113270404,
+            "p999": 13.546545367643976
+          }
+        },
+        "responsibility": null,
+        "system": {
+          "authority_axis_counts": {
+            "ABORTED": 2
+          },
+          "bounded_success": {
+            "ci_high": 0.6576197724933469,
+            "ci_low": 0.0,
+            "method": "wilson95",
+            "n": 2,
+            "value": 0.0
+          },
+          "conditional_bsr": {
+            "ci_high": 0.6576197724933469,
+            "ci_low": 0.0,
+            "method": "wilson95",
+            "n": 2,
+            "value": 0.0
+          },
+          "contract_axis_counts": {
+            "BOUNDED": 1,
+            "VIOLATED": 1
+          },
+          "coverage": {
+            "ci_high": 1.0,
+            "ci_low": 0.34238022750665303,
+            "method": "wilson95",
+            "n": 2,
+            "value": 1.0
+          },
+          "n": 2,
+          "system_bsr": {
+            "ci_high": 0.6576197724933469,
+            "ci_low": 0.0,
+            "method": "wilson95",
+            "n": 2,
+            "value": 0.0
+          },
+          "task_axis_counts": {
+            "FAILURE": 2
+          },
+          "task_success": {
+            "ci_high": 0.6576197724933469,
+            "ci_low": 0.0,
+            "method": "wilson95",
+            "n": 2,
+            "value": 0.0
+          }
+        },
+        "timing": {
+          "decision_latency": "NOT_AVAILABLE",
+          "fault_to_intervention_latency": "NOT_AVAILABLE",
+          "state_age_at_authorization": "NOT_AVAILABLE",
+          "wall_s": {
+            "max": 3.2568711090007127,
+            "n": 2,
+            "p50": 1.900793172500471,
+            "p90": 2.9856555217006644,
+            "p99": "NOT_AVAILABLE"
+          }
+        }
+      },
+      "haplous_mediated": {
+        "attribution": {
+          "by_confidence_band": {
+            "high": 2
+          },
+          "by_layer": {
+            "CONTROLLER": 1,
+            "UPSTREAM_POLICY": 1
+          },
+          "by_runtime_subcause": {},
+          "n_failures": 2,
+          "n_unknown": 0
+        },
+        "authority": {
+          "authorization_precision": {
+            "ci_high": 0.6576197724933469,
+            "ci_low": 0.0,
+            "method": "wilson95",
+            "n": 2,
+            "value": 0.0
+          },
+          "authorization_recall": {
+            "n": 0,
+            "reason": "NOT_AVAILABLE",
+            "value": null
+          },
+          "execution_capture": {
+            "n": 0,
+            "reason": "NOT_AVAILABLE",
+            "value": null
+          },
+          "false_abort_rate": {
+            "n": 0,
+            "reason": "NOT_AVAILABLE",
+            "value": null
+          },
+          "false_refusal_rate": {
+            "n": 0,
+            "reason": "NOT_AVAILABLE",
+            "value": null
+          },
+          "hazard_rejection": {
+            "n": 0,
+            "reason": "no_scenario_demonstrated_non_attainable",
+            "value": null
+          },
+          "n_accepted": 2,
+          "n_demonstrated_attainable": 0,
+          "n_presented": 2,
+          "n_refused": 0,
+          "violation_given_acceptance": {
+            "ci_high": 0.9054687942657693,
+            "ci_low": 0.09453120573423074,
+            "method": "wilson95",
+            "n": 2,
+            "value": 0.5
+          }
+        },
+        "caveats": [],
+        "failure_pareto": [
+          {
+            "addressability": "upstream",
+            "cause_key": "UPSTREAM_POLICY/-",
+            "confidence": "high",
+            "count": 1,
+            "example_scenarios": [
+              "fleet_insert_000000"
+            ],
+            "fraction_of_all_episodes": 0.5,
+            "fraction_of_failures": 0.5,
+            "haplous_responsibility": 0.0,
+            "primary_cause": "UPSTREAM_POLICY",
+            "priority": 0.0,
+            "runtime_subcause": null,
+            "severity": {
+              "S3": 1
+            }
+          },
+          {
+            "addressability": "technically_addressable",
+            "cause_key": "CONTROLLER/-",
+            "confidence": "high",
+            "count": 1,
+            "example_scenarios": [
+              "fleet_insert_000001"
+            ],
+            "fraction_of_all_episodes": 0.5,
+            "fraction_of_failures": 0.5,
+            "haplous_responsibility": 0.0,
+            "primary_cause": "CONTROLLER",
+            "priority": 0.0,
+            "runtime_subcause": null,
+            "severity": {
+              "S2": 1
+            }
+          }
+        ],
+        "non_interference": {
+          "bounded_success_regression_rate": {
+            "n": 0,
+            "reason": "NOT_AVAILABLE",
+            "value": null
+          },
+          "completion_time_tax_s": {
+            "n": 0,
+            "reason": "NOT_AVAILABLE",
+            "value": null
+          },
+          "n_reference_bounded_success": 0,
+          "preservation_rate": {
+            "n": 0,
+            "reason": "NOT_AVAILABLE",
+            "value": null
+          },
+          "task_success_regression_rate": {
+            "n": 0,
+            "reason": "NOT_AVAILABLE",
+            "value": null
+          },
+          "unnecessary_intervention_rate": {
+            "n": 0,
+            "reason": "NOT_AVAILABLE",
+            "value": null
+          }
+        },
+        "physical": {
+          "collision_count": "NOT_AVAILABLE",
+          "collision_severity": "NOT_AVAILABLE",
+          "force_exceedance_n": "NOT_AVAILABLE",
+          "integrated_constraint_excursion": "NOT_AVAILABLE",
+          "max_tilt_deg": {
+            "max": 85.48962309091017,
+            "mean": 44.22363409319777,
+            "n": 2,
+            "p50": 44.22363409319777,
+            "p90": 77.2364252913677,
+            "p95": 81.36302419113893,
+            "p99": 84.66430331095593,
+            "p999": 85.40709111291476
+          },
+          "peak_force_n": {
+            "max": 13.869781136596501,
+            "mean": 7.728801134387014,
+            "n": 2,
+            "p50": 7.728801134387014,
+            "p90": 12.641585136154603,
+            "p95": 13.255683136375552,
+            "p99": 13.74696153655231,
+            "p999": 13.857499176592084
+          }
+        },
+        "responsibility": {
+          "benchmark_evaluator": 0,
+          "correct_refusal": 0,
+          "false_refusal_loss": 0,
+          "haplous_caused_loss": 0,
+          "haplous_unprevented_violation": 0,
+          "infrastructure": 0,
+          "runtime_refusal_attainability_unknown": 0,
+          "unknown": 0,
+          "upstream_controller_physics_limit": 2
+        },
+        "system": {
+          "authority_axis_counts": {
+            "ABORTED": 2
+          },
+          "bounded_success": {
+            "ci_high": 0.6576197724933469,
+            "ci_low": 0.0,
+            "method": "wilson95",
+            "n": 2,
+            "value": 0.0
+          },
+          "conditional_bsr": {
+            "ci_high": 0.6576197724933469,
+            "ci_low": 0.0,
+            "method": "wilson95",
+            "n": 2,
+            "value": 0.0
+          },
+          "contract_axis_counts": {
+            "BOUNDED": 1,
+            "VIOLATED": 1
+          },
+          "coverage": {
+            "ci_high": 1.0,
+            "ci_low": 0.34238022750665303,
+            "method": "wilson95",
+            "n": 2,
+            "value": 1.0
+          },
+          "n": 2,
+          "system_bsr": {
+            "ci_high": 0.6576197724933469,
+            "ci_low": 0.0,
+            "method": "wilson95",
+            "n": 2,
+            "value": 0.0
+          },
+          "task_axis_counts": {
+            "FAILURE": 2
+          },
+          "task_success": {
+            "ci_high": 0.6576197724933469,
+            "ci_low": 0.0,
+            "method": "wilson95",
+            "n": 2,
+            "value": 0.0
+          }
+        },
+        "timing": {
+          "decision_latency": "NOT_AVAILABLE",
+          "fault_to_intervention_latency": "NOT_AVAILABLE",
+          "state_age_at_authorization": "NOT_AVAILABLE",
+          "wall_s": {
+            "max": 2.7009949680004866,
+            "n": 2,
+            "p50": 1.6146760535002613,
+            "p90": 2.4837311851004413,
+            "p99": "NOT_AVAILABLE"
+          }
+        }
+      }
+    },
+    "n_episodes": 8,
+    "n_scenarios": 2,
+    "not_available": {
+      "collision_metrics": "no collision channel in the internal substrate",
+      "decision_latency": "runtime decision timing is not in canonical rows",
+      "evidence_completeness": "not derived from canonical rows",
+      "integrated_constraint_excursion": "violation rows are pruned per episode",
+      "portability_engineering_leverage": "manifest-level metadata only",
+      "task_progress": "canonical rows carry no progress channel"
+    },
+    "provenance": {
+      "benchmark": "heb",
+      "benchmark_version": "heb-0.2.0",
+      "cpu_count": 4,
+      "dependencies": {
+        "matplotlib": "3.11.1",
+        "mujoco": "3.11.0",
+        "numpy": "2.5.1",
+        "pyarrow": "25.0.1",
+        "yaml": "6.0.3"
+      },
+      "episode_schema_version": "haplous-episode-v1",
+      "git_commit": "4502e593381a9737d952279efe9955afe10c66f1",
+      "git_dirty": false,
+      "haplous_version": "0.5.0",
+      "machine": "x86_64",
+      "manifest_schema_version": "haplous-experiment-v1",
+      "manifest_sha256": "3f83156281e33eec1230cdca1955feb9f770be4c70553a0d719e7d840e5c99db",
+      "platform": "Linux-6.18.44-fc-v445-x86_64-with-glibc2.39",
+      "policy_checkpoint": null,
+      "processor": "x86_64",
+      "python": "3.12.3",
+      "recorded_at_utc": "2026-11-13T12:58:09.858422+00:00"
+    },
+    "risk_coverage": {
+      "bare_behavior": [
+        {
+          "coverage": 1.0,
+          "n_accepted": 2,
+          "n_presented": 2,
+          "violation_given_acceptance": 1.0
+        }
+      ],
+      "competent_supervisor": [
+        {
+          "coverage": 1.0,
+          "n_accepted": 2,
+          "n_presented": 2,
+          "violation_given_acceptance": 0.0
+        }
+      ],
+      "g1_incumbent": [
+        {
+          "coverage": 1.0,
+          "n_accepted": 2,
+          "n_presented": 2,
+          "violation_given_acceptance": 0.5
+        }
+      ],
+      "haplous_mediated": [
+        {
+          "coverage": 1.0,
+          "n_accepted": 2,
+          "n_presented": 2,
+          "violation_given_acceptance": 0.5
+        }
+      ]
+    },
+    "slices": {
+      "offset_stratum": {
+        "offset:interior": {
+          "arms": {
+            "bare_behavior": {
+              "bounded_success": {
+                "ci_high": 0.6576197724933469,
+                "ci_low": 0.0,
+                "method": "wilson95",
+                "n": 2,
+                "value": 0.0
+              },
+              "coverage": {
+                "ci_high": 1.0,
+                "ci_low": 0.34238022750665303,
+                "method": "wilson95",
+                "n": 2,
+                "value": 1.0
+              },
+              "execution_capture": {
+                "n": 0,
+                "reason": "NOT_AVAILABLE",
+                "value": null
+              }
+            },
+            "competent_supervisor": {
+              "bounded_success": {
+                "ci_high": 0.6576197724933469,
+                "ci_low": 0.0,
+                "method": "wilson95",
+                "n": 2,
+                "value": 0.0
+              },
+              "coverage": {
+                "ci_high": 1.0,
+                "ci_low": 0.34238022750665303,
+                "method": "wilson95",
+                "n": 2,
+                "value": 1.0
+              },
+              "execution_capture": {
+                "n": 0,
+                "reason": "NOT_AVAILABLE",
+                "value": null
+              }
+            },
+            "g1_incumbent": {
+              "bounded_success": {
+                "ci_high": 0.6576197724933469,
+                "ci_low": 0.0,
+                "method": "wilson95",
+                "n": 2,
+                "value": 0.0
+              },
+              "coverage": {
+                "ci_high": 1.0,
+                "ci_low": 0.34238022750665303,
+                "method": "wilson95",
+                "n": 2,
+                "value": 1.0
+              },
+              "execution_capture": {
+                "n": 0,
+                "reason": "NOT_AVAILABLE",
+                "value": null
+              }
+            },
+            "haplous_mediated": {
+              "bounded_success": {
+                "ci_high": 0.6576197724933469,
+                "ci_low": 0.0,
+                "method": "wilson95",
+                "n": 2,
+                "value": 0.0
+              },
+              "coverage": {
+                "ci_high": 1.0,
+                "ci_low": 0.34238022750665303,
+                "method": "wilson95",
+                "n": 2,
+                "value": 1.0
+              },
+              "execution_capture": {
+                "n": 0,
+                "reason": "NOT_AVAILABLE",
+                "value": null
+              }
+            }
+          },
+          "n": 2
+        }
+      },
+      "task_family": {
+        "task_a": {
+          "arms": {
+            "bare_behavior": {
+              "bounded_success": {
+                "ci_high": 0.6576197724933469,
+                "ci_low": 0.0,
+                "method": "wilson95",
+                "n": 2,
+                "value": 0.0
+              },
+              "coverage": {
+                "ci_high": 1.0,
+                "ci_low": 0.34238022750665303,
+                "method": "wilson95",
+                "n": 2,
+                "value": 1.0
+              },
+              "execution_capture": {
+                "n": 0,
+                "reason": "NOT_AVAILABLE",
+                "value": null
+              }
+            },
+            "competent_supervisor": {
+              "bounded_success": {
+                "ci_high": 0.6576197724933469,
+                "ci_low": 0.0,
+                "method": "wilson95",
+                "n": 2,
+                "value": 0.0
+              },
+              "coverage": {
+                "ci_high": 1.0,
+                "ci_low": 0.34238022750665303,
+                "method": "wilson95",
+                "n": 2,
+                "value": 1.0
+              },
+              "execution_capture": {
+                "n": 0,
+                "reason": "NOT_AVAILABLE",
+                "value": null
+              }
+            },
+            "g1_incumbent": {
+              "bounded_success": {
+                "ci_high": 0.6576197724933469,
+                "ci_low": 0.0,
+                "method": "wilson95",
+                "n": 2,
+                "value": 0.0
+              },
+              "coverage": {
+                "ci_high": 1.0,
+                "ci_low": 0.34238022750665303,
+                "method": "wilson95",
+                "n": 2,
+                "value": 1.0
+              },
+              "execution_capture": {
+                "n": 0,
+                "reason": "NOT_AVAILABLE",
+                "value": null
+              }
+            },
+            "haplous_mediated": {
+              "bounded_success": {
+                "ci_high": 0.6576197724933469,
+                "ci_low": 0.0,
+                "method": "wilson95",
+                "n": 2,
+                "value": 0.0
+              },
+              "coverage": {
+                "ci_high": 1.0,
+                "ci_low": 0.34238022750665303,
+                "method": "wilson95",
+                "n": 2,
+                "value": 1.0
+              },
+              "execution_capture": {
+                "n": 0,
+                "reason": "NOT_AVAILABLE",
+                "value": null
+              }
+            }
+          },
+          "n": 2
+        }
+      }
+    }
+  },
+  "benchmark_health": {
+    "findings": [
+      {
+        "detail": "1.000 of scenarios grade identically for every arm",
+        "evidence": {
+          "all_agree": 2,
+          "n_scenarios": 2
+        },
+        "healthy": false,
+        "name": "discriminating_power"
+      },
+      {
+        "detail": "0 trivially solved and 2 unsolved by every arm (informational; not necessarily a defect)",
+        "evidence": {
+          "examples_solved": [],
+          "examples_unsolved": [
+            "fleet_insert_000000",
+            "fleet_insert_000001"
+          ],
+          "n_trivially_solved": 0,
+          "n_trivially_unsolved": 2
+        },
+        "healthy": true,
+        "name": "degenerate_scenarios"
+      },
+      {
+        "detail": "1 task families, 1 offset strata across 2 scenarios",
+        "evidence": {
+          "n_scenarios": 2,
+          "offset_strata": {
+            "offset:interior": 2
+          },
+          "task_families": {
+            "task_a": 2
+          }
+        },
+        "healthy": false,
+        "name": "population_balance"
+      },
+      {
+        "detail": "bounded success never coexists with a recorded hard violation",
+        "evidence": {
+          "examples": [],
+          "n_inconsistent": 0
+        },
+        "healthy": true,
+        "name": "grader_consistency"
+      }
+    ],
+    "healthy": false
+  },
+  "claim_ledger": {
+    "arm": "haplous_mediated",
+    "claims": [
+      {
+        "arm": "haplous_mediated",
+        "claim_id": "C1",
+        "counterexamples": [],
+        "evidence": [
+          "results/external_eval/maniskill-3.0.1/20260910T064409Z/",
+          "results/heb_final_summary.json",
+          "docs/HAPLOUS_FINAL_SIMULATION_EVIDENCE.md"
+        ],
+        "executable": true,
+        "hes_status": "UNKNOWN",
+        "metrics": [
+          "task_success_delta",
+          "peak_force_delta_paired",
+          "step_parity",
+          "completion_time_delta"
+        ],
+        "name": "NON_INTERFERENCE",
+        "next_experiment": "replicate on a held-out population",
+        "notes": [
+          "baseline direct_upstream_stream has no paired arm in this run"
+        ],
+        "registry_status": "SUPPORTED_WITHIN_TESTED_SCOPE",
+        "statement": "Haplous does not materially degrade competent execution when no intervention is required.\n",
+        "uncertainty": "derived from a single internal campaign; see caveats"
+      },
+      {
+        "arm": "haplous_mediated",
+        "claim_id": "C2",
+        "counterexamples": [],
+        "evidence": [
+          "results/heb_final_summary.json",
+          "docs/HAPLOUS_FINAL_SIMULATION_EVIDENCE.md"
+        ],
+        "executable": true,
+        "hes_status": "SUPPORTED_WITH_CAVEATS",
+        "metrics": [
+          "bounded_success_rate",
+          "violation_probability_conditional_acceptance",
+          "false_abort_rate",
+          "coverage"
+        ],
+        "name": "BOUNDED_EXECUTION",
+        "next_experiment": "replicate on a held-out population",
+        "notes": [
+          "vs bare_behavior: violation 0.500 vs 1.000; coverage 1.000 vs 1.000"
+        ],
+        "registry_status": "SUPPORTED_WITH_CAVEATS",
+        "statement": "Haplous reduces hard execution violations at comparable useful execution coverage.\n",
+        "uncertainty": "derived from a single internal campaign; see caveats"
+      },
+      {
+        "arm": "haplous_mediated",
+        "claim_id": "C3",
+        "counterexamples": [],
+        "evidence": [
+          "results/heb_final_summary.json",
+          "results/heb_final_adjudication.json",
+          "results/holdout_final_summary.json"
+        ],
+        "executable": true,
+        "hes_status": "SUPPORTED_WITH_CAVEATS",
+        "metrics": [
+          "task_success",
+          "bounded_success_rate",
+          "hard_violation_risk",
+          "coverage",
+          "latency"
+        ],
+        "name": "NET_SYSTEM_VALUE",
+        "next_experiment": "replicate on a held-out population",
+        "notes": [
+          "haplous_mediated weakly dominates bare_behavior on (BSR, coverage, violation)",
+          "haplous_mediated does not dominate direct_minimal on (BSR, coverage, violation)"
+        ],
+        "registry_status": "SUPPORTED_WITHIN_TESTED_SCOPE",
+        "statement": "Haplous improves the tradeoff between useful task completion and physical execution risk.\n",
+        "uncertainty": "derived from a single internal campaign; see caveats"
+      },
+      {
+        "arm": "haplous_mediated",
+        "claim_id": "C4",
+        "counterexamples": [],
+        "evidence": [
+          "results/heb_dev_summary.json",
+          "docs/HAPLOUS_PREHARDWARE_EVAL_REPORT.md"
+        ],
+        "executable": false,
+        "hes_status": "NOT_EXECUTABLE_IN_HES_V0",
+        "metrics": [
+          "recovery_success_rate",
+          "post_recovery_task_success",
+          "recovery_latency"
+        ],
+        "name": "RECOVERY_VALUE",
+        "next_experiment": "recovery channels are absent from canonical episode rows",
+        "notes": [
+          "recovery channels are absent from canonical episode rows"
+        ],
+        "registry_status": "SUPPORTED_WITHIN_TESTED_SCOPE",
+        "statement": "Haplous converts meaningful classes of disturbed execution from failure into successful bounded completion.\n",
+        "uncertainty": "not separated from the artifact by this evidence"
+      },
+      {
+        "arm": "haplous_mediated",
+        "claim_id": "C5",
+        "counterexamples": [],
+        "evidence": [
+          "tests/test_governor.py",
+          "docs/HAPLOUS_EXTERNAL_BENCHMARK_REPORT.md"
+        ],
+        "executable": false,
+        "hes_status": "NOT_EXECUTABLE_IN_HES_V0",
+        "metrics": [
+          "control_objective_pareto"
+        ],
+        "name": "CONTROLLER_SUPERIORITY",
+        "next_experiment": "requires a controller-candidate tournament, not an execution campaign",
+        "notes": [
+          "requires a controller-candidate tournament, not an execution campaign"
+        ],
+        "registry_status": "UNKNOWN",
+        "statement": "A Haplous-owned control mechanism outperforms strong incumbent contact controllers on meaningful control objectives.\n",
+        "uncertainty": "not separated from the artifact by this evidence"
+      },
+      {
+        "arm": "haplous_mediated",
+        "claim_id": "C6",
+        "counterexamples": [],
+        "evidence": [
+          "results/external_eval/c01_colosseumv2_disposition.json"
+        ],
+        "executable": false,
+        "hes_status": "NOT_EXECUTABLE_IN_HES_V0",
+        "metrics": [
+          "task_success",
+          "bounded_success_rate",
+          "intervention_value_rates",
+          "false_abort_rate"
+        ],
+        "name": "LEARNED_POLICY_VALUE",
+        "next_experiment": "requires an external learned-policy platform run",
+        "notes": [
+          "requires an external learned-policy platform run"
+        ],
+        "registry_status": "UNKNOWN",
+        "statement": "The same frozen learned robot policy achieves better bounded useful execution when mediated by Haplous.\n",
+        "uncertainty": "not separated from the artifact by this evidence"
+      },
+      {
+        "arm": "haplous_mediated",
+        "claim_id": "C7",
+        "counterexamples": [],
+        "evidence": [
+          "results/heb_sweeps_dev.json",
+          "results/compound_perturbation_summary.json"
+        ],
+        "executable": false,
+        "hes_status": "NOT_EXECUTABLE_IN_HES_V0",
+        "metrics": [
+          "bsr_envelope_by_axis",
+          "boundary_position_with_ci"
+        ],
+        "name": "ROBUSTNESS",
+        "next_experiment": "requires boundary sweeps; run `hes boundary` and feed the envelope",
+        "notes": [
+          "requires boundary sweeps; run `hes boundary` and feed the envelope"
+        ],
+        "registry_status": "MIXED",
+        "statement": "Haplous enlarges or improves meaningful operating regions under perturbation.\n",
+        "uncertainty": "not separated from the artifact by this evidence"
+      },
+      {
+        "arm": "haplous_mediated",
+        "claim_id": "C8",
+        "counterexamples": [],
+        "evidence": [
+          "docs/HAPLOUS_FINAL_SIMULATION_EVIDENCE.md",
+          "docs/HAPLOUS_EXTERNAL_BENCHMARK_REPORT.md"
+        ],
+        "executable": false,
+        "hes_status": "NOT_EXECUTABLE_IN_HES_V0",
+        "metrics": [
+          "core_loc_changed",
+          "adapter_loc",
+          "task_specific_core_loc"
+        ],
+        "name": "GENERALITY",
+        "next_experiment": "requires cross-adapter code-diff evidence, not an execution campaign",
+        "notes": [
+          "requires cross-adapter code-diff evidence, not an execution campaign"
+        ],
+        "registry_status": "SUPPORTED_WITH_CAVEATS",
+        "statement": "Haplous semantics transfer across tasks, geometries, policies and physics engines without task-specific core growth.\n",
+        "uncertainty": "not separated from the artifact by this evidence"
+      },
+      {
+        "arm": "haplous_mediated",
+        "claim_id": "C9",
+        "counterexamples": [],
+        "evidence": [
+          "results/external_eval/maniskill-3.0.1/20260910T064409Z/latency_rows.json"
+        ],
+        "executable": false,
+        "hes_status": "NOT_EXECUTABLE_IN_HES_V0",
+        "metrics": [
+          "mediation_overhead_p99",
+          "deadline_miss_rate"
+        ],
+        "name": "REAL_TIME_VIABILITY",
+        "next_experiment": "requires loop-latency rows, not canonical episode rows",
+        "notes": [
+          "requires loop-latency rows, not canonical episode rows"
+        ],
+        "registry_status": "SUPPORTED_WITHIN_TESTED_SCOPE",
+        "statement": "Haplous latency and jitter remain comfortably below required execution budgets.\n",
+        "uncertainty": "not separated from the artifact by this evidence"
+      },
+      {
+        "arm": "haplous_mediated",
+        "claim_id": "C10",
+        "counterexamples": [],
+        "evidence": [
+          "results/l0_fuzz_summary.json",
+          "results/soak_100k_summary.json",
+          "tests/test_haplous_reliability.py"
+        ],
+        "executable": false,
+        "hes_status": "NOT_EXECUTABLE_IN_HES_V0",
+        "metrics": [
+          "invariant_violations",
+          "soak_failure_free_cycles"
+        ],
+        "name": "RUNTIME_RELIABILITY",
+        "next_experiment": "requires the reliability fuzz/soak harness, not an execution campaign",
+        "notes": [
+          "requires the reliability fuzz/soak harness, not an execution campaign"
+        ],
+        "registry_status": "SUPPORTED_WITHIN_TESTED_SCOPE",
+        "statement": "Haplous itself is reliable over long operation and adversarial event sequences.\n",
+        "uncertainty": "not separated from the artifact by this evidence"
+      },
+      {
+        "arm": "haplous_mediated",
+        "claim_id": "C11",
+        "counterexamples": [],
+        "evidence": [
+          "results/competent_supervisor_dev_summary.json",
+          "results/competent_supervisor_dev_rows.jsonl",
+          "results/holdout_final_summary.json",
+          "results/ablation_summary.json"
+        ],
+        "executable": true,
+        "hes_status": "WEAKENED",
+        "metrics": [
+          "pareto_vs_competent_supervisor"
+        ],
+        "name": "INCUMBENT_DIFFERENTIATION",
+        "next_experiment": "replicate on a held-out population",
+        "notes": [
+          "vs competent_supervisor: preservation None vs None",
+          "BSR 0.0 vs 0.0",
+          "violation 0.5 vs 0.0"
+        ],
+        "registry_status": "SUPPORTED_WITHIN_TESTED_SCOPE",
+        "statement": "Haplous provides material value beyond realistic existing supervision/control alternatives.\n",
+        "uncertainty": "derived from a single internal campaign; see caveats"
+      },
+      {
+        "arm": "haplous_mediated",
+        "claim_id": "C12",
+        "counterexamples": [],
+        "evidence": [
+          "results/external_eval/x01_cross_physics_agreement.json"
+        ],
+        "executable": false,
+        "hes_status": "NOT_EXECUTABLE_IN_HES_V0",
+        "metrics": [
+          "ranking_agreement",
+          "failure_class_agreement",
+          "boundary_displacement"
+        ],
+        "name": "SIMULATION_RELEVANCE",
+        "next_experiment": "requires cross-engine pairing, not a single-engine campaign",
+        "notes": [
+          "requires cross-engine pairing, not a single-engine campaign"
+        ],
+        "registry_status": "MIXED",
+        "statement": "Important rankings and failure phenomena survive across simulation formulations and eventually hardware.\n",
+        "uncertainty": "not separated from the artifact by this evidence"
+      }
+    ]
+  },
+  "corpus": {
+    "n": 2,
+    "n_bootstrapped": 2,
+    "n_committed": 0,
+    "n_without_regression_test": 2
+  },
+  "hard_gates": {
+    "gates": [
+      {
+        "detail": "shortcut/gaming/leakage checks pass",
+        "gate_id": "G1",
+        "name": "integrity",
+        "observed": [],
+        "passed": true,
+        "threshold": "no failing integrity check"
+      },
+      {
+        "detail": "conditional violation exposure must not exceed the unmediated baseline",
+        "gate_id": "G2",
+        "name": "no_more_conditional_violation_than_baseline",
+        "observed": {
+          "baseline": 1.0,
+          "runtime": 0.5
+        },
+        "passed": true,
+        "threshold": "runtime <= baseline (bare_behavior)"
+      },
+      {
+        "detail": "preserve execution the baseline already completes within contract",
+        "gate_id": "G3",
+        "name": "non_interference",
+        "observed": null,
+        "passed": false,
+        "threshold": ">= 0.95"
+      },
+      {
+        "detail": "refusals of demonstrated-attainable requests must stay bounded",
+        "gate_id": "G4",
+        "name": "false_refusal_ceiling",
+        "observed": null,
+        "passed": false,
+        "threshold": "<= 0.2"
+      },
+      {
+        "detail": "the producing run carries complete provenance",
+        "gate_id": "G5",
+        "name": "reproducibility_provenance",
+        "observed": [
+          "benchmark",
+          "benchmark_version",
+          "cpu_count",
+          "dependencies",
+          "episode_schema_version",
+          "git_commit",
+          "git_dirty",
+          "haplous_version"
+        ],
+        "passed": true,
+        "threshold": "provenance present"
+      }
+    ],
+    "n_violations": 2,
+    "note": "performance frontier is reported, not gated",
+    "qualified": false
+  },
+  "integrity": {
+    "checks": [
+      {
+        "detail": "always-accept does not reach perfect contract-safe success",
+        "evidence": {
+          "always_accept_bounded_success": 0.0,
+          "always_accept_violation_rate": 0.5,
+          "always_refuse_bounded_success": 0.0
+        },
+        "name": "shortcut_solvability",
+        "passed": true
+      },
+      {
+        "detail": "no mirrored pairs supplied",
+        "evidence": {
+          "mismatches": [],
+          "pairs_checked": 0
+        },
+        "name": "mirrored_scenarios",
+        "passed": true
+      },
+      {
+        "detail": "rates on small samples with a point value must carry an interval",
+        "evidence": {
+          "min_n": 20,
+          "offending_metrics": []
+        },
+        "name": "small_sample_intervals",
+        "passed": true
+      },
+      {
+        "detail": "violation-after-acceptance rate 0.500 within ceiling 0.5",
+        "evidence": {
+          "n": 8,
+          "violation_rate": 0.5
+        },
+        "name": "metric_gaming",
+        "passed": true
+      }
+    ],
+    "passed": true
+  },
+  "recommendations": [
+    {
+      "estimated_cost": "counterfactual forks on a stratified sample",
+      "experiment": "counterfactual_sweep_on_unknown_attainability",
+      "priority": 1.5,
+      "rationale": "2/2 scenarios have UNKNOWN attainability; every attainment-relative metric is bounded by this",
+      "removes_uncertainty": "attainability of the large UNKNOWN scenario mass"
+    },
+    {
+      "estimated_cost": "preregistered head-to-head on a fresh population",
+      "experiment": "incumbent_differentiation_head_to_head",
+      "priority": 0.6,
+      "rationale": "BSR 0.000 vs supervisor 0.000; no differentiation shown",
+      "removes_uncertainty": "whether the runtime differentiates from a competent supervisor"
+    },
+    {
+      "estimated_cost": "1-2 days per claim to define an executable test",
+      "experiment": "make_unexecutable_claims_executable",
+      "priority": 0.3,
+      "rationale": "8 of 12 claims have no executable test",
+      "removes_uncertainty": "which registered claims are actually testable by HES"
+    }
+  ],
+  "runtime_arm": "haplous_mediated",
+  "substrate": {
+    "capability": {
+      "artifact_dominated": [],
+      "covers": [
+        "step_latency_us",
+        "force_measurement",
+        "tilt_measurement",
+        "pose_precision",
+        "exact_fault_injection",
+        "state_freshness_true",
+        "oracle_clearance",
+        "bounded_success"
+      ],
+      "limited": [],
+      "unobservable": [
+        "contact_events",
+        "collision_severity"
+      ]
+    },
+    "determinism": {
+      "checked": false
+    },
+    "metrics": {
+      "bounded_success": {
+        "cost": "low",
+        "observable": true,
+        "source": "benchmark"
+      },
+      "collision_severity": {
+        "cost": "unknown",
+        "observable": false,
+        "source": "artifact"
+      },
+      "contact_events": {
+        "cost": "unknown",
+        "observable": false,
+        "source": "artifact"
+      },
+      "exact_fault_injection": {
+        "cost": "low",
+        "observable": true,
+        "source": "benchmark"
+      },
+      "force_measurement": {
+        "cost": "low",
+        "observable": true,
+        "source": "artifact"
+      },
+      "oracle_clearance": {
+        "cost": "low",
+        "observable": true,
+        "source": "benchmark"
+      },
+      "pose_precision": {
+        "cost": "low",
+        "observable": true,
+        "source": "artifact"
+      },
+      "state_freshness_true": {
+        "cost": "low",
+        "observable": true,
+        "source": "benchmark"
+      },
+      "step_latency_us": {
+        "cost": "low",
+        "observable": true,
+        "source": "artifact"
+      },
+      "tilt_measurement": {
+        "cost": "low",
+        "observable": true,
+        "source": "artifact"
+      }
+    },
+    "notes": [
+      "force is a proxy in the internal substrate; magnitudes are not comparable across engines",
+      "collision channels are not implemented; collision metrics report NOT_AVAILABLE"
+    ]
+  }
+}

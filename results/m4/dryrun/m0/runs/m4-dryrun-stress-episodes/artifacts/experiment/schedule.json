@@ -1,0 +1,9 @@
+{
+  "excluded": {},
+  "phase": "dryrun",
+  "population": "m4_stress",
+  "scheduled": [
+    "m4s_dropout_long_00000",
+    "m4s_stale_long_00001"
+  ]
+}

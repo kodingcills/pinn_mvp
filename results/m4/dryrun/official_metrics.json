@@ -1,0 +1,1044 @@
+{
+  "config_sha256": "d69d8e626e13ddbac618aa1d7ac6f1f7a7353eb69fc9d929a75b0e7f64755aaa",
+  "phase": "dryrun",
+  "populations": {
+    "control": {
+      "arms": {
+        "bare_behavior": {
+          "bounded_success": {
+            "ci_high": 0.6576197724933469,
+            "ci_low": 0.0,
+            "method": "wilson95",
+            "n": 2,
+            "value": 0.0
+          },
+          "coverage": {
+            "ci_high": 1.0,
+            "ci_low": 0.34238022750665303,
+            "method": "wilson95",
+            "n": 2,
+            "value": 1.0
+          },
+          "false_refusal_rate": {
+            "n": 0,
+            "reason": "NOT_AVAILABLE",
+            "value": null
+          },
+          "intervention_overhead_vs_direct": null,
+          "preservation_vs_direct": null,
+          "recovery_bounded_success": {
+            "n": 0,
+            "reason": "NOT_AVAILABLE",
+            "value": null
+          },
+          "refusals_attainability_unknown": 0,
+          "task_success": {
+            "ci_high": 1.0,
+            "ci_low": 0.34238022750665303,
+            "method": "wilson95",
+            "n": 2,
+            "value": 1.0
+          },
+          "time_per_bounded_success": {
+            "by_reset_s": {
+              "0.0": null,
+              "1.0": null
+            },
+            "n_bounded_success": 0,
+            "n_executed": 2,
+            "n_executed_without_duration": 0,
+            "sim_seconds_all_episodes": 19.41100000000757
+          },
+          "unnecessary_intervention_vs_direct": null,
+          "violation_given_acceptance": {
+            "ci_high": 1.0,
+            "ci_low": 0.34238022750665303,
+            "method": "wilson95",
+            "n": 2,
+            "value": 1.0
+          }
+        },
+        "competent_supervisor": {
+          "bounded_success": {
+            "ci_high": 0.6576197724933469,
+            "ci_low": 0.0,
+            "method": "wilson95",
+            "n": 2,
+            "value": 0.0
+          },
+          "coverage": {
+            "ci_high": 1.0,
+            "ci_low": 0.34238022750665303,
+            "method": "wilson95",
+            "n": 2,
+            "value": 1.0
+          },
+          "false_refusal_rate": {
+            "n": 0,
+            "reason": "NOT_AVAILABLE",
+            "value": null
+          },
+          "intervention_overhead_vs_direct": {
+            "median_sim_s": null,
+            "n": 0
+          },
+          "preservation_vs_direct": {
+            "n": 0,
+            "reason": "NOT_AVAILABLE",
+            "value": null
+          },
+          "recovery_bounded_success": {
+            "n": 0,
+            "reason": "NOT_AVAILABLE",
+            "value": null
+          },
+          "refusals_attainability_unknown": 0,
+          "task_success": {
+            "ci_high": 0.6576197724933469,
+            "ci_low": 0.0,
+            "method": "wilson95",
+            "n": 2,
+            "value": 0.0
+          },
+          "time_per_bounded_success": {
+            "by_reset_s": {
+              "0.0": null,
+              "1.0": null
+            },
+            "n_bounded_success": 0,
+            "n_executed": 2,
+            "n_executed_without_duration": 0,
+            "sim_seconds_all_episodes": 0.8740000000000007
+          },
+          "unnecessary_intervention_vs_direct": {
+            "n": 0,
+            "reason": "NOT_AVAILABLE",
+            "value": null
+          },
+          "violation_given_acceptance": {
+            "ci_high": 0.6576197724933469,
+            "ci_low": 0.0,
+            "method": "wilson95",
+            "n": 2,
+            "value": 0.0
+          }
+        },
+        "g1_incumbent": {
+          "bounded_success": {
+            "ci_high": 0.6576197724933469,
+            "ci_low": 0.0,
+            "method": "wilson95",
+            "n": 2,
+            "value": 0.0
+          },
+          "coverage": {
+            "ci_high": 1.0,
+            "ci_low": 0.34238022750665303,
+            "method": "wilson95",
+            "n": 2,
+            "value": 1.0
+          },
+          "false_refusal_rate": {
+            "n": 0,
+            "reason": "NOT_AVAILABLE",
+            "value": null
+          },
+          "intervention_overhead_vs_direct": {
+            "median_sim_s": null,
+            "n": 0
+          },
+          "preservation_vs_direct": {
+            "n": 0,
+            "reason": "NOT_AVAILABLE",
+            "value": null
+          },
+          "recovery_bounded_success": {
+            "n": 0,
+            "reason": "NOT_AVAILABLE",
+            "value": null
+          },
+          "refusals_attainability_unknown": 0,
+          "task_success": {
+            "ci_high": 0.6576197724933469,
+            "ci_low": 0.0,
+            "method": "wilson95",
+            "n": 2,
+            "value": 0.0
+          },
+          "time_per_bounded_success": {
+            "by_reset_s": {
+              "0.0": null,
+              "1.0": null
+            },
+            "n_bounded_success": 0,
+            "n_executed": 2,
+            "n_executed_without_duration": 0,
+            "sim_seconds_all_episodes": 4.112500000000102
+          },
+          "unnecessary_intervention_vs_direct": {
+            "n": 0,
+            "reason": "NOT_AVAILABLE",
+            "value": null
+          },
+          "violation_given_acceptance": {
+            "ci_high": 0.9054687942657693,
+            "ci_low": 0.09453120573423074,
+            "method": "wilson95",
+            "n": 2,
+            "value": 0.5
+          }
+        },
+        "haplous_mediated": {
+          "bounded_success": {
+            "ci_high": 0.6576197724933469,
+            "ci_low": 0.0,
+            "method": "wilson95",
+            "n": 2,
+            "value": 0.0
+          },
+          "coverage": {
+            "ci_high": 1.0,
+            "ci_low": 0.34238022750665303,
+            "method": "wilson95",
+            "n": 2,
+            "value": 1.0
+          },
+          "false_refusal_rate": {
+            "n": 0,
+            "reason": "NOT_AVAILABLE",
+            "value": null
+          },
+          "intervention_overhead_vs_direct": {
+            "median_sim_s": null,
+            "n": 0
+          },
+          "preservation_vs_direct": {
+            "n": 0,
+            "reason": "NOT_AVAILABLE",
+            "value": null
+          },
+          "recovery_bounded_success": {
+            "n": 0,
+            "reason": "NOT_AVAILABLE",
+            "value": null
+          },
+          "refusals_attainability_unknown": 0,
+          "task_success": {
+            "ci_high": 0.6576197724933469,
+            "ci_low": 0.0,
+            "method": "wilson95",
+            "n": 2,
+            "value": 0.0
+          },
+          "time_per_bounded_success": {
+            "by_reset_s": {
+              "0.0": null,
+              "1.0": null
+            },
+            "n_bounded_success": 0,
+            "n_executed": 2,
+            "n_executed_without_duration": 0,
+            "sim_seconds_all_episodes": 4.113000000000103
+          },
+          "unnecessary_intervention_vs_direct": {
+            "n": 0,
+            "reason": "NOT_AVAILABLE",
+            "value": null
+          },
+          "violation_given_acceptance": {
+            "ci_high": 0.9054687942657693,
+            "ci_low": 0.09453120573423074,
+            "method": "wilson95",
+            "n": 2,
+            "value": 0.5
+          }
+        }
+      },
+      "attainability_counts": {
+        "UNKNOWN": 2
+      },
+      "confirmatory": {
+        "C2": {
+          "candidate": "haplous_mediated",
+          "decision": "tie (equivalent within 0.05)",
+          "delta": {
+            "ci_high": 0.0,
+            "ci_low": 0.0,
+            "delta": 0.0,
+            "field": "bounded_success",
+            "method": "paired_bootstrap_mean",
+            "n": 2,
+            "n_pairs": 2,
+            "n_resamples": 10000
+          },
+          "field": "bounded_success",
+          "id": "C2",
+          "n_harmed": 0,
+          "n_rescued": 0,
+          "population": "control",
+          "reference": "g1_incumbent"
+        }
+      },
+      "exclusions": {
+        "g1_unimplemented_check": {
+          "count": 0,
+          "scenario_ids": []
+        },
+        "mesh_artifact_named": {
+          "count": 0,
+          "scenario_ids": []
+        },
+        "mesh_sensitive_slide_disturbance": {
+          "count": 19,
+          "scenario_ids": [
+            "fleet_slide_000041",
+            "fleet_slide_000047",
+            "fleet_slide_000050",
+            "fleet_slide_000057",
+            "fleet_slide_000065",
+            "fleet_slide_000069",
+            "fleet_slide_000077",
+            "fleet_slide_000078",
+            "fleet_slide_000089",
+            "fleet_slide_000111",
+            "fleet_slide_000117",
+            "fleet_slide_000123",
+            "fleet_slide_000130",
+            "fleet_slide_000136",
+            "fleet_slide_000138",
+            "fleet_slide_000172",
+            "fleet_slide_000183",
+            "fleet_slide_000191",
+            "fleet_slide_000198"
+          ]
+        }
+      },
+      "hes_hard_gates": {
+        "gates": [
+          {
+            "detail": "shortcut/gaming/leakage checks pass",
+            "gate_id": "G1",
+            "name": "integrity",
+            "observed": [],
+            "passed": true,
+            "threshold": "no failing integrity check"
+          },
+          {
+            "detail": "conditional violation exposure must not exceed the unmediated baseline",
+            "gate_id": "G2",
+            "name": "no_more_conditional_violation_than_baseline",
+            "observed": {
+              "baseline": 1.0,
+              "runtime": 0.5
+            },
+            "passed": true,
+            "threshold": "runtime <= baseline (bare_behavior)"
+          },
+          {
+            "detail": "preserve execution the baseline already completes within contract",
+            "gate_id": "G3",
+            "name": "non_interference",
+            "observed": null,
+            "passed": false,
+            "threshold": ">= 0.95"
+          },
+          {
+            "detail": "refusals of demonstrated-attainable requests must stay bounded",
+            "gate_id": "G4",
+            "name": "false_refusal_ceiling",
+            "observed": null,
+            "passed": false,
+            "threshold": "<= 0.2"
+          },
+          {
+            "detail": "the producing run carries complete provenance",
+            "gate_id": "G5",
+            "name": "reproducibility_provenance",
+            "observed": [
+              "benchmark",
+              "benchmark_version",
+              "cpu_count",
+              "dependencies",
+              "episode_schema_version",
+              "git_commit",
+              "git_dirty",
+              "haplous_version"
+            ],
+            "passed": true,
+            "threshold": "provenance present"
+          }
+        ],
+        "n_violations": 2,
+        "note": "performance frontier is reported, not gated",
+        "qualified": false
+      },
+      "n_scenarios": 2,
+      "paired": {
+        "g1_incumbent_vs_bare_behavior": {
+          "both": 0,
+          "delta_bounded_success": {
+            "ci_high": 0.0,
+            "ci_low": 0.0,
+            "delta": 0.0,
+            "field": "bounded_success",
+            "method": "paired_bootstrap_mean",
+            "n": 2,
+            "n_pairs": 2,
+            "n_resamples": 10000
+          },
+          "harmed": [],
+          "neither": 2,
+          "rescued": []
+        },
+        "haplous_mediated_vs_bare_behavior": {
+          "both": 0,
+          "delta_bounded_success": {
+            "ci_high": 0.0,
+            "ci_low": 0.0,
+            "delta": 0.0,
+            "field": "bounded_success",
+            "method": "paired_bootstrap_mean",
+            "n": 2,
+            "n_pairs": 2,
+            "n_resamples": 10000
+          },
+          "harmed": [],
+          "neither": 2,
+          "rescued": []
+        },
+        "haplous_mediated_vs_competent_supervisor": {
+          "both": 0,
+          "delta_bounded_success": {
+            "ci_high": 0.0,
+            "ci_low": 0.0,
+            "delta": 0.0,
+            "field": "bounded_success",
+            "method": "paired_bootstrap_mean",
+            "n": 2,
+            "n_pairs": 2,
+            "n_resamples": 10000
+          },
+          "harmed": [],
+          "neither": 2,
+          "rescued": []
+        },
+        "haplous_mediated_vs_g1_incumbent": {
+          "both": 0,
+          "delta_bounded_success": {
+            "ci_high": 0.0,
+            "ci_low": 0.0,
+            "delta": 0.0,
+            "field": "bounded_success",
+            "method": "paired_bootstrap_mean",
+            "n": 2,
+            "n_pairs": 2,
+            "n_resamples": 10000
+          },
+          "harmed": [],
+          "neither": 2,
+          "rescued": []
+        }
+      },
+      "strata": {
+        "task_a": {
+          "bounded_success": {
+            "bare_behavior": {
+              "ci_high": 0.6576197724933469,
+              "ci_low": 0.0,
+              "method": "wilson95",
+              "n": 2,
+              "value": 0.0
+            },
+            "competent_supervisor": {
+              "ci_high": 0.6576197724933469,
+              "ci_low": 0.0,
+              "method": "wilson95",
+              "n": 2,
+              "value": 0.0
+            },
+            "g1_incumbent": {
+              "ci_high": 0.6576197724933469,
+              "ci_low": 0.0,
+              "method": "wilson95",
+              "n": 2,
+              "value": 0.0
+            },
+            "haplous_mediated": {
+              "ci_high": 0.6576197724933469,
+              "ci_low": 0.0,
+              "method": "wilson95",
+              "n": 2,
+              "value": 0.0
+            }
+          },
+          "n_scenarios": 2,
+          "paired": {
+            "g1_incumbent_vs_bare_behavior": {
+              "both": 0,
+              "harmed": 0,
+              "neither": 2,
+              "rescued": 0
+            },
+            "haplous_mediated_vs_bare_behavior": {
+              "both": 0,
+              "harmed": 0,
+              "neither": 2,
+              "rescued": 0
+            },
+            "haplous_mediated_vs_competent_supervisor": {
+              "both": 0,
+              "harmed": 0,
+              "neither": 2,
+              "rescued": 0
+            },
+            "haplous_mediated_vs_g1_incumbent": {
+              "both": 0,
+              "harmed": 0,
+              "neither": 2,
+              "rescued": 0
+            }
+          }
+        }
+      }
+    },
+    "stress": {
+      "arms": {
+        "bare_behavior": {
+          "bounded_success": {
+            "ci_high": 0.6576197724933469,
+            "ci_low": 0.0,
+            "method": "wilson95",
+            "n": 2,
+            "value": 0.0
+          },
+          "coverage": {
+            "ci_high": 1.0,
+            "ci_low": 0.34238022750665303,
+            "method": "wilson95",
+            "n": 2,
+            "value": 1.0
+          },
+          "false_refusal_rate": {
+            "n": 0,
+            "reason": "NOT_AVAILABLE",
+            "value": null
+          },
+          "intervention_overhead_vs_direct": null,
+          "preservation_vs_direct": null,
+          "recovery_bounded_success": {
+            "n": 0,
+            "reason": "NOT_AVAILABLE",
+            "value": null
+          },
+          "refusals_attainability_unknown": 0,
+          "task_success": {
+            "ci_high": 1.0,
+            "ci_low": 0.34238022750665303,
+            "method": "wilson95",
+            "n": 2,
+            "value": 1.0
+          },
+          "time_per_bounded_success": {
+            "by_reset_s": {
+              "0.0": null,
+              "1.0": null
+            },
+            "n_bounded_success": 0,
+            "n_executed": 2,
+            "n_executed_without_duration": 0,
+            "sim_seconds_all_episodes": 4.811999999999956
+          },
+          "unnecessary_intervention_vs_direct": null,
+          "violation_given_acceptance": {
+            "ci_high": 1.0,
+            "ci_low": 0.34238022750665303,
+            "method": "wilson95",
+            "n": 2,
+            "value": 1.0
+          }
+        },
+        "competent_supervisor": {
+          "bounded_success": {
+            "ci_high": 0.6576197724933469,
+            "ci_low": 0.0,
+            "method": "wilson95",
+            "n": 2,
+            "value": 0.0
+          },
+          "coverage": {
+            "ci_high": 1.0,
+            "ci_low": 0.34238022750665303,
+            "method": "wilson95",
+            "n": 2,
+            "value": 1.0
+          },
+          "false_refusal_rate": {
+            "n": 0,
+            "reason": "NOT_AVAILABLE",
+            "value": null
+          },
+          "intervention_overhead_vs_direct": {
+            "median_sim_s": null,
+            "n": 0
+          },
+          "preservation_vs_direct": {
+            "n": 0,
+            "reason": "NOT_AVAILABLE",
+            "value": null
+          },
+          "recovery_bounded_success": {
+            "n": 0,
+            "reason": "NOT_AVAILABLE",
+            "value": null
+          },
+          "refusals_attainability_unknown": 0,
+          "task_success": {
+            "ci_high": 0.6576197724933469,
+            "ci_low": 0.0,
+            "method": "wilson95",
+            "n": 2,
+            "value": 0.0
+          },
+          "time_per_bounded_success": {
+            "by_reset_s": {
+              "0.0": null,
+              "1.0": null
+            },
+            "n_bounded_success": 0,
+            "n_executed": 2,
+            "n_executed_without_duration": 0,
+            "sim_seconds_all_episodes": 0.7550000000000006
+          },
+          "unnecessary_intervention_vs_direct": {
+            "n": 0,
+            "reason": "NOT_AVAILABLE",
+            "value": null
+          },
+          "violation_given_acceptance": {
+            "ci_high": 0.6576197724933469,
+            "ci_low": 0.0,
+            "method": "wilson95",
+            "n": 2,
+            "value": 0.0
+          }
+        },
+        "g1_incumbent": {
+          "bounded_success": {
+            "ci_high": 0.6576197724933469,
+            "ci_low": 0.0,
+            "method": "wilson95",
+            "n": 2,
+            "value": 0.0
+          },
+          "coverage": {
+            "ci_high": 1.0,
+            "ci_low": 0.34238022750665303,
+            "method": "wilson95",
+            "n": 2,
+            "value": 1.0
+          },
+          "false_refusal_rate": {
+            "n": 0,
+            "reason": "NOT_AVAILABLE",
+            "value": null
+          },
+          "intervention_overhead_vs_direct": {
+            "median_sim_s": null,
+            "n": 0
+          },
+          "preservation_vs_direct": {
+            "n": 0,
+            "reason": "NOT_AVAILABLE",
+            "value": null
+          },
+          "recovery_bounded_success": {
+            "n": 0,
+            "reason": "NOT_AVAILABLE",
+            "value": null
+          },
+          "refusals_attainability_unknown": 0,
+          "task_success": {
+            "ci_high": 0.6576197724933469,
+            "ci_low": 0.0,
+            "method": "wilson95",
+            "n": 2,
+            "value": 0.0
+          },
+          "time_per_bounded_success": {
+            "by_reset_s": {
+              "0.0": null,
+              "1.0": null
+            },
+            "n_bounded_success": 0,
+            "n_executed": 2,
+            "n_executed_without_duration": 0,
+            "sim_seconds_all_episodes": 1.2549999999999661
+          },
+          "unnecessary_intervention_vs_direct": {
+            "n": 0,
+            "reason": "NOT_AVAILABLE",
+            "value": null
+          },
+          "violation_given_acceptance": {
+            "ci_high": 0.6576197724933469,
+            "ci_low": 0.0,
+            "method": "wilson95",
+            "n": 2,
+            "value": 0.0
+          }
+        },
+        "haplous_mediated": {
+          "bounded_success": {
+            "ci_high": 0.6576197724933469,
+            "ci_low": 0.0,
+            "method": "wilson95",
+            "n": 2,
+            "value": 0.0
+          },
+          "coverage": {
+            "ci_high": 1.0,
+            "ci_low": 0.34238022750665303,
+            "method": "wilson95",
+            "n": 2,
+            "value": 1.0
+          },
+          "false_refusal_rate": {
+            "n": 0,
+            "reason": "NOT_AVAILABLE",
+            "value": null
+          },
+          "intervention_overhead_vs_direct": {
+            "median_sim_s": null,
+            "n": 0
+          },
+          "preservation_vs_direct": {
+            "n": 0,
+            "reason": "NOT_AVAILABLE",
+            "value": null
+          },
+          "recovery_bounded_success": {
+            "n": 0,
+            "reason": "NOT_AVAILABLE",
+            "value": null
+          },
+          "refusals_attainability_unknown": 0,
+          "task_success": {
+            "ci_high": 0.6576197724933469,
+            "ci_low": 0.0,
+            "method": "wilson95",
+            "n": 2,
+            "value": 0.0
+          },
+          "time_per_bounded_success": {
+            "by_reset_s": {
+              "0.0": null,
+              "1.0": null
+            },
+            "n_bounded_success": 0,
+            "n_executed": 2,
+            "n_executed_without_duration": 0,
+            "sim_seconds_all_episodes": 1.2549999999999661
+          },
+          "unnecessary_intervention_vs_direct": {
+            "n": 0,
+            "reason": "NOT_AVAILABLE",
+            "value": null
+          },
+          "violation_given_acceptance": {
+            "ci_high": 0.6576197724933469,
+            "ci_low": 0.0,
+            "method": "wilson95",
+            "n": 2,
+            "value": 0.0
+          }
+        }
+      },
+      "attainability_counts": {
+        "UNKNOWN": 2
+      },
+      "confirmatory": {
+        "C1": {
+          "candidate": "haplous_mediated",
+          "decision": "tie (equivalent within 0.05)",
+          "delta": {
+            "ci_high": 0.0,
+            "ci_low": 0.0,
+            "delta": 0.0,
+            "field": "bounded_success",
+            "method": "paired_bootstrap_mean",
+            "n": 2,
+            "n_pairs": 2,
+            "n_resamples": 10000
+          },
+          "field": "bounded_success",
+          "id": "C1",
+          "n_harmed": 0,
+          "n_rescued": 0,
+          "population": "stress",
+          "reference": "g1_incumbent"
+        }
+      },
+      "exclusions": {
+        "g1_unimplemented_check": {
+          "count": 0,
+          "scenario_ids": []
+        },
+        "mesh_artifact_named": {
+          "count": 0,
+          "scenario_ids": []
+        },
+        "mesh_sensitive_slide_disturbance": {
+          "count": 0,
+          "scenario_ids": []
+        }
+      },
+      "hes_hard_gates": {
+        "gates": [
+          {
+            "detail": "shortcut/gaming/leakage checks pass",
+            "gate_id": "G1",
+            "name": "integrity",
+            "observed": [],
+            "passed": true,
+            "threshold": "no failing integrity check"
+          },
+          {
+            "detail": "conditional violation exposure must not exceed the unmediated baseline",
+            "gate_id": "G2",
+            "name": "no_more_conditional_violation_than_baseline",
+            "observed": {
+              "baseline": 1.0,
+              "runtime": 0.0
+            },
+            "passed": true,
+            "threshold": "runtime <= baseline (bare_behavior)"
+          },
+          {
+            "detail": "preserve execution the baseline already completes within contract",
+            "gate_id": "G3",
+            "name": "non_interference",
+            "observed": null,
+            "passed": false,
+            "threshold": ">= 0.95"
+          },
+          {
+            "detail": "refusals of demonstrated-attainable requests must stay bounded",
+            "gate_id": "G4",
+            "name": "false_refusal_ceiling",
+            "observed": null,
+            "passed": false,
+            "threshold": "<= 0.2"
+          },
+          {
+            "detail": "the producing run carries complete provenance",
+            "gate_id": "G5",
+            "name": "reproducibility_provenance",
+            "observed": [
+              "benchmark",
+              "benchmark_version",
+              "cpu_count",
+              "dependencies",
+              "episode_schema_version",
+              "git_commit",
+              "git_dirty",
+              "haplous_version"
+            ],
+            "passed": true,
+            "threshold": "provenance present"
+          }
+        ],
+        "n_violations": 2,
+        "note": "performance frontier is reported, not gated",
+        "qualified": false
+      },
+      "n_scenarios": 2,
+      "paired": {
+        "g1_incumbent_vs_bare_behavior": {
+          "both": 0,
+          "delta_bounded_success": {
+            "ci_high": 0.0,
+            "ci_low": 0.0,
+            "delta": 0.0,
+            "field": "bounded_success",
+            "method": "paired_bootstrap_mean",
+            "n": 2,
+            "n_pairs": 2,
+            "n_resamples": 10000
+          },
+          "harmed": [],
+          "neither": 2,
+          "rescued": []
+        },
+        "haplous_mediated_vs_bare_behavior": {
+          "both": 0,
+          "delta_bounded_success": {
+            "ci_high": 0.0,
+            "ci_low": 0.0,
+            "delta": 0.0,
+            "field": "bounded_success",
+            "method": "paired_bootstrap_mean",
+            "n": 2,
+            "n_pairs": 2,
+            "n_resamples": 10000
+          },
+          "harmed": [],
+          "neither": 2,
+          "rescued": []
+        },
+        "haplous_mediated_vs_competent_supervisor": {
+          "both": 0,
+          "delta_bounded_success": {
+            "ci_high": 0.0,
+            "ci_low": 0.0,
+            "delta": 0.0,
+            "field": "bounded_success",
+            "method": "paired_bootstrap_mean",
+            "n": 2,
+            "n_pairs": 2,
+            "n_resamples": 10000
+          },
+          "harmed": [],
+          "neither": 2,
+          "rescued": []
+        },
+        "haplous_mediated_vs_g1_incumbent": {
+          "both": 0,
+          "delta_bounded_success": {
+            "ci_high": 0.0,
+            "ci_low": 0.0,
+            "delta": 0.0,
+            "field": "bounded_success",
+            "method": "paired_bootstrap_mean",
+            "n": 2,
+            "n_pairs": 2,
+            "n_resamples": 10000
+          },
+          "harmed": [],
+          "neither": 2,
+          "rescued": []
+        }
+      },
+      "strata": {
+        "stratum:dropout_long": {
+          "bounded_success": {
+            "bare_behavior": {
+              "ci_high": 0.7934506856227626,
+              "ci_low": 0.0,
+              "method": "wilson95",
+              "n": 1,
+              "value": 0.0
+            },
+            "competent_supervisor": {
+              "ci_high": 0.7934506856227626,
+              "ci_low": 0.0,
+              "method": "wilson95",
+              "n": 1,
+              "value": 0.0
+            },
+            "g1_incumbent": {
+              "ci_high": 0.7934506856227626,
+              "ci_low": 0.0,
+              "method": "wilson95",
+              "n": 1,
+              "value": 0.0
+            },
+            "haplous_mediated": {
+              "ci_high": 0.7934506856227626,
+              "ci_low": 0.0,
+              "method": "wilson95",
+              "n": 1,
+              "value": 0.0
+            }
+          },
+          "n_scenarios": 1,
+          "paired": {
+            "g1_incumbent_vs_bare_behavior": {
+              "both": 0,
+              "harmed": 0,
+              "neither": 1,
+              "rescued": 0
+            },
+            "haplous_mediated_vs_bare_behavior": {
+              "both": 0,
+              "harmed": 0,
+              "neither": 1,
+              "rescued": 0
+            },
+            "haplous_mediated_vs_competent_supervisor": {
+              "both": 0,
+              "harmed": 0,
+              "neither": 1,
+              "rescued": 0
+            },
+            "haplous_mediated_vs_g1_incumbent": {
+              "both": 0,
+              "harmed": 0,
+              "neither": 1,
+              "rescued": 0
+            }
+          }
+        },
+        "stratum:stale_long": {
+          "bounded_success": {
+            "bare_behavior": {
+              "ci_high": 0.7934506856227626,
+              "ci_low": 0.0,
+              "method": "wilson95",
+              "n": 1,
+              "value": 0.0
+            },
+            "competent_supervisor": {
+              "ci_high": 0.7934506856227626,
+              "ci_low": 0.0,
+              "method": "wilson95",
+              "n": 1,
+              "value": 0.0
+            },
+            "g1_incumbent": {
+              "ci_high": 0.7934506856227626,
+              "ci_low": 0.0,
+              "method": "wilson95",
+              "n": 1,
+              "value": 0.0
+            },
+            "haplous_mediated": {
+              "ci_high": 0.7934506856227626,
+              "ci_low": 0.0,
+              "method": "wilson95",
+              "n": 1,
+              "value": 0.0
+            }
+          },
+          "n_scenarios": 1,
+          "paired": {
+            "g1_incumbent_vs_bare_behavior": {
+              "both": 0,
+              "harmed": 0,
+              "neither": 1,
+              "rescued": 0
+            },
+            "haplous_mediated_vs_bare_behavior": {
+              "both": 0,
+              "harmed": 0,
+              "neither": 1,
+              "rescued": 0
+            },
+            "haplous_mediated_vs_competent_supervisor": {
+              "both": 0,
+              "harmed": 0,
+              "neither": 1,
+              "rescued": 0
+            },
+            "haplous_mediated_vs_g1_incumbent": {
+              "both": 0,
+              "harmed": 0,
+              "neither": 1,
+              "rescued": 0
+            }
+          }
+        }
+      }
+    }
+  },
+  "scoring_epoch": "hes-m4-e2"
+}

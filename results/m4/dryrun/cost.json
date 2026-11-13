@@ -1,0 +1,36 @@
+{
+  "campaign_scenarios_scheduled": 501,
+  "cpu_s_per_episode_by_arm": {
+    "bare_behavior": {
+      "max": 51.183384872000005,
+      "mean": 14.951691249750002,
+      "n": 4
+    },
+    "competent_supervisor": {
+      "max": 0.2052514520000006,
+      "mean": 0.13416616875000087,
+      "n": 4
+    },
+    "g1_incumbent": {
+      "max": 3.2270295890000007,
+      "mean": 1.0268186492500009,
+      "n": 4
+    },
+    "haplous_mediated": {
+      "max": 2.681489321000001,
+      "mean": 0.8972098687499992,
+      "n": 4
+    }
+  },
+  "note": "CPU cost only; outcomes are not interpreted in a dry run",
+  "projected_campaign_wall_h_by_workers": {
+    "1": 2.402298252603324,
+    "4": 0.600574563150831
+  },
+  "shard_wall_s_per_scenario_all_arms": 17.26202337199993,
+  "worst_case_wall_h_by_workers": {
+    "1": 7.973854103398335,
+    "4": 1.9934635258495836,
+    "basis": "every scenario costs the slowest observed episode of every arm"
+  }
+}
