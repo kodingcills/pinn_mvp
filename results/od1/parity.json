@@ -1,0 +1,2088 @@
+{
+ "after_commit": "332790ad7458b7fce338f85a6234259d80740ff4",
+ "after_haplous_tree_dirty": false,
+ "before_commit": "c9997c671896c30856ea0142f21a7ad6ece9e6fb",
+ "compared_fields": [
+  "reported_disposition",
+  "reason",
+  "refusal_codes",
+  "graded_disposition",
+  "task_success",
+  "bounded_success",
+  "hard_violations",
+  "task_metrics",
+  "n_observations",
+  "observations_sha256"
+ ],
+ "design": "docs/eval_program/designs/OD1_command_mode_admission.md section 6",
+ "identical": true,
+ "machine": "standard MuJoCoMachine (mujoco_backend.build_realization)",
+ "n_identical": 108,
+ "n_trials": 108,
+ "systems": [
+  "direct_minimal",
+  "bare_behavior",
+  "competent_supervisor",
+  "haplous_mediated"
+ ],
+ "trials": [
+  {
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "n_observations": 3249,
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "compared_sha256": {
+    "after": "6c10d205c6b734f500cc33292cfe1cf3bfdc09f014ad7a0e0b1eb5da1b9694e8",
+    "before": "6c10d205c6b734f500cc33292cfe1cf3bfdc09f014ad7a0e0b1eb5da1b9694e8"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "insert_command_rejection_persistent",
+   "system": "bare_behavior"
+  },
+  {
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "n_observations": 3249,
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "compared_sha256": {
+    "after": "62ca264b396a9aadef72cba8b1742031aea2917a3abf0baf2892198a49d12bcb",
+    "before": "62ca264b396a9aadef72cba8b1742031aea2917a3abf0baf2892198a49d12bcb"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "insert_command_rejection_persistent",
+   "system": "competent_supervisor"
+  },
+  {
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "n_observations": 32600,
+    "reason": "horizon_exhausted",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": true
+   },
+   "compared_sha256": {
+    "after": "3c7e8de31531233204bc5c08eb816e23434b4ec6e55be9d40b48756e2a8032f7",
+    "before": "3c7e8de31531233204bc5c08eb816e23434b4ec6e55be9d40b48756e2a8032f7"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "insert_command_rejection_persistent",
+   "system": "direct_minimal"
+  },
+  {
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "n_observations": 3250,
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "compared_sha256": {
+    "after": "ef5055c91b468c48f7cee4561e0d21f068b7fd60fca7f90578131648a0c9b64d",
+    "before": "ef5055c91b468c48f7cee4561e0d21f068b7fd60fca7f90578131648a0c9b64d"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "insert_command_rejection_persistent",
+   "system": "haplous_mediated"
+  },
+  {
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "n_observations": 3249,
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "compared_sha256": {
+    "after": "52e0b699299c8920a3a655cd93692eba1045a0cf827bcbe7efdddb1d8de9867e",
+    "before": "52e0b699299c8920a3a655cd93692eba1045a0cf827bcbe7efdddb1d8de9867e"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "insert_command_rejection_transient",
+   "system": "bare_behavior"
+  },
+  {
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "n_observations": 3249,
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "compared_sha256": {
+    "after": "d80246478447d37147ec0bfff2af2b331dfd9c89de6265344c0cd34133f5d81d",
+    "before": "d80246478447d37147ec0bfff2af2b331dfd9c89de6265344c0cd34133f5d81d"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "insert_command_rejection_transient",
+   "system": "competent_supervisor"
+  },
+  {
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "n_observations": 32600,
+    "reason": "horizon_exhausted",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": true
+   },
+   "compared_sha256": {
+    "after": "7507ee0d644d7135d48c97fd8babb030509d459ae079e7e4720f0782b3524989",
+    "before": "7507ee0d644d7135d48c97fd8babb030509d459ae079e7e4720f0782b3524989"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "insert_command_rejection_transient",
+   "system": "direct_minimal"
+  },
+  {
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "n_observations": 3250,
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "compared_sha256": {
+    "after": "1ec1ba09643ac4ca30b37e983603f935c509887577bf5ca9f9fdd57717592bcb",
+    "before": "1ec1ba09643ac4ca30b37e983603f935c509887577bf5ca9f9fdd57717592bcb"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "insert_command_rejection_transient",
+   "system": "haplous_mediated"
+  },
+  {
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "n_observations": 3249,
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "compared_sha256": {
+    "after": "e131acc4f721e407b48bdcd4416c85e31546b5537a5b694c458193cf42f63366",
+    "before": "e131acc4f721e407b48bdcd4416c85e31546b5537a5b694c458193cf42f63366"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "insert_deadline_2s",
+   "system": "bare_behavior"
+  },
+  {
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "n_observations": 3249,
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "compared_sha256": {
+    "after": "9e35055802479db196999912ec2904df106b0dfe1c855b0fdfb669169de01f1f",
+    "before": "9e35055802479db196999912ec2904df106b0dfe1c855b0fdfb669169de01f1f"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "insert_deadline_2s",
+   "system": "competent_supervisor"
+  },
+  {
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "COMPLETE",
+    "n_observations": 32600,
+    "reason": "horizon_exhausted",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": true
+   },
+   "compared_sha256": {
+    "after": "6055326858e72164be0cbcf381632cadb0121dc07398242fda3ace8d56d7b7f6",
+    "before": "6055326858e72164be0cbcf381632cadb0121dc07398242fda3ace8d56d7b7f6"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "insert_deadline_2s",
+   "system": "direct_minimal"
+  },
+  {
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "n_observations": 3250,
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "compared_sha256": {
+    "after": "723cddfd006e5bc02b2494b4a33da255bd1a7a12199dd2bcc6fcab4afe9ecea6",
+    "before": "723cddfd006e5bc02b2494b4a33da255bd1a7a12199dd2bcc6fcab4afe9ecea6"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "insert_deadline_2s",
+   "system": "haplous_mediated"
+  },
+  {
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "COMPLETE",
+    "n_observations": 2848,
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "compared_sha256": {
+    "after": "bcf67fe6d90124b84b81ba1d2dc02ed91852b76d02f05bdb00a199ba8a7b6d6b",
+    "before": "bcf67fe6d90124b84b81ba1d2dc02ed91852b76d02f05bdb00a199ba8a7b6d6b"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "insert_dropout_large",
+   "system": "bare_behavior"
+  },
+  {
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "n_observations": 2000,
+    "reason": "supervisor_state_freshness",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "compared_sha256": {
+    "after": "5b2a057a7088c641c9d689b2e224af186b1cf0cbb1439fbccf017e6ef4a51766",
+    "before": "5b2a057a7088c641c9d689b2e224af186b1cf0cbb1439fbccf017e6ef4a51766"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "insert_dropout_large",
+   "system": "competent_supervisor"
+  },
+  {
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "COMPLETE",
+    "n_observations": 32199,
+    "reason": "horizon_exhausted",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": true
+   },
+   "compared_sha256": {
+    "after": "8493ed87b92ec45303792f064e007799d51b8e7f94668242033d3c5037a258b9",
+    "before": "8493ed87b92ec45303792f064e007799d51b8e7f94668242033d3c5037a258b9"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "insert_dropout_large",
+   "system": "direct_minimal"
+  },
+  {
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "n_observations": 3251,
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "compared_sha256": {
+    "after": "b88c5ac9a18c8db07d911f22939608c823d518752ae875ea32dc5fd5e3ec237d",
+    "before": "b88c5ac9a18c8db07d911f22939608c823d518752ae875ea32dc5fd5e3ec237d"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "insert_dropout_large",
+   "system": "haplous_mediated"
+  },
+  {
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "n_observations": 3354,
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "compared_sha256": {
+    "after": "d0a9e6e8c9be0396315f7ab0152d0ae0d34d041f34962727721d7f2a92a1d10e",
+    "before": "d0a9e6e8c9be0396315f7ab0152d0ae0d34d041f34962727721d7f2a92a1d10e"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "insert_dropout_small",
+   "system": "bare_behavior"
+  },
+  {
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "n_observations": 2000,
+    "reason": "supervisor_state_freshness",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "compared_sha256": {
+    "after": "d82e9e772174c0fcab3a1e97cf4bcd98f30ca57d4238b8099e91880f6633cfe9",
+    "before": "d82e9e772174c0fcab3a1e97cf4bcd98f30ca57d4238b8099e91880f6633cfe9"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "insert_dropout_small",
+   "system": "competent_supervisor"
+  },
+  {
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "n_observations": 32589,
+    "reason": "horizon_exhausted",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": true
+   },
+   "compared_sha256": {
+    "after": "9bf4c3af28ee285c68536f47db0e12787af6cbda5dfe691af267e8e4ec45b8b8",
+    "before": "9bf4c3af28ee285c68536f47db0e12787af6cbda5dfe691af267e8e4ec45b8b8"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "insert_dropout_small",
+   "system": "direct_minimal"
+  },
+  {
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "n_observations": 3366,
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "compared_sha256": {
+    "after": "c8e9438bcc02ea0da199236e02c24f1e4993e3e89e9157e7db470399bea3f401",
+    "before": "c8e9438bcc02ea0da199236e02c24f1e4993e3e89e9157e7db470399bea3f401"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "insert_dropout_small",
+   "system": "haplous_mediated"
+  },
+  {
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "n_observations": 3249,
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "compared_sha256": {
+    "after": "e131acc4f721e407b48bdcd4416c85e31546b5537a5b694c458193cf42f63366",
+    "before": "e131acc4f721e407b48bdcd4416c85e31546b5537a5b694c458193cf42f63366"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "insert_force_limit_12n",
+   "system": "bare_behavior"
+  },
+  {
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "n_observations": 3249,
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "compared_sha256": {
+    "after": "9e35055802479db196999912ec2904df106b0dfe1c855b0fdfb669169de01f1f",
+    "before": "9e35055802479db196999912ec2904df106b0dfe1c855b0fdfb669169de01f1f"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "insert_force_limit_12n",
+   "system": "competent_supervisor"
+  },
+  {
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "n_observations": 32600,
+    "reason": "horizon_exhausted",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "compared_sha256": {
+    "after": "0173057bf889fbdbeb2af1cca42d5453358de82fb0b363298f8595ac5d45ac3a",
+    "before": "0173057bf889fbdbeb2af1cca42d5453358de82fb0b363298f8595ac5d45ac3a"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "insert_force_limit_12n",
+   "system": "direct_minimal"
+  },
+  {
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "n_observations": 3250,
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "compared_sha256": {
+    "after": "723cddfd006e5bc02b2494b4a33da255bd1a7a12199dd2bcc6fcab4afe9ecea6",
+    "before": "723cddfd006e5bc02b2494b4a33da255bd1a7a12199dd2bcc6fcab4afe9ecea6"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "insert_force_limit_12n",
+   "system": "haplous_mediated"
+  },
+  {
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "n_observations": 3249,
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "compared_sha256": {
+    "after": "e131acc4f721e407b48bdcd4416c85e31546b5537a5b694c458193cf42f63366",
+    "before": "e131acc4f721e407b48bdcd4416c85e31546b5537a5b694c458193cf42f63366"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "insert_force_limit_150n",
+   "system": "bare_behavior"
+  },
+  {
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "n_observations": 3249,
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "compared_sha256": {
+    "after": "9e35055802479db196999912ec2904df106b0dfe1c855b0fdfb669169de01f1f",
+    "before": "9e35055802479db196999912ec2904df106b0dfe1c855b0fdfb669169de01f1f"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "insert_force_limit_150n",
+   "system": "competent_supervisor"
+  },
+  {
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "n_observations": 32600,
+    "reason": "horizon_exhausted",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": true
+   },
+   "compared_sha256": {
+    "after": "2d8d387e0eb793a38a0dd2ca4b8ad085d3c2d1328964a3aecde5db44484f1310",
+    "before": "2d8d387e0eb793a38a0dd2ca4b8ad085d3c2d1328964a3aecde5db44484f1310"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "insert_force_limit_150n",
+   "system": "direct_minimal"
+  },
+  {
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "n_observations": 3250,
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "compared_sha256": {
+    "after": "c24e1725e0fcf4f9c3140c84b6945f8af849cb946ced4b30973f16903a1f1300",
+    "before": "c24e1725e0fcf4f9c3140c84b6945f8af849cb946ced4b30973f16903a1f1300"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "insert_force_limit_150n",
+   "system": "haplous_mediated"
+  },
+  {
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "n_observations": 32600,
+    "reason": "horizon_exhausted",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "compared_sha256": {
+    "after": "0057cd5d44dc7c52af4d54a87223e6d6e0d26726493caed04ab193f6e3298406",
+    "before": "0057cd5d44dc7c52af4d54a87223e6d6e0d26726493caed04ab193f6e3298406"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "insert_force_limit_2n",
+   "system": "bare_behavior"
+  },
+  {
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "n_observations": 3231,
+    "reason": "supervisor_force_limit",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "compared_sha256": {
+    "after": "e48cc02236c928439a45504bb0d309e55398ebb904bbc86186f3d4fcc6a132aa",
+    "before": "e48cc02236c928439a45504bb0d309e55398ebb904bbc86186f3d4fcc6a132aa"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "insert_force_limit_2n",
+   "system": "competent_supervisor"
+  },
+  {
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "n_observations": 32600,
+    "reason": "horizon_exhausted",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "compared_sha256": {
+    "after": "f08a747e6743ddca99c0c01a10ec864d7283de64ad3c4075b2a6d0d3e3c2f1b2",
+    "before": "f08a747e6743ddca99c0c01a10ec864d7283de64ad3c4075b2a6d0d3e3c2f1b2"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "insert_force_limit_2n",
+   "system": "direct_minimal"
+  },
+  {
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "n_observations": 3232,
+    "reason": "hard_constraint_process_force",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "compared_sha256": {
+    "after": "fc0b27fc5b50de864ce804d9d2ae861bdb3341cda708201290b8992e96abead8",
+    "before": "fc0b27fc5b50de864ce804d9d2ae861bdb3341cda708201290b8992e96abead8"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "insert_force_limit_2n",
+   "system": "haplous_mediated"
+  },
+  {
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "n_observations": 5248,
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "compared_sha256": {
+    "after": "203971b7628ce6d07b6bc7c49f689643bda8d7ddf716947bdcdfc76f103db134",
+    "before": "203971b7628ce6d07b6bc7c49f689643bda8d7ddf716947bdcdfc76f103db134"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "insert_geometry_deep_plate",
+   "system": "bare_behavior"
+  },
+  {
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "n_observations": 5248,
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "compared_sha256": {
+    "after": "f8f551b94f2732d3a29d27c11b54fd520e6fd77ca513fa7456e996c65140fda7",
+    "before": "f8f551b94f2732d3a29d27c11b54fd520e6fd77ca513fa7456e996c65140fda7"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "insert_geometry_deep_plate",
+   "system": "competent_supervisor"
+  },
+  {
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "n_observations": 32600,
+    "reason": "horizon_exhausted",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": true
+   },
+   "compared_sha256": {
+    "after": "8aa07dd5c585890b863530045c0d6122e0e0ea53998298f33f0f18c485603d9a",
+    "before": "8aa07dd5c585890b863530045c0d6122e0e0ea53998298f33f0f18c485603d9a"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "insert_geometry_deep_plate",
+   "system": "direct_minimal"
+  },
+  {
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "n_observations": 5249,
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "compared_sha256": {
+    "after": "86de9f4054858d1188fdfec0e920d4d3907eb0d0a7e311a6afd95a17f87b5807",
+    "before": "86de9f4054858d1188fdfec0e920d4d3907eb0d0a7e311a6afd95a17f87b5807"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "insert_geometry_deep_plate",
+   "system": "haplous_mediated"
+  },
+  {
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "n_observations": 3249,
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "compared_sha256": {
+    "after": "dd5681d5248b1409e1bdb1e8b67dae11d8e3052ddbd1c7dadd4e7a76f1b3f127",
+    "before": "dd5681d5248b1409e1bdb1e8b67dae11d8e3052ddbd1c7dadd4e7a76f1b3f127"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "insert_geometry_fine_facets",
+   "system": "bare_behavior"
+  },
+  {
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "n_observations": 3249,
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "compared_sha256": {
+    "after": "f807e8b585b61970cd12a7a1ad3b572c1d64f0427e4a453bd13653f8005b4cd4",
+    "before": "f807e8b585b61970cd12a7a1ad3b572c1d64f0427e4a453bd13653f8005b4cd4"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "insert_geometry_fine_facets",
+   "system": "competent_supervisor"
+  },
+  {
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "n_observations": 32600,
+    "reason": "horizon_exhausted",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": true
+   },
+   "compared_sha256": {
+    "after": "fb85f8d3b98b94dfcacb16215179fef5e656c358c0c024e70eb15addd1e204ab",
+    "before": "fb85f8d3b98b94dfcacb16215179fef5e656c358c0c024e70eb15addd1e204ab"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "insert_geometry_fine_facets",
+   "system": "direct_minimal"
+  },
+  {
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "n_observations": 3250,
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "compared_sha256": {
+    "after": "1553cfcea9d121ebd023899cdfb2243b7079a90cb2f9a5d8b8c44910d46a088f",
+    "before": "1553cfcea9d121ebd023899cdfb2243b7079a90cb2f9a5d8b8c44910d46a088f"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "insert_geometry_fine_facets",
+   "system": "haplous_mediated"
+  },
+  {
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "n_observations": 3364,
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "compared_sha256": {
+    "after": "9b4c96ce68ba6f32db8c5f6a95d6e6c5a2f56155b9c0177adc00d38a8b4d5eb7",
+    "before": "9b4c96ce68ba6f32db8c5f6a95d6e6c5a2f56155b9c0177adc00d38a8b4d5eb7"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "insert_geometry_tight_clearance",
+   "system": "bare_behavior"
+  },
+  {
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "n_observations": 3364,
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "compared_sha256": {
+    "after": "dce2220aea1144b8e0e45c33f0ee5b5883acde35ea1aaaba2745c57be15e5972",
+    "before": "dce2220aea1144b8e0e45c33f0ee5b5883acde35ea1aaaba2745c57be15e5972"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "insert_geometry_tight_clearance",
+   "system": "competent_supervisor"
+  },
+  {
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "n_observations": 32600,
+    "reason": "horizon_exhausted",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": true
+   },
+   "compared_sha256": {
+    "after": "06758e2b606d6bd267f40a33e3733fa6e1bb3e5ac050c8c3e5b71a3e0b53d740",
+    "before": "06758e2b606d6bd267f40a33e3733fa6e1bb3e5ac050c8c3e5b71a3e0b53d740"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "insert_geometry_tight_clearance",
+   "system": "direct_minimal"
+  },
+  {
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "n_observations": 3365,
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "compared_sha256": {
+    "after": "ab14c28b3f3ae468119466c614b43ba3eab1f31d607c0404044b8850c50d53e2",
+    "before": "ab14c28b3f3ae468119466c614b43ba3eab1f31d607c0404044b8850c50d53e2"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "insert_geometry_tight_clearance",
+   "system": "haplous_mediated"
+  },
+  {
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "n_observations": 801,
+    "reason": "machine_fault_machine_fault",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "compared_sha256": {
+    "after": "5d1705a84f43744850a1ee4ab54bc267a57d5f53ae32d35c76332261f7623b3a",
+    "before": "5d1705a84f43744850a1ee4ab54bc267a57d5f53ae32d35c76332261f7623b3a"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "insert_machine_fault",
+   "system": "bare_behavior"
+  },
+  {
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "n_observations": 801,
+    "reason": "machine_fault_machine_fault",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "compared_sha256": {
+    "after": "20bcdbe7bd6be46df6f840c22864549f5bc87e06ec74297b1fd1be837d1b92b9",
+    "before": "20bcdbe7bd6be46df6f840c22864549f5bc87e06ec74297b1fd1be837d1b92b9"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "insert_machine_fault",
+   "system": "competent_supervisor"
+  },
+  {
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "n_observations": 801,
+    "reason": "machine_fault_machine_fault",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "compared_sha256": {
+    "after": "1ad4a57f03245aad2a83956bfeeaade3849a358ede84a74736c737703b1a976d",
+    "before": "1ad4a57f03245aad2a83956bfeeaade3849a358ede84a74736c737703b1a976d"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "insert_machine_fault",
+   "system": "direct_minimal"
+  },
+  {
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "n_observations": 802,
+    "reason": "machine_fault_machine_fault",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "compared_sha256": {
+    "after": "178fbf18a56f5a28d017487c674d513aa47252eafe94871287eb4ba713d1d04f",
+    "before": "178fbf18a56f5a28d017487c674d513aa47252eafe94871287eb4ba713d1d04f"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "insert_machine_fault",
+   "system": "haplous_mediated"
+  },
+  {
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "n_observations": 3249,
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "compared_sha256": {
+    "after": "e131acc4f721e407b48bdcd4416c85e31546b5537a5b694c458193cf42f63366",
+    "before": "e131acc4f721e407b48bdcd4416c85e31546b5537a5b694c458193cf42f63366"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "insert_nominal",
+   "system": "bare_behavior"
+  },
+  {
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "n_observations": 3249,
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "compared_sha256": {
+    "after": "9e35055802479db196999912ec2904df106b0dfe1c855b0fdfb669169de01f1f",
+    "before": "9e35055802479db196999912ec2904df106b0dfe1c855b0fdfb669169de01f1f"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "insert_nominal",
+   "system": "competent_supervisor"
+  },
+  {
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "n_observations": 32600,
+    "reason": "horizon_exhausted",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": true
+   },
+   "compared_sha256": {
+    "after": "2d8d387e0eb793a38a0dd2ca4b8ad085d3c2d1328964a3aecde5db44484f1310",
+    "before": "2d8d387e0eb793a38a0dd2ca4b8ad085d3c2d1328964a3aecde5db44484f1310"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "insert_nominal",
+   "system": "direct_minimal"
+  },
+  {
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "n_observations": 3250,
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "compared_sha256": {
+    "after": "723cddfd006e5bc02b2494b4a33da255bd1a7a12199dd2bcc6fcab4afe9ecea6",
+    "before": "723cddfd006e5bc02b2494b4a33da255bd1a7a12199dd2bcc6fcab4afe9ecea6"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "insert_nominal",
+   "system": "haplous_mediated"
+  },
+  {
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "n_observations": 3333,
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "compared_sha256": {
+    "after": "5f96051f41f3f58c42ce1e481bf372a51025e4b098553305e88a0807fca9cc77",
+    "before": "5f96051f41f3f58c42ce1e481bf372a51025e4b098553305e88a0807fca9cc77"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "insert_offset_1mm",
+   "system": "bare_behavior"
+  },
+  {
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "n_observations": 3333,
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "compared_sha256": {
+    "after": "9a2d917661c774a5efc607de29cc314f6e1c41289e36f59eeeb894c42f9bab8f",
+    "before": "9a2d917661c774a5efc607de29cc314f6e1c41289e36f59eeeb894c42f9bab8f"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "insert_offset_1mm",
+   "system": "competent_supervisor"
+  },
+  {
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "n_observations": 32600,
+    "reason": "horizon_exhausted",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": true
+   },
+   "compared_sha256": {
+    "after": "ad564d56adfeaf53a881cc03d16cc812798028e8ad5ac49b73fa30bab68ac6e5",
+    "before": "ad564d56adfeaf53a881cc03d16cc812798028e8ad5ac49b73fa30bab68ac6e5"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "insert_offset_1mm",
+   "system": "direct_minimal"
+  },
+  {
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "n_observations": 3334,
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "compared_sha256": {
+    "after": "b2be6c836fec742324ce352547545ca3832bf13c8ce4da86827c9fa6cd97e9d6",
+    "before": "b2be6c836fec742324ce352547545ca3832bf13c8ce4da86827c9fa6cd97e9d6"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "insert_offset_1mm",
+   "system": "haplous_mediated"
+  },
+  {
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "n_observations": 4094,
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "compared_sha256": {
+    "after": "b0db09232da0edcb2af5e93f04661e675fc52d14206de352031812f5372f83d6",
+    "before": "b0db09232da0edcb2af5e93f04661e675fc52d14206de352031812f5372f83d6"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "insert_offset_2mm",
+   "system": "bare_behavior"
+  },
+  {
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "n_observations": 4094,
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "compared_sha256": {
+    "after": "648624d41bbf0e294da0d2f8094f70d13b3ad764ef2196b7464a96297ece7e0e",
+    "before": "648624d41bbf0e294da0d2f8094f70d13b3ad764ef2196b7464a96297ece7e0e"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "insert_offset_2mm",
+   "system": "competent_supervisor"
+  },
+  {
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "n_observations": 32600,
+    "reason": "horizon_exhausted",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": true
+   },
+   "compared_sha256": {
+    "after": "decee303f0572b5585a3b0e354e166e2a7b2f67492db683c23ae19324d3a5039",
+    "before": "decee303f0572b5585a3b0e354e166e2a7b2f67492db683c23ae19324d3a5039"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "insert_offset_2mm",
+   "system": "direct_minimal"
+  },
+  {
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "n_observations": 4095,
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "compared_sha256": {
+    "after": "3d6610558a13841ec1f8d59b3a2295cd3c64424c3a0f031fc89727594526943a",
+    "before": "3d6610558a13841ec1f8d59b3a2295cd3c64424c3a0f031fc89727594526943a"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "insert_offset_2mm",
+   "system": "haplous_mediated"
+  },
+  {
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "n_observations": 32600,
+    "reason": "horizon_exhausted",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "compared_sha256": {
+    "after": "4d23f77f8729583e128b40032b6929202a8862d8081d6404647835882fa4d2d9",
+    "before": "4d23f77f8729583e128b40032b6929202a8862d8081d6404647835882fa4d2d9"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "insert_offset_5mm_infeasible",
+   "system": "bare_behavior"
+  },
+  {
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "n_observations": 32600,
+    "reason": "horizon_exhausted",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "compared_sha256": {
+    "after": "28819184907b15abde255b650adde590b738a1abf955e54226a0145a2a9e8a36",
+    "before": "28819184907b15abde255b650adde590b738a1abf955e54226a0145a2a9e8a36"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "insert_offset_5mm_infeasible",
+   "system": "competent_supervisor"
+  },
+  {
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "n_observations": 32600,
+    "reason": "horizon_exhausted",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "compared_sha256": {
+    "after": "d61f5ae6a66fbf614c908d69df2059cd64e036e7ad4018701dbb54508f7e5121",
+    "before": "d61f5ae6a66fbf614c908d69df2059cd64e036e7ad4018701dbb54508f7e5121"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "insert_offset_5mm_infeasible",
+   "system": "direct_minimal"
+  },
+  {
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "REFUSED",
+    "n_observations": 0,
+    "reason": "negotiation_refusal",
+    "refusal_codes": [
+     "unreachable_goal"
+    ],
+    "reported_disposition": "REFUSED",
+    "task_success": false
+   },
+   "compared_sha256": {
+    "after": "e30bed444e95c2c71dac9a500569aa687d4d3cedc7c5b5a7dd7f43345280adf1",
+    "before": "e30bed444e95c2c71dac9a500569aa687d4d3cedc7c5b5a7dd7f43345280adf1"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "insert_offset_5mm_infeasible",
+   "system": "haplous_mediated"
+  },
+  {
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "COMPLETE",
+    "n_observations": 3249,
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "compared_sha256": {
+    "after": "52b6b48861b16381b45df499b6542ac27334644799fc648cb710423efe1872f8",
+    "before": "52b6b48861b16381b45df499b6542ac27334644799fc648cb710423efe1872f8"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "insert_stale_mid_motion",
+   "system": "bare_behavior"
+  },
+  {
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "n_observations": 601,
+    "reason": "supervisor_state_freshness",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "compared_sha256": {
+    "after": "16df35c17ede5f429bb567c502d67ba65332f77afba1d858e30208fba41eace0",
+    "before": "16df35c17ede5f429bb567c502d67ba65332f77afba1d858e30208fba41eace0"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "insert_stale_mid_motion",
+   "system": "competent_supervisor"
+  },
+  {
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "COMPLETE",
+    "n_observations": 32600,
+    "reason": "horizon_exhausted",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": true
+   },
+   "compared_sha256": {
+    "after": "3c21ced3ff9e2b733a3821f385bfc43f3f81ae33b552336ca5ca23a531e9c4cc",
+    "before": "3c21ced3ff9e2b733a3821f385bfc43f3f81ae33b552336ca5ca23a531e9c4cc"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "insert_stale_mid_motion",
+   "system": "direct_minimal"
+  },
+  {
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "n_observations": 3651,
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "compared_sha256": {
+    "after": "9b6433a1260c0139ca8a32403af4eff2a735b55ce752987b0f905ff9e75dee53",
+    "before": "9b6433a1260c0139ca8a32403af4eff2a735b55ce752987b0f905ff9e75dee53"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "insert_stale_mid_motion",
+   "system": "haplous_mediated"
+  },
+  {
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "COMPLETE",
+    "n_observations": 3249,
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "compared_sha256": {
+    "after": "e0000d43c1f4b73df198b0bbc20e590fb16272b49b85b63db851a8537f3700db",
+    "before": "e0000d43c1f4b73df198b0bbc20e590fb16272b49b85b63db851a8537f3700db"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "insert_stale_persistent",
+   "system": "bare_behavior"
+  },
+  {
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "n_observations": 2,
+    "reason": "supervisor_state_freshness",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "compared_sha256": {
+    "after": "112d34a28f31d61a0a961aaf9a01bc414608db7d070d445c46ec0030e6e55baa",
+    "before": "112d34a28f31d61a0a961aaf9a01bc414608db7d070d445c46ec0030e6e55baa"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "insert_stale_persistent",
+   "system": "competent_supervisor"
+  },
+  {
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "COMPLETE",
+    "n_observations": 32600,
+    "reason": "horizon_exhausted",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": true
+   },
+   "compared_sha256": {
+    "after": "7060b41da0c9716b326e70905483688f4a546ece58e605a0544a1cd940735356",
+    "before": "7060b41da0c9716b326e70905483688f4a546ece58e605a0544a1cd940735356"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "insert_stale_persistent",
+   "system": "direct_minimal"
+  },
+  {
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "REFUSED",
+    "n_observations": 2,
+    "reason": "pre_execution_state_invalid",
+    "refusal_codes": [
+     "state_too_stale"
+    ],
+    "reported_disposition": "REFUSED",
+    "task_success": false
+   },
+   "compared_sha256": {
+    "after": "8e80967dd66b4250de3e45949e75a72fd84ab18070dc82d87d5cf0cc40681b1b",
+    "before": "8e80967dd66b4250de3e45949e75a72fd84ab18070dc82d87d5cf0cc40681b1b"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "insert_stale_persistent",
+   "system": "haplous_mediated"
+  },
+  {
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "n_observations": 12460,
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "compared_sha256": {
+    "after": "752cb0d924ffd249b3e28bcd547314409173743a436d57e67ec0ffc4c7584203",
+    "before": "752cb0d924ffd249b3e28bcd547314409173743a436d57e67ec0ffc4c7584203"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "slide_command_rejection_persistent",
+   "system": "bare_behavior"
+  },
+  {
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "n_observations": 12460,
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "compared_sha256": {
+    "after": "45d99f829dc635e9a83cf1e9d78ffd4de2a4a2ce5e3bb40c24915a35671b6a3e",
+    "before": "45d99f829dc635e9a83cf1e9d78ffd4de2a4a2ce5e3bb40c24915a35671b6a3e"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "slide_command_rejection_persistent",
+   "system": "competent_supervisor"
+  },
+  {
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "n_observations": 32600,
+    "reason": "horizon_exhausted",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": true
+   },
+   "compared_sha256": {
+    "after": "7b77f324ccee700de5cc2fba43d13cbaea13a341e73c6890269dbce92b484db2",
+    "before": "7b77f324ccee700de5cc2fba43d13cbaea13a341e73c6890269dbce92b484db2"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "slide_command_rejection_persistent",
+   "system": "direct_minimal"
+  },
+  {
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "n_observations": 12461,
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "compared_sha256": {
+    "after": "8516e2d94a2b11e4304d9b909261f7f1268258fb1e917885f085fb635f17c224",
+    "before": "8516e2d94a2b11e4304d9b909261f7f1268258fb1e917885f085fb635f17c224"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "slide_command_rejection_persistent",
+   "system": "haplous_mediated"
+  },
+  {
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "COMPLETE",
+    "n_observations": 3737,
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "compared_sha256": {
+    "after": "c7ced05fbb52a59c78246d1daf53d40515e82c6498a5fd056fa535d5c14c527e",
+    "before": "c7ced05fbb52a59c78246d1daf53d40515e82c6498a5fd056fa535d5c14c527e"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "slide_deadline_infeasible",
+   "system": "bare_behavior"
+  },
+  {
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "n_observations": 2002,
+    "reason": "supervisor_deadline",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "compared_sha256": {
+    "after": "aacf2a1e2316b3e3262792d6a8ca950e11e64236543c9b1c84cb221ae9c9966a",
+    "before": "aacf2a1e2316b3e3262792d6a8ca950e11e64236543c9b1c84cb221ae9c9966a"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "slide_deadline_infeasible",
+   "system": "competent_supervisor"
+  },
+  {
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "COMPLETE",
+    "n_observations": 32600,
+    "reason": "horizon_exhausted",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": true
+   },
+   "compared_sha256": {
+    "after": "491e94245b785a6fa9f664c9b60f3aa15cb842063b7cc889fbc231734759b68f",
+    "before": "491e94245b785a6fa9f664c9b60f3aa15cb842063b7cc889fbc231734759b68f"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "slide_deadline_infeasible",
+   "system": "direct_minimal"
+  },
+  {
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "REFUSED",
+    "n_observations": 0,
+    "reason": "negotiation_refusal",
+    "refusal_codes": [
+     "deadline_unachievable"
+    ],
+    "reported_disposition": "REFUSED",
+    "task_success": false
+   },
+   "compared_sha256": {
+    "after": "32044238c096b92942761c004ab2e5ead97424f3c88decec84f3b04a880ce1df",
+    "before": "32044238c096b92942761c004ab2e5ead97424f3c88decec84f3b04a880ce1df"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "slide_deadline_infeasible",
+   "system": "haplous_mediated"
+  },
+  {
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "COMPLETE",
+    "n_observations": 3937,
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "compared_sha256": {
+    "after": "522172b330e0789c2c9157fa2b6d7e66132d80a00f8e94f9796b7821b9df2ab2",
+    "before": "522172b330e0789c2c9157fa2b6d7e66132d80a00f8e94f9796b7821b9df2ab2"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "slide_disturbance_no_recovery",
+   "system": "bare_behavior"
+  },
+  {
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "n_observations": 2914,
+    "reason": "supervisor_force_limit",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "compared_sha256": {
+    "after": "03496426c285fa3a63ae93fc78730515cc1fe1e0a25632a67468c995d436bd9a",
+    "before": "03496426c285fa3a63ae93fc78730515cc1fe1e0a25632a67468c995d436bd9a"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "slide_disturbance_no_recovery",
+   "system": "competent_supervisor"
+  },
+  {
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "COMPLETE",
+    "n_observations": 32600,
+    "reason": "horizon_exhausted",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": true
+   },
+   "compared_sha256": {
+    "after": "826759ef2f21a23f6806c8ea2dfeed033ba7f11065ff5fa736d45b16ced3a47f",
+    "before": "826759ef2f21a23f6806c8ea2dfeed033ba7f11065ff5fa736d45b16ced3a47f"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "slide_disturbance_no_recovery",
+   "system": "direct_minimal"
+  },
+  {
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "n_observations": 2915,
+    "reason": "hard_constraint_process_force",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "compared_sha256": {
+    "after": "cacfbe25863c5c6f6816ec25ce2b0ebe388eeceaf9e0047fe19dd21810acc5af",
+    "before": "cacfbe25863c5c6f6816ec25ce2b0ebe388eeceaf9e0047fe19dd21810acc5af"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "slide_disturbance_no_recovery",
+   "system": "haplous_mediated"
+  },
+  {
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "n_observations": 3952,
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "compared_sha256": {
+    "after": "b1ef455a94a6deb204bb0cdab6bb4c3d3a316f6ea0e6069012e97d4a17a2e2a5",
+    "before": "b1ef455a94a6deb204bb0cdab6bb4c3d3a316f6ea0e6069012e97d4a17a2e2a5"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "slide_disturbance_recoverable",
+   "system": "bare_behavior"
+  },
+  {
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "n_observations": 3952,
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "compared_sha256": {
+    "after": "3c302f239dc60bd12a42080a880177dcf3708a07f6dca885c594c3319a7481cc",
+    "before": "3c302f239dc60bd12a42080a880177dcf3708a07f6dca885c594c3319a7481cc"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "slide_disturbance_recoverable",
+   "system": "competent_supervisor"
+  },
+  {
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "n_observations": 32600,
+    "reason": "horizon_exhausted",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": true
+   },
+   "compared_sha256": {
+    "after": "aa2b2bfb4c8ecff663f58fef9e88059c4d9fb41e99ac7f33d8ff5f6c86dcd8b3",
+    "before": "aa2b2bfb4c8ecff663f58fef9e88059c4d9fb41e99ac7f33d8ff5f6c86dcd8b3"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "slide_disturbance_recoverable",
+   "system": "direct_minimal"
+  },
+  {
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "n_observations": 3953,
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "compared_sha256": {
+    "after": "317b7774eaefe010df2f073f7fa54f04cae323a30671e88250472c5862fbb31c",
+    "before": "317b7774eaefe010df2f073f7fa54f04cae323a30671e88250472c5862fbb31c"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "slide_disturbance_recoverable",
+   "system": "haplous_mediated"
+  },
+  {
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "COMPLETE",
+    "n_observations": 3971,
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "compared_sha256": {
+    "after": "a987b9141b03fe09d390b937cab8c2c2cd5104563c09e9c0b7050cc6729ad5c2",
+    "before": "a987b9141b03fe09d390b937cab8c2c2cd5104563c09e9c0b7050cc6729ad5c2"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "slide_disturbance_recoverable_ceiling",
+   "system": "bare_behavior"
+  },
+  {
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "n_observations": 2595,
+    "reason": "supervisor_force_limit",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "compared_sha256": {
+    "after": "6320eaba915d2ad02ec646358523cdda9c2d70cebbb16000c8c3083b7553b0ce",
+    "before": "6320eaba915d2ad02ec646358523cdda9c2d70cebbb16000c8c3083b7553b0ce"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "slide_disturbance_recoverable_ceiling",
+   "system": "competent_supervisor"
+  },
+  {
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "COMPLETE",
+    "n_observations": 32600,
+    "reason": "horizon_exhausted",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": true
+   },
+   "compared_sha256": {
+    "after": "552bfb952caf503049f8fa768ef1b61e9420b9d5fb16bd178a20ae5668cd7091",
+    "before": "552bfb952caf503049f8fa768ef1b61e9420b9d5fb16bd178a20ae5668cd7091"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "slide_disturbance_recoverable_ceiling",
+   "system": "direct_minimal"
+  },
+  {
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "COMPLETE",
+    "n_observations": 3945,
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "compared_sha256": {
+    "after": "79d44cbd34c96d3d5fdf82e42f71d63f0cd6c9922b9bee2b6fd2a2398a4b0d13",
+    "before": "79d44cbd34c96d3d5fdf82e42f71d63f0cd6c9922b9bee2b6fd2a2398a4b0d13"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "slide_disturbance_recoverable_ceiling",
+   "system": "haplous_mediated"
+  },
+  {
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "n_observations": 2221,
+    "reason": "machine_fault_tilt_guard",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "compared_sha256": {
+    "after": "a5df5cdc84e5636b92dc480846df15fd9f278fd31a809077c694a3ffe1d83d1f",
+    "before": "a5df5cdc84e5636b92dc480846df15fd9f278fd31a809077c694a3ffe1d83d1f"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "slide_disturbance_severe",
+   "system": "bare_behavior"
+  },
+  {
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "n_observations": 2221,
+    "reason": "machine_fault_tilt_guard",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "compared_sha256": {
+    "after": "3cefa509893d6f25f60b4af5e790a58e9d9dbabe085641c24a789f45bb4e99b3",
+    "before": "3cefa509893d6f25f60b4af5e790a58e9d9dbabe085641c24a789f45bb4e99b3"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "slide_disturbance_severe",
+   "system": "competent_supervisor"
+  },
+  {
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "n_observations": 2221,
+    "reason": "machine_fault_tilt_guard",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "compared_sha256": {
+    "after": "915a048d8b7476a32d1a1c0f262cf2f202b6c3b316492f9b68b5fac6dfb19a98",
+    "before": "915a048d8b7476a32d1a1c0f262cf2f202b6c3b316492f9b68b5fac6dfb19a98"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "slide_disturbance_severe",
+   "system": "direct_minimal"
+  },
+  {
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "n_observations": 2222,
+    "reason": "machine_fault_tilt_guard",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "compared_sha256": {
+    "after": "bd813e3c5d2c90813254f7978a91afb1f7f71e7ea6b33f7bb1cdca968f6f588d",
+    "before": "bd813e3c5d2c90813254f7978a91afb1f7f71e7ea6b33f7bb1cdca968f6f588d"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "slide_disturbance_severe",
+   "system": "haplous_mediated"
+  },
+  {
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "n_observations": 2202,
+    "reason": "machine_fault_machine_fault",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "compared_sha256": {
+    "after": "1232ccb5f724f5c73a569abf44104398996c07b7b2d28ddda2672eb5fd4d01b4",
+    "before": "1232ccb5f724f5c73a569abf44104398996c07b7b2d28ddda2672eb5fd4d01b4"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "slide_machine_fault",
+   "system": "bare_behavior"
+  },
+  {
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "n_observations": 2202,
+    "reason": "machine_fault_machine_fault",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "compared_sha256": {
+    "after": "8c466ac30bb1cfa803f49bfc51a3954f24f570cfd71b67769959a12f7d53a3e3",
+    "before": "8c466ac30bb1cfa803f49bfc51a3954f24f570cfd71b67769959a12f7d53a3e3"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "slide_machine_fault",
+   "system": "competent_supervisor"
+  },
+  {
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "n_observations": 2202,
+    "reason": "machine_fault_machine_fault",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "compared_sha256": {
+    "after": "36092874ecf09d140aeaae05be1928affac98f494f3f05f5a8a52d00c25870c2",
+    "before": "36092874ecf09d140aeaae05be1928affac98f494f3f05f5a8a52d00c25870c2"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "slide_machine_fault",
+   "system": "direct_minimal"
+  },
+  {
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "n_observations": 2203,
+    "reason": "machine_fault_machine_fault",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "compared_sha256": {
+    "after": "c6153a3acc64cca9c9346140a6a324d9e76a98391e23b390da81e4cc66b66f4b",
+    "before": "c6153a3acc64cca9c9346140a6a324d9e76a98391e23b390da81e4cc66b66f4b"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "slide_machine_fault",
+   "system": "haplous_mediated"
+  },
+  {
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "n_observations": 3937,
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "compared_sha256": {
+    "after": "53ece7f4d0216cc212a8b887a2141e3eecc62abe12a6dfcc4a9b741830d3a9bd",
+    "before": "53ece7f4d0216cc212a8b887a2141e3eecc62abe12a6dfcc4a9b741830d3a9bd"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "slide_nominal",
+   "system": "bare_behavior"
+  },
+  {
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "n_observations": 3937,
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "compared_sha256": {
+    "after": "5ad0fd7d7601e4b2427293be26860d9edd50bc07833c87ca3b133cb127cc8645",
+    "before": "5ad0fd7d7601e4b2427293be26860d9edd50bc07833c87ca3b133cb127cc8645"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "slide_nominal",
+   "system": "competent_supervisor"
+  },
+  {
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "n_observations": 32600,
+    "reason": "horizon_exhausted",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": true
+   },
+   "compared_sha256": {
+    "after": "8d8523199ae440f9f158113365436948746a7b13cf069ff19cc674702e52ee1c",
+    "before": "8d8523199ae440f9f158113365436948746a7b13cf069ff19cc674702e52ee1c"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "slide_nominal",
+   "system": "direct_minimal"
+  },
+  {
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "n_observations": 3938,
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "compared_sha256": {
+    "after": "10e16a0da49e315e28cf4781a43d9b34aa39c821832e270dccfe9313ef5c19a9",
+    "before": "10e16a0da49e315e28cf4781a43d9b34aa39c821832e270dccfe9313ef5c19a9"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "slide_nominal",
+   "system": "haplous_mediated"
+  },
+  {
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "COMPLETE",
+    "n_observations": 3937,
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "compared_sha256": {
+    "after": "7cfbbc4d9289924fbdf24c2b74ffc313d834244e962766d8b3a3edaa8a5990a1",
+    "before": "7cfbbc4d9289924fbdf24c2b74ffc313d834244e962766d8b3a3edaa8a5990a1"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "slide_stale_mid_slide",
+   "system": "bare_behavior"
+  },
+  {
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "ABORTED",
+    "n_observations": 2201,
+    "reason": "supervisor_state_freshness",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": false
+   },
+   "compared_sha256": {
+    "after": "d8421927ea5ac45c4de06360c0c1e0f22e6676afd01a149df07695ea1c66e5c2",
+    "before": "d8421927ea5ac45c4de06360c0c1e0f22e6676afd01a149df07695ea1c66e5c2"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "slide_stale_mid_slide",
+   "system": "competent_supervisor"
+  },
+  {
+   "before": {
+    "bounded_success": false,
+    "graded_disposition": "COMPLETE",
+    "n_observations": 32600,
+    "reason": "horizon_exhausted",
+    "refusal_codes": [],
+    "reported_disposition": "ABORTED",
+    "task_success": true
+   },
+   "compared_sha256": {
+    "after": "9c2fc198d5d3c41280cb2f98675cc156f92ba0ff3356d672730832d6fbb9b17a",
+    "before": "9c2fc198d5d3c41280cb2f98675cc156f92ba0ff3356d672730832d6fbb9b17a"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "slide_stale_mid_slide",
+   "system": "direct_minimal"
+  },
+  {
+   "before": {
+    "bounded_success": true,
+    "graded_disposition": "COMPLETE",
+    "n_observations": 21848,
+    "reason": null,
+    "refusal_codes": [],
+    "reported_disposition": "COMPLETE",
+    "task_success": true
+   },
+   "compared_sha256": {
+    "after": "f806433b1c875cf7407c8dbf0fed74908aaba647d4ae7f97fdb18b5bab7aa05e",
+    "before": "f806433b1c875cf7407c8dbf0fed74908aaba647d4ae7f97fdb18b5bab7aa05e"
+   },
+   "differing_fields": [],
+   "identical": true,
+   "scenario_id": "slide_stale_mid_slide",
+   "system": "haplous_mediated"
+  }
+ ]
+}
