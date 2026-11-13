@@ -50,7 +50,7 @@ CANARY = dict(
     expected_disposition="CANARY_DISP_q81",
     tags=("canary_tag_w27",),
 )
-SYSTEMS = ("direct_minimal", "bare_behavior", "competent_supervisor", "haplous_mediated")
+SYSTEMS = ("direct_minimal", "bare_behavior", "competent_supervisor", "haplous_mediated", "g1_incumbent")
 
 
 def _scenario(base_id: str) -> Scenario:
@@ -199,7 +199,7 @@ class _LeakySession(_LeakyMachine):
         return CommandOutcome(outcome.accepted, reason=self._scenario.expected_disposition)
 
 
-@pytest.mark.parametrize("system", ["competent_supervisor", "haplous_mediated"])
+@pytest.mark.parametrize("system", ["competent_supervisor", "haplous_mediated", "g1_incumbent"])
 def test_detector_catches_planted_truth_leak(system):
     scenario = _scenario("insert_dropout_large")
     found = leaks(_run(scenario, system, _LeakyMachine), scenario)
