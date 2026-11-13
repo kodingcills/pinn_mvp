@@ -50,7 +50,7 @@ $VENV/bin/python -m evaluation.run_registry verify --root results/recordings/reg
 A healthy instance shows all of the following.
 
 - Step 1 prints a path under `$REPO`. A path under another checkout means `PYTHONPATH` is unset and every result would test the wrong code.
-- `haplous doctor` exits 0 with `haplous core OK 0.5.0`, `mujoco OK 3.11.0`, `rerun OK`. The `result directory` row is `$W/haplous_runs` once Launch has run. `robosuite`, `maniskill/sapien`, `simplerenv`, `isaaclab`, `ContactBench` `NOT INSTALLED` and `datasets MISSING` are expected and do not block anything here.
+- `haplous doctor` exits 0 with `haplous core OK 0.5.0`, `mujoco OK 3.11.0`, `rerun OK`. The `result directory` row names `$W/haplous_runs`. It reads `MISSING` until the first `haplous run` creates it, and doctor still exits 0. A path under `results/external_eval` means Launch did not run. `robosuite`, `maniskill/sapien`, `simplerenv`, `isaaclab`, `ContactBench` `NOT INSTALLED` and `datasets MISSING` are expected and do not block anything here.
 - `hes doctor` prints `"mujoco": true`.
 - `rerun-cli 0.43.1` and an `ffprobe` version line.
 - The committed recording verifies with `"problems": []`. This command uses the read-only `check()`. It does not append to the ledger.
@@ -143,8 +143,8 @@ The modes are `corrupt FILE`, `shift-pose TICK DZ_M` and `shift-state TICK DZ_M`
 There are no daemons. Kill only a `rerun` viewer you started yourself, by its PID. Never kill by process name.
 
 ```bash
-rm -rf "${W:?}/registry" "${W:?}/bad" "${W:?}/m2/registry"   # scratch registries; reports, .rrd and .mp4 stay
-ls "$W"                                                       # evidence survives here
+rm -rf "${W:?}/registry" "${W:?}/bad/registry" "${W:?}/m2/registry"   # scratch registries only
+ls "$W" "$W/evidence" "$W/bad/out"                                      # evidence survives here
 git -C "$REPO" status --short                                 # expect only your intended changes
 ```
 
