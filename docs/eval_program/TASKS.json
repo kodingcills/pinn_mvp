@@ -199,11 +199,12 @@
       "deps": [
         "M4.1"
       ],
-      "status": "awaiting_verification",
+      "status": "verified",
       "exit_check": "AST test passes; planted scenario read in G1 fails it",
       "commit": "54fff7f",
       "proof": [],
-      "retries": 0
+      "retries": 0,
+      "verdict": "PASS by opus verifier at 54fff7f: partition correct over all 31 Scenario fields; alias/getattr/helper evasions caught; locals() and shadowed allow-listed callee missed (deliberate evasions only)"
     },
     {
       "id": "M4.2a",
