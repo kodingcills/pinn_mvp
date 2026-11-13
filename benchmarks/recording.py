@@ -3,9 +3,11 @@ defined in `evaluation.replay`.
 
 The recorder attaches through `mujoco_backend.build_realization(
 machine_factory=...)`. `RecordingMachine` is a `MuJoCoMachine` whose session
-reads state after every physics step and copies what the session returned to
-the runtime. It never writes physics state, so recording cannot change the
-episode (tests/test_recording_replay.py proves this A/A).
+is wrapped in the backend-neutral `benchmarks.episode_log.LoggingSession`
+(telemetry and events) plus the MuJoCo-only add-ons: the state stream read
+after every physics step, the model, disturbance and fault-window events. It
+never writes physics state, so recording cannot change the episode
+(tests/test_recording_replay.py proves this A/A).
 
     python -m benchmarks.recording --scenario insert_dropout_large
 
@@ -28,7 +30,7 @@ import sys
 import time
 from collections.abc import Iterator
 from contextlib import contextmanager
-from dataclasses import asdict, replace
+from dataclasses import replace
 from pathlib import Path
 from typing import Any
 from unittest import mock
@@ -37,12 +39,12 @@ import mujoco
 import numpy as np
 import pyarrow as pa
 
+from benchmarks.episode_log import EpisodeLog, LoggingSession
 from benchmarks.heb import mujoco_backend, systems, tasks
 from benchmarks.heb.metrics import grade_run
 from benchmarks.heb.protocol import Scenario, SystemRun
 from evaluation import replay as fmt
 from haplous.adapters.mujoco_adapter import MuJoCoMachine, _MuJoCoSession
-from haplous.machine import CommandOutcome, MachineObservation, ServoCommand
 
 TRACKED_SITE = "peg_tip"
 
@@ -91,27 +93,15 @@ class _StateStream:
         self._writer.close()
 
 
-def _observation_row(obs: MachineObservation | None) -> dict[str, Any] | None:
-    if obs is None:
-        return None
-    row = asdict(obs)
-    row["extra"] = dict(obs.extra)
-    return row
-
-
 class EpisodeRecorder:
     """Owns the open files of one recording. One session per recorder."""
 
     def __init__(self, out_dir: Path, chunk_ticks: int = 1024) -> None:
         self.out = out_dir
         self.chunk_ticks = chunk_ticks
-        self.out.mkdir(parents=True, exist_ok=True)
-        self._telemetry = open(self.out / fmt.TELEMETRY, "w", encoding="utf-8")
-        self._events = open(self.out / fmt.EVENTS, "w", encoding="utf-8")
+        self.log = EpisodeLog(out_dir)
         self.stream: _StateStream | None = None
         self.machine: RecordingMachine | None = None
-        self.n_observations = 0
-        self.dt = 0.0
 
     def machine_factory(self, bundle, *, config) -> RecordingMachine:
         if self.machine is not None:
@@ -122,27 +112,11 @@ class EpisodeRecorder:
     def attach_model(self, model: mujoco.MjModel) -> None:
         mujoco.mj_saveLastXML(str(self.out / fmt.MODEL_XML), model)
         mujoco.mj_saveModel(model, str(self.out / fmt.MODEL_MJB), None)
-        self.dt = float(model.opt.timestep)
+        self.log.dt = float(model.opt.timestep)
         self.stream = _StateStream(self.out / fmt.STATE, model, self.chunk_ticks)
 
-    def _line(self, fh, row: dict[str, Any]) -> None:
-        fh.write(json.dumps(row, sort_keys=True, default=str) + "\n")
-
-    def observation(self, tick: int, obs: MachineObservation | None) -> None:
-        self.n_observations += obs is not None
-        self._line(self._telemetry, {"tick": tick, "host_monotonic_ns": time.monotonic_ns(),
-                                     "kind": "observation", "observation": _observation_row(obs)})
-
-    def command(self, tick: int, command: ServoCommand, outcome: CommandOutcome) -> None:
-        self._line(self._telemetry, {"tick": tick, "host_monotonic_ns": time.monotonic_ns(),
-                                     "kind": "command", "command": asdict(command), "outcome": asdict(outcome)})
-
-    def machine_event(self, tick: int, kind: str, **payload: Any) -> None:
-        self._line(self._events, {"source": "machine", "tick": tick, "t_s": tick * self.dt,
-                                  "clock": "sim", "kind": kind, "payload": payload})
-
     def _tick_at(self, t_s: float) -> int:
-        return int(math.ceil(t_s / self.dt - 1e-6))
+        return int(math.ceil(t_s / self.log.dt - 1e-6))
 
     def finish(self, scenario: Scenario, run: SystemRun, evidence, graded: tuple) -> dict[str, Any]:
         assert self.machine is not None and self.stream is not None
@@ -150,19 +124,14 @@ class EpisodeRecorder:
         windows = [("dropout", lo, hi) for lo, hi in config.dropout_windows_s]
         windows += [("stale", lo, hi) for lo, hi, _ in config.stale_windows_s]
         windows += [("command_rejection", lo, hi) for lo, hi in config.command_rejection_windows_s]
+        log = self.log
         for name, lo, hi in windows:
-            self.machine_event(self._tick_at(lo), f"{name}_window_start", start_s=lo, end_s=hi)
-            self.machine_event(int(math.floor(hi / self.dt + 1e-6)), f"{name}_window_end", start_s=lo, end_s=hi)
+            log.machine_event(self._tick_at(lo), f"{name}_window_start", start_s=lo, end_s=hi)
+            log.machine_event(int(math.floor(hi / log.dt + 1e-6)), f"{name}_window_end", start_s=lo, end_s=hi)
         if config.fault_at_s is not None:
-            self.machine_event(self._tick_at(config.fault_at_s), "fault_scheduled", fault_at_s=config.fault_at_s)
-        for event in evidence.events if evidence is not None else ():
-            # Evidence t_s is the runtime's own sim-time claim (observation source time).
-            self._line(self._events, {"source": "haplous", "seq": event.seq, "tick": round(event.t_s / self.dt),
-                                      "t_s": event.t_s, "clock": "sim", "kind": event.kind,
-                                      "payload": event.payload})
+            log.machine_event(self._tick_at(config.fault_at_s), "fault_scheduled", fault_at_s=config.fault_at_s)
+        log.haplous_events(evidence.events if evidence is not None else ())
         self.stream.close()
-        self._telemetry.close()
-        self._events.close()
         disposition, task_success, bounded, violations, _ = graded
         model = self.machine._model
         metadata = {
@@ -175,9 +144,9 @@ class EpisodeRecorder:
             "state_spec": int(fmt.STATE_SPEC),
             "state_spec_name": "mjSTATE_INTEGRATION",
             "state_size": self.stream.size,
-            "timestep_s": self.dt,
+            "timestep_s": log.dt,
             "n_ticks": self.stream.total,
-            "n_observations": self.n_observations,
+            "n_observations": log.n_observations,
             "chunk_ticks": self.chunk_ticks,
             "tracked_site": TRACKED_SITE,
             "nq": model.nq, "nv": model.nv,
@@ -189,38 +158,26 @@ class EpisodeRecorder:
                 "bounded_success": bounded, "hard_violations": list(violations),
             },
         }
-        (self.out / fmt.METADATA).write_text(json.dumps(metadata, indent=2, sort_keys=True, default=str) + "\n")
+        log.close(metadata)
         return metadata
 
 
-class _RecordingSession(_MuJoCoSession):
-    def __init__(self, machine: RecordingMachine, *, start_position_m, horizon_s) -> None:
-        super().__init__(machine, start_position_m=start_position_m, horizon_s=horizon_s)
-        self._recorder = machine.recorder
-        self._tick = 0
-        self._recorder.stream.append(0, self._data)
+class _RecordingSession(LoggingSession):
+    """Neutral logging plus the MuJoCo add-ons. A tick is one physics step
+    (a fault step does not advance MjData.time, so it is not a tick)."""
 
-    def observe(self) -> MachineObservation | None:
-        obs = super().observe()
-        self._recorder.observation(self._tick, obs)
-        return obs
-
-    def apply(self, command: ServoCommand) -> CommandOutcome:
-        outcome = super().apply(command)
-        self._recorder.command(self._tick, command, outcome)
-        return outcome
+    def __init__(self, inner: _MuJoCoSession, recorder: EpisodeRecorder) -> None:
+        super().__init__(inner, recorder.log, clock=lambda: float(inner._data.time))
+        self._stream = recorder.stream
+        self._stream.append(0, inner._data)
 
     def step(self) -> None:
-        time_before, fault_before = self._data.time, self._fault
-        disturbances_before = set(self._applied_disturbances)
+        tick, disturbances_before = self.tick, set(self.inner._applied_disturbances)
         super().step()
-        for t_s in sorted(self._applied_disturbances - disturbances_before):
-            self._recorder.machine_event(self._tick, "disturbance_applied", scheduled_s=t_s)
-        if self._fault != fault_before:
-            self._recorder.machine_event(self._tick, "machine_fault", fault=self._fault)
-        if self._data.time != time_before:
-            self._tick += 1
-            self._recorder.stream.append(self._tick, self._data)
+        for t_s in sorted(self.inner._applied_disturbances - disturbances_before):
+            self.log.machine_event(tick, "disturbance_applied", scheduled_s=t_s)
+        if self.tick != tick:
+            self._stream.append(self.tick, self.inner._data)
 
 
 class RecordingMachine(MuJoCoMachine):
@@ -234,9 +191,8 @@ class RecordingMachine(MuJoCoMachine):
     def open_session(self, *, start_position_m, horizon_s) -> _RecordingSession:
         if self._session is not None:
             raise RuntimeError("a recording holds exactly one session")
-        self.open_session_calls.append((start_position_m, horizon_s))
-        self._session = _RecordingSession(self, start_position_m=start_position_m, horizon_s=horizon_s)
-        return self._session
+        return _RecordingSession(super().open_session(start_position_m=start_position_m, horizon_s=horizon_s),
+                                 self.recorder)
 
 
 @contextmanager
