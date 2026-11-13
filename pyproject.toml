@@ -27,6 +27,7 @@ registry = [
 replay = [
     "pyarrow>=25.0.1",
     "rerun-sdk>=0.43.1",
+    "mcap==1.6.0",
 ]
 # Development and CI tooling.
 dev = [
@@ -42,6 +43,7 @@ all = [
     "cryptography>=43",
     "hypothesis>=6.100",
     "matplotlib>=3.11.1",
+    "mcap==1.6.0",
     "pyarrow>=25.0.1",
     "pyyaml>=6.0",
     "pytest>=9.1.1",
