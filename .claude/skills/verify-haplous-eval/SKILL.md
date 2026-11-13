@@ -112,7 +112,7 @@ trust_root     PASS  artifact hashes equal the trusted ledger
 
 ### Which check catches what
 
-Each row below was measured by planting the defect with `plant_defect.py` in a copy of `m2-heb-insert_dropout_large`. "Re-sealed" means the helper wrote a fresh M0 ledger over the tampered files, ending in `VERIFIED`, as a forger would.
+Each row below was measured by planting the defect with `plant_defect.py` in a copy of `m2-heb-insert_dropout_large`. The last two rows use the planting helpers in `tests/test_negative_recording.py`. "Re-sealed" means the helper wrote a fresh M0 ledger over the tampered files, ending in `VERIFIED`, as a forger would.
 
 | Planted defect | m0_verify | replay | rrd_verify | mp4 | trust_root | `m2_gate --existing` |
 |---|---|---|---|---|---|---|
@@ -121,12 +121,16 @@ Each row below was measured by planting the defect with `plant_defect.py` in a c
 | `shift-pose 1000 0.001` (observed tick, re-sealed) | PASS | FAIL rc=1 `max_abs_error_m: 0.001, pass: false` | PASS | PASS | FAIL `['telemetry.jsonl']` | rc=1 at item 3 |
 | `shift-state 1000 0.001` (observed tick, re-sealed) | PASS | FAIL rc=1 `max_abs_error_m: 0.001` | PASS | PASS | not run | not run |
 | `shift-state 2100 0.001` (dropout tick, re-sealed) | PASS | PASS | PASS | PASS | FAIL `['state.arrow']` | **rc=0, 11/11 pass** |
+| `temporal_hold_entered` removed from `events.jsonl` (re-sealed) | PASS | PASS | PASS | PASS | FAIL `['events.jsonl']` | **rc=0, 11/11 pass** |
+| clock in wrong unit (`timestep_s`, `sim_time_s` or event `t_s` x1000, re-sealed) | PASS | FAIL rc=2 `replay refused: ...` naming the clock | no file | no file | FAIL (the edited file) | rc=1 at item 3 (`timestep_s` case) |
 
 How to read it:
 
 - `m0_verify` catches any byte change the ledger did not record. It is blind to a re-sealed ledger.
 - `replay` compares the replayed `peg_tip` with telemetry at observed ticks only (3251 of 3651 here). It catches re-sealed tampering of state or telemetry at those ticks.
 - State at ticks with no observation (the dropout window, ticks 2000 to 2400 here), and model changes that do not move `peg_tip`, are protected only by M0 SHA-256 hashes. This limit is documented in `docs/eval_program/KNOWN_ISSUES.md`. After a re-seal, only `trust_root` against a trusted ledger catches them. For a committed recording, the trusted ledger is the one in git, so also run `git diff --exit-code -- results/recordings`.
+- Haplous events in `events.jsonl` (holds, revalidations, aborts) are protected only by M0 SHA-256 hashes. Replay checks each event's `t_s` against its tick, not whether the event happened. After a re-seal, a removed event is caught only by `trust_root`. `tests/test_negative_recording.py::test_resealed_event_removal_is_caught_only_by_trust_root` pins this limit.
+- Replay refuses a clock in the wrong unit: `timestep_s` must equal the saved model's timestep, `sim_time_s` must equal tick x timestep within 1e-9 s, and each event's `t_s` must lie within half a tick of its tick.
 - `rrd_verify` and `mp4` prove the derived files are well formed. They do not prove the state is genuine.
 
 To reproduce a row:
@@ -164,7 +168,6 @@ Do not claim to verify these. Their owners in `docs/eval_program/TASKS.json` add
 
 - `M3.1`. `constrained_slide` through the same record, replay, M0 and HES path.
 - `M3.2`. A pass-through arm, and A/A against direct across both task families.
-- `M3.3`. Negative tests for truth leakage at the execution boundary, wrong units or frames, wrong scenario pairing, and unsupported capability claims.
 - `M4.1`. The G1 competent incumbent per task. Today's nearest system is `competent_supervisor` (see `features/compare-systems.md`). It is not G1.
 - `M4.2`. A matched direct, G1 and Haplous campaign with HES metrics recomputed from raw rows.
 - `M5.1`. A fresh-agent cold start.

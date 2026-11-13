@@ -52,6 +52,7 @@ EVENTS = "events.jsonl"
 METADATA = "metadata.json"
 STATE_SPEC = mujoco.mjtState.mjSTATE_INTEGRATION
 POSE_TOLERANCE_M = 1e-9
+CLOCK_TOLERANCE_S = 1e-9  # float drift of tick * dt over 3651 ticks is 1.6e-13 s (measured)
 CAMERA_LOOKAT_M = (0.0, 0.0, 0.004)  # pegsim puts the hole mouth at the world origin
 CAMERA_DISTANCE_M = 0.05
 FORBIDDEN_MODULES = ("haplous.runtime", "benchmarks.heb", "pegsim.control")
@@ -110,8 +111,11 @@ def open_recording(root: Path, run_id: str) -> Recording:
     model = mujoco.MjModel.from_binary_path(str(art / MODEL_MJB))
     if meta["state_spec"] != int(STATE_SPEC) or mujoco.mj_stateSize(model, STATE_SPEC) != meta["state_size"]:
         raise ReplayRefused("state spec or size does not match the saved model")
+    if meta["timestep_s"] != model.opt.timestep:
+        raise ReplayRefused(f"timestep_s {meta['timestep_s']} does not match the saved model's {model.opt.timestep} s")
     rec = Recording(run_id, art, meta, model)
     _check_stream(rec)
+    _check_event_clock(rec)
     return rec
 
 
@@ -127,18 +131,32 @@ def _batches(rec: Recording) -> Iterator[pa.RecordBatch]:
 
 
 def _check_stream(rec: Recording) -> None:
-    expected = 0
+    expected, dt = 0, rec.metadata["timestep_s"]
     for batch in _batches(rec):
         ticks = batch.column("tick").to_numpy()
         want = np.arange(expected, expected + len(ticks))
         if not np.array_equal(ticks, want):
             bad = int(want[np.argmax(ticks != want)])
             raise ReplayRefused(f"state stream is missing sample at tick {bad}")
+        drift = np.abs(batch.column("sim_time_s").to_numpy() - ticks * dt)
+        if drift.max() > CLOCK_TOLERANCE_S:
+            bad = int(ticks[np.argmax(drift)])
+            raise ReplayRefused(f"sim_time_s at tick {bad} is not tick * timestep_s (wrong unit or clock)")
         expected += len(ticks)
     if expected != rec.metadata["n_ticks"]:
         raise ReplayRefused(
             f"state stream clipped: {expected} ticks on disk, metadata records {rec.metadata['n_ticks']}"
         )
+
+
+def _check_event_clock(rec: Recording) -> None:
+    dt = rec.metadata["timestep_s"]
+    for event in _jsonl(rec.artifacts / EVENTS):
+        # The recorder maps an event to round(t_s / dt), so t_s lies within half a tick of it.
+        if abs(event["t_s"] / dt - event["tick"]) > 0.5 + 1e-6:
+            raise ReplayRefused(
+                f"event {event['kind']} at tick {event['tick']}: t_s {event['t_s']} is not that tick's sim time"
+            )
 
 
 def iter_states(rec: Recording) -> Iterator[tuple[int, float, np.ndarray]]:

@@ -7,7 +7,7 @@ A user reopens a historical MuJoCo execution from its archive alone, without the
 - `replay-pose` replays every tick with `mj_setState` and `mj_forward` and compares `peg_tip` with telemetry at every observed tick.
 - `replay-export` writes `.rrd` and `.mp4` from the archive.
 - `replay-events` shows Haplous and fault events on the same timeline as state.
-- `replay-refuse` refuses a recording that fails M0, has a wrong model digest, or has a clipped or gapped state stream.
+- `replay-refuse` refuses a recording that fails M0, has a wrong model digest, has a clipped or gapped state stream, or records a clock in the wrong unit (`timestep_s`, `sim_time_s`, event `t_s`).
 - `replay-isolation` loads none of `haplous.runtime`, `benchmarks.heb` or `pegsim.control`.
 
 ## How to get to it (user POV)
