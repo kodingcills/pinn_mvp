@@ -9,8 +9,11 @@ __pycache__/
 MUJOCO_LOG.TXT
 
 # Agent/editor configuration is machine-local. Never commit these trees.
+# Exception: the vendored pstack skills/agents, so cloud sessions can load them.
 .agents/
-.claude/
+.claude/*
+!.claude/skills/
+!.claude/agents/
 .opencode/
 .omo/
 .codegraph
