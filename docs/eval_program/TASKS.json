@@ -49,10 +49,13 @@
       "deps": [
         "M2.2"
       ],
-      "status": "in_progress",
+      "status": "awaiting_verification",
       "exit_check": "skill journey passes; a deliberately broken recording fails it",
-      "commit": null,
-      "proof": [],
+      "commit": "0c28024a2c4744955eeeaa7d9cd1f2293bd005e1",
+      "proof": [
+        ".claude/skills/verify-haplous-eval/SKILL.md journey rc 0 in env -i",
+        "plant_defect.py: 3 defect kinds"
+      ],
       "retries": 0
     },
     {
