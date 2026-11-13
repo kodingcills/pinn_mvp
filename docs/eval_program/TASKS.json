@@ -66,11 +66,17 @@
       "deps": [
         "M2.2"
       ],
-      "status": "awaiting_verification",
+      "status": "verified",
       "exit_check": "diff touches no recorder/HES-core file; slide replay passes the M2 gate",
       "commit": "8d752f8690a0f631c3a2da76ab3e73a4100ab46d",
       "proof": [],
-      "retries": 0
+      "retries": 0,
+      "integrated_as": [
+        "b903330",
+        "a747def",
+        "2086619"
+      ],
+      "verdict": "PASS (pipeline) by sonnet verifier at 8d752f8; slide validity partial: 2/9 scenarios depend on 16-tile mesh artifact"
     },
     {
       "id": "M3.2",
@@ -92,7 +98,8 @@
       "deps": [
         "M3.1",
         "M3.2",
-        "M3.3"
+        "M3.3",
+        "M3.4"
       ],
       "status": "pending",
       "exit_check": "G1 spec + tests; not weakened vs HEB competent_supervisor",
@@ -114,6 +121,19 @@
       "retries": 0
     },
     {
+      "id": "M3.4",
+      "title": "Scenario lookup through the HEB task registry (no hard-coded pack list in benchmarks/recording.py:276); gate 9 plain comparator includes grade_run",
+      "owner": null,
+      "deps": [
+        "M3.1"
+      ],
+      "status": "pending",
+      "exit_check": "adding a third registered pack needs no recorder edit (test with a stub registration); gate 9 compares graded vs graded",
+      "commit": null,
+      "proof": [],
+      "retries": 0
+    },
+    {
       "id": "M4.2",
       "title": "Matched direct/G1/Haplous dev campaign, nominal+faulted, HES metrics recomputed from raw rows",
       "owner": null,
@@ -121,7 +141,7 @@
         "M4.1"
       ],
       "status": "pending",
-      "exit_check": "independent recompute equals report; planted score/trace mismatch fails",
+      "exit_check": "independent recompute equals report; planted score/trace mismatch fails; slide_disturbance_no_recovery and slide_disturbance_recoverable_ceiling excluded from scientific estimates (mesh artifact, KNOWN_ISSUES) unless re-run on a validated finer mesh in a new scoring epoch",
       "commit": null,
       "proof": [],
       "retries": 0
