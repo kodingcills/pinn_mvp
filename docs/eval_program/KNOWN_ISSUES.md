@@ -59,3 +59,5 @@ Current head of `claude/magical-curie-si1vjr` (M5.2 integrated, 2026-11-13): **8
 | MuJoCo-path A/A runs only in `scripts/m5_episode_log.py`; a unit test catches a perturbed return value only on the external path | M5.2 verifier | open; add a unit-level MuJoCo return-value check |
 | External episode log is not wrapped in an M0 run (design says identity stays an M0 run) | M5.2 owner | open |
 | `ExternalMachineAdapter.health()` returns the task's `ground_truth()`: grader truth reachable through the Machine protocol (pre-existing; LoggingMachine passes it through) | M5.2 owner | open; truth-leak risk for external tasks |
+| MCAP export not opened in a real Foxglove (unavailable here); fitness judged from the MCAP well-known encodings (`json` + `jsonschema`) only. The MCAP is a derived view, not M0-hashed: never a trust root | M5.4 owner + verifier | open |
+| `tests/test_episode_mcap.py` (like the pyarrow-based replay tests) imports an optional extra at module top: without `.[replay]` the suite stops at collection | M5.4 verifier | consistent with existing tests; optional `pytest.importorskip` |

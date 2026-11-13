@@ -307,12 +307,22 @@
       "deps": [
         "M5.2"
       ],
-      "status": "in_progress",
+      "status": "verified",
       "exit_check": "round-trip test; opens with per-channel schemas",
       "design": "docs/eval_program/designs/M5_backend_neutral_episode_log.md",
-      "commit": null,
-      "proof": [],
-      "retries": 0
+      "commit": "efce593",
+      "proof": [
+        "benchmarks/episode_mcap.py",
+        "tests/test_episode_mcap.py",
+        "scripts/m5_mcap_export.py",
+        "results/m5/mcap_export.json",
+        "results/m5/robosuite-log.mcap"
+      ],
+      "retries": 0,
+      "integrated_as": [
+        "f0e4528"
+      ],
+      "verdict": "PASS by sonnet verifier at efce593: diff scope clean; round trip exact and deterministic across processes on both logs; committed MCAP equals fresh export; independent make_reader read: 4 channels json/jsonschema, log_time = tick*dt; planted defect caught. Full suite deferred to the combined M5.3+M5.4 integration run (owner: 889/4/1)"
     },
     {
       "id": "M5.5",
