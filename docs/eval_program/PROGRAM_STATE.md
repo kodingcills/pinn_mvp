@@ -12,7 +12,7 @@ Read this first in a new session. Then `TASKS.json` (DAG and ownership), `DECISI
 
 | Milestone | Status | Proof |
 |---|---|---|
-| M2 record → replay → verify | M2.1 **verified** (gate 11/11 by a non-author at 6201f9d); M2.3 verify skill pending | `results/recordings/m2-heb-insert_dropout_large.replay_report.json`, `scripts/m2_gate.py`, `tests/test_recording_replay.py` |
+| M2 record → replay → verify | **DONE.** M2.1 **verified** (gate 11/11 by a non-author at 6201f9d); M2.3 verify skill **verified** (cold-reader journey by a non-author at 0c28024) | `results/recordings/m2-heb-insert_dropout_large.replay_report.json`, `scripts/m2_gate.py`, `tests/test_recording_replay.py` |
 | M3 two task packs, one pipeline | pending | |
 | M4 direct / G1 / Haplous campaign | pending | |
 | M5 fresh-agent cold start | pending | |

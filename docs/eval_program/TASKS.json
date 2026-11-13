@@ -49,14 +49,15 @@
       "deps": [
         "M2.2"
       ],
-      "status": "awaiting_verification",
+      "status": "verified",
       "exit_check": "skill journey passes; a deliberately broken recording fails it",
       "commit": "0c28024a2c4744955eeeaa7d9cd1f2293bd005e1",
       "proof": [
         ".claude/skills/verify-haplous-eval/SKILL.md journey rc 0 in env -i",
         "plant_defect.py: 3 defect kinds"
       ],
-      "retries": 0
+      "retries": 0,
+      "verdict": "PASS by sonnet verifier at 0c28024 (cold-reader journey, 5 defects incl. 2 of its own)"
     },
     {
       "id": "M3.1",
@@ -65,9 +66,9 @@
       "deps": [
         "M2.2"
       ],
-      "status": "in_progress",
+      "status": "awaiting_verification",
       "exit_check": "diff touches no recorder/HES-core file; slide replay passes the M2 gate",
-      "commit": null,
+      "commit": "8d752f8690a0f631c3a2da76ab3e73a4100ab46d",
       "proof": [],
       "retries": 0
     },
@@ -101,7 +102,7 @@
     },
     {
       "id": "M3.3",
-      "title": "Negative tests: truth leakage at the execution boundary, wrong units/frames, wrong scenario pairing, unsupported capability claim",
+      "title": "Negative tests: truth leakage at the execution boundary, wrong units/frames, wrong scenario pairing, unsupported capability claim; also: document and test that re-sealed events.jsonl tampering is caught only by trust_root (verify-haplous-eval SKILL.md \"How to read it\")",
       "owner": null,
       "deps": [
         "M3.1"
