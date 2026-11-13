@@ -64,3 +64,15 @@ Every item must be reproduced by a verifier who did not write the code, at the h
 | `~/.cursor/projects/*/agent-transcripts` | Claude Code keeps transcripts under `~/.claude/projects/`. Not needed for this run |
 | `/loop`, background watchers, PR event subscriptions | No persistent process. State lives in these files, and every unit ends in a commit |
 | Bun/Node scripts (`watch-pr`, `check-plan`) | Not installed. Not needed |
+
+## Operator decisions waiting (defaults applied, work continues)
+
+**OD-1. Capability negotiation vs required command mode.** Measured by M3.3: Haplous's
+`negotiate()` refuses only an empty command-mode set, so a machine that lacks the mode a
+behaviour needs (cartesian impedance for insertion) is admitted and the episode runs to COMPLETE.
+Fixing it changes capability negotiation and the intent type, which AGENTS.md puts under
+behaviour-freeze (needs a locked design and parity tests).
+**Default applied:** no change. The gap stays pinned by a strict xfail, and every M4 report
+discloses it. **To change it,** tell the coordinator to draft the locked design (intent declares
+required modes; negotiation refuses a missing mode) with parity tests showing no current HEB
+scenario changes disposition.

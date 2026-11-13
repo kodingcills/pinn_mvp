@@ -106,7 +106,8 @@
         "M3.1",
         "M3.2",
         "M3.3",
-        "M3.4"
+        "M3.4",
+        "M3.5"
       ],
       "status": "pending",
       "exit_check": "G1 spec + tests; not weakened vs HEB competent_supervisor",
@@ -121,10 +122,15 @@
       "deps": [
         "M3.1"
       ],
-      "status": "in_progress",
+      "status": "awaiting_verification",
       "exit_check": "each negative test fails a planted defect",
-      "commit": null,
-      "proof": [],
+      "commit": "ae4318f",
+      "proof": [
+        "tests/test_negative_truth_leak.py",
+        "tests/test_negative_recording.py",
+        "tests/test_negative_pairing.py",
+        "tests/test_negative_capability.py"
+      ],
       "retries": 0
     },
     {
@@ -146,6 +152,19 @@
       "verdict": "FAIL at 03ed038: malformed registration breaks all lookups; duplicate id silently shadows built-in; registration without scenarios silently skipped"
     },
     {
+      "id": "M3.5",
+      "title": "Stop the scenario id (which names faults) reaching intent.goal_description in benchmarks/heb/systems.py build_intent; flip M3.3's strict xfail test_scenario_id_does_not_cross_execution_boundary to a passing test",
+      "owner": null,
+      "deps": [
+        "M3.3"
+      ],
+      "status": "pending",
+      "exit_check": "xfail becomes pass; HEB dispositions/grades unchanged for all insertion+slide scenarios (paired before/after table)",
+      "commit": null,
+      "proof": [],
+      "retries": 0
+    },
+    {
       "id": "M4.2",
       "title": "Matched direct/G1/Haplous dev campaign, nominal+faulted, HES metrics recomputed from raw rows",
       "owner": null,
@@ -153,7 +172,7 @@
         "M4.1"
       ],
       "status": "pending",
-      "exit_check": "independent recompute equals report; planted score/trace mismatch fails; slide_disturbance_no_recovery and slide_disturbance_recoverable_ceiling excluded from scientific estimates (mesh artifact, KNOWN_ISSUES) unless re-run on a validated finer mesh in a new scoring epoch; any pass-through/A-A around HaplousSystem must compare machine-received commands+outcomes (benchmarks/passthrough.py _Tap records emitted commands only)",
+      "exit_check": "independent recompute equals report; planted score/trace mismatch fails; slide_disturbance_no_recovery and slide_disturbance_recoverable_ceiling excluded from scientific estimates (mesh artifact, KNOWN_ISSUES) unless re-run on a validated finer mesh in a new scoring epoch; any pass-through/A-A around HaplousSystem must compare machine-received commands+outcomes (benchmarks/passthrough.py _Tap records emitted commands only); report must disclose that Haplous capability negotiation does not check the behaviour-required command mode (OD-1 default)",
       "commit": null,
       "proof": [],
       "retries": 0
