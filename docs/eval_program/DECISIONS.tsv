@@ -1,0 +1,7 @@
+ts	phase	decision	why	evidence	result
+2026-11-13T02:15:35Z	start	program run begins on integration branch reset to main 4ca4e71	PR 6 merged, so the designated branch restarts from latest main	git log origin/main -1	open
+2026-11-13T02:15:35Z	frame	recorder attaches via the existing build_realization machine_factory hook, wrapping MuJoCoMachine's session	zero edits to HEB, haplous or pegsim; both task packs run on MuJoCoMachine so one recorder covers both	benchmarks/heb/mujoco_backend.py:17, benchmarks/heb/tasks.py:51,76	decided
+2026-11-13T02:15:35Z	frame	recording identity = an M0 run; no fourth run-id system	CLI RunRegistry, evaluation/experiment and M0 already exist; mandate forbids competing identities	haplous/cli/registry.py:77, evaluation/run_registry.py	decided
+2026-11-13T02:15:35Z	frame	3D replay fills the existing haplous replay --ui stub instead of a new CLI	the stub prints 'viewer: not wired'; extending it keeps one entry point	haplous/cli/inspection.py:161-173	decided
+2026-11-13T02:15:35Z	frame	all owner work integrates onto the one designated branch; workers use local worktree branches	session git policy allows pushing only the designated branch; one PR carries stacked verified commits	session git instructions	decided
+2026-11-13T02:15:35Z	frame	verifier runs on a different Claude model than the owner (opus owner, sonnet verifier)	only Claude models exist here; pstack's different-family rule adapted to different model	Agent tool model enum	decided
