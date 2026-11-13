@@ -160,9 +160,9 @@
       "deps": [
         "M3.3"
       ],
-      "status": "fix_round",
+      "status": "awaiting_verification",
       "exit_check": "xfail becomes pass; HEB dispositions/grades unchanged for all insertion+slide scenarios (paired before/after table)",
-      "commit": "b4ea44d",
+      "commit": "3fa0ec5 (on b4ea44d)",
       "proof": [],
       "retries": 1,
       "note": "code fix done (108/108 parity, HES identical, xfail flipped); evidence report 11.6 MB -> fix round shrinks it to digests. INTEGRATE SQUASHED (cherry-pick -n b4ea44d + fix) so the 11.6 MB blob never enters integration history."
