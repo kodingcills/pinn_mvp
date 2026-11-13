@@ -17,6 +17,7 @@ from typing import Any
 
 from benchmarks.heb.population import population
 from benchmarks.heb.protocol import Scenario
+from benchmarks.stress_population import stress_population
 
 Generator = Callable[[int, int], list[Scenario]]
 
@@ -80,6 +81,24 @@ POPULATIONS: dict[str, PopulationClass] = {
         seed=2024,
         n=1000,
         notes="one draw per qualification campaign; do not repool across versions",
+    ),
+    # M4 (docs/eval_program/designs/M4_preregistration.md). Development seeds only.
+    "m4_control": PopulationClass(
+        name="m4_control",
+        version="v1",
+        purpose="M4 control: the HEB population where competent guards agree",
+        seed=7,
+        n=200,
+        notes="dev@v1 generator and seed; its first 40 scenarios are dev@v1",
+    ),
+    "m4_stress": PopulationClass(
+        name="m4_stress",
+        version="v1",
+        purpose="M4 stress: hold-budget, tilt and ceiling-retry regions",
+        seed=1113,
+        n=320,
+        generator=stress_population,
+        notes="benchmarks/stress_population.py; 64 scenarios per stratum",
     ),
 }
 

@@ -342,11 +342,16 @@ def _prune_violations(violations: Sequence[Any]) -> tuple[list[dict[str, Any]], 
 
 
 def canonical_episodes(
-    manifest: ExperimentManifest, shard: ShardSpec, records: Sequence[Any]
+    manifest: ExperimentManifest,
+    shard: ShardSpec,
+    records: Sequence[Any],
+    metadata: Mapping[str, Any] | None = None,
 ) -> list[dict[str, Any]]:
     """TrialRecord stream -> canonical episode rows, one row per
     (shard, system, scenario). Nested values stay JSON-encoded so a
-    single Parquet table can hold every arm and task family."""
+    single Parquet table can hold every arm and task family. ``metadata``
+    (campaign provenance) is added under a ``metadata`` key only when given,
+    so rows without it keep the original contract."""
     rows: list[dict[str, Any]] = []
     seen: set[tuple[str, str]] = set()
     for record in records:
@@ -379,6 +384,8 @@ def canonical_episodes(
                 "wall_s": float(record.wall_s),
             }
         )
+        if metadata is not None:
+            rows[-1]["metadata"] = dict(metadata)
     return rows
 
 
@@ -416,6 +423,7 @@ class LocalExecutor:
         scenario_fn: Callable[[ExperimentManifest, ShardSpec], list] | None = None,
         system_fn: Callable[[str], Any] | None = None,
         fail_shards: Iterable[str] = (),
+        row_metadata: Mapping[str, Any] | None = None,
     ) -> None:
         self.root = Path(root)
         self.root.mkdir(parents=True, exist_ok=True)
@@ -423,6 +431,7 @@ class LocalExecutor:
         self._scenarios = scenario_fn or shard_scenarios
         self._system = system_fn
         self._fail_shards = set(fail_shards)
+        self._row_metadata = row_metadata
 
     # -- paths -------------------------------------------------------------
     def shard_dir(self, shard: ShardSpec) -> Path:
@@ -513,6 +522,7 @@ class LocalExecutor:
             self._system,
             tuple(self._fail_shards),
             verbose,
+            self._row_metadata,
         )
 
     def _write_manifest_and_provenance(self, manifest: ExperimentManifest) -> None:
@@ -543,7 +553,7 @@ class LocalExecutor:
                 raise RuntimeError("injected shard failure")
             scenarios = self._scenarios(manifest, shard)
             records = self._run_scenarios(manifest, scenarios)
-            rows = canonical_episodes(manifest, shard, records)
+            rows = canonical_episodes(manifest, shard, records, self._row_metadata)
             if not rows:
                 raise ExperimentError("shard produced no episodes")
             self._write_episodes(shard, rows)
@@ -619,6 +629,7 @@ def _execute_shard_worker(args: tuple) -> ShardResult:
         system_fn,
         fail_shards,
         verbose,
+        row_metadata,
     ) = args
     executor = LocalExecutor(
         root,
@@ -626,6 +637,7 @@ def _execute_shard_worker(args: tuple) -> ShardResult:
         scenario_fn=scenario_fn,
         system_fn=system_fn,
         fail_shards=fail_shards,
+        row_metadata=row_metadata,
     )
     return executor._run_shard(manifest, shard, verbose=verbose)
 
