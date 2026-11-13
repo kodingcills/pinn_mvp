@@ -30,3 +30,23 @@ Open a recording (exports `.rrd` + `.mp4` under `replays/` and prints the `rerun
 ```
 
 Tests: `.venv/bin/python -m pytest tests/test_recording_replay.py -q` (10 tests).
+
+## M5.2: backend-neutral episode log
+
+One episode per backend, logged at the machine-session boundary, plus an A/A run without the log.
+Writes `results/m5/episode_log_<backend>.json`; the robosuite log itself goes to `results/m5/robosuite-log/`.
+
+```bash
+MUJOCO_GL=osmesa PYTHONPATH=. .venv/bin/python scripts/m5_episode_log.py --backend mujoco
+```
+
+robosuite 1.5.2 needs mujoco 3.9 and numpy < 2, so it gets its own venv (no `.venv-robosuite`
+exists in a fresh checkout, whatever older script docstrings say):
+
+```bash
+uv venv /tmp/venv-rs --python 3.12
+uv pip install --python /tmp/venv-rs/bin/python robosuite==1.5.2 mujoco==3.9.0 h5py
+MUJOCO_GL=osmesa PYTHONPATH=. /tmp/venv-rs/bin/python scripts/m5_episode_log.py --backend robosuite
+```
+
+Tests: `.venv/bin/python -m pytest tests/test_episode_log.py -q` (9 tests; no robosuite needed).

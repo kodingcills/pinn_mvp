@@ -1,0 +1,4 @@
+{"clock": "sim", "kind": "feasibility", "payload": {"capabilities": {"command_modes": ["cartesian_impedance"], "execution_horizon_s": 15.0, "max_initial_offset_m": 1.0, "max_sensed_force_n": 1000.0, "position_resolution_m": 1e-06, "sensing": ["force_z", "pose", "tilt"], "state_max_age_s": 0.05, "state_period_s": 0.05, "supports_stop": true}, "outcome": "SUPPORTED", "reasons": []}, "seq": 0, "source": "haplous", "t_s": 0.0, "tick": 0}
+{"clock": "sim", "kind": "execution_authorized", "payload": {"observation_age_s": 0.0}, "seq": 1, "source": "haplous", "t_s": 0.0, "tick": 0}
+{"clock": "sim", "kind": "motion_started", "payload": {"state_period_s": 0.05}, "seq": 2, "source": "haplous", "t_s": 0.0, "tick": 0}
+{"clock": "sim", "kind": "outcome", "payload": {"result": "COMPLETE", "success_condition": "cube_lifted"}, "seq": 3, "source": "haplous", "t_s": 1.6500000000000012, "tick": 33}

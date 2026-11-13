@@ -1,0 +1,74 @@
+{
+  "aa": {
+    "applied_command_times": true,
+    "final_sim_time": true,
+    "observations": true,
+    "outcome": true
+  },
+  "aa_identical": true,
+  "backend": "mujoco",
+  "episode": "insert_dropout_large",
+  "n_observations": 3251,
+  "n_ticks": 3651,
+  "outcome": {
+    "bounded_success": true,
+    "disposition": "COMPLETE",
+    "graded_disposition": "COMPLETE",
+    "hard_violations": [],
+    "reason": null,
+    "refusal_codes": [],
+    "task_success": true
+  },
+  "schema": {
+    "events": {
+      "haplous": [
+        "clock",
+        "kind",
+        "payload",
+        "seq",
+        "source",
+        "t_s",
+        "tick"
+      ],
+      "machine": [
+        "clock",
+        "kind",
+        "payload",
+        "source",
+        "t_s",
+        "tick"
+      ]
+    },
+    "metadata": [
+      "clocks",
+      "format",
+      "n_observations",
+      "n_ticks",
+      "outcome",
+      "system",
+      "timestep_s"
+    ],
+    "telemetry": {
+      "command": [
+        "command.k_z_n_per_m",
+        "command.target_pose_m",
+        "host_monotonic_ns",
+        "kind",
+        "outcome.accepted",
+        "outcome.reason",
+        "tick"
+      ],
+      "observation": [
+        "host_monotonic_ns",
+        "kind",
+        "observation.extra",
+        "observation.force_z_n",
+        "observation.pose_m",
+        "observation.stamp.received_s",
+        "observation.stamp.source_s",
+        "observation.tilt_deg",
+        "tick"
+      ]
+    }
+  }
+}
