@@ -1,6 +1,7 @@
 # Known issues (pre-existing; do not count as regressions)
 
 Baseline on `main` @ `4ca4e71`, 2026-11-13: **599 passed, 4 failed, 1 xfailed** (`pytest tests -q`).
+Current head of `claude/magical-curie-si1vjr` (M5.2 integrated, 2026-11-13): **880 passed, 4 failed, 1 xfailed**, the same 4 failures.
 
 | Test | Cause (diagnosed in docs/eval_v1, results/diagnostics) |
 |---|---|
@@ -37,7 +38,7 @@ Baseline on `main` @ `4ca4e71`, 2026-11-13: **599 passed, 4 failed, 1 xfailed** 
 | **Pre-existing HES report drift on `main`.** `hes report results/hes/v3_hardening_qualification --check` fails on `main` @ `4ca4e71` and on the integration head alike: committed `docs/HES_V0_REPORT.md` carries digest `90e7aafe32f336ce`, current code computes `dc913cf8e9886bfd`. Earlier "`--check` matches dc913cf8" statements in this program were circular (rendered to `--out` then checked the same file); the before/after byte-identity comparisons of rendered output remain valid | coordinator, reproduced on a detached checkout of main | open; M4 regenerates under an explicit scoring epoch |
 | `scripts/measure_fleet.py` crashes: `AttributeError: 'InterventionClassification' object has no attribute 'epoch'` (:166) | M3.6 fix-round owner; also crashes at `c9997c6` (pre-OD-1) | pre-existing, open |
 | `results/counterfactual_internal_summary.json` is stale vs current code: 1e-11 force drift and `mediated_reason` on `insert_stale_persistent` (`pre_execution_state_invalid` now, null in the file); identical before and after OD-1 | M3.6 fix-round owner | pre-existing, not regenerated (frozen evidence) |
-| robosuite / mani_skill not installed: external-policy contracts checked by direct `negotiate()` against their tasks' capabilities only, no episodes run | M3.6 fix-round owner | environment limit |
+| robosuite 1.5.2 does not run in `.venv` (mujoco 3.11 removed `MjData.qM`; needs numpy < 2): it runs in a separate venv (recipe in REPRODUCE.md, M5.2). mani_skill still not installed. `scripts/measure_external_robosuite_lift.py` docstring still names a nonexistent `.venv-robosuite` | M3.6 fix-round owner; updated by M5.2 | robosuite: resolved by separate venv; mani_skill: environment limit |
 | `command_mode_admission` crashes (AttributeError) instead of refusing when a BEHAVIOUR declares a str in `required_command_modes` (developer-side error; machine-side str alias is refused correctly) | M3.6 verifier | minor, open |
 | Runtime now builds the behaviour at submit: a factory runs even for refused submits, and a raising factory raises at submit instead of execute; side-effect counters on factories (e.g. `created` lists in measure_fleet / measure_counterfactual_internal) shift | M3.6 verifier | accepted consequence of OD-1 design |
 | A machine offering only CARTESIAN_IMPEDANCE is now refused for insertion and slide (both declare {CI, FCD}); slide's FCD is the stricter choice for a force-hold phase | M3.6 owner + verifier | by design (OD-1); relevant for ManiSkill-style machines |
@@ -53,3 +54,8 @@ Baseline on `main` @ `4ca4e71`, 2026-11-13: **599 passed, 4 failed, 1 xfailed** 
 | G1 reports COMPLETE with a process_force violation in `m4s_stale_long_00086` (36.5 N) and `00116` (296.7 N) vs a 25 N ceiling; Haplous aborts on the same force. Both guarded arms exceeded the ceiling after a stale-state hold; bare peaked at ~3 N | M4.2b owner + verifier | not in the confirmatory estimand; follow-up: why guarded arms overshoot after the hold |
 | `tilt_limit` stress stratum does not discriminate: all 64 scenarios trip tilt, 0/64 bounded success for every arm | M4.2b owner | stratum design flaw for future campaigns |
 | M4 report labels its rule-of-three discordance bound "non-pre-registered" while the prereg mentions a rule-of-three harm bound (different quantity) | M4.2b verifier | wording only |
+| M5.2 robosuite A/A was run by the owner only; the verifier had no robosuite venv and checked the committed evidence | M5.2 verifier | re-run once with the REPRODUCE.md venv |
+| Episode log "same log" across backends is a structural check (`log_schema`: field paths, metadata key presence); it does not check semantics such as tick meaning. Say "same format" | M5.2 verifier | documented |
+| MuJoCo-path A/A runs only in `scripts/m5_episode_log.py`; a unit test catches a perturbed return value only on the external path | M5.2 verifier | open; add a unit-level MuJoCo return-value check |
+| External episode log is not wrapped in an M0 run (design says identity stays an M0 run) | M5.2 owner | open |
+| `ExternalMachineAdapter.health()` returns the task's `ground_truth()`: grader truth reachable through the Machine protocol (pre-existing; LoggingMachine passes it through) | M5.2 owner | open; truth-leak risk for external tasks |

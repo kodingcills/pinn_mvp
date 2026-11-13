@@ -251,28 +251,40 @@
     {
       "id": "M5.1",
       "title": "Fresh-agent cold start: pick next unblocked task from this ledger, ship it with independent verdict",
-      "owner": null,
+      "owner": "worker-M5.1 (opus)",
       "deps": [
         "M2.3",
         "M4.2b"
       ],
-      "status": "pending",
+      "status": "verified",
       "exit_check": "PR with verification receipt by a non-author at head SHA",
-      "commit": null,
+      "commit": "0a926fa",
       "proof": [],
-      "retries": 0
+      "retries": 0,
+      "note": "fresh agent with no briefing picked M5.2 from the ledger and shipped it with a non-author verdict. Cold-start gaps found and fixed: AGENTS.md now names the integration branch (worktrees cut from main lack docs/eval_program); stale baselines; outdated robosuite row",
+      "verdict": "PASS (same verifier verdict as M5.2 at 0a926fa; the three doc gaps confirmed)"
     },
     {
       "id": "M5.2",
       "title": "Record telemetry+events at the machine-session boundary for any backend; MuJoCo state stream optional",
-      "owner": null,
+      "owner": "worker-M5.1 cold start (opus)",
       "deps": [],
-      "status": "pending",
+      "status": "verified",
       "exit_check": "same log from MuJoCo and one external adapter; A/A identical on both; M2 gate 11/11",
       "design": "docs/eval_program/designs/M5_backend_neutral_episode_log.md",
-      "commit": null,
-      "proof": [],
-      "retries": 0
+      "commit": "0a926fa",
+      "proof": [
+        "results/m5/episode_log_mujoco.json",
+        "results/m5/episode_log_robosuite.json",
+        "tests/test_episode_log.py",
+        "M2 gate 11/11 --existing on both committed recordings"
+      ],
+      "retries": 0,
+      "integrated_as": [
+        "d12278d",
+        "429e01c"
+      ],
+      "verdict": "PASS by sonnet verifier at 0a926fa: no haplous/pegsim change; wrappers pass values through; fresh M2 recording byte-identical to committed; mujoco A/A reproduced; robosuite from committed evidence only (no venv); M2 gate 11/11; suite 880/4 known/1 xfailed; planted 1e-9 N perturbation caught"
     },
     {
       "id": "M5.3",

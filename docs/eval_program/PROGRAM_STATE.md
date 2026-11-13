@@ -15,7 +15,7 @@ Read this first in a new session. Then `TASKS.json` (DAG and ownership), `DECISI
 | M2 record → replay → verify | **DONE.** M2.1 **verified** (gate 11/11 by a non-author at 6201f9d); M2.3 verify skill **verified** (cold-reader journey by a non-author at 0c28024) | `results/recordings/m2-heb-insert_dropout_large.replay_report.json`, `scripts/m2_gate.py`, `tests/test_recording_replay.py` |
 | M3 two task packs, one pipeline | **DONE.** M3.1-M3.6 each verified by a non-author; integrated head suite 776 passed / 4 known failures / 1 xfailed | `tests/test_slide_recording.py`, `tests/test_passthrough_aa.py`, `tests/test_negative_*.py`, `tests/test_scenario_registry_lookup.py`, `tests/test_od1_admission.py`, `results/passthrough/`, `results/truth_leak/`, `results/od1/` |
 | M4 direct / G1 / Haplous campaign | **DONE.** M4.1-M4.2b each verified by a non-author. Result: Haplous and G1 **tie** on control (n=181) and stress (n=320), no discordant pairs; stress fails HES G3 non-interference | `docs/eval_program/M4_REPORT.md`, `results/m4/campaign/`, `designs/M4_preregistration.md` |
-| M5 fresh-agent cold start + backend-neutral episode log | pending. Planned: M5.2-M5.5 (`designs/M5_backend_neutral_episode_log.md`); M5.5 blocked on operator choice of robot/dataset | |
+| M5 fresh-agent cold start + backend-neutral episode log | M5.1 and M5.2 **verified** (cold-start agent picked M5.2 from the ledger; episode log from MuJoCo and robosuite, A/A identical). M5.3 timeline and M5.4 MCAP now unblocked; M5.5 blocked on operator choice of robot/dataset | `benchmarks/episode_log.py`, `results/m5/`, `tests/test_episode_log.py`, `designs/M5_backend_neutral_episode_log.md` |
 
 ## Architecture decisions in force (details in DECISIONS.tsv)
 
