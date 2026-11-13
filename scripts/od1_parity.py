@@ -28,6 +28,14 @@ COMPARED = (
     "task_success", "bounded_success", "hard_violations", "task_metrics",
     "n_observations", "observations_sha256",
 )
+SCALARS = ("reported_disposition", "reason", "refusal_codes", "graded_disposition",
+           "task_success", "bounded_success", "n_observations")
+
+
+def _digest(row: dict) -> str:
+    """SHA-256 over every compared field (keeps the committed report small)."""
+    blob = json.dumps({f: row[f] for f in COMPARED}, sort_keys=True, default=repr)
+    return hashlib.sha256(blob.encode()).hexdigest()
 
 
 def collect(out: Path) -> None:
@@ -102,8 +110,9 @@ def main() -> int:
         diffs = [f for f in COMPARED if b[k][f] != a[k][f]]
         trials.append({"scenario_id": k[0], "system": k[1], "identical": not diffs,
                        "differing_fields": diffs,
-                       "before": {f: b[k][f] for f in COMPARED if f != "task_metrics"},
-                       "after_matches_before": not diffs})
+                       "before": {f: b[k][f] for f in SCALARS},
+                       "compared_sha256": {side: _digest(rows[k]) for side, rows in
+                                           (("before", b), ("after", a))}})
     report = {
         "design": "docs/eval_program/designs/OD1_command_mode_admission.md section 6",
         "before_commit": before_sha,
