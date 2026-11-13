@@ -136,13 +136,13 @@
     {
       "id": "M3.4",
       "title": "Scenario lookup through the HEB task registry (no hard-coded pack list in benchmarks/recording.py:276); gate 9 plain comparator includes grade_run",
-      "owner": "worker-M3.4 (sonnet)",
+      "owner": "worker-M3.4b (opus, fix round)",
       "deps": [
         "M3.1"
       ],
-      "status": "fix_round",
+      "status": "awaiting_verification",
       "exit_check": "adding a third registered pack needs no recorder edit (test with a stub registration); gate 9 compares graded vs graded",
-      "commit": "03ed038",
+      "commit": "9af7b21",
       "proof": [
         "tests/test_scenario_registry_lookup.py",
         "gate 9 graded-vs-graded"
