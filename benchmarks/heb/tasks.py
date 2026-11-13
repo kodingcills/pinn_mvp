@@ -2,25 +2,28 @@
 scenario maps onto a bundle, a behavior factory, and a success-condition
 factory; the runner and the systems under test stay task-agnostic (they
 consume the registry's outputs through the Realization contract). Adding a
-task family is one registry entry plus its scenario list — no benchmark
+task family is one registry entry carrying its scenario list — no benchmark
 core branches."""
 from __future__ import annotations
 
+from collections.abc import Callable
 from dataclasses import dataclass
-from typing import Callable
-
-from pegsim.rollout import ValidatedConfig
-
-from haplous.behaviors.insertion import insertion_behavior_factory
-from haplous.behaviors.sliding import sliding_behavior_factory
-from haplous.intent import SuccessCondition
 
 from benchmarks.heb.insertion import (
     insertion_condition_factory,
+    insertion_scenarios,
     realize_insertion_bundle,
 )
 from benchmarks.heb.protocol import Scenario
-from benchmarks.heb.sliding import slide_bundle, slide_condition_factory
+from benchmarks.heb.sliding import (
+    slide_bundle,
+    slide_condition_factory,
+    sliding_scenarios,
+)
+from haplous.behaviors.insertion import insertion_behavior_factory
+from haplous.behaviors.sliding import sliding_behavior_factory
+from haplous.intent import SuccessCondition
+from pegsim.rollout import ValidatedConfig
 
 
 @dataclass(frozen=True)
@@ -32,6 +35,8 @@ class TaskImplementation:
     # Measured-success reach for the refusal boundary; None reports the
     # bundle's geometric envelope.
     max_initial_offset_m: float | None = None
+    # The family's named scenarios; None declares that it has none.
+    scenarios: Callable[[], list[Scenario]] | None = None
 
 
 _REGISTRY: dict[str, TaskImplementation] = {}
@@ -41,8 +46,29 @@ def register(task_family: str, impl: TaskImplementation) -> None:
     _REGISTRY[task_family] = impl
 
 
+def unregister(task_family: str) -> None:
+    del _REGISTRY[task_family]
+
+
 def implementation_for(task_family: str) -> TaskImplementation:
     return _REGISTRY[task_family]
+
+
+def scenarios_by_id() -> dict[str, Scenario]:
+    """Every registered family's scenarios, keyed by id. An id declared by
+    two families raises instead of letting either shadow the other."""
+    found: dict[str, Scenario] = {}
+    owner: dict[str, str] = {}
+    for family, impl in _REGISTRY.items():
+        for scenario in impl.scenarios() if impl.scenarios else []:
+            if scenario.id in owner:
+                raise ValueError(
+                    f"scenario id {scenario.id!r} is declared by task families "
+                    f"{owner[scenario.id]!r} and {family!r}"
+                )
+            owner[scenario.id] = family
+            found[scenario.id] = scenario
+    return found
 
 
 register(
@@ -68,6 +94,7 @@ register(
         # ceiling while holding conditional violation at the declared 0.003 m
         # rate; the previous 0.003 m was the measured single-point dev boundary.
         max_initial_offset_m=0.0035,
+        scenarios=insertion_scenarios,
     ),
 )
 register(
@@ -77,5 +104,6 @@ register(
         behavior_factory=sliding_behavior_factory,
         condition_factory=slide_condition_factory,
         expected_duration_s=2.5,
+        scenarios=sliding_scenarios,
     ),
 )
