@@ -213,12 +213,12 @@
       "deps": [
         "M4.1"
       ],
-      "status": "fix_round",
+      "status": "awaiting_verification",
       "exit_check": "prereg committed before any results; coordinator reviews prereg before M4.2b",
-      "commit": "5a093f7 (prereg 797980a before dry run)",
+      "commit": "11eeae6 (r2 prereg 4502e59 before r2 dry run)",
       "proof": [],
       "retries": 1,
-      "note": "coordinator prereg review: decision rules overlap (lo>0 & hi<=0.05 is both better and tie) -> ordered first-match rules in r2; exclusion counts must be reported; git_dirty provenance from in-repo outputs; recordings (~140 MB) out of git with hashes + regeneration, <=1 rescued + 1 harmed exemplar per population committed; adapters untested in M4; reset_s 1.0 with 0 s sensitivity"
+      "note": "coordinator prereg review: decision rules overlap (lo>0 & hi<=0.05 is both better and tie) -> ordered first-match rules in r2; exclusion counts must be reported; git_dirty provenance from in-repo outputs; recordings (~140 MB) out of git with hashes + regeneration, <=1 rescued + 1 harmed exemplar per population committed; adapters untested in M4; reset_s 1.0 with 0 s sensitivity | r2: ordered rules in decide/decision (13 cases x2), exclusion counts per rule, git_dirty false via patched private _git_state (risk), gitignored recording store + host-clock-free digests + regenerate-on-validate, epoch hes-m4-e2, config d69d8e62. Verifier must confirm HES check is against a committed file (section 1 reworded)."
     },
     {
       "id": "M4.2b",
