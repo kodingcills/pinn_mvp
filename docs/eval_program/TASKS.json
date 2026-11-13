@@ -85,10 +85,13 @@
       "deps": [
         "M2.2"
       ],
-      "status": "in_progress",
+      "status": "awaiting_verification",
       "exit_check": "pass-through outcome-equal to direct within A/A; each negative test fails a planted defect",
-      "commit": null,
-      "proof": [],
+      "commit": "809c020",
+      "proof": [
+        "results/passthrough/aa_report.json (39/39 identical, full horizon)",
+        "tests/test_passthrough_aa.py"
+      ],
       "retries": 0
     },
     {
@@ -127,11 +130,15 @@
       "deps": [
         "M3.1"
       ],
-      "status": "in_progress",
+      "status": "awaiting_verification",
       "exit_check": "adding a third registered pack needs no recorder edit (test with a stub registration); gate 9 compares graded vs graded",
-      "commit": null,
-      "proof": [],
-      "retries": 0
+      "commit": "03ed038",
+      "proof": [
+        "tests/test_scenario_registry_lookup.py",
+        "gate 9 graded-vs-graded"
+      ],
+      "retries": 0,
+      "note": "lookup scans private tasks._REGISTRY (shortcut: HEB pinned, no public listing)"
     },
     {
       "id": "M4.2",
