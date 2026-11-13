@@ -1,0 +1,10 @@
+{
+  "attempts": 1,
+  "completed_at_utc": "2026-11-13T17:23:46.924676+00:00",
+  "episodes": 40,
+  "episodes_sha256": "905a449dbb7a9107dd6c8f0b8d7d7a3c6e7f9ba086670974c05080cb37aa1bc4",
+  "experiment_id": "m4-hes-m4-e2-campaign-control",
+  "shard_id": "m4-hes-m4-e2-campaign-control-s00009",
+  "status": "COMPLETE",
+  "wall_s": 537.7226585579999
+}

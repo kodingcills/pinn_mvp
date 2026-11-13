@@ -1,0 +1,64 @@
+complete m4-hes-m4-e2-campaign-stress-s00000: 40 episodes in 48.8s
+COMPLETE m4-hes-m4-e2-campaign-stress-s00000
+complete m4-hes-m4-e2-campaign-stress-s00002: 40 episodes in 80.5s
+COMPLETE m4-hes-m4-e2-campaign-stress-s00002
+complete m4-hes-m4-e2-campaign-stress-s00003: 40 episodes in 86.8s
+COMPLETE m4-hes-m4-e2-campaign-stress-s00003
+complete m4-hes-m4-e2-campaign-stress-s00001: 40 episodes in 121.4s
+COMPLETE m4-hes-m4-e2-campaign-stress-s00001
+complete m4-hes-m4-e2-campaign-stress-s00006: 40 episodes in 83.3s
+COMPLETE m4-hes-m4-e2-campaign-stress-s00006
+complete m4-hes-m4-e2-campaign-stress-s00005: 40 episodes in 93.0s
+COMPLETE m4-hes-m4-e2-campaign-stress-s00005
+complete m4-hes-m4-e2-campaign-stress-s00008: 40 episodes in 41.0s
+COMPLETE m4-hes-m4-e2-campaign-stress-s00008
+complete m4-hes-m4-e2-campaign-stress-s00007: 40 episodes in 96.2s
+COMPLETE m4-hes-m4-e2-campaign-stress-s00007
+complete m4-hes-m4-e2-campaign-stress-s00009: 40 episodes in 48.8s
+COMPLETE m4-hes-m4-e2-campaign-stress-s00009
+complete m4-hes-m4-e2-campaign-stress-s00004: 40 episodes in 183.3s
+COMPLETE m4-hes-m4-e2-campaign-stress-s00004
+complete m4-hes-m4-e2-campaign-stress-s00010: 40 episodes in 77.3s
+COMPLETE m4-hes-m4-e2-campaign-stress-s00010
+complete m4-hes-m4-e2-campaign-stress-s00012: 40 episodes in 96.9s
+COMPLETE m4-hes-m4-e2-campaign-stress-s00012
+complete m4-hes-m4-e2-campaign-stress-s00011: 40 episodes in 144.6s
+COMPLETE m4-hes-m4-e2-campaign-stress-s00011
+complete m4-hes-m4-e2-campaign-stress-s00013: 40 episodes in 138.0s
+COMPLETE m4-hes-m4-e2-campaign-stress-s00013
+complete m4-hes-m4-e2-campaign-stress-s00014: 40 episodes in 95.3s
+COMPLETE m4-hes-m4-e2-campaign-stress-s00014
+complete m4-hes-m4-e2-campaign-stress-s00016: 40 episodes in 33.6s
+COMPLETE m4-hes-m4-e2-campaign-stress-s00016
+complete m4-hes-m4-e2-campaign-stress-s00018: 40 episodes in 31.0s
+COMPLETE m4-hes-m4-e2-campaign-stress-s00018
+complete m4-hes-m4-e2-campaign-stress-s00015: 40 episodes in 127.9s
+COMPLETE m4-hes-m4-e2-campaign-stress-s00015
+complete m4-hes-m4-e2-campaign-stress-s00021: 40 episodes in 26.1s
+COMPLETE m4-hes-m4-e2-campaign-stress-s00021
+complete m4-hes-m4-e2-campaign-stress-s00019: 40 episodes in 77.9s
+COMPLETE m4-hes-m4-e2-campaign-stress-s00019
+complete m4-hes-m4-e2-campaign-stress-s00017: 40 episodes in 123.9s
+COMPLETE m4-hes-m4-e2-campaign-stress-s00017
+complete m4-hes-m4-e2-campaign-stress-s00020: 40 episodes in 130.7s
+COMPLETE m4-hes-m4-e2-campaign-stress-s00020
+complete m4-hes-m4-e2-campaign-stress-s00023: 40 episodes in 80.0s
+COMPLETE m4-hes-m4-e2-campaign-stress-s00023
+complete m4-hes-m4-e2-campaign-stress-s00024: 40 episodes in 64.0s
+COMPLETE m4-hes-m4-e2-campaign-stress-s00024
+complete m4-hes-m4-e2-campaign-stress-s00022: 40 episodes in 86.9s
+COMPLETE m4-hes-m4-e2-campaign-stress-s00022
+complete m4-hes-m4-e2-campaign-stress-s00026: 40 episodes in 50.6s
+COMPLETE m4-hes-m4-e2-campaign-stress-s00026
+complete m4-hes-m4-e2-campaign-stress-s00028: 40 episodes in 81.8s
+COMPLETE m4-hes-m4-e2-campaign-stress-s00028
+complete m4-hes-m4-e2-campaign-stress-s00025: 40 episodes in 105.0s
+COMPLETE m4-hes-m4-e2-campaign-stress-s00025
+complete m4-hes-m4-e2-campaign-stress-s00027: 40 episodes in 92.4s
+COMPLETE m4-hes-m4-e2-campaign-stress-s00027
+complete m4-hes-m4-e2-campaign-stress-s00031: 40 episodes in 40.7s
+COMPLETE m4-hes-m4-e2-campaign-stress-s00031
+complete m4-hes-m4-e2-campaign-stress-s00030: 40 episodes in 85.3s
+COMPLETE m4-hes-m4-e2-campaign-stress-s00030
+complete m4-hes-m4-e2-campaign-stress-s00029: 40 episodes in 144.4s
+COMPLETE m4-hes-m4-e2-campaign-stress-s00029

@@ -1,0 +1,2544 @@
+{
+  "analysis": {
+    "arms": [
+      "bare_behavior",
+      "competent_supervisor",
+      "g1_incumbent",
+      "haplous_mediated"
+    ],
+    "attainability": {
+      "counts": {
+        "ATTAINABLE": 42,
+        "UNKNOWN": 139
+      },
+      "n": 181,
+      "provenance": {
+        "NONE": 139,
+        "PAIRED_BOUNDED_BASELINE": 42
+      }
+    },
+    "baseline_arm": "bare_behavior",
+    "experiment_id": "m4-hes-m4-e2-campaign-control",
+    "intervention": {
+      "ambiguous_rate": {
+        "n": 0,
+        "reason": "NOT_AVAILABLE",
+        "value": null
+      },
+      "beneficial_kinds": {},
+      "bounded_successes_destroyed": 0,
+      "bounded_successes_recovered": 0,
+      "counts": {
+        "AMBIGUOUS": 0,
+        "BENEFICIAL": 0,
+        "HARMFUL": 0,
+        "INSUFFICIENT": 0,
+        "UNNECESSARY": 0
+      },
+      "harmful_intervention_rate": {
+        "n": 0,
+        "reason": "NOT_AVAILABLE",
+        "value": null
+      },
+      "intervention_precision": {
+        "n": 0,
+        "reason": "NOT_AVAILABLE",
+        "value": null
+      },
+      "n_attributable": 0,
+      "unnecessary_intervention_rate": {
+        "n": 0,
+        "reason": "NOT_AVAILABLE",
+        "value": null
+      }
+    },
+    "metric_arm_vector": {
+      "bare_behavior": {
+        "attribution": {
+          "by_confidence_band": {
+            "high": 98,
+            "low": 60
+          },
+          "by_layer": {
+            "CONTROLLER": 11,
+            "MACHINE_PHYSICS": 8,
+            "UNKNOWN": 60,
+            "UPSTREAM_POLICY": 79
+          },
+          "by_runtime_subcause": {},
+          "n_failures": 158,
+          "n_unknown": 60
+        },
+        "authority": {
+          "authorization_precision": {
+            "ci_high": 0.2987230245785241,
+            "ci_low": 0.17650293057856506,
+            "method": "wilson95",
+            "n": 181,
+            "value": 0.23204419889502761
+          },
+          "authorization_recall": {
+            "ci_high": 0.9999999999999999,
+            "ci_low": 0.916201209134296,
+            "method": "wilson95",
+            "n": 42,
+            "value": 1.0
+          },
+          "execution_capture": {
+            "ci_high": 0.6877660676654553,
+            "ci_low": 0.3994911903473349,
+            "method": "wilson95",
+            "n": 42,
+            "value": 0.5476190476190477
+          },
+          "false_abort_rate": {
+            "ci_high": 0.3060400274464885,
+            "ci_low": 0.08315916646398075,
+            "method": "wilson95",
+            "n": 42,
+            "value": 0.16666666666666666
+          },
+          "false_refusal_rate": {
+            "ci_high": 0.08379879086570391,
+            "ci_low": -6.938893903907228e-18,
+            "method": "wilson95",
+            "n": 42,
+            "value": 0.0
+          },
+          "hazard_rejection": {
+            "n": 0,
+            "reason": "no_scenario_demonstrated_non_attainable",
+            "value": null
+          },
+          "n_accepted": 181,
+          "n_demonstrated_attainable": 42,
+          "n_presented": 181,
+          "n_refused": 0,
+          "violation_given_acceptance": {
+            "ci_high": 0.8284069809051516,
+            "ci_low": 0.7071871473365822,
+            "method": "wilson95",
+            "n": 181,
+            "value": 0.7734806629834254
+          }
+        },
+        "caveats": [],
+        "failure_pareto": [
+          {
+            "addressability": "upstream",
+            "cause_key": "UPSTREAM_POLICY/-",
+            "confidence": "high",
+            "count": 79,
+            "example_scenarios": [
+              "fleet_insert_000001",
+              "fleet_insert_000004",
+              "fleet_insert_000007",
+              "fleet_insert_000008",
+              "fleet_insert_000009"
+            ],
+            "fraction_of_all_episodes": 0.43646408839779005,
+            "fraction_of_failures": 0.5,
+            "haplous_responsibility": 0.0,
+            "primary_cause": "UPSTREAM_POLICY",
+            "priority": 0.0,
+            "runtime_subcause": null,
+            "severity": {
+              "S0": 7,
+              "S3": 72
+            }
+          },
+          {
+            "addressability": "unknown",
+            "cause_key": "UNKNOWN/-",
+            "confidence": "low",
+            "count": 60,
+            "example_scenarios": [
+              "fleet_insert_000000",
+              "fleet_insert_000002",
+              "fleet_insert_000003",
+              "fleet_slide_000012",
+              "fleet_slide_000014"
+            ],
+            "fraction_of_all_episodes": 0.3314917127071823,
+            "fraction_of_failures": 0.379746835443038,
+            "haplous_responsibility": 0.0,
+            "primary_cause": "UNKNOWN",
+            "priority": 0.0,
+            "runtime_subcause": null,
+            "severity": {
+              "S3": 60
+            }
+          },
+          {
+            "addressability": "technically_addressable",
+            "cause_key": "CONTROLLER/-",
+            "confidence": "high",
+            "count": 11,
+            "example_scenarios": [
+              "fleet_slide_000006",
+              "fleet_slide_000023",
+              "fleet_slide_000025",
+              "fleet_slide_000031",
+              "fleet_slide_000033"
+            ],
+            "fraction_of_all_episodes": 0.06077348066298342,
+            "fraction_of_failures": 0.06962025316455696,
+            "haplous_responsibility": 0.0,
+            "primary_cause": "CONTROLLER",
+            "priority": 0.0,
+            "runtime_subcause": null,
+            "severity": {
+              "S2": 7,
+              "S3": 4
+            }
+          },
+          {
+            "addressability": "technically_addressable",
+            "cause_key": "MACHINE_PHYSICS/-",
+            "confidence": "high",
+            "count": 8,
+            "example_scenarios": [
+              "fleet_insert_000032",
+              "fleet_insert_000048",
+              "fleet_insert_000079",
+              "fleet_insert_000096",
+              "fleet_insert_000113"
+            ],
+            "fraction_of_all_episodes": 0.04419889502762431,
+            "fraction_of_failures": 0.05063291139240506,
+            "haplous_responsibility": 0.0,
+            "primary_cause": "MACHINE_PHYSICS",
+            "priority": 0.0,
+            "runtime_subcause": null,
+            "severity": {
+              "S2": 4,
+              "S3": 4
+            }
+          }
+        ],
+        "non_interference": {
+          "note": "baseline arm has no non-interference comparison"
+        },
+        "physical": {
+          "collision_count": "NOT_AVAILABLE",
+          "collision_severity": "NOT_AVAILABLE",
+          "force_exceedance_n": {
+            "max": 122.85438479929442,
+            "mean": 15.540935920786469,
+            "n": 247,
+            "p50": 0.5173200664054638,
+            "p90": 61.43157208568304,
+            "p95": 74.63111246753901,
+            "p99": 93.808540639561,
+            "p999": 118.49792424237772
+          },
+          "integrated_constraint_excursion": "NOT_AVAILABLE",
+          "max_tilt_deg": {
+            "max": 3.893739884021032,
+            "mean": 0.47974654324690597,
+            "n": 181,
+            "p50": 0.19951037483539122,
+            "p90": 1.012796228018785,
+            "p95": 2.3287458567177923,
+            "p99": 3.317469338105125,
+            "p999": 3.7900111857561813
+          },
+          "peak_force_n": {
+            "max": 140.1522369356231,
+            "mean": 24.059145444176224,
+            "n": 181,
+            "p50": 14.950544160007642,
+            "p90": 81.17240317609537,
+            "p95": 105.85966946998283,
+            "p99": 123.087033394686,
+            "p999": 139.19862355108407
+          }
+        },
+        "responsibility": {
+          "benchmark_evaluator": 0,
+          "correct_refusal": 0,
+          "false_refusal_loss": 0,
+          "haplous_caused_loss": 0,
+          "haplous_unprevented_violation": 0,
+          "infrastructure": 0,
+          "runtime_refusal_attainability_unknown": 0,
+          "unknown": 60,
+          "upstream_controller_physics_limit": 98
+        },
+        "system": {
+          "authority_axis_counts": {
+            "ABORTED": 107,
+            "ACCEPTED": 74
+          },
+          "bounded_success": {
+            "ci_high": 0.18345707823816465,
+            "ci_low": 0.0861872923412893,
+            "method": "wilson95",
+            "n": 181,
+            "value": 0.1270718232044199
+          },
+          "conditional_bsr": {
+            "ci_high": 0.18345707823816465,
+            "ci_low": 0.0861872923412893,
+            "method": "wilson95",
+            "n": 181,
+            "value": 0.1270718232044199
+          },
+          "contract_axis_counts": {
+            "BOUNDED": 41,
+            "VIOLATED": 140
+          },
+          "coverage": {
+            "ci_high": 1.0000000000000002,
+            "ci_low": 0.979217547593473,
+            "method": "wilson95",
+            "n": 181,
+            "value": 1.0
+          },
+          "n": 181,
+          "system_bsr": {
+            "ci_high": 0.18345707823816465,
+            "ci_low": 0.0861872923412893,
+            "method": "wilson95",
+            "n": 181,
+            "value": 0.1270718232044199
+          },
+          "task_axis_counts": {
+            "FAILURE": 67,
+            "SUCCESS": 114
+          },
+          "task_success": {
+            "ci_high": 0.6967963371426009,
+            "ci_low": 0.5574756227297373,
+            "method": "wilson95",
+            "n": 181,
+            "value": 0.6298342541436464
+          }
+        },
+        "timing": {
+          "decision_latency": "NOT_AVAILABLE",
+          "fault_to_intervention_latency": "NOT_AVAILABLE",
+          "state_age_at_authorization": "NOT_AVAILABLE",
+          "wall_s": {
+            "max": 109.6492604189998,
+            "n": 181,
+            "p50": 18.468870729999708,
+            "p90": 70.74366951100001,
+            "p95": 83.652800393,
+            "p99": 91.71888083280028
+          }
+        }
+      },
+      "competent_supervisor": {
+        "attribution": {
+          "by_confidence_band": {
+            "high": 161
+          },
+          "by_layer": {
+            "CONTROLLER": 7,
+            "EXECUTION_RUNTIME": 130,
+            "MACHINE_PHYSICS": 4,
+            "UPSTREAM_POLICY": 20
+          },
+          "by_runtime_subcause": {
+            "constraint_abort": 39,
+            "freshness_rejection": 91
+          },
+          "n_failures": 161,
+          "n_unknown": 0
+        },
+        "authority": {
+          "authorization_precision": {
+            "ci_high": 0.2987230245785241,
+            "ci_low": 0.17650293057856506,
+            "method": "wilson95",
+            "n": 181,
+            "value": 0.23204419889502761
+          },
+          "authorization_recall": {
+            "ci_high": 0.9999999999999999,
+            "ci_low": 0.916201209134296,
+            "method": "wilson95",
+            "n": 42,
+            "value": 1.0
+          },
+          "execution_capture": {
+            "ci_high": 0.6227753586865502,
+            "ci_low": 0.3335960123070547,
+            "method": "wilson95",
+            "n": 42,
+            "value": 0.47619047619047616
+          },
+          "false_abort_rate": {
+            "ci_high": 0.6664039876929454,
+            "ci_low": 0.3772246413134498,
+            "method": "wilson95",
+            "n": 42,
+            "value": 0.5238095238095238
+          },
+          "false_refusal_rate": {
+            "ci_high": 0.08379879086570391,
+            "ci_low": -6.938893903907228e-18,
+            "method": "wilson95",
+            "n": 42,
+            "value": 0.0
+          },
+          "hazard_rejection": {
+            "n": 0,
+            "reason": "no_scenario_demonstrated_non_attainable",
+            "value": null
+          },
+          "n_accepted": 181,
+          "n_demonstrated_attainable": 42,
+          "n_presented": 181,
+          "n_refused": 0,
+          "violation_given_acceptance": {
+            "ci_high": 0.3570958551147435,
+            "ci_low": 0.2263309340305747,
+            "method": "wilson95",
+            "n": 181,
+            "value": 0.287292817679558
+          }
+        },
+        "caveats": [],
+        "failure_pareto": [
+          {
+            "addressability": "generically_addressable",
+            "cause_key": "EXECUTION_RUNTIME/constraint_abort",
+            "confidence": "high",
+            "count": 39,
+            "example_scenarios": [
+              "fleet_insert_000011",
+              "fleet_slide_000012",
+              "fleet_insert_000013",
+              "fleet_slide_000014",
+              "fleet_slide_000015"
+            ],
+            "fraction_of_all_episodes": 0.2154696132596685,
+            "fraction_of_failures": 0.2422360248447205,
+            "haplous_responsibility": 1.0,
+            "primary_cause": "EXECUTION_RUNTIME",
+            "priority": 2.154696132596685,
+            "runtime_subcause": "constraint_abort",
+            "severity": {
+              "S3": 39
+            }
+          },
+          {
+            "addressability": "generically_addressable",
+            "cause_key": "EXECUTION_RUNTIME/freshness_rejection",
+            "confidence": "high",
+            "count": 91,
+            "example_scenarios": [
+              "fleet_insert_000000",
+              "fleet_insert_000001",
+              "fleet_insert_000002",
+              "fleet_insert_000003",
+              "fleet_insert_000004"
+            ],
+            "fraction_of_all_episodes": 0.5027624309392266,
+            "fraction_of_failures": 0.5652173913043478,
+            "haplous_responsibility": 1.0,
+            "primary_cause": "EXECUTION_RUNTIME",
+            "priority": 1.0055248618784531,
+            "runtime_subcause": "freshness_rejection",
+            "severity": {
+              "S2": 91
+            }
+          },
+          {
+            "addressability": "upstream",
+            "cause_key": "UPSTREAM_POLICY/-",
+            "confidence": "high",
+            "count": 20,
+            "example_scenarios": [
+              "fleet_slide_000025",
+              "fleet_insert_000040",
+              "fleet_insert_000042",
+              "fleet_insert_000053",
+              "fleet_insert_000054"
+            ],
+            "fraction_of_all_episodes": 0.11049723756906077,
+            "fraction_of_failures": 0.12422360248447205,
+            "haplous_responsibility": 0.0,
+            "primary_cause": "UPSTREAM_POLICY",
+            "priority": 0.0,
+            "runtime_subcause": null,
+            "severity": {
+              "S0": 7,
+              "S3": 13
+            }
+          },
+          {
+            "addressability": "technically_addressable",
+            "cause_key": "CONTROLLER/-",
+            "confidence": "high",
+            "count": 7,
+            "example_scenarios": [
+              "fleet_slide_000006",
+              "fleet_slide_000023",
+              "fleet_slide_000031",
+              "fleet_slide_000033",
+              "fleet_insert_000139"
+            ],
+            "fraction_of_all_episodes": 0.03867403314917127,
+            "fraction_of_failures": 0.043478260869565216,
+            "haplous_responsibility": 0.0,
+            "primary_cause": "CONTROLLER",
+            "priority": 0.0,
+            "runtime_subcause": null,
+            "severity": {
+              "S2": 7
+            }
+          },
+          {
+            "addressability": "technically_addressable",
+            "cause_key": "MACHINE_PHYSICS/-",
+            "confidence": "high",
+            "count": 4,
+            "example_scenarios": [
+              "fleet_insert_000032",
+              "fleet_insert_000048",
+              "fleet_insert_000096",
+              "fleet_insert_000140"
+            ],
+            "fraction_of_all_episodes": 0.022099447513812154,
+            "fraction_of_failures": 0.024844720496894408,
+            "haplous_responsibility": 0.0,
+            "primary_cause": "MACHINE_PHYSICS",
+            "priority": 0.0,
+            "runtime_subcause": null,
+            "severity": {
+              "S2": 4
+            }
+          }
+        ],
+        "non_interference": {
+          "bounded_success_regression_rate": {
+            "ci_high": 0.32127482270095964,
+            "ci_low": 0.04537659093631238,
+            "method": "wilson95",
+            "n": 23,
+            "value": 0.13043478260869565
+          },
+          "completion_time_tax_s": {
+            "n": 20,
+            "unit": "s",
+            "value": -0.3297497854999847
+          },
+          "n_reference_bounded_success": 23,
+          "preservation_rate": {
+            "ci_high": 0.9546234090636876,
+            "ci_low": 0.6787251772990404,
+            "method": "wilson95",
+            "n": 23,
+            "value": 0.8695652173913043
+          },
+          "task_success_regression_rate": {
+            "ci_high": 0.32127482270095964,
+            "ci_low": 0.04537659093631238,
+            "method": "wilson95",
+            "n": 23,
+            "value": 0.13043478260869565
+          },
+          "unnecessary_intervention_rate": {
+            "ci_high": 0.14311661845042686,
+            "ci_low": 0.0,
+            "method": "wilson95",
+            "n": 23,
+            "value": 0.0
+          }
+        },
+        "physical": {
+          "collision_count": "NOT_AVAILABLE",
+          "collision_severity": "NOT_AVAILABLE",
+          "force_exceedance_n": {
+            "max": 60.31913108591401,
+            "mean": 11.07445840904964,
+            "n": 39,
+            "p50": 0.6594869801555525,
+            "p90": 44.50191512655137,
+            "p95": 57.289441838425475,
+            "p99": 59.92883837680365,
+            "p999": 60.28010181500298
+          },
+          "integrated_constraint_excursion": "NOT_AVAILABLE",
+          "max_tilt_deg": {
+            "max": 3.317469338105125,
+            "mean": 0.19336848287118028,
+            "n": 181,
+            "p50": 0.04428268484518534,
+            "p90": 0.31334376065901365,
+            "p95": 0.725145027515814,
+            "p99": 3.317469338105125,
+            "p999": 3.317469338105125
+          },
+          "peak_force_n": {
+            "max": 116.16147728168725,
+            "mean": 8.617531556621103,
+            "n": 181,
+            "p50": 1.726481660057145,
+            "p90": 16.65176373245734,
+            "p95": 62.82019658338173,
+            "p99": 86.73691464081207,
+            "p999": 114.9116312221945
+          }
+        },
+        "responsibility": null,
+        "system": {
+          "authority_axis_counts": {
+            "ABORTED": 169,
+            "ACCEPTED": 12
+          },
+          "bounded_success": {
+            "ci_high": 0.16450701943240625,
+            "ci_low": 0.072677100950579,
+            "method": "wilson95",
+            "n": 181,
+            "value": 0.11049723756906077
+          },
+          "conditional_bsr": {
+            "ci_high": 0.16450701943240625,
+            "ci_low": 0.072677100950579,
+            "method": "wilson95",
+            "n": 181,
+            "value": 0.11049723756906077
+          },
+          "contract_axis_counts": {
+            "BOUNDED": 129,
+            "VIOLATED": 52
+          },
+          "coverage": {
+            "ci_high": 1.0000000000000002,
+            "ci_low": 0.979217547593473,
+            "method": "wilson95",
+            "n": 181,
+            "value": 1.0
+          },
+          "n": 181,
+          "system_bsr": {
+            "ci_high": 0.16450701943240625,
+            "ci_low": 0.072677100950579,
+            "method": "wilson95",
+            "n": 181,
+            "value": 0.11049723756906077
+          },
+          "task_axis_counts": {
+            "FAILURE": 160,
+            "SUCCESS": 21
+          },
+          "task_success": {
+            "ci_high": 0.17085451864833082,
+            "ci_low": 0.07714968513347734,
+            "method": "wilson95",
+            "n": 181,
+            "value": 0.11602209944751381
+          }
+        },
+        "timing": {
+          "decision_latency": "NOT_AVAILABLE",
+          "fault_to_intervention_latency": "NOT_AVAILABLE",
+          "state_age_at_authorization": "NOT_AVAILABLE",
+          "wall_s": {
+            "max": 130.9287362609998,
+            "n": 181,
+            "p50": 0.7766072449999228,
+            "p90": 10.70039393099978,
+            "p95": 57.121182579000106,
+            "p99": 74.08715418199988
+          }
+        }
+      },
+      "g1_incumbent": {
+        "attribution": {
+          "by_confidence_band": {
+            "high": 42,
+            "low": 46,
+            "medium": 52
+          },
+          "by_layer": {
+            "CONTROLLER": 26,
+            "EXECUTION_RUNTIME": 53,
+            "MACHINE_PHYSICS": 2,
+            "UNKNOWN": 46,
+            "UPSTREAM_POLICY": 13
+          },
+          "by_runtime_subcause": {
+            "false_refusal": 1,
+            "other": 52
+          },
+          "n_failures": 140,
+          "n_unknown": 46
+        },
+        "authority": {
+          "authorization_precision": {
+            "ci_high": 0.40536588755478287,
+            "ci_low": 0.24573020610600924,
+            "method": "wilson95",
+            "n": 128,
+            "value": 0.3203125
+          },
+          "authorization_recall": {
+            "ci_high": 0.9957845958655673,
+            "ci_low": 0.8767879842623334,
+            "method": "wilson95",
+            "n": 42,
+            "value": 0.9761904761904762
+          },
+          "execution_capture": {
+            "ci_high": 0.9957845958655673,
+            "ci_low": 0.8767879842623334,
+            "method": "wilson95",
+            "n": 42,
+            "value": 0.9761904761904762
+          },
+          "false_abort_rate": {
+            "ci_high": 0.08379879086570391,
+            "ci_low": -6.938893903907228e-18,
+            "method": "wilson95",
+            "n": 42,
+            "value": 0.0
+          },
+          "false_refusal_rate": {
+            "ci_high": 0.12321201573766646,
+            "ci_low": 0.004215404134432499,
+            "method": "wilson95",
+            "n": 42,
+            "value": 0.023809523809523808
+          },
+          "hazard_rejection": {
+            "n": 0,
+            "reason": "no_scenario_demonstrated_non_attainable",
+            "value": null
+          },
+          "n_accepted": 128,
+          "n_demonstrated_attainable": 42,
+          "n_presented": 181,
+          "n_refused": 53,
+          "violation_given_acceptance": {
+            "ci_high": 0.516260671149596,
+            "ci_low": 0.3472117133263662,
+            "method": "wilson95",
+            "n": 128,
+            "value": 0.4296875
+          }
+        },
+        "caveats": [],
+        "failure_pareto": [
+          {
+            "addressability": "generically_addressable",
+            "cause_key": "EXECUTION_RUNTIME/other",
+            "confidence": "low",
+            "count": 52,
+            "example_scenarios": [
+              "fleet_insert_000008",
+              "fleet_insert_000009",
+              "fleet_insert_000011",
+              "fleet_insert_000013",
+              "fleet_insert_000018"
+            ],
+            "fraction_of_all_episodes": 0.287292817679558,
+            "fraction_of_failures": 0.37142857142857144,
+            "haplous_responsibility": 1.0,
+            "primary_cause": "EXECUTION_RUNTIME",
+            "priority": 0.287292817679558,
+            "runtime_subcause": "other",
+            "severity": {
+              "S1": 52
+            }
+          },
+          {
+            "addressability": "generically_addressable",
+            "cause_key": "EXECUTION_RUNTIME/false_refusal",
+            "confidence": "high",
+            "count": 1,
+            "example_scenarios": [
+              "fleet_insert_000137"
+            ],
+            "fraction_of_all_episodes": 0.0055248618784530384,
+            "fraction_of_failures": 0.007142857142857143,
+            "haplous_responsibility": 1.0,
+            "primary_cause": "EXECUTION_RUNTIME",
+            "priority": 0.0055248618784530384,
+            "runtime_subcause": "false_refusal",
+            "severity": {
+              "S1": 1
+            }
+          },
+          {
+            "addressability": "unknown",
+            "cause_key": "UNKNOWN/-",
+            "confidence": "low",
+            "count": 46,
+            "example_scenarios": [
+              "fleet_slide_000012",
+              "fleet_slide_000014",
+              "fleet_slide_000015",
+              "fleet_insert_000016",
+              "fleet_slide_000017"
+            ],
+            "fraction_of_all_episodes": 0.2541436464088398,
+            "fraction_of_failures": 0.32857142857142857,
+            "haplous_responsibility": 0.0,
+            "primary_cause": "UNKNOWN",
+            "priority": 0.0,
+            "runtime_subcause": null,
+            "severity": {
+              "S2": 4,
+              "S3": 42
+            }
+          },
+          {
+            "addressability": "technically_addressable",
+            "cause_key": "CONTROLLER/-",
+            "confidence": "high",
+            "count": 26,
+            "example_scenarios": [
+              "fleet_insert_000001",
+              "fleet_insert_000003",
+              "fleet_insert_000004",
+              "fleet_slide_000006",
+              "fleet_insert_000019"
+            ],
+            "fraction_of_all_episodes": 0.143646408839779,
+            "fraction_of_failures": 0.18571428571428572,
+            "haplous_responsibility": 0.0,
+            "primary_cause": "CONTROLLER",
+            "priority": 0.0,
+            "runtime_subcause": null,
+            "severity": {
+              "S2": 25,
+              "S3": 1
+            }
+          },
+          {
+            "addressability": "upstream",
+            "cause_key": "UPSTREAM_POLICY/-",
+            "confidence": "high",
+            "count": 13,
+            "example_scenarios": [
+              "fleet_insert_000000",
+              "fleet_insert_000007",
+              "fleet_insert_000040",
+              "fleet_insert_000042",
+              "fleet_insert_000073"
+            ],
+            "fraction_of_all_episodes": 0.0718232044198895,
+            "fraction_of_failures": 0.09285714285714286,
+            "haplous_responsibility": 0.0,
+            "primary_cause": "UPSTREAM_POLICY",
+            "priority": 0.0,
+            "runtime_subcause": null,
+            "severity": {
+              "S0": 1,
+              "S3": 12
+            }
+          },
+          {
+            "addressability": "technically_addressable",
+            "cause_key": "MACHINE_PHYSICS/-",
+            "confidence": "high",
+            "count": 2,
+            "example_scenarios": [
+              "fleet_insert_000032",
+              "fleet_insert_000141"
+            ],
+            "fraction_of_all_episodes": 0.011049723756906077,
+            "fraction_of_failures": 0.014285714285714285,
+            "haplous_responsibility": 0.0,
+            "primary_cause": "MACHINE_PHYSICS",
+            "priority": 0.0,
+            "runtime_subcause": null,
+            "severity": {
+              "S2": 2
+            }
+          }
+        ],
+        "non_interference": {
+          "bounded_success_regression_rate": {
+            "ci_high": 0.20991155070258877,
+            "ci_low": 0.007716666143453149,
+            "method": "wilson95",
+            "n": 23,
+            "value": 0.043478260869565216
+          },
+          "completion_time_tax_s": {
+            "n": 22,
+            "unit": "s",
+            "value": -0.5450039889997242
+          },
+          "n_reference_bounded_success": 23,
+          "preservation_rate": {
+            "ci_high": 0.9922833338565469,
+            "ci_low": 0.7900884492974114,
+            "method": "wilson95",
+            "n": 23,
+            "value": 0.9565217391304348
+          },
+          "task_success_regression_rate": {
+            "ci_high": 0.20991155070258877,
+            "ci_low": 0.007716666143453149,
+            "method": "wilson95",
+            "n": 23,
+            "value": 0.043478260869565216
+          },
+          "unnecessary_intervention_rate": {
+            "ci_high": 0.20991155070258877,
+            "ci_low": 0.007716666143453149,
+            "method": "wilson95",
+            "n": 23,
+            "value": 0.043478260869565216
+          }
+        },
+        "physical": {
+          "collision_count": "NOT_AVAILABLE",
+          "collision_severity": "NOT_AVAILABLE",
+          "force_exceedance_n": {
+            "max": 61.78953680510571,
+            "mean": 5.208621705826152,
+            "n": 48,
+            "p50": 0.6929843201063488,
+            "p90": 10.647364033344404,
+            "p95": 24.641302037479214,
+            "p99": 58.02940166305871,
+            "p999": 61.41352329090103
+          },
+          "integrated_constraint_excursion": "NOT_AVAILABLE",
+          "max_tilt_deg": {
+            "max": 179.7243291759678,
+            "mean": 13.87327006319233,
+            "n": 128,
+            "p50": 0.10114979123218104,
+            "p90": 32.52724745925782,
+            "p95": 135.78738900600908,
+            "p99": 176.63975773731133,
+            "p999": 179.4264813378557
+          },
+          "peak_force_n": {
+            "max": 76.78953680510571,
+            "mean": 8.283150674229148,
+            "n": 128,
+            "p50": 2.219326660372612,
+            "p90": 16.429525706132544,
+            "p95": 28.552434888042153,
+            "p99": 70.32784099630065,
+            "p999": 76.04117309538043
+          }
+        },
+        "responsibility": null,
+        "system": {
+          "authority_axis_counts": {
+            "ABORTED": 101,
+            "ACCEPTED": 27,
+            "REFUSED": 53
+          },
+          "bounded_success": {
+            "ci_high": 0.29281285266341783,
+            "ci_low": 0.17159301909484842,
+            "method": "wilson95",
+            "n": 181,
+            "value": 0.2265193370165746
+          },
+          "conditional_bsr": {
+            "ci_high": 0.40536588755478287,
+            "ci_low": 0.24573020610600924,
+            "method": "wilson95",
+            "n": 128,
+            "value": 0.3203125
+          },
+          "contract_axis_counts": {
+            "BOUNDED": 73,
+            "UNKNOWN": 53,
+            "VIOLATED": 55
+          },
+          "coverage": {
+            "ci_high": 0.7686190612104173,
+            "ci_low": 0.6371340662454414,
+            "method": "wilson95",
+            "n": 181,
+            "value": 0.7071823204419889
+          },
+          "n": 181,
+          "system_bsr": {
+            "ci_high": 0.29281285266341783,
+            "ci_low": 0.17159301909484842,
+            "method": "wilson95",
+            "n": 181,
+            "value": 0.2265193370165746
+          },
+          "task_axis_counts": {
+            "FAILURE": 86,
+            "SUCCESS": 42,
+            "UNKNOWN": 53
+          },
+          "task_success": {
+            "ci_high": 0.2987230245785241,
+            "ci_low": 0.17650293057856506,
+            "method": "wilson95",
+            "n": 181,
+            "value": 0.23204419889502761
+          }
+        },
+        "timing": {
+          "decision_latency": "NOT_AVAILABLE",
+          "fault_to_intervention_latency": "NOT_AVAILABLE",
+          "state_age_at_authorization": "NOT_AVAILABLE",
+          "wall_s": {
+            "max": 64.91591755299987,
+            "n": 181,
+            "p50": 0.9974900799998068,
+            "p90": 11.069893531999924,
+            "p95": 48.05958188400018,
+            "p99": 61.21592420280009
+          }
+        }
+      },
+      "haplous_mediated": {
+        "attribution": {
+          "by_confidence_band": {
+            "high": 140
+          },
+          "by_layer": {
+            "CONTROLLER": 25,
+            "EXECUTION_RUNTIME": 100,
+            "MACHINE_PHYSICS": 2,
+            "UPSTREAM_POLICY": 13
+          },
+          "by_runtime_subcause": {
+            "constraint_abort": 43,
+            "deadline_rejection": 15,
+            "false_refusal": 1,
+            "freshness_rejection": 5,
+            "hold_timeout": 4,
+            "reach_rejection": 32
+          },
+          "n_failures": 140,
+          "n_unknown": 0
+        },
+        "authority": {
+          "authorization_precision": {
+            "ci_high": 0.40536588755478287,
+            "ci_low": 0.24573020610600924,
+            "method": "wilson95",
+            "n": 128,
+            "value": 0.3203125
+          },
+          "authorization_recall": {
+            "ci_high": 0.9957845958655673,
+            "ci_low": 0.8767879842623334,
+            "method": "wilson95",
+            "n": 42,
+            "value": 0.9761904761904762
+          },
+          "execution_capture": {
+            "ci_high": 0.9957845958655673,
+            "ci_low": 0.8767879842623334,
+            "method": "wilson95",
+            "n": 42,
+            "value": 0.9761904761904762
+          },
+          "false_abort_rate": {
+            "ci_high": 0.08379879086570391,
+            "ci_low": -6.938893903907228e-18,
+            "method": "wilson95",
+            "n": 42,
+            "value": 0.0
+          },
+          "false_refusal_rate": {
+            "ci_high": 0.12321201573766646,
+            "ci_low": 0.004215404134432499,
+            "method": "wilson95",
+            "n": 42,
+            "value": 0.023809523809523808
+          },
+          "hazard_rejection": {
+            "n": 0,
+            "reason": "no_scenario_demonstrated_non_attainable",
+            "value": null
+          },
+          "n_accepted": 128,
+          "n_demonstrated_attainable": 42,
+          "n_presented": 181,
+          "n_refused": 53,
+          "violation_given_acceptance": {
+            "ci_high": 0.516260671149596,
+            "ci_low": 0.3472117133263662,
+            "method": "wilson95",
+            "n": 128,
+            "value": 0.4296875
+          }
+        },
+        "caveats": [],
+        "failure_pareto": [
+          {
+            "addressability": "generically_addressable",
+            "cause_key": "EXECUTION_RUNTIME/constraint_abort",
+            "confidence": "high",
+            "count": 43,
+            "example_scenarios": [
+              "fleet_slide_000012",
+              "fleet_slide_000014",
+              "fleet_slide_000015",
+              "fleet_insert_000016",
+              "fleet_slide_000017"
+            ],
+            "fraction_of_all_episodes": 0.23756906077348067,
+            "fraction_of_failures": 0.30714285714285716,
+            "haplous_responsibility": 1.0,
+            "primary_cause": "EXECUTION_RUNTIME",
+            "priority": 2.3756906077348066,
+            "runtime_subcause": "constraint_abort",
+            "severity": {
+              "S3": 43
+            }
+          },
+          {
+            "addressability": "generically_addressable",
+            "cause_key": "EXECUTION_RUNTIME/reach_rejection",
+            "confidence": "high",
+            "count": 32,
+            "example_scenarios": [
+              "fleet_insert_000008",
+              "fleet_insert_000011",
+              "fleet_insert_000013",
+              "fleet_insert_000039",
+              "fleet_insert_000046"
+            ],
+            "fraction_of_all_episodes": 0.17679558011049723,
+            "fraction_of_failures": 0.22857142857142856,
+            "haplous_responsibility": 1.0,
+            "primary_cause": "EXECUTION_RUNTIME",
+            "priority": 0.17679558011049723,
+            "runtime_subcause": "reach_rejection",
+            "severity": {
+              "S1": 32
+            }
+          },
+          {
+            "addressability": "generically_addressable",
+            "cause_key": "EXECUTION_RUNTIME/deadline_rejection",
+            "confidence": "high",
+            "count": 15,
+            "example_scenarios": [
+              "fleet_slide_000025",
+              "fleet_slide_000029",
+              "fleet_insert_000038",
+              "fleet_insert_000052",
+              "fleet_slide_000066"
+            ],
+            "fraction_of_all_episodes": 0.08287292817679558,
+            "fraction_of_failures": 0.10714285714285714,
+            "haplous_responsibility": 1.0,
+            "primary_cause": "EXECUTION_RUNTIME",
+            "priority": 0.08287292817679558,
+            "runtime_subcause": "deadline_rejection",
+            "severity": {
+              "S1": 15
+            }
+          },
+          {
+            "addressability": "generically_addressable",
+            "cause_key": "EXECUTION_RUNTIME/hold_timeout",
+            "confidence": "high",
+            "count": 4,
+            "example_scenarios": [
+              "fleet_insert_000049",
+              "fleet_insert_000100",
+              "fleet_insert_000102",
+              "fleet_insert_000156"
+            ],
+            "fraction_of_all_episodes": 0.022099447513812154,
+            "fraction_of_failures": 0.02857142857142857,
+            "haplous_responsibility": 1.0,
+            "primary_cause": "EXECUTION_RUNTIME",
+            "priority": 0.04419889502762431,
+            "runtime_subcause": "hold_timeout",
+            "severity": {
+              "S2": 4
+            }
+          },
+          {
+            "addressability": "generically_addressable",
+            "cause_key": "EXECUTION_RUNTIME/freshness_rejection",
+            "confidence": "high",
+            "count": 5,
+            "example_scenarios": [
+              "fleet_insert_000009",
+              "fleet_insert_000018",
+              "fleet_insert_000113",
+              "fleet_insert_000144",
+              "fleet_insert_000180"
+            ],
+            "fraction_of_all_episodes": 0.027624309392265192,
+            "fraction_of_failures": 0.03571428571428571,
+            "haplous_responsibility": 1.0,
+            "primary_cause": "EXECUTION_RUNTIME",
+            "priority": 0.027624309392265192,
+            "runtime_subcause": "freshness_rejection",
+            "severity": {
+              "S1": 5
+            }
+          },
+          {
+            "addressability": "generically_addressable",
+            "cause_key": "EXECUTION_RUNTIME/false_refusal",
+            "confidence": "high",
+            "count": 1,
+            "example_scenarios": [
+              "fleet_insert_000137"
+            ],
+            "fraction_of_all_episodes": 0.0055248618784530384,
+            "fraction_of_failures": 0.007142857142857143,
+            "haplous_responsibility": 1.0,
+            "primary_cause": "EXECUTION_RUNTIME",
+            "priority": 0.0055248618784530384,
+            "runtime_subcause": "false_refusal",
+            "severity": {
+              "S1": 1
+            }
+          },
+          {
+            "addressability": "technically_addressable",
+            "cause_key": "CONTROLLER/-",
+            "confidence": "high",
+            "count": 25,
+            "example_scenarios": [
+              "fleet_insert_000001",
+              "fleet_insert_000003",
+              "fleet_insert_000004",
+              "fleet_slide_000006",
+              "fleet_insert_000022"
+            ],
+            "fraction_of_all_episodes": 0.13812154696132597,
+            "fraction_of_failures": 0.17857142857142858,
+            "haplous_responsibility": 0.0,
+            "primary_cause": "CONTROLLER",
+            "priority": 0.0,
+            "runtime_subcause": null,
+            "severity": {
+              "S2": 25
+            }
+          },
+          {
+            "addressability": "upstream",
+            "cause_key": "UPSTREAM_POLICY/-",
+            "confidence": "high",
+            "count": 13,
+            "example_scenarios": [
+              "fleet_insert_000000",
+              "fleet_insert_000007",
+              "fleet_insert_000040",
+              "fleet_insert_000042",
+              "fleet_insert_000073"
+            ],
+            "fraction_of_all_episodes": 0.0718232044198895,
+            "fraction_of_failures": 0.09285714285714286,
+            "haplous_responsibility": 0.0,
+            "primary_cause": "UPSTREAM_POLICY",
+            "priority": 0.0,
+            "runtime_subcause": null,
+            "severity": {
+              "S2": 1,
+              "S3": 12
+            }
+          },
+          {
+            "addressability": "technically_addressable",
+            "cause_key": "MACHINE_PHYSICS/-",
+            "confidence": "high",
+            "count": 2,
+            "example_scenarios": [
+              "fleet_insert_000032",
+              "fleet_insert_000141"
+            ],
+            "fraction_of_all_episodes": 0.011049723756906077,
+            "fraction_of_failures": 0.014285714285714285,
+            "haplous_responsibility": 0.0,
+            "primary_cause": "MACHINE_PHYSICS",
+            "priority": 0.0,
+            "runtime_subcause": null,
+            "severity": {
+              "S2": 2
+            }
+          }
+        ],
+        "non_interference": {
+          "bounded_success_regression_rate": {
+            "ci_high": 0.20991155070258877,
+            "ci_low": 0.007716666143453149,
+            "method": "wilson95",
+            "n": 23,
+            "value": 0.043478260869565216
+          },
+          "completion_time_tax_s": {
+            "n": 22,
+            "unit": "s",
+            "value": -4.59479827600012
+          },
+          "n_reference_bounded_success": 23,
+          "preservation_rate": {
+            "ci_high": 0.9922833338565469,
+            "ci_low": 0.7900884492974114,
+            "method": "wilson95",
+            "n": 23,
+            "value": 0.9565217391304348
+          },
+          "task_success_regression_rate": {
+            "ci_high": 0.20991155070258877,
+            "ci_low": 0.007716666143453149,
+            "method": "wilson95",
+            "n": 23,
+            "value": 0.043478260869565216
+          },
+          "unnecessary_intervention_rate": {
+            "ci_high": 0.20991155070258877,
+            "ci_low": 0.007716666143453149,
+            "method": "wilson95",
+            "n": 23,
+            "value": 0.043478260869565216
+          }
+        },
+        "physical": {
+          "collision_count": "NOT_AVAILABLE",
+          "collision_severity": "NOT_AVAILABLE",
+          "force_exceedance_n": {
+            "max": 61.78953680510571,
+            "mean": 3.592165420979536,
+            "n": 43,
+            "p50": 0.4934924502708786,
+            "p90": 7.677058333063877,
+            "p95": 10.895600627865882,
+            "p99": 47.78559834136853,
+            "p999": 60.38914295873219
+          },
+          "integrated_constraint_excursion": "NOT_AVAILABLE",
+          "max_tilt_deg": {
+            "max": 179.7243291759678,
+            "mean": 9.423079911548877,
+            "n": 128,
+            "p50": 0.09841351933827042,
+            "p90": 13.919429309405421,
+            "p95": 76.48948309454829,
+            "p99": 171.4629549807505,
+            "p999": 179.07873046897706
+          },
+          "peak_force_n": {
+            "max": 76.78953680510571,
+            "mean": 8.194328093130153,
+            "n": 128,
+            "p50": 2.2718433189937324,
+            "p90": 16.910255531012567,
+            "p95": 23.00997101881658,
+            "p99": 68.38881402296137,
+            "p999": 76.04117309538043
+          }
+        },
+        "responsibility": {
+          "benchmark_evaluator": 0,
+          "correct_refusal": 0,
+          "false_refusal_loss": 1,
+          "haplous_caused_loss": 4,
+          "haplous_unprevented_violation": 43,
+          "infrastructure": 0,
+          "runtime_refusal_attainability_unknown": 52,
+          "unknown": 0,
+          "upstream_controller_physics_limit": 40
+        },
+        "system": {
+          "authority_axis_counts": {
+            "ABORTED": 101,
+            "ACCEPTED": 27,
+            "REFUSED": 53
+          },
+          "bounded_success": {
+            "ci_high": 0.29281285266341783,
+            "ci_low": 0.17159301909484842,
+            "method": "wilson95",
+            "n": 181,
+            "value": 0.2265193370165746
+          },
+          "conditional_bsr": {
+            "ci_high": 0.40536588755478287,
+            "ci_low": 0.24573020610600924,
+            "method": "wilson95",
+            "n": 128,
+            "value": 0.3203125
+          },
+          "contract_axis_counts": {
+            "BOUNDED": 73,
+            "UNKNOWN": 53,
+            "VIOLATED": 55
+          },
+          "coverage": {
+            "ci_high": 0.7686190612104173,
+            "ci_low": 0.6371340662454414,
+            "method": "wilson95",
+            "n": 181,
+            "value": 0.7071823204419889
+          },
+          "n": 181,
+          "system_bsr": {
+            "ci_high": 0.29281285266341783,
+            "ci_low": 0.17159301909484842,
+            "method": "wilson95",
+            "n": 181,
+            "value": 0.2265193370165746
+          },
+          "task_axis_counts": {
+            "FAILURE": 86,
+            "SUCCESS": 42,
+            "UNKNOWN": 53
+          },
+          "task_success": {
+            "ci_high": 0.2987230245785241,
+            "ci_low": 0.17650293057856506,
+            "method": "wilson95",
+            "n": 181,
+            "value": 0.23204419889502761
+          }
+        },
+        "timing": {
+          "decision_latency": "NOT_AVAILABLE",
+          "fault_to_intervention_latency": "NOT_AVAILABLE",
+          "state_age_at_authorization": "NOT_AVAILABLE",
+          "wall_s": {
+            "max": 24.54609138800015,
+            "n": 181,
+            "p50": 0.8845251259999714,
+            "p90": 7.196419199999582,
+            "p95": 14.083326962000228,
+            "p99": 19.477260751199903
+          }
+        }
+      }
+    },
+    "n_episodes": 724,
+    "n_scenarios": 181,
+    "not_available": {
+      "collision_metrics": "no collision channel in the internal substrate",
+      "decision_latency": "runtime decision timing is not in canonical rows",
+      "evidence_completeness": "not derived from canonical rows",
+      "integrated_constraint_excursion": "violation rows are pruned per episode",
+      "portability_engineering_leverage": "manifest-level metadata only",
+      "task_progress": "canonical rows carry no progress channel"
+    },
+    "provenance": {
+      "benchmark": "heb",
+      "benchmark_version": "heb-0.2.0",
+      "cpu_count": 4,
+      "dependencies": {
+        "matplotlib": "3.11.1",
+        "mujoco": "3.11.0",
+        "numpy": "2.5.1",
+        "pyarrow": "25.0.1",
+        "yaml": "6.0.3"
+      },
+      "episode_schema_version": "haplous-episode-v1",
+      "git_commit": "cba7a0eb6ec0e0a6a4d2a4d0ec4c4086d643a18f",
+      "git_dirty": false,
+      "haplous_version": "0.5.0",
+      "machine": "x86_64",
+      "manifest_schema_version": "haplous-experiment-v1",
+      "manifest_sha256": "29a78cdca8d917d80e1b0e7a3b626e425b3079b6c23930c988065aaf294b9740",
+      "platform": "Linux-6.18.44-fc-v445-x86_64-with-glibc2.39",
+      "policy_checkpoint": null,
+      "processor": "x86_64",
+      "python": "3.12.3",
+      "recorded_at_utc": "2026-11-13T16:58:40.147905+00:00"
+    },
+    "risk_coverage": {
+      "bare_behavior": [
+        {
+          "coverage": 1.0,
+          "n_accepted": 181,
+          "n_presented": 181,
+          "violation_given_acceptance": 0.7734806629834254
+        }
+      ],
+      "competent_supervisor": [
+        {
+          "coverage": 1.0,
+          "n_accepted": 181,
+          "n_presented": 181,
+          "violation_given_acceptance": 0.287292817679558
+        }
+      ],
+      "g1_incumbent": [
+        {
+          "coverage": 0.7071823204419889,
+          "n_accepted": 128,
+          "n_presented": 181,
+          "violation_given_acceptance": 0.4296875
+        }
+      ],
+      "haplous_mediated": [
+        {
+          "coverage": 0.7071823204419889,
+          "n_accepted": 128,
+          "n_presented": 181,
+          "violation_given_acceptance": 0.4296875
+        }
+      ]
+    },
+    "slices": {
+      "offset_stratum": {
+        "offset:beyond": {
+          "arms": {
+            "bare_behavior": {
+              "bounded_success": {
+                "ci_high": 0.1491557329268593,
+                "ci_low": 0.0052109062762689395,
+                "method": "wilson95",
+                "n": 34,
+                "value": 0.029411764705882353
+              },
+              "coverage": {
+                "ci_high": 0.9999999999999999,
+                "ci_low": 0.8984854458466761,
+                "method": "wilson95",
+                "n": 34,
+                "value": 1.0
+              },
+              "execution_capture": {
+                "ci_high": 0.12321201573766646,
+                "ci_low": 0.004215404134432499,
+                "method": "wilson95",
+                "n": 42,
+                "value": 0.023809523809523808
+              }
+            },
+            "competent_supervisor": {
+              "bounded_success": {
+                "ci_high": 0.1491557329268593,
+                "ci_low": 0.0052109062762689395,
+                "method": "wilson95",
+                "n": 34,
+                "value": 0.029411764705882353
+              },
+              "coverage": {
+                "ci_high": 0.9999999999999999,
+                "ci_low": 0.8984854458466761,
+                "method": "wilson95",
+                "n": 34,
+                "value": 1.0
+              },
+              "execution_capture": {
+                "ci_high": 0.12321201573766646,
+                "ci_low": 0.004215404134432499,
+                "method": "wilson95",
+                "n": 42,
+                "value": 0.023809523809523808
+              }
+            },
+            "g1_incumbent": {
+              "bounded_success": {
+                "ci_high": 0.10151455415332376,
+                "ci_low": 0.0,
+                "method": "wilson95",
+                "n": 34,
+                "value": 0.0
+              },
+              "coverage": {
+                "ci_high": 0.10151455415332376,
+                "ci_low": 0.0,
+                "method": "wilson95",
+                "n": 34,
+                "value": 0.0
+              },
+              "execution_capture": {
+                "ci_high": 0.08379879086570391,
+                "ci_low": -6.938893903907228e-18,
+                "method": "wilson95",
+                "n": 42,
+                "value": 0.0
+              }
+            },
+            "haplous_mediated": {
+              "bounded_success": {
+                "ci_high": 0.10151455415332376,
+                "ci_low": 0.0,
+                "method": "wilson95",
+                "n": 34,
+                "value": 0.0
+              },
+              "coverage": {
+                "ci_high": 0.10151455415332376,
+                "ci_low": 0.0,
+                "method": "wilson95",
+                "n": 34,
+                "value": 0.0
+              },
+              "execution_capture": {
+                "ci_high": 0.08379879086570391,
+                "ci_low": -6.938893903907228e-18,
+                "method": "wilson95",
+                "n": 42,
+                "value": 0.0
+              }
+            }
+          },
+          "n": 34
+        },
+        "offset:boundary": {
+          "arms": {
+            "bare_behavior": {
+              "bounded_success": {
+                "ci_high": 0.24165159676499615,
+                "ci_low": 0.06914109480586972,
+                "method": "wilson95",
+                "n": 60,
+                "value": 0.13333333333333333
+              },
+              "coverage": {
+                "ci_high": 0.9999999999999998,
+                "ci_low": 0.93982814785791,
+                "method": "wilson95",
+                "n": 60,
+                "value": 1.0
+              },
+              "execution_capture": {
+                "ci_high": 0.3330077401003869,
+                "ci_low": 0.09982008281647739,
+                "method": "wilson95",
+                "n": 42,
+                "value": 0.19047619047619047
+              }
+            },
+            "competent_supervisor": {
+              "bounded_success": {
+                "ci_high": 0.2217878802417086,
+                "ci_low": 0.0576772064005603,
+                "method": "wilson95",
+                "n": 60,
+                "value": 0.11666666666666667
+              },
+              "coverage": {
+                "ci_high": 0.9999999999999998,
+                "ci_low": 0.93982814785791,
+                "method": "wilson95",
+                "n": 60,
+                "value": 1.0
+              },
+              "execution_capture": {
+                "ci_high": 0.3060400274464885,
+                "ci_low": 0.08315916646398075,
+                "method": "wilson95",
+                "n": 42,
+                "value": 0.16666666666666666
+              }
+            },
+            "g1_incumbent": {
+              "bounded_success": {
+                "ci_high": 0.35436270377601964,
+                "ci_low": 0.1443956173664283,
+                "method": "wilson95",
+                "n": 60,
+                "value": 0.23333333333333334
+              },
+              "coverage": {
+                "ci_high": 0.9308589051941303,
+                "ci_low": 0.7583484032350039,
+                "method": "wilson95",
+                "n": 60,
+                "value": 0.8666666666666667
+              },
+              "execution_capture": {
+                "ci_high": 0.484474926231662,
+                "ci_low": 0.21012467072357258,
+                "method": "wilson95",
+                "n": 42,
+                "value": 0.3333333333333333
+              }
+            },
+            "haplous_mediated": {
+              "bounded_success": {
+                "ci_high": 0.35436270377601964,
+                "ci_low": 0.1443956173664283,
+                "method": "wilson95",
+                "n": 60,
+                "value": 0.23333333333333334
+              },
+              "coverage": {
+                "ci_high": 0.9308589051941303,
+                "ci_low": 0.7583484032350039,
+                "method": "wilson95",
+                "n": 60,
+                "value": 0.8666666666666667
+              },
+              "execution_capture": {
+                "ci_high": 0.484474926231662,
+                "ci_low": 0.21012467072357258,
+                "method": "wilson95",
+                "n": 42,
+                "value": 0.3333333333333333
+              }
+            }
+          },
+          "n": 60
+        },
+        "offset:interior": {
+          "arms": {
+            "bare_behavior": {
+              "bounded_success": {
+                "ci_high": 0.34258901272617925,
+                "ci_low": 0.11730272957905595,
+                "method": "wilson95",
+                "n": 48,
+                "value": 0.20833333333333334
+              },
+              "coverage": {
+                "ci_high": 0.9999999999999999,
+                "ci_low": 0.9258998703338824,
+                "method": "wilson95",
+                "n": 48,
+                "value": 1.0
+              },
+              "execution_capture": {
+                "ci_high": 0.38527543868318304,
+                "ci_low": 0.13480964224647127,
+                "method": "wilson95",
+                "n": 42,
+                "value": 0.23809523809523808
+              }
+            },
+            "competent_supervisor": {
+              "bounded_success": {
+                "ci_high": 0.31939867149284695,
+                "ci_low": 0.10191390954847647,
+                "method": "wilson95",
+                "n": 48,
+                "value": 0.1875
+              },
+              "coverage": {
+                "ci_high": 0.9999999999999999,
+                "ci_low": 0.9258998703338824,
+                "method": "wilson95",
+                "n": 48,
+                "value": 1.0
+              },
+              "execution_capture": {
+                "ci_high": 0.35939845316322905,
+                "ci_low": 0.11705799876003031,
+                "method": "wilson95",
+                "n": 42,
+                "value": 0.21428571428571427
+              }
+            },
+            "g1_incumbent": {
+              "bounded_success": {
+                "ci_high": 0.5970892545435019,
+                "ci_low": 0.32575242292867446,
+                "method": "wilson95",
+                "n": 48,
+                "value": 0.4583333333333333
+              },
+              "coverage": {
+                "ci_high": 0.9546782809581869,
+                "ci_low": 0.7783257830561368,
+                "method": "wilson95",
+                "n": 48,
+                "value": 0.8958333333333334
+              },
+              "execution_capture": {
+                "ci_high": 0.6664039876929454,
+                "ci_low": 0.3772246413134498,
+                "method": "wilson95",
+                "n": 42,
+                "value": 0.5238095238095238
+              }
+            },
+            "haplous_mediated": {
+              "bounded_success": {
+                "ci_high": 0.5970892545435019,
+                "ci_low": 0.32575242292867446,
+                "method": "wilson95",
+                "n": 48,
+                "value": 0.4583333333333333
+              },
+              "coverage": {
+                "ci_high": 0.9546782809581869,
+                "ci_low": 0.7783257830561368,
+                "method": "wilson95",
+                "n": 48,
+                "value": 0.8958333333333334
+              },
+              "execution_capture": {
+                "ci_high": 0.6664039876929454,
+                "ci_low": 0.3772246413134498,
+                "method": "wilson95",
+                "n": 42,
+                "value": 0.5238095238095238
+              }
+            }
+          },
+          "n": 48
+        }
+      },
+      "task_family": {
+        "task_a": {
+          "arms": {
+            "bare_behavior": {
+              "bounded_success": {
+                "ci_high": 0.19953613624649416,
+                "ci_low": 0.08736073902500471,
+                "method": "wilson95",
+                "n": 142,
+                "value": 0.13380281690140844
+              },
+              "coverage": {
+                "ci_high": 0.9999999999999999,
+                "ci_low": 0.9736600356869919,
+                "method": "wilson95",
+                "n": 142,
+                "value": 1.0
+              },
+              "execution_capture": {
+                "ci_high": 0.6005088096526652,
+                "ci_low": 0.31223393233454466,
+                "method": "wilson95",
+                "n": 42,
+                "value": 0.4523809523809524
+              }
+            },
+            "competent_supervisor": {
+              "bounded_success": {
+                "ci_high": 0.1833650527004534,
+                "ci_low": 0.07610477931225694,
+                "method": "wilson95",
+                "n": 142,
+                "value": 0.11971830985915492
+              },
+              "coverage": {
+                "ci_high": 0.9999999999999999,
+                "ci_low": 0.9736600356869919,
+                "method": "wilson95",
+                "n": 142,
+                "value": 1.0
+              },
+              "execution_capture": {
+                "ci_high": 0.5550568724996064,
+                "ci_low": 0.27042861147481323,
+                "method": "wilson95",
+                "n": 42,
+                "value": 0.40476190476190477
+              }
+            },
+            "g1_incumbent": {
+              "bounded_success": {
+                "ci_high": 0.33091428230626607,
+                "ci_low": 0.18911246066493514,
+                "method": "wilson95",
+                "n": 142,
+                "value": 0.2535211267605634
+              },
+              "coverage": {
+                "ci_high": 0.7410631661136166,
+                "ci_low": 0.5880613529918456,
+                "method": "wilson95",
+                "n": 142,
+                "value": 0.6690140845070423
+              },
+              "execution_capture": {
+                "ci_high": 0.9328403298403735,
+                "ci_low": 0.7215891052555522,
+                "method": "wilson95",
+                "n": 42,
+                "value": 0.8571428571428571
+              }
+            },
+            "haplous_mediated": {
+              "bounded_success": {
+                "ci_high": 0.33091428230626607,
+                "ci_low": 0.18911246066493514,
+                "method": "wilson95",
+                "n": 142,
+                "value": 0.2535211267605634
+              },
+              "coverage": {
+                "ci_high": 0.7410631661136166,
+                "ci_low": 0.5880613529918456,
+                "method": "wilson95",
+                "n": 142,
+                "value": 0.6690140845070423
+              },
+              "execution_capture": {
+                "ci_high": 0.9328403298403735,
+                "ci_low": 0.7215891052555522,
+                "method": "wilson95",
+                "n": 42,
+                "value": 0.8571428571428571
+              }
+            }
+          },
+          "n": 142
+        },
+        "task_b": {
+          "arms": {
+            "bare_behavior": {
+              "bounded_success": {
+                "ci_high": 0.23578854462856527,
+                "ci_low": 0.04061331344668381,
+                "method": "wilson95",
+                "n": 39,
+                "value": 0.10256410256410256
+              },
+              "coverage": {
+                "ci_high": 1.0,
+                "ci_low": 0.9103331462924287,
+                "method": "wilson95",
+                "n": 39,
+                "value": 1.0
+              },
+              "execution_capture": {
+                "ci_high": 0.22065105808571023,
+                "ci_low": 0.03766224880557388,
+                "method": "wilson95",
+                "n": 42,
+                "value": 0.09523809523809523
+              }
+            },
+            "competent_supervisor": {
+              "bounded_success": {
+                "ci_high": 0.20321071167954996,
+                "ci_low": 0.02650739530377974,
+                "method": "wilson95",
+                "n": 39,
+                "value": 0.07692307692307693
+              },
+              "coverage": {
+                "ci_high": 1.0,
+                "ci_low": 0.9103331462924287,
+                "method": "wilson95",
+                "n": 39,
+                "value": 1.0
+              },
+              "execution_capture": {
+                "ci_high": 0.19009426801158313,
+                "ci_low": 0.02459040987330592,
+                "method": "wilson95",
+                "n": 42,
+                "value": 0.07142857142857142
+              }
+            },
+            "g1_incumbent": {
+              "bounded_success": {
+                "ci_high": 0.26705743379745456,
+                "ci_low": 0.056028175369713926,
+                "method": "wilson95",
+                "n": 39,
+                "value": 0.1282051282051282
+              },
+              "coverage": {
+                "ci_high": 0.927525276230179,
+                "ci_low": 0.7027053635107331,
+                "method": "wilson95",
+                "n": 39,
+                "value": 0.8461538461538461
+              },
+              "execution_capture": {
+                "ci_high": 0.25000390262009675,
+                "ci_low": 0.05193803327758237,
+                "method": "wilson95",
+                "n": 42,
+                "value": 0.11904761904761904
+              }
+            },
+            "haplous_mediated": {
+              "bounded_success": {
+                "ci_high": 0.26705743379745456,
+                "ci_low": 0.056028175369713926,
+                "method": "wilson95",
+                "n": 39,
+                "value": 0.1282051282051282
+              },
+              "coverage": {
+                "ci_high": 0.927525276230179,
+                "ci_low": 0.7027053635107331,
+                "method": "wilson95",
+                "n": 39,
+                "value": 0.8461538461538461
+              },
+              "execution_capture": {
+                "ci_high": 0.25000390262009675,
+                "ci_low": 0.05193803327758237,
+                "method": "wilson95",
+                "n": 42,
+                "value": 0.11904761904761904
+              }
+            }
+          },
+          "n": 39
+        }
+      }
+    }
+  },
+  "benchmark_health": {
+    "findings": [
+      {
+        "detail": "0.873 of scenarios grade identically for every arm",
+        "evidence": {
+          "all_agree": 158,
+          "n_scenarios": 181
+        },
+        "healthy": true,
+        "name": "discriminating_power"
+      },
+      {
+        "detail": "19 trivially solved and 139 unsolved by every arm (informational; not necessarily a defect)",
+        "evidence": {
+          "examples_solved": [
+            "fleet_insert_000020",
+            "fleet_slide_000026",
+            "fleet_insert_000035",
+            "fleet_slide_000051",
+            "fleet_insert_000059"
+          ],
+          "examples_unsolved": [
+            "fleet_insert_000000",
+            "fleet_insert_000001",
+            "fleet_insert_000003",
+            "fleet_insert_000004",
+            "fleet_slide_000006"
+          ],
+          "n_trivially_solved": 19,
+          "n_trivially_unsolved": 139
+        },
+        "healthy": true,
+        "name": "degenerate_scenarios"
+      },
+      {
+        "detail": "2 task families, 3 offset strata across 181 scenarios",
+        "evidence": {
+          "n_scenarios": 181,
+          "offset_strata": {
+            "offset:beyond": 34,
+            "offset:boundary": 60,
+            "offset:interior": 48
+          },
+          "task_families": {
+            "task_a": 142,
+            "task_b": 39
+          }
+        },
+        "healthy": true,
+        "name": "population_balance"
+      },
+      {
+        "detail": "bounded success never coexists with a recorded hard violation",
+        "evidence": {
+          "examples": [],
+          "n_inconsistent": 0
+        },
+        "healthy": true,
+        "name": "grader_consistency"
+      }
+    ],
+    "healthy": true
+  },
+  "claim_ledger": {
+    "arm": "haplous_mediated",
+    "claims": [
+      {
+        "arm": "haplous_mediated",
+        "claim_id": "C1",
+        "counterexamples": [],
+        "evidence": [
+          "results/external_eval/maniskill-3.0.1/20260910T064409Z/",
+          "results/heb_final_summary.json",
+          "docs/HAPLOUS_FINAL_SIMULATION_EVIDENCE.md"
+        ],
+        "executable": true,
+        "hes_status": "UNKNOWN",
+        "metrics": [
+          "task_success_delta",
+          "peak_force_delta_paired",
+          "step_parity",
+          "completion_time_delta"
+        ],
+        "name": "NON_INTERFERENCE",
+        "next_experiment": "replicate on a held-out population",
+        "notes": [
+          "baseline direct_upstream_stream has no paired arm in this run"
+        ],
+        "registry_status": "SUPPORTED_WITHIN_TESTED_SCOPE",
+        "statement": "Haplous does not materially degrade competent execution when no intervention is required.\n",
+        "uncertainty": "derived from a single internal campaign; see caveats"
+      },
+      {
+        "arm": "haplous_mediated",
+        "claim_id": "C2",
+        "counterexamples": [],
+        "evidence": [
+          "results/heb_final_summary.json",
+          "docs/HAPLOUS_FINAL_SIMULATION_EVIDENCE.md"
+        ],
+        "executable": true,
+        "hes_status": "WEAKENED",
+        "metrics": [
+          "bounded_success_rate",
+          "violation_probability_conditional_acceptance",
+          "false_abort_rate",
+          "coverage"
+        ],
+        "name": "BOUNDED_EXECUTION",
+        "next_experiment": "replicate on a held-out population",
+        "notes": [
+          "vs bare_behavior: violation 0.430 vs 0.773; coverage 0.707 vs 1.000"
+        ],
+        "registry_status": "SUPPORTED_WITH_CAVEATS",
+        "statement": "Haplous reduces hard execution violations at comparable useful execution coverage.\n",
+        "uncertainty": "derived from a single internal campaign; see caveats"
+      },
+      {
+        "arm": "haplous_mediated",
+        "claim_id": "C3",
+        "counterexamples": [],
+        "evidence": [
+          "results/heb_final_summary.json",
+          "results/heb_final_adjudication.json",
+          "results/holdout_final_summary.json"
+        ],
+        "executable": true,
+        "hes_status": "WEAKENED",
+        "metrics": [
+          "task_success",
+          "bounded_success_rate",
+          "hard_violation_risk",
+          "coverage",
+          "latency"
+        ],
+        "name": "NET_SYSTEM_VALUE",
+        "next_experiment": "replicate on a held-out population",
+        "notes": [
+          "haplous_mediated does not dominate bare_behavior on (BSR, coverage, violation)",
+          "haplous_mediated does not dominate direct_minimal on (BSR, coverage, violation)"
+        ],
+        "registry_status": "SUPPORTED_WITHIN_TESTED_SCOPE",
+        "statement": "Haplous improves the tradeoff between useful task completion and physical execution risk.\n",
+        "uncertainty": "derived from a single internal campaign; see caveats"
+      },
+      {
+        "arm": "haplous_mediated",
+        "claim_id": "C4",
+        "counterexamples": [],
+        "evidence": [
+          "results/heb_dev_summary.json",
+          "docs/HAPLOUS_PREHARDWARE_EVAL_REPORT.md"
+        ],
+        "executable": false,
+        "hes_status": "NOT_EXECUTABLE_IN_HES_V0",
+        "metrics": [
+          "recovery_success_rate",
+          "post_recovery_task_success",
+          "recovery_latency"
+        ],
+        "name": "RECOVERY_VALUE",
+        "next_experiment": "recovery channels are absent from canonical episode rows",
+        "notes": [
+          "recovery channels are absent from canonical episode rows"
+        ],
+        "registry_status": "SUPPORTED_WITHIN_TESTED_SCOPE",
+        "statement": "Haplous converts meaningful classes of disturbed execution from failure into successful bounded completion.\n",
+        "uncertainty": "not separated from the artifact by this evidence"
+      },
+      {
+        "arm": "haplous_mediated",
+        "claim_id": "C5",
+        "counterexamples": [],
+        "evidence": [
+          "tests/test_governor.py",
+          "docs/HAPLOUS_EXTERNAL_BENCHMARK_REPORT.md"
+        ],
+        "executable": false,
+        "hes_status": "NOT_EXECUTABLE_IN_HES_V0",
+        "metrics": [
+          "control_objective_pareto"
+        ],
+        "name": "CONTROLLER_SUPERIORITY",
+        "next_experiment": "requires a controller-candidate tournament, not an execution campaign",
+        "notes": [
+          "requires a controller-candidate tournament, not an execution campaign"
+        ],
+        "registry_status": "UNKNOWN",
+        "statement": "A Haplous-owned control mechanism outperforms strong incumbent contact controllers on meaningful control objectives.\n",
+        "uncertainty": "not separated from the artifact by this evidence"
+      },
+      {
+        "arm": "haplous_mediated",
+        "claim_id": "C6",
+        "counterexamples": [],
+        "evidence": [
+          "results/external_eval/c01_colosseumv2_disposition.json"
+        ],
+        "executable": false,
+        "hes_status": "NOT_EXECUTABLE_IN_HES_V0",
+        "metrics": [
+          "task_success",
+          "bounded_success_rate",
+          "intervention_value_rates",
+          "false_abort_rate"
+        ],
+        "name": "LEARNED_POLICY_VALUE",
+        "next_experiment": "requires an external learned-policy platform run",
+        "notes": [
+          "requires an external learned-policy platform run"
+        ],
+        "registry_status": "UNKNOWN",
+        "statement": "The same frozen learned robot policy achieves better bounded useful execution when mediated by Haplous.\n",
+        "uncertainty": "not separated from the artifact by this evidence"
+      },
+      {
+        "arm": "haplous_mediated",
+        "claim_id": "C7",
+        "counterexamples": [],
+        "evidence": [
+          "results/heb_sweeps_dev.json",
+          "results/compound_perturbation_summary.json"
+        ],
+        "executable": false,
+        "hes_status": "NOT_EXECUTABLE_IN_HES_V0",
+        "metrics": [
+          "bsr_envelope_by_axis",
+          "boundary_position_with_ci"
+        ],
+        "name": "ROBUSTNESS",
+        "next_experiment": "requires boundary sweeps; run `hes boundary` and feed the envelope",
+        "notes": [
+          "requires boundary sweeps; run `hes boundary` and feed the envelope"
+        ],
+        "registry_status": "MIXED",
+        "statement": "Haplous enlarges or improves meaningful operating regions under perturbation.\n",
+        "uncertainty": "not separated from the artifact by this evidence"
+      },
+      {
+        "arm": "haplous_mediated",
+        "claim_id": "C8",
+        "counterexamples": [],
+        "evidence": [
+          "docs/HAPLOUS_FINAL_SIMULATION_EVIDENCE.md",
+          "docs/HAPLOUS_EXTERNAL_BENCHMARK_REPORT.md"
+        ],
+        "executable": false,
+        "hes_status": "NOT_EXECUTABLE_IN_HES_V0",
+        "metrics": [
+          "core_loc_changed",
+          "adapter_loc",
+          "task_specific_core_loc"
+        ],
+        "name": "GENERALITY",
+        "next_experiment": "requires cross-adapter code-diff evidence, not an execution campaign",
+        "notes": [
+          "requires cross-adapter code-diff evidence, not an execution campaign"
+        ],
+        "registry_status": "SUPPORTED_WITH_CAVEATS",
+        "statement": "Haplous semantics transfer across tasks, geometries, policies and physics engines without task-specific core growth.\n",
+        "uncertainty": "not separated from the artifact by this evidence"
+      },
+      {
+        "arm": "haplous_mediated",
+        "claim_id": "C9",
+        "counterexamples": [],
+        "evidence": [
+          "results/external_eval/maniskill-3.0.1/20260910T064409Z/latency_rows.json"
+        ],
+        "executable": false,
+        "hes_status": "NOT_EXECUTABLE_IN_HES_V0",
+        "metrics": [
+          "mediation_overhead_p99",
+          "deadline_miss_rate"
+        ],
+        "name": "REAL_TIME_VIABILITY",
+        "next_experiment": "requires loop-latency rows, not canonical episode rows",
+        "notes": [
+          "requires loop-latency rows, not canonical episode rows"
+        ],
+        "registry_status": "SUPPORTED_WITHIN_TESTED_SCOPE",
+        "statement": "Haplous latency and jitter remain comfortably below required execution budgets.\n",
+        "uncertainty": "not separated from the artifact by this evidence"
+      },
+      {
+        "arm": "haplous_mediated",
+        "claim_id": "C10",
+        "counterexamples": [],
+        "evidence": [
+          "results/l0_fuzz_summary.json",
+          "results/soak_100k_summary.json",
+          "tests/test_haplous_reliability.py"
+        ],
+        "executable": false,
+        "hes_status": "NOT_EXECUTABLE_IN_HES_V0",
+        "metrics": [
+          "invariant_violations",
+          "soak_failure_free_cycles"
+        ],
+        "name": "RUNTIME_RELIABILITY",
+        "next_experiment": "requires the reliability fuzz/soak harness, not an execution campaign",
+        "notes": [
+          "requires the reliability fuzz/soak harness, not an execution campaign"
+        ],
+        "registry_status": "SUPPORTED_WITHIN_TESTED_SCOPE",
+        "statement": "Haplous itself is reliable over long operation and adversarial event sequences.\n",
+        "uncertainty": "not separated from the artifact by this evidence"
+      },
+      {
+        "arm": "haplous_mediated",
+        "claim_id": "C11",
+        "counterexamples": [],
+        "evidence": [
+          "results/competent_supervisor_dev_summary.json",
+          "results/competent_supervisor_dev_rows.jsonl",
+          "results/holdout_final_summary.json",
+          "results/ablation_summary.json"
+        ],
+        "executable": true,
+        "hes_status": "WEAKENED",
+        "metrics": [
+          "pareto_vs_competent_supervisor"
+        ],
+        "name": "INCUMBENT_DIFFERENTIATION",
+        "next_experiment": "replicate on a held-out population",
+        "notes": [
+          "vs competent_supervisor: preservation 0.9565217391304348 vs 0.8695652173913043",
+          "BSR 0.2265193370165746 vs 0.11049723756906077",
+          "violation 0.4296875 vs 0.287292817679558"
+        ],
+        "registry_status": "SUPPORTED_WITHIN_TESTED_SCOPE",
+        "statement": "Haplous provides material value beyond realistic existing supervision/control alternatives.\n",
+        "uncertainty": "derived from a single internal campaign; see caveats"
+      },
+      {
+        "arm": "haplous_mediated",
+        "claim_id": "C12",
+        "counterexamples": [],
+        "evidence": [
+          "results/external_eval/x01_cross_physics_agreement.json"
+        ],
+        "executable": false,
+        "hes_status": "NOT_EXECUTABLE_IN_HES_V0",
+        "metrics": [
+          "ranking_agreement",
+          "failure_class_agreement",
+          "boundary_displacement"
+        ],
+        "name": "SIMULATION_RELEVANCE",
+        "next_experiment": "requires cross-engine pairing, not a single-engine campaign",
+        "notes": [
+          "requires cross-engine pairing, not a single-engine campaign"
+        ],
+        "registry_status": "MIXED",
+        "statement": "Important rankings and failure phenomena survive across simulation formulations and eventually hardware.\n",
+        "uncertainty": "not separated from the artifact by this evidence"
+      }
+    ]
+  },
+  "corpus": {
+    "n": 20,
+    "n_bootstrapped": 20,
+    "n_committed": 0,
+    "n_without_regression_test": 20
+  },
+  "hard_gates": {
+    "gates": [
+      {
+        "detail": "shortcut/gaming/leakage checks pass",
+        "gate_id": "G1",
+        "name": "integrity",
+        "observed": [],
+        "passed": true,
+        "threshold": "no failing integrity check"
+      },
+      {
+        "detail": "conditional violation exposure must not exceed the unmediated baseline",
+        "gate_id": "G2",
+        "name": "no_more_conditional_violation_than_baseline",
+        "observed": {
+          "baseline": 0.7734806629834254,
+          "runtime": 0.4296875
+        },
+        "passed": true,
+        "threshold": "runtime <= baseline (bare_behavior)"
+      },
+      {
+        "detail": "preserve execution the baseline already completes within contract",
+        "gate_id": "G3",
+        "name": "non_interference",
+        "observed": 0.9565217391304348,
+        "passed": true,
+        "threshold": ">= 0.95"
+      },
+      {
+        "detail": "refusals of demonstrated-attainable requests must stay bounded",
+        "gate_id": "G4",
+        "name": "false_refusal_ceiling",
+        "observed": 0.023809523809523808,
+        "passed": true,
+        "threshold": "<= 0.2"
+      },
+      {
+        "detail": "the producing run carries complete provenance",
+        "gate_id": "G5",
+        "name": "reproducibility_provenance",
+        "observed": [
+          "benchmark",
+          "benchmark_version",
+          "cpu_count",
+          "dependencies",
+          "episode_schema_version",
+          "git_commit",
+          "git_dirty",
+          "haplous_version"
+        ],
+        "passed": true,
+        "threshold": "provenance present"
+      }
+    ],
+    "n_violations": 0,
+    "note": "performance frontier is reported, not gated",
+    "qualified": true
+  },
+  "integrity": {
+    "checks": [
+      {
+        "detail": "always-accept does not reach perfect contract-safe success",
+        "evidence": {
+          "always_accept_bounded_success": 0.17265193370165746,
+          "always_accept_violation_rate": 0.4171270718232044,
+          "always_refuse_bounded_success": 0.0
+        },
+        "name": "shortcut_solvability",
+        "passed": true
+      },
+      {
+        "detail": "no mirrored pairs supplied",
+        "evidence": {
+          "mismatches": [],
+          "pairs_checked": 0
+        },
+        "name": "mirrored_scenarios",
+        "passed": true
+      },
+      {
+        "detail": "rates on small samples with a point value must carry an interval",
+        "evidence": {
+          "min_n": 20,
+          "offending_metrics": []
+        },
+        "name": "small_sample_intervals",
+        "passed": true
+      },
+      {
+        "detail": "violation-after-acceptance rate 0.417 within ceiling 0.5",
+        "evidence": {
+          "n": 724,
+          "violation_rate": 0.4171270718232044
+        },
+        "name": "metric_gaming",
+        "passed": true
+      }
+    ],
+    "passed": true
+  },
+  "recommendations": [
+    {
+      "estimated_cost": "counterfactual forks on a stratified sample",
+      "experiment": "counterfactual_sweep_on_unknown_attainability",
+      "priority": 1.2679558011049723,
+      "rationale": "139/181 scenarios have UNKNOWN attainability; every attainment-relative metric is bounded by this",
+      "removes_uncertainty": "attainability of the large UNKNOWN scenario mass"
+    },
+    {
+      "estimated_cost": "fork each refused scenario once",
+      "experiment": "refusal_cause_decomposition",
+      "priority": 0.5464088397790056,
+      "rationale": "coverage is 0.707; need per-refusal counterfactual classification",
+      "removes_uncertainty": "which refusals are correct vs productivity losses"
+    },
+    {
+      "estimated_cost": "1-2 days per claim to define an executable test",
+      "experiment": "make_unexecutable_claims_executable",
+      "priority": 0.3,
+      "rationale": "8 of 12 claims have no executable test",
+      "removes_uncertainty": "which registered claims are actually testable by HES"
+    }
+  ],
+  "runtime_arm": "haplous_mediated",
+  "substrate": {
+    "capability": {
+      "artifact_dominated": [],
+      "covers": [
+        "step_latency_us",
+        "force_measurement",
+        "tilt_measurement",
+        "pose_precision",
+        "exact_fault_injection",
+        "state_freshness_true",
+        "oracle_clearance",
+        "bounded_success"
+      ],
+      "limited": [],
+      "unobservable": [
+        "contact_events",
+        "collision_severity"
+      ]
+    },
+    "determinism": {
+      "checked": false
+    },
+    "metrics": {
+      "bounded_success": {
+        "cost": "low",
+        "observable": true,
+        "source": "benchmark"
+      },
+      "collision_severity": {
+        "cost": "unknown",
+        "observable": false,
+        "source": "artifact"
+      },
+      "contact_events": {
+        "cost": "unknown",
+        "observable": false,
+        "source": "artifact"
+      },
+      "exact_fault_injection": {
+        "cost": "low",
+        "observable": true,
+        "source": "benchmark"
+      },
+      "force_measurement": {
+        "cost": "low",
+        "observable": true,
+        "source": "artifact"
+      },
+      "oracle_clearance": {
+        "cost": "low",
+        "observable": true,
+        "source": "benchmark"
+      },
+      "pose_precision": {
+        "cost": "low",
+        "observable": true,
+        "source": "artifact"
+      },
+      "state_freshness_true": {
+        "cost": "low",
+        "observable": true,
+        "source": "benchmark"
+      },
+      "step_latency_us": {
+        "cost": "low",
+        "observable": true,
+        "source": "artifact"
+      },
+      "tilt_measurement": {
+        "cost": "low",
+        "observable": true,
+        "source": "artifact"
+      }
+    },
+    "notes": [
+      "force is a proxy in the internal substrate; magnitudes are not comparable across engines",
+      "collision channels are not implemented; collision metrics report NOT_AVAILABLE"
+    ]
+  }
+}

@@ -1,0 +1,1537 @@
+{
+  "config_sha256": "d69d8e626e13ddbac618aa1d7ac6f1f7a7353eb69fc9d929a75b0e7f64755aaa",
+  "phase": "campaign",
+  "populations": {
+    "control": {
+      "arms": {
+        "bare_behavior": {
+          "bounded_success": {
+            "ci_high": 0.18345707823816465,
+            "ci_low": 0.0861872923412893,
+            "method": "wilson95",
+            "n": 181,
+            "value": 0.1270718232044199
+          },
+          "coverage": {
+            "ci_high": 1.0000000000000002,
+            "ci_low": 0.979217547593473,
+            "method": "wilson95",
+            "n": 181,
+            "value": 1.0
+          },
+          "false_refusal_rate": {
+            "ci_high": 0.08379879086570391,
+            "ci_low": -6.938893903907228e-18,
+            "method": "wilson95",
+            "n": 42,
+            "value": 0.0
+          },
+          "intervention_overhead_vs_direct": null,
+          "preservation_vs_direct": null,
+          "recovery_bounded_success": {
+            "n": 0,
+            "reason": "NOT_AVAILABLE",
+            "value": null
+          },
+          "refusals_attainability_unknown": 0,
+          "task_success": {
+            "ci_high": 0.6967963371426009,
+            "ci_low": 0.5574756227297373,
+            "method": "wilson95",
+            "n": 181,
+            "value": 0.6298342541436464
+          },
+          "time_per_bounded_success": {
+            "by_reset_s": {
+              "0.0": 73.51569565220152,
+              "1.0": 81.38526086959281
+            },
+            "n_bounded_success": 23,
+            "n_executed": 181,
+            "n_executed_without_duration": 0,
+            "sim_seconds_all_episodes": 1690.8610000006347
+          },
+          "unnecessary_intervention_vs_direct": null,
+          "violation_given_acceptance": {
+            "ci_high": 0.8284069809051516,
+            "ci_low": 0.7071871473365822,
+            "method": "wilson95",
+            "n": 181,
+            "value": 0.7734806629834254
+          }
+        },
+        "competent_supervisor": {
+          "bounded_success": {
+            "ci_high": 0.16450701943240625,
+            "ci_low": 0.072677100950579,
+            "method": "wilson95",
+            "n": 181,
+            "value": 0.11049723756906077
+          },
+          "coverage": {
+            "ci_high": 1.0000000000000002,
+            "ci_low": 0.979217547593473,
+            "method": "wilson95",
+            "n": 181,
+            "value": 1.0
+          },
+          "false_refusal_rate": {
+            "ci_high": 0.08379879086570391,
+            "ci_low": -6.938893903907228e-18,
+            "method": "wilson95",
+            "n": 42,
+            "value": 0.0
+          },
+          "intervention_overhead_vs_direct": {
+            "median_sim_s": 0.0,
+            "n": 20
+          },
+          "preservation_vs_direct": {
+            "ci_high": 0.9546234090636876,
+            "ci_low": 0.6787251772990404,
+            "method": "wilson95",
+            "n": 23,
+            "value": 0.8695652173913043
+          },
+          "recovery_bounded_success": {
+            "n": 0,
+            "reason": "NOT_AVAILABLE",
+            "value": null
+          },
+          "refusals_attainability_unknown": 0,
+          "task_success": {
+            "ci_high": 0.17085451864833082,
+            "ci_low": 0.07714968513347734,
+            "method": "wilson95",
+            "n": 181,
+            "value": 0.11602209944751381
+          },
+          "time_per_bounded_success": {
+            "by_reset_s": {
+              "0.0": 21.374800000005052,
+              "1.0": 30.424800000005053
+            },
+            "n_bounded_success": 20,
+            "n_executed": 181,
+            "n_executed_without_duration": 0,
+            "sim_seconds_all_episodes": 427.49600000010105
+          },
+          "unnecessary_intervention_vs_direct": {
+            "ci_high": 0.14311661845042686,
+            "ci_low": 0.0,
+            "method": "wilson95",
+            "n": 23,
+            "value": 0.0
+          },
+          "violation_given_acceptance": {
+            "ci_high": 0.3570958551147435,
+            "ci_low": 0.2263309340305747,
+            "method": "wilson95",
+            "n": 181,
+            "value": 0.287292817679558
+          }
+        },
+        "g1_incumbent": {
+          "bounded_success": {
+            "ci_high": 0.29281285266341783,
+            "ci_low": 0.17159301909484842,
+            "method": "wilson95",
+            "n": 181,
+            "value": 0.2265193370165746
+          },
+          "coverage": {
+            "ci_high": 0.7686190612104173,
+            "ci_low": 0.6371340662454414,
+            "method": "wilson95",
+            "n": 181,
+            "value": 0.7071823204419889
+          },
+          "false_refusal_rate": {
+            "ci_high": 0.12321201573766646,
+            "ci_low": 0.004215404134432499,
+            "method": "wilson95",
+            "n": 42,
+            "value": 0.023809523809523808
+          },
+          "intervention_overhead_vs_direct": {
+            "median_sim_s": 0.0,
+            "n": 22
+          },
+          "preservation_vs_direct": {
+            "ci_high": 0.9922833338565469,
+            "ci_low": 0.7900884492974114,
+            "method": "wilson95",
+            "n": 23,
+            "value": 0.9565217391304348
+          },
+          "recovery_bounded_success": {
+            "n": 0,
+            "reason": "NOT_AVAILABLE",
+            "value": null
+          },
+          "refusals_attainability_unknown": 52,
+          "task_success": {
+            "ci_high": 0.2987230245785241,
+            "ci_low": 0.17650293057856506,
+            "method": "wilson95",
+            "n": 181,
+            "value": 0.23204419889502761
+          },
+          "time_per_bounded_success": {
+            "by_reset_s": {
+              "0.0": 11.206402439026878,
+              "1.0": 14.328353658539072
+            },
+            "n_bounded_success": 41,
+            "n_executed": 128,
+            "n_executed_without_duration": 0,
+            "sim_seconds_all_episodes": 459.462500000102
+          },
+          "unnecessary_intervention_vs_direct": {
+            "ci_high": 0.20991155070258877,
+            "ci_low": 0.007716666143453149,
+            "method": "wilson95",
+            "n": 23,
+            "value": 0.043478260869565216
+          },
+          "violation_given_acceptance": {
+            "ci_high": 0.516260671149596,
+            "ci_low": 0.3472117133263662,
+            "method": "wilson95",
+            "n": 128,
+            "value": 0.4296875
+          }
+        },
+        "haplous_mediated": {
+          "bounded_success": {
+            "ci_high": 0.29281285266341783,
+            "ci_low": 0.17159301909484842,
+            "method": "wilson95",
+            "n": 181,
+            "value": 0.2265193370165746
+          },
+          "coverage": {
+            "ci_high": 0.7686190612104173,
+            "ci_low": 0.6371340662454414,
+            "method": "wilson95",
+            "n": 181,
+            "value": 0.7071823204419889
+          },
+          "false_refusal_rate": {
+            "ci_high": 0.12321201573766646,
+            "ci_low": 0.004215404134432499,
+            "method": "wilson95",
+            "n": 42,
+            "value": 0.023809523809523808
+          },
+          "intervention_overhead_vs_direct": {
+            "median_sim_s": 0.0,
+            "n": 22
+          },
+          "preservation_vs_direct": {
+            "ci_high": 0.9922833338565469,
+            "ci_low": 0.7900884492974114,
+            "method": "wilson95",
+            "n": 23,
+            "value": 0.9565217391304348
+          },
+          "recovery_bounded_success": {
+            "n": 0,
+            "reason": "NOT_AVAILABLE",
+            "value": null
+          },
+          "refusals_attainability_unknown": 52,
+          "task_success": {
+            "ci_high": 0.2987230245785241,
+            "ci_low": 0.17650293057856506,
+            "method": "wilson95",
+            "n": 181,
+            "value": 0.23204419889502761
+          },
+          "time_per_bounded_success": {
+            "by_reset_s": {
+              "0.0": 11.210463414636633,
+              "1.0": 14.33241463414883
+            },
+            "n_bounded_success": 41,
+            "n_executed": 128,
+            "n_executed_without_duration": 0,
+            "sim_seconds_all_episodes": 459.629000000102
+          },
+          "unnecessary_intervention_vs_direct": {
+            "ci_high": 0.20991155070258877,
+            "ci_low": 0.007716666143453149,
+            "method": "wilson95",
+            "n": 23,
+            "value": 0.043478260869565216
+          },
+          "violation_given_acceptance": {
+            "ci_high": 0.516260671149596,
+            "ci_low": 0.3472117133263662,
+            "method": "wilson95",
+            "n": 128,
+            "value": 0.4296875
+          }
+        }
+      },
+      "attainability_counts": {
+        "ATTAINABLE": 42,
+        "UNKNOWN": 139
+      },
+      "confirmatory": {
+        "C2": {
+          "candidate": "haplous_mediated",
+          "decision": "tie (equivalent within 0.05)",
+          "delta": {
+            "ci_high": 0.0,
+            "ci_low": 0.0,
+            "delta": 0.0,
+            "field": "bounded_success",
+            "method": "paired_bootstrap_mean",
+            "n": 181,
+            "n_pairs": 181,
+            "n_resamples": 10000
+          },
+          "field": "bounded_success",
+          "id": "C2",
+          "n_harmed": 0,
+          "n_rescued": 0,
+          "population": "control",
+          "reference": "g1_incumbent"
+        }
+      },
+      "exclusions": {
+        "g1_unimplemented_check": {
+          "count": 0,
+          "scenario_ids": []
+        },
+        "mesh_artifact_named": {
+          "count": 0,
+          "scenario_ids": []
+        },
+        "mesh_sensitive_slide_disturbance": {
+          "count": 19,
+          "scenario_ids": [
+            "fleet_slide_000041",
+            "fleet_slide_000047",
+            "fleet_slide_000050",
+            "fleet_slide_000057",
+            "fleet_slide_000065",
+            "fleet_slide_000069",
+            "fleet_slide_000077",
+            "fleet_slide_000078",
+            "fleet_slide_000089",
+            "fleet_slide_000111",
+            "fleet_slide_000117",
+            "fleet_slide_000123",
+            "fleet_slide_000130",
+            "fleet_slide_000136",
+            "fleet_slide_000138",
+            "fleet_slide_000172",
+            "fleet_slide_000183",
+            "fleet_slide_000191",
+            "fleet_slide_000198"
+          ]
+        }
+      },
+      "hes_hard_gates": {
+        "gates": [
+          {
+            "detail": "shortcut/gaming/leakage checks pass",
+            "gate_id": "G1",
+            "name": "integrity",
+            "observed": [],
+            "passed": true,
+            "threshold": "no failing integrity check"
+          },
+          {
+            "detail": "conditional violation exposure must not exceed the unmediated baseline",
+            "gate_id": "G2",
+            "name": "no_more_conditional_violation_than_baseline",
+            "observed": {
+              "baseline": 0.7734806629834254,
+              "runtime": 0.4296875
+            },
+            "passed": true,
+            "threshold": "runtime <= baseline (bare_behavior)"
+          },
+          {
+            "detail": "preserve execution the baseline already completes within contract",
+            "gate_id": "G3",
+            "name": "non_interference",
+            "observed": 0.9565217391304348,
+            "passed": true,
+            "threshold": ">= 0.95"
+          },
+          {
+            "detail": "refusals of demonstrated-attainable requests must stay bounded",
+            "gate_id": "G4",
+            "name": "false_refusal_ceiling",
+            "observed": 0.023809523809523808,
+            "passed": true,
+            "threshold": "<= 0.2"
+          },
+          {
+            "detail": "the producing run carries complete provenance",
+            "gate_id": "G5",
+            "name": "reproducibility_provenance",
+            "observed": [
+              "benchmark",
+              "benchmark_version",
+              "cpu_count",
+              "dependencies",
+              "episode_schema_version",
+              "git_commit",
+              "git_dirty",
+              "haplous_version"
+            ],
+            "passed": true,
+            "threshold": "provenance present"
+          }
+        ],
+        "n_violations": 0,
+        "note": "performance frontier is reported, not gated",
+        "qualified": true
+      },
+      "n_scenarios": 181,
+      "paired": {
+        "g1_incumbent_vs_bare_behavior": {
+          "both": 22,
+          "delta_bounded_success": {
+            "ci_high": 0.14917127071823205,
+            "ci_low": 0.055248618784530384,
+            "delta": 0.09944751381215469,
+            "field": "bounded_success",
+            "method": "paired_bootstrap_mean",
+            "n": 181,
+            "n_pairs": 181,
+            "n_resamples": 10000
+          },
+          "harmed": [
+            "fleet_insert_000137"
+          ],
+          "neither": 139,
+          "rescued": [
+            "fleet_insert_000002",
+            "fleet_insert_000010",
+            "fleet_insert_000027",
+            "fleet_insert_000034",
+            "fleet_insert_000036",
+            "fleet_insert_000037",
+            "fleet_insert_000058",
+            "fleet_insert_000061",
+            "fleet_insert_000074",
+            "fleet_insert_000081",
+            "fleet_insert_000085",
+            "fleet_insert_000104",
+            "fleet_insert_000108",
+            "fleet_insert_000120",
+            "fleet_insert_000160",
+            "fleet_insert_000162",
+            "fleet_insert_000164",
+            "fleet_insert_000195",
+            "fleet_slide_000121"
+          ]
+        },
+        "haplous_mediated_vs_bare_behavior": {
+          "both": 22,
+          "delta_bounded_success": {
+            "ci_high": 0.14917127071823205,
+            "ci_low": 0.055248618784530384,
+            "delta": 0.09944751381215469,
+            "field": "bounded_success",
+            "method": "paired_bootstrap_mean",
+            "n": 181,
+            "n_pairs": 181,
+            "n_resamples": 10000
+          },
+          "harmed": [
+            "fleet_insert_000137"
+          ],
+          "neither": 139,
+          "rescued": [
+            "fleet_insert_000002",
+            "fleet_insert_000010",
+            "fleet_insert_000027",
+            "fleet_insert_000034",
+            "fleet_insert_000036",
+            "fleet_insert_000037",
+            "fleet_insert_000058",
+            "fleet_insert_000061",
+            "fleet_insert_000074",
+            "fleet_insert_000081",
+            "fleet_insert_000085",
+            "fleet_insert_000104",
+            "fleet_insert_000108",
+            "fleet_insert_000120",
+            "fleet_insert_000160",
+            "fleet_insert_000162",
+            "fleet_insert_000164",
+            "fleet_insert_000195",
+            "fleet_slide_000121"
+          ]
+        },
+        "haplous_mediated_vs_competent_supervisor": {
+          "both": 19,
+          "delta_bounded_success": {
+            "ci_high": 0.16574585635359115,
+            "ci_low": 0.06629834254143646,
+            "delta": 0.11602209944751381,
+            "field": "bounded_success",
+            "method": "paired_bootstrap_mean",
+            "n": 181,
+            "n_pairs": 181,
+            "n_resamples": 10000
+          },
+          "harmed": [
+            "fleet_insert_000137"
+          ],
+          "neither": 139,
+          "rescued": [
+            "fleet_insert_000002",
+            "fleet_insert_000010",
+            "fleet_insert_000027",
+            "fleet_insert_000034",
+            "fleet_insert_000036",
+            "fleet_insert_000037",
+            "fleet_insert_000058",
+            "fleet_insert_000061",
+            "fleet_insert_000074",
+            "fleet_insert_000081",
+            "fleet_insert_000085",
+            "fleet_insert_000104",
+            "fleet_insert_000108",
+            "fleet_insert_000118",
+            "fleet_insert_000120",
+            "fleet_insert_000160",
+            "fleet_insert_000162",
+            "fleet_insert_000164",
+            "fleet_insert_000190",
+            "fleet_insert_000195",
+            "fleet_slide_000005",
+            "fleet_slide_000121"
+          ]
+        },
+        "haplous_mediated_vs_g1_incumbent": {
+          "both": 41,
+          "delta_bounded_success": {
+            "ci_high": 0.0,
+            "ci_low": 0.0,
+            "delta": 0.0,
+            "field": "bounded_success",
+            "method": "paired_bootstrap_mean",
+            "n": 181,
+            "n_pairs": 181,
+            "n_resamples": 10000
+          },
+          "harmed": [],
+          "neither": 140,
+          "rescued": []
+        }
+      },
+      "strata": {
+        "task_a": {
+          "bounded_success": {
+            "bare_behavior": {
+              "ci_high": 0.19953613624649416,
+              "ci_low": 0.08736073902500471,
+              "method": "wilson95",
+              "n": 142,
+              "value": 0.13380281690140844
+            },
+            "competent_supervisor": {
+              "ci_high": 0.1833650527004534,
+              "ci_low": 0.07610477931225694,
+              "method": "wilson95",
+              "n": 142,
+              "value": 0.11971830985915492
+            },
+            "g1_incumbent": {
+              "ci_high": 0.33091428230626607,
+              "ci_low": 0.18911246066493514,
+              "method": "wilson95",
+              "n": 142,
+              "value": 0.2535211267605634
+            },
+            "haplous_mediated": {
+              "ci_high": 0.33091428230626607,
+              "ci_low": 0.18911246066493514,
+              "method": "wilson95",
+              "n": 142,
+              "value": 0.2535211267605634
+            }
+          },
+          "n_scenarios": 142,
+          "paired": {
+            "g1_incumbent_vs_bare_behavior": {
+              "both": 18,
+              "harmed": 1,
+              "neither": 105,
+              "rescued": 18
+            },
+            "haplous_mediated_vs_bare_behavior": {
+              "both": 18,
+              "harmed": 1,
+              "neither": 105,
+              "rescued": 18
+            },
+            "haplous_mediated_vs_competent_supervisor": {
+              "both": 16,
+              "harmed": 1,
+              "neither": 105,
+              "rescued": 20
+            },
+            "haplous_mediated_vs_g1_incumbent": {
+              "both": 36,
+              "harmed": 0,
+              "neither": 106,
+              "rescued": 0
+            }
+          }
+        },
+        "task_b": {
+          "bounded_success": {
+            "bare_behavior": {
+              "ci_high": 0.23578854462856527,
+              "ci_low": 0.04061331344668381,
+              "method": "wilson95",
+              "n": 39,
+              "value": 0.10256410256410256
+            },
+            "competent_supervisor": {
+              "ci_high": 0.20321071167954996,
+              "ci_low": 0.02650739530377974,
+              "method": "wilson95",
+              "n": 39,
+              "value": 0.07692307692307693
+            },
+            "g1_incumbent": {
+              "ci_high": 0.26705743379745456,
+              "ci_low": 0.056028175369713926,
+              "method": "wilson95",
+              "n": 39,
+              "value": 0.1282051282051282
+            },
+            "haplous_mediated": {
+              "ci_high": 0.26705743379745456,
+              "ci_low": 0.056028175369713926,
+              "method": "wilson95",
+              "n": 39,
+              "value": 0.1282051282051282
+            }
+          },
+          "n_scenarios": 39,
+          "paired": {
+            "g1_incumbent_vs_bare_behavior": {
+              "both": 4,
+              "harmed": 0,
+              "neither": 34,
+              "rescued": 1
+            },
+            "haplous_mediated_vs_bare_behavior": {
+              "both": 4,
+              "harmed": 0,
+              "neither": 34,
+              "rescued": 1
+            },
+            "haplous_mediated_vs_competent_supervisor": {
+              "both": 3,
+              "harmed": 0,
+              "neither": 34,
+              "rescued": 2
+            },
+            "haplous_mediated_vs_g1_incumbent": {
+              "both": 5,
+              "harmed": 0,
+              "neither": 34,
+              "rescued": 0
+            }
+          }
+        }
+      }
+    },
+    "stress": {
+      "arms": {
+        "bare_behavior": {
+          "bounded_success": {
+            "ci_high": 0.2472691656754023,
+            "ci_low": 0.15984812962338357,
+            "method": "wilson95",
+            "n": 320,
+            "value": 0.2
+          },
+          "coverage": {
+            "ci_high": 1.0000000000000002,
+            "ci_low": 0.9881378411686904,
+            "method": "wilson95",
+            "n": 320,
+            "value": 1.0
+          },
+          "false_refusal_rate": {
+            "ci_high": 0.04373172841465989,
+            "ci_low": -3.469446951953614e-18,
+            "method": "wilson95",
+            "n": 84,
+            "value": 0.0
+          },
+          "intervention_overhead_vs_direct": null,
+          "preservation_vs_direct": null,
+          "recovery_bounded_success": {
+            "ci_high": 0.5285479187139549,
+            "ci_low": 0.2945690924971961,
+            "method": "wilson95",
+            "n": 64,
+            "value": 0.40625
+          },
+          "refusals_attainability_unknown": 0,
+          "task_success": {
+            "ci_high": 0.8655066688805831,
+            "ci_low": 0.7829587893863698,
+            "method": "wilson95",
+            "n": 320,
+            "value": 0.828125
+          },
+          "time_per_bounded_success": {
+            "by_reset_s": {
+              "0.0": 17.39292187500326,
+              "1.0": 22.39292187500326
+            },
+            "n_bounded_success": 64,
+            "n_executed": 320,
+            "n_executed_without_duration": 0,
+            "sim_seconds_all_episodes": 1113.1470000002087
+          },
+          "unnecessary_intervention_vs_direct": null,
+          "violation_given_acceptance": {
+            "ci_high": 0.8000703454070907,
+            "ci_low": 0.7063502981918631,
+            "method": "wilson95",
+            "n": 320,
+            "value": 0.75625
+          }
+        },
+        "competent_supervisor": {
+          "bounded_success": {
+            "ci_high": 0.2472691656754023,
+            "ci_low": 0.15984812962338357,
+            "method": "wilson95",
+            "n": 320,
+            "value": 0.2
+          },
+          "coverage": {
+            "ci_high": 1.0000000000000002,
+            "ci_low": 0.9881378411686904,
+            "method": "wilson95",
+            "n": 320,
+            "value": 1.0
+          },
+          "false_refusal_rate": {
+            "ci_high": 0.04373172841465989,
+            "ci_low": -3.469446951953614e-18,
+            "method": "wilson95",
+            "n": 84,
+            "value": 0.0
+          },
+          "intervention_overhead_vs_direct": {
+            "median_sim_s": 0.0,
+            "n": 64
+          },
+          "preservation_vs_direct": {
+            "ci_high": 1.0,
+            "ci_low": 0.9433759402071946,
+            "method": "wilson95",
+            "n": 64,
+            "value": 1.0
+          },
+          "recovery_bounded_success": {
+            "ci_high": 0.5285479187139549,
+            "ci_low": 0.2945690924971961,
+            "method": "wilson95",
+            "n": 64,
+            "value": 0.40625
+          },
+          "refusals_attainability_unknown": 0,
+          "task_success": {
+            "ci_high": 0.2472691656754023,
+            "ci_low": 0.15984812962338357,
+            "method": "wilson95",
+            "n": 320,
+            "value": 0.2
+          },
+          "time_per_bounded_success": {
+            "by_reset_s": {
+              "0.0": 5.228570312499729,
+              "1.0": 10.228570312499729
+            },
+            "n_bounded_success": 64,
+            "n_executed": 320,
+            "n_executed_without_duration": 0,
+            "sim_seconds_all_episodes": 334.62849999998264
+          },
+          "unnecessary_intervention_vs_direct": {
+            "ci_high": 0.05662405979280534,
+            "ci_low": 0.0,
+            "method": "wilson95",
+            "n": 64,
+            "value": 0.0
+          },
+          "violation_given_acceptance": {
+            "ci_high": 0.41014069072735737,
+            "ci_low": 0.30576967993664417,
+            "method": "wilson95",
+            "n": 320,
+            "value": 0.35625
+          }
+        },
+        "g1_incumbent": {
+          "bounded_success": {
+            "ci_high": 0.23387854341946734,
+            "ci_low": 0.14853530585010127,
+            "method": "wilson95",
+            "n": 320,
+            "value": 0.1875
+          },
+          "coverage": {
+            "ci_high": 1.0000000000000002,
+            "ci_low": 0.9881378411686904,
+            "method": "wilson95",
+            "n": 320,
+            "value": 1.0
+          },
+          "false_refusal_rate": {
+            "ci_high": 0.04373172841465989,
+            "ci_low": -3.469446951953614e-18,
+            "method": "wilson95",
+            "n": 84,
+            "value": 0.0
+          },
+          "intervention_overhead_vs_direct": {
+            "median_sim_s": 0.0,
+            "n": 40
+          },
+          "preservation_vs_direct": {
+            "ci_high": 0.7333401982117536,
+            "ci_low": 0.502503786840045,
+            "method": "wilson95",
+            "n": 64,
+            "value": 0.625
+          },
+          "recovery_bounded_success": {
+            "ci_high": 0.5285479187139549,
+            "ci_low": 0.2945690924971961,
+            "method": "wilson95",
+            "n": 64,
+            "value": 0.40625
+          },
+          "refusals_attainability_unknown": 0,
+          "task_success": {
+            "ci_high": 0.2572691757389523,
+            "ci_low": 0.1683757040817465,
+            "method": "wilson95",
+            "n": 320,
+            "value": 0.209375
+          },
+          "time_per_bounded_success": {
+            "by_reset_s": {
+              "0.0": 6.4685166666663445,
+              "1.0": 11.801849999999678
+            },
+            "n_bounded_success": 60,
+            "n_executed": 320,
+            "n_executed_without_duration": 0,
+            "sim_seconds_all_episodes": 388.11099999998066
+          },
+          "unnecessary_intervention_vs_direct": {
+            "ci_high": 0.05662405979280534,
+            "ci_low": 0.0,
+            "method": "wilson95",
+            "n": 64,
+            "value": 0.0
+          },
+          "violation_given_acceptance": {
+            "ci_high": 0.45139823686827435,
+            "ci_low": 0.3447983333906833,
+            "method": "wilson95",
+            "n": 320,
+            "value": 0.396875
+          }
+        },
+        "haplous_mediated": {
+          "bounded_success": {
+            "ci_high": 0.23387854341946734,
+            "ci_low": 0.14853530585010127,
+            "method": "wilson95",
+            "n": 320,
+            "value": 0.1875
+          },
+          "coverage": {
+            "ci_high": 1.0000000000000002,
+            "ci_low": 0.9881378411686904,
+            "method": "wilson95",
+            "n": 320,
+            "value": 1.0
+          },
+          "false_refusal_rate": {
+            "ci_high": 0.04373172841465989,
+            "ci_low": -3.469446951953614e-18,
+            "method": "wilson95",
+            "n": 84,
+            "value": 0.0
+          },
+          "intervention_overhead_vs_direct": {
+            "median_sim_s": 0.0,
+            "n": 40
+          },
+          "preservation_vs_direct": {
+            "ci_high": 0.7333401982117536,
+            "ci_low": 0.502503786840045,
+            "method": "wilson95",
+            "n": 64,
+            "value": 0.625
+          },
+          "recovery_bounded_success": {
+            "ci_high": 0.5285479187139549,
+            "ci_low": 0.2945690924971961,
+            "method": "wilson95",
+            "n": 64,
+            "value": 0.40625
+          },
+          "refusals_attainability_unknown": 0,
+          "task_success": {
+            "ci_high": 0.2506064764224016,
+            "ci_low": 0.16268668038368864,
+            "method": "wilson95",
+            "n": 320,
+            "value": 0.203125
+          },
+          "time_per_bounded_success": {
+            "by_reset_s": {
+              "0.0": 6.357741666666352,
+              "1.0": 11.691074999999687
+            },
+            "n_bounded_success": 60,
+            "n_executed": 320,
+            "n_executed_without_duration": 0,
+            "sim_seconds_all_episodes": 381.4644999999811
+          },
+          "unnecessary_intervention_vs_direct": {
+            "ci_high": 0.05662405979280534,
+            "ci_low": 0.0,
+            "method": "wilson95",
+            "n": 64,
+            "value": 0.0
+          },
+          "violation_given_acceptance": {
+            "ci_high": 0.45139823686827435,
+            "ci_low": 0.3447983333906833,
+            "method": "wilson95",
+            "n": 320,
+            "value": 0.396875
+          }
+        }
+      },
+      "attainability_counts": {
+        "ATTAINABLE": 84,
+        "UNKNOWN": 236
+      },
+      "confirmatory": {
+        "C1": {
+          "candidate": "haplous_mediated",
+          "decision": "tie (equivalent within 0.05)",
+          "delta": {
+            "ci_high": 0.0,
+            "ci_low": 0.0,
+            "delta": 0.0,
+            "field": "bounded_success",
+            "method": "paired_bootstrap_mean",
+            "n": 320,
+            "n_pairs": 320,
+            "n_resamples": 10000
+          },
+          "field": "bounded_success",
+          "id": "C1",
+          "n_harmed": 0,
+          "n_rescued": 0,
+          "population": "stress",
+          "reference": "g1_incumbent"
+        }
+      },
+      "exclusions": {
+        "g1_unimplemented_check": {
+          "count": 0,
+          "scenario_ids": []
+        },
+        "mesh_artifact_named": {
+          "count": 0,
+          "scenario_ids": []
+        },
+        "mesh_sensitive_slide_disturbance": {
+          "count": 0,
+          "scenario_ids": []
+        }
+      },
+      "hes_hard_gates": {
+        "gates": [
+          {
+            "detail": "shortcut/gaming/leakage checks pass",
+            "gate_id": "G1",
+            "name": "integrity",
+            "observed": [],
+            "passed": true,
+            "threshold": "no failing integrity check"
+          },
+          {
+            "detail": "conditional violation exposure must not exceed the unmediated baseline",
+            "gate_id": "G2",
+            "name": "no_more_conditional_violation_than_baseline",
+            "observed": {
+              "baseline": 0.75625,
+              "runtime": 0.396875
+            },
+            "passed": true,
+            "threshold": "runtime <= baseline (bare_behavior)"
+          },
+          {
+            "detail": "preserve execution the baseline already completes within contract",
+            "gate_id": "G3",
+            "name": "non_interference",
+            "observed": 0.625,
+            "passed": false,
+            "threshold": ">= 0.95"
+          },
+          {
+            "detail": "refusals of demonstrated-attainable requests must stay bounded",
+            "gate_id": "G4",
+            "name": "false_refusal_ceiling",
+            "observed": 0.0,
+            "passed": true,
+            "threshold": "<= 0.2"
+          },
+          {
+            "detail": "the producing run carries complete provenance",
+            "gate_id": "G5",
+            "name": "reproducibility_provenance",
+            "observed": [
+              "benchmark",
+              "benchmark_version",
+              "cpu_count",
+              "dependencies",
+              "episode_schema_version",
+              "git_commit",
+              "git_dirty",
+              "haplous_version"
+            ],
+            "passed": true,
+            "threshold": "provenance present"
+          }
+        ],
+        "n_violations": 1,
+        "note": "performance frontier is reported, not gated",
+        "qualified": false
+      },
+      "n_scenarios": 320,
+      "paired": {
+        "g1_incumbent_vs_bare_behavior": {
+          "both": 40,
+          "delta_bounded_success": {
+            "ci_high": 0.028125,
+            "ci_low": -0.053125,
+            "delta": -0.0125,
+            "field": "bounded_success",
+            "method": "paired_bootstrap_mean",
+            "n": 320,
+            "n_pairs": 320,
+            "n_resamples": 10000
+          },
+          "harmed": [
+            "m4s_rejection_long_00007",
+            "m4s_rejection_long_00012",
+            "m4s_rejection_long_00027",
+            "m4s_rejection_long_00042",
+            "m4s_rejection_long_00052",
+            "m4s_rejection_long_00062",
+            "m4s_rejection_long_00092",
+            "m4s_rejection_long_00097",
+            "m4s_rejection_long_00122",
+            "m4s_rejection_long_00127",
+            "m4s_rejection_long_00137",
+            "m4s_rejection_long_00192",
+            "m4s_rejection_long_00237",
+            "m4s_rejection_long_00242",
+            "m4s_rejection_long_00252",
+            "m4s_rejection_long_00257",
+            "m4s_rejection_long_00262",
+            "m4s_rejection_long_00272",
+            "m4s_rejection_long_00277",
+            "m4s_rejection_long_00282",
+            "m4s_rejection_long_00292",
+            "m4s_rejection_long_00302",
+            "m4s_rejection_long_00307",
+            "m4s_rejection_long_00317"
+          ],
+          "neither": 236,
+          "rescued": [
+            "m4s_dropout_long_00015",
+            "m4s_dropout_long_00080",
+            "m4s_dropout_long_00090",
+            "m4s_dropout_long_00125",
+            "m4s_dropout_long_00140",
+            "m4s_dropout_long_00180",
+            "m4s_dropout_long_00205",
+            "m4s_dropout_long_00225",
+            "m4s_dropout_long_00230",
+            "m4s_dropout_long_00250",
+            "m4s_dropout_long_00295",
+            "m4s_dropout_long_00300",
+            "m4s_dropout_long_00310",
+            "m4s_stale_long_00026",
+            "m4s_stale_long_00156",
+            "m4s_stale_long_00226",
+            "m4s_stale_long_00246",
+            "m4s_stale_long_00256",
+            "m4s_stale_long_00296",
+            "m4s_stale_long_00311"
+          ]
+        },
+        "haplous_mediated_vs_bare_behavior": {
+          "both": 40,
+          "delta_bounded_success": {
+            "ci_high": 0.028125,
+            "ci_low": -0.053125,
+            "delta": -0.0125,
+            "field": "bounded_success",
+            "method": "paired_bootstrap_mean",
+            "n": 320,
+            "n_pairs": 320,
+            "n_resamples": 10000
+          },
+          "harmed": [
+            "m4s_rejection_long_00007",
+            "m4s_rejection_long_00012",
+            "m4s_rejection_long_00027",
+            "m4s_rejection_long_00042",
+            "m4s_rejection_long_00052",
+            "m4s_rejection_long_00062",
+            "m4s_rejection_long_00092",
+            "m4s_rejection_long_00097",
+            "m4s_rejection_long_00122",
+            "m4s_rejection_long_00127",
+            "m4s_rejection_long_00137",
+            "m4s_rejection_long_00192",
+            "m4s_rejection_long_00237",
+            "m4s_rejection_long_00242",
+            "m4s_rejection_long_00252",
+            "m4s_rejection_long_00257",
+            "m4s_rejection_long_00262",
+            "m4s_rejection_long_00272",
+            "m4s_rejection_long_00277",
+            "m4s_rejection_long_00282",
+            "m4s_rejection_long_00292",
+            "m4s_rejection_long_00302",
+            "m4s_rejection_long_00307",
+            "m4s_rejection_long_00317"
+          ],
+          "neither": 236,
+          "rescued": [
+            "m4s_dropout_long_00015",
+            "m4s_dropout_long_00080",
+            "m4s_dropout_long_00090",
+            "m4s_dropout_long_00125",
+            "m4s_dropout_long_00140",
+            "m4s_dropout_long_00180",
+            "m4s_dropout_long_00205",
+            "m4s_dropout_long_00225",
+            "m4s_dropout_long_00230",
+            "m4s_dropout_long_00250",
+            "m4s_dropout_long_00295",
+            "m4s_dropout_long_00300",
+            "m4s_dropout_long_00310",
+            "m4s_stale_long_00026",
+            "m4s_stale_long_00156",
+            "m4s_stale_long_00226",
+            "m4s_stale_long_00246",
+            "m4s_stale_long_00256",
+            "m4s_stale_long_00296",
+            "m4s_stale_long_00311"
+          ]
+        },
+        "haplous_mediated_vs_competent_supervisor": {
+          "both": 40,
+          "delta_bounded_success": {
+            "ci_high": 0.028125,
+            "ci_low": -0.053125,
+            "delta": -0.0125,
+            "field": "bounded_success",
+            "method": "paired_bootstrap_mean",
+            "n": 320,
+            "n_pairs": 320,
+            "n_resamples": 10000
+          },
+          "harmed": [
+            "m4s_rejection_long_00007",
+            "m4s_rejection_long_00012",
+            "m4s_rejection_long_00027",
+            "m4s_rejection_long_00042",
+            "m4s_rejection_long_00052",
+            "m4s_rejection_long_00062",
+            "m4s_rejection_long_00092",
+            "m4s_rejection_long_00097",
+            "m4s_rejection_long_00122",
+            "m4s_rejection_long_00127",
+            "m4s_rejection_long_00137",
+            "m4s_rejection_long_00192",
+            "m4s_rejection_long_00237",
+            "m4s_rejection_long_00242",
+            "m4s_rejection_long_00252",
+            "m4s_rejection_long_00257",
+            "m4s_rejection_long_00262",
+            "m4s_rejection_long_00272",
+            "m4s_rejection_long_00277",
+            "m4s_rejection_long_00282",
+            "m4s_rejection_long_00292",
+            "m4s_rejection_long_00302",
+            "m4s_rejection_long_00307",
+            "m4s_rejection_long_00317"
+          ],
+          "neither": 236,
+          "rescued": [
+            "m4s_dropout_long_00015",
+            "m4s_dropout_long_00080",
+            "m4s_dropout_long_00090",
+            "m4s_dropout_long_00125",
+            "m4s_dropout_long_00140",
+            "m4s_dropout_long_00180",
+            "m4s_dropout_long_00205",
+            "m4s_dropout_long_00225",
+            "m4s_dropout_long_00230",
+            "m4s_dropout_long_00250",
+            "m4s_dropout_long_00295",
+            "m4s_dropout_long_00300",
+            "m4s_dropout_long_00310",
+            "m4s_stale_long_00026",
+            "m4s_stale_long_00156",
+            "m4s_stale_long_00226",
+            "m4s_stale_long_00246",
+            "m4s_stale_long_00256",
+            "m4s_stale_long_00296",
+            "m4s_stale_long_00311"
+          ]
+        },
+        "haplous_mediated_vs_g1_incumbent": {
+          "both": 60,
+          "delta_bounded_success": {
+            "ci_high": 0.0,
+            "ci_low": 0.0,
+            "delta": 0.0,
+            "field": "bounded_success",
+            "method": "paired_bootstrap_mean",
+            "n": 320,
+            "n_pairs": 320,
+            "n_resamples": 10000
+          },
+          "harmed": [],
+          "neither": 260,
+          "rescued": []
+        }
+      },
+      "strata": {
+        "stratum:ceiling_retry": {
+          "bounded_success": {
+            "bare_behavior": {
+              "ci_high": 0.5285479187139549,
+              "ci_low": 0.2945690924971961,
+              "method": "wilson95",
+              "n": 64,
+              "value": 0.40625
+            },
+            "competent_supervisor": {
+              "ci_high": 0.5285479187139549,
+              "ci_low": 0.2945690924971961,
+              "method": "wilson95",
+              "n": 64,
+              "value": 0.40625
+            },
+            "g1_incumbent": {
+              "ci_high": 0.5285479187139549,
+              "ci_low": 0.2945690924971961,
+              "method": "wilson95",
+              "n": 64,
+              "value": 0.40625
+            },
+            "haplous_mediated": {
+              "ci_high": 0.5285479187139549,
+              "ci_low": 0.2945690924971961,
+              "method": "wilson95",
+              "n": 64,
+              "value": 0.40625
+            }
+          },
+          "n_scenarios": 64,
+          "paired": {
+            "g1_incumbent_vs_bare_behavior": {
+              "both": 26,
+              "harmed": 0,
+              "neither": 38,
+              "rescued": 0
+            },
+            "haplous_mediated_vs_bare_behavior": {
+              "both": 26,
+              "harmed": 0,
+              "neither": 38,
+              "rescued": 0
+            },
+            "haplous_mediated_vs_competent_supervisor": {
+              "both": 26,
+              "harmed": 0,
+              "neither": 38,
+              "rescued": 0
+            },
+            "haplous_mediated_vs_g1_incumbent": {
+              "both": 26,
+              "harmed": 0,
+              "neither": 38,
+              "rescued": 0
+            }
+          }
+        },
+        "stratum:dropout_long": {
+          "bounded_success": {
+            "bare_behavior": {
+              "ci_high": 0.05662405979280534,
+              "ci_low": 0.0,
+              "method": "wilson95",
+              "n": 64,
+              "value": 0.0
+            },
+            "competent_supervisor": {
+              "ci_high": 0.05662405979280534,
+              "ci_low": 0.0,
+              "method": "wilson95",
+              "n": 64,
+              "value": 0.0
+            },
+            "g1_incumbent": {
+              "ci_high": 0.3171363573101416,
+              "ci_low": 0.12273417819183653,
+              "method": "wilson95",
+              "n": 64,
+              "value": 0.203125
+            },
+            "haplous_mediated": {
+              "ci_high": 0.3171363573101416,
+              "ci_low": 0.12273417819183653,
+              "method": "wilson95",
+              "n": 64,
+              "value": 0.203125
+            }
+          },
+          "n_scenarios": 64,
+          "paired": {
+            "g1_incumbent_vs_bare_behavior": {
+              "both": 0,
+              "harmed": 0,
+              "neither": 51,
+              "rescued": 13
+            },
+            "haplous_mediated_vs_bare_behavior": {
+              "both": 0,
+              "harmed": 0,
+              "neither": 51,
+              "rescued": 13
+            },
+            "haplous_mediated_vs_competent_supervisor": {
+              "both": 0,
+              "harmed": 0,
+              "neither": 51,
+              "rescued": 13
+            },
+            "haplous_mediated_vs_g1_incumbent": {
+              "both": 13,
+              "harmed": 0,
+              "neither": 51,
+              "rescued": 0
+            }
+          }
+        },
+        "stratum:rejection_long": {
+          "bounded_success": {
+            "bare_behavior": {
+              "ci_high": 0.7054309075028039,
+              "ci_low": 0.4714520812860451,
+              "method": "wilson95",
+              "n": 64,
+              "value": 0.59375
+            },
+            "competent_supervisor": {
+              "ci_high": 0.7054309075028039,
+              "ci_low": 0.4714520812860451,
+              "method": "wilson95",
+              "n": 64,
+              "value": 0.59375
+            },
+            "g1_incumbent": {
+              "ci_high": 0.3343278395662582,
+              "ci_low": 0.13502319406719474,
+              "method": "wilson95",
+              "n": 64,
+              "value": 0.21875
+            },
+            "haplous_mediated": {
+              "ci_high": 0.3343278395662582,
+              "ci_low": 0.13502319406719474,
+              "method": "wilson95",
+              "n": 64,
+              "value": 0.21875
+            }
+          },
+          "n_scenarios": 64,
+          "paired": {
+            "g1_incumbent_vs_bare_behavior": {
+              "both": 14,
+              "harmed": 24,
+              "neither": 26,
+              "rescued": 0
+            },
+            "haplous_mediated_vs_bare_behavior": {
+              "both": 14,
+              "harmed": 24,
+              "neither": 26,
+              "rescued": 0
+            },
+            "haplous_mediated_vs_competent_supervisor": {
+              "both": 14,
+              "harmed": 24,
+              "neither": 26,
+              "rescued": 0
+            },
+            "haplous_mediated_vs_g1_incumbent": {
+              "both": 14,
+              "harmed": 0,
+              "neither": 50,
+              "rescued": 0
+            }
+          }
+        },
+        "stratum:stale_long": {
+          "bounded_success": {
+            "bare_behavior": {
+              "ci_high": 0.05662405979280534,
+              "ci_low": 0.0,
+              "method": "wilson95",
+              "n": 64,
+              "value": 0.0
+            },
+            "competent_supervisor": {
+              "ci_high": 0.05662405979280534,
+              "ci_low": 0.0,
+              "method": "wilson95",
+              "n": 64,
+              "value": 0.0
+            },
+            "g1_incumbent": {
+              "ci_high": 0.20898641326896122,
+              "ci_low": 0.05400113344416797,
+              "method": "wilson95",
+              "n": 64,
+              "value": 0.109375
+            },
+            "haplous_mediated": {
+              "ci_high": 0.20898641326896122,
+              "ci_low": 0.05400113344416797,
+              "method": "wilson95",
+              "n": 64,
+              "value": 0.109375
+            }
+          },
+          "n_scenarios": 64,
+          "paired": {
+            "g1_incumbent_vs_bare_behavior": {
+              "both": 0,
+              "harmed": 0,
+              "neither": 57,
+              "rescued": 7
+            },
+            "haplous_mediated_vs_bare_behavior": {
+              "both": 0,
+              "harmed": 0,
+              "neither": 57,
+              "rescued": 7
+            },
+            "haplous_mediated_vs_competent_supervisor": {
+              "both": 0,
+              "harmed": 0,
+              "neither": 57,
+              "rescued": 7
+            },
+            "haplous_mediated_vs_g1_incumbent": {
+              "both": 7,
+              "harmed": 0,
+              "neither": 57,
+              "rescued": 0
+            }
+          }
+        },
+        "stratum:tilt_limit": {
+          "bounded_success": {
+            "bare_behavior": {
+              "ci_high": 0.05662405979280534,
+              "ci_low": 0.0,
+              "method": "wilson95",
+              "n": 64,
+              "value": 0.0
+            },
+            "competent_supervisor": {
+              "ci_high": 0.05662405979280534,
+              "ci_low": 0.0,
+              "method": "wilson95",
+              "n": 64,
+              "value": 0.0
+            },
+            "g1_incumbent": {
+              "ci_high": 0.05662405979280534,
+              "ci_low": 0.0,
+              "method": "wilson95",
+              "n": 64,
+              "value": 0.0
+            },
+            "haplous_mediated": {
+              "ci_high": 0.05662405979280534,
+              "ci_low": 0.0,
+              "method": "wilson95",
+              "n": 64,
+              "value": 0.0
+            }
+          },
+          "n_scenarios": 64,
+          "paired": {
+            "g1_incumbent_vs_bare_behavior": {
+              "both": 0,
+              "harmed": 0,
+              "neither": 64,
+              "rescued": 0
+            },
+            "haplous_mediated_vs_bare_behavior": {
+              "both": 0,
+              "harmed": 0,
+              "neither": 64,
+              "rescued": 0
+            },
+            "haplous_mediated_vs_competent_supervisor": {
+              "both": 0,
+              "harmed": 0,
+              "neither": 64,
+              "rescued": 0
+            },
+            "haplous_mediated_vs_g1_incumbent": {
+              "both": 0,
+              "harmed": 0,
+              "neither": 64,
+              "rescued": 0
+            }
+          }
+        }
+      }
+    }
+  },
+  "scoring_epoch": "hes-m4-e2"
+}
