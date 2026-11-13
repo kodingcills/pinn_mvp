@@ -45,11 +45,11 @@
     {
       "id": "M2.3",
       "title": ".claude/skills/verify-haplous-eval via create-verification-skill, run for real",
-      "owner": null,
+      "owner": "worker-M2.3 (opus)",
       "deps": [
         "M2.2"
       ],
-      "status": "pending",
+      "status": "in_progress",
       "exit_check": "skill journey passes; a deliberately broken recording fails it",
       "commit": null,
       "proof": [],
@@ -58,11 +58,11 @@
     {
       "id": "M3.1",
       "title": "constrained_slide through the same record/replay/M0/HES path without recorder or HES-core edits",
-      "owner": null,
+      "owner": "worker-M3.1 (opus)",
       "deps": [
         "M2.2"
       ],
-      "status": "pending",
+      "status": "in_progress",
       "exit_check": "diff touches no recorder/HES-core file; slide replay passes the M2 gate",
       "commit": null,
       "proof": [],
@@ -70,12 +70,12 @@
     },
     {
       "id": "M3.2",
-      "title": "Pass-through arm + A/A; negative tests for truth leakage, units/frames, scenario pairing, unsupported capability",
-      "owner": null,
+      "title": "Pass-through arm + A/A vs direct across both task families",
+      "owner": "worker-M3.2 (sonnet)",
       "deps": [
         "M2.2"
       ],
-      "status": "pending",
+      "status": "in_progress",
       "exit_check": "pass-through outcome-equal to direct within A/A; each negative test fails a planted defect",
       "commit": null,
       "proof": [],
@@ -87,10 +87,24 @@
       "owner": null,
       "deps": [
         "M3.1",
-        "M3.2"
+        "M3.2",
+        "M3.3"
       ],
       "status": "pending",
       "exit_check": "G1 spec + tests; not weakened vs HEB competent_supervisor",
+      "commit": null,
+      "proof": [],
+      "retries": 0
+    },
+    {
+      "id": "M3.3",
+      "title": "Negative tests: truth leakage at the execution boundary, wrong units/frames, wrong scenario pairing, unsupported capability claim",
+      "owner": null,
+      "deps": [
+        "M3.1"
+      ],
+      "status": "pending",
+      "exit_check": "each negative test fails a planted defect",
       "commit": null,
       "proof": [],
       "retries": 0
