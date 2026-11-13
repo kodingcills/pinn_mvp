@@ -213,11 +213,12 @@
       "deps": [
         "M4.1"
       ],
-      "status": "in_progress",
+      "status": "fix_round",
       "exit_check": "prereg committed before any results; coordinator reviews prereg before M4.2b",
-      "commit": null,
+      "commit": "5a093f7 (prereg 797980a before dry run)",
       "proof": [],
-      "retries": 0
+      "retries": 1,
+      "note": "coordinator prereg review: decision rules overlap (lo>0 & hi<=0.05 is both better and tie) -> ordered first-match rules in r2; exclusion counts must be reported; git_dirty provenance from in-repo outputs; recordings (~140 MB) out of git with hashes + regeneration, <=1 rescued + 1 harmed exemplar per population committed; adapters untested in M4; reset_s 1.0 with 0 s sensitivity"
     },
     {
       "id": "M4.2b",
