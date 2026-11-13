@@ -77,10 +77,24 @@ new arm.
 | `machine.health()` per tick | yes | yes |
 | `session.apply` outcome | yes | yes |
 | behaviour's declared command contract | yes (OD-1) | yes |
-| scenario evaluator-only fields | no | no (structural detector, `tests/test_negative_truth_leak.py`) |
+| scenario evaluator-only fields | no | no (enforced by two checks, below) |
 
 G1 reads every limit from `intent.requirements`, never from the `Scenario`. The `Scenario` is
 passed only to `build_intent` and to the task's condition factory, the same path Haplous uses.
+
+Two checks enforce the last row, and neither covers the other's case.
+
+- **Dynamic detector** (`tests/test_negative_truth_leak.py`). Runs real episodes and walks every
+  value that crosses the machine boundary (observations, health, command outcomes) and the
+  `ExecutionIntent`, closures included, for canary values of evaluator-only fields. It matches
+  values, not names. It does NOT see a system reading a `Scenario` field inside its own code:
+  that crosses no boundary. It also misses transformed secrets (scaled or formatted into a string).
+- **Static guard** (`tests/test_negative_static_leak.py`). Parses G1, `HaplousSystem`,
+  `SupervisedSystem`, `BareSystem` (also the direct arm) and `PassThroughSystem`. In their code
+  every use of `scenario` must be `scenario.<declared field>` or a bare argument to
+  `build_intent`, `systems.build_intent`, `realization.condition_factory` or `super().run`.
+  Any evaluator-only attribute read, `getattr`/`vars`, alias or other call fails. It is
+  syntactic: it does not follow data through other objects such as `realization.*`.
 
 ## 4. Guards
 
