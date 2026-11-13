@@ -335,12 +335,12 @@
     {
       "id": "M5.5",
       "title": "Import real-robot ROS 2 bag / MCAP into the episode log",
-      "owner": null,
+      "owner": "worker-M5.5 (opus)",
       "deps": [
         "M5.2"
       ],
-      "status": "blocked",
-      "exit_check": "BLOCKED on operator: which robot or dataset",
+      "status": "in_progress",
+      "exit_check": "real REASSEMBLE insertion segments (HF robot-lev/reassemble, CC-BY-4.0, pinned revision) imported into the episode log format; haplous timeline and MCAP export run on it; attribution recorded; no evaluator truth claimed",
       "design": "docs/eval_program/designs/M5_backend_neutral_episode_log.md",
       "commit": null,
       "proof": [],
