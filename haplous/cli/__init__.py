@@ -91,7 +91,23 @@ def _parser() -> argparse.ArgumentParser:
     timeline.add_argument("--rrd", type=Path, help="episode log: .rrd output path")
     timeline.add_argument("--png", type=Path, help="episode log: .png output path")
     timeline.set_defaults(handler=timeline_command)
+
+    studio = commands.add_parser("studio", help="local Haplous Studio server on 127.0.0.1 (needs the 'studio' extra)")
+    studio.add_argument("--port", type=int, default=8765)
+    studio.add_argument("--no-browser", action="store_true")
+    studio.set_defaults(handler=studio_command)
     return parser
+
+
+def studio_command(args: argparse.Namespace) -> int:
+    # FastAPI lives only in studio/; import it only for this command.
+    try:
+        from studio.app import serve
+    except ImportError as exc:
+        print(f"haplous studio needs the 'studio' extra (pip install -e '.[studio]'): {exc}")
+        return 2
+    serve(port=args.port, open_browser=not args.no_browser)
+    return 0
 
 
 def main(argv: Sequence[str] | None = None) -> int:

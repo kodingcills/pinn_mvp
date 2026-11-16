@@ -29,6 +29,12 @@ replay = [
     "rerun-sdk>=0.43.1",
     "mcap==1.6.0",
 ]
+# Haplous Studio local server (`haplous studio`); httpx only for its tests.
+studio = [
+    "fastapi==0.163.1",
+    "uvicorn==0.54.0",
+    "httpx==0.28.1",
+]
 # Development and CI tooling.
 dev = [
     "pytest>=9.1.1",
@@ -48,6 +54,9 @@ all = [
     "pyyaml>=6.0",
     "pytest>=9.1.1",
     "rerun-sdk>=0.43.1",
+    "fastapi==0.163.1",
+    "uvicorn==0.54.0",
+    "httpx==0.28.1",
 ]
 
 [project.scripts]
@@ -62,7 +71,8 @@ build-backend = "hatchling.build"
 path = "haplous/__init__.py"
 
 [tool.hatch.build.targets.wheel]
-packages = ["pegsim", "haplous", "evaluation", "benchmarks", "hes"]
+packages = ["pegsim", "haplous", "evaluation", "benchmarks", "hes", "studio"]
+exclude = ["studio/web"]
 
 [tool.hatch.build.targets.sdist]
 only-packages = false
