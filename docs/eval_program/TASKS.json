@@ -355,6 +355,45 @@
         "7a34d69"
       ],
       "verdict": "PASS by sonnet verifier at c66d144: no haplous/pegsim change; loader filter identical; pinned sha256 match; fresh import byte-identical to committed sample; own pyarrow check of pose/force.base/action mapping and segment ep1/seg2 \"Insert round peg 2.\"; no Haplous/truth claims; CC-BY attribution adequate; MCAP round trip exact on all three logs; timeline rrd verify ok, no backend loaded; planted defect caught"
+    },
+    {
+      "id": "M6.1",
+      "title": "Haplous Studio server: `haplous studio`, local API over existing artifacts, job worker, investigation writer, localhost guards",
+      "owner": null,
+      "deps": [],
+      "status": "pending",
+      "exit_check": "API tests on committed artifacts; 1-episode job gives VERIFIED M0 run; guards and CPU-cap refusal red then green",
+      "design": "docs/eval_program/designs/M6_haplous_studio.md",
+      "commit": null,
+      "proof": [],
+      "retries": 0
+    },
+    {
+      "id": "M6.2",
+      "title": "Haplous Studio frontend: Runs, Replay (Rerun 3D + synced charts, event click-to-seek), Compare, Evidence, Launch, Create investigation",
+      "owner": null,
+      "deps": [],
+      "status": "pending",
+      "exit_check": "build + typecheck + component tests against contract fixtures; bundle committed, size reported",
+      "design": "docs/eval_program/designs/M6_haplous_studio.md",
+      "commit": null,
+      "proof": [],
+      "retries": 0
+    },
+    {
+      "id": "M6.3",
+      "title": "Haplous Studio end-to-end: Playwright drives the release-1 definition of done on the real server",
+      "owner": null,
+      "deps": [
+        "M6.1",
+        "M6.2"
+      ],
+      "status": "pending",
+      "exit_check": "headless E2E passes; screenshots per step",
+      "design": "docs/eval_program/designs/M6_haplous_studio.md",
+      "commit": null,
+      "proof": [],
+      "retries": 0
     }
   ]
 }

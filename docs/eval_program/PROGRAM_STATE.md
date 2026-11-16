@@ -16,6 +16,7 @@ Read this first in a new session. Then `TASKS.json` (DAG and ownership), `DECISI
 | M3 two task packs, one pipeline | **DONE.** M3.1-M3.6 each verified by a non-author; integrated head suite 776 passed / 4 known failures / 1 xfailed | `tests/test_slide_recording.py`, `tests/test_passthrough_aa.py`, `tests/test_negative_*.py`, `tests/test_scenario_registry_lookup.py`, `tests/test_od1_admission.py`, `results/passthrough/`, `results/truth_leak/`, `results/od1/` |
 | M4 direct / G1 / Haplous campaign | **DONE.** M4.1-M4.2b each verified by a non-author. Result: Haplous and G1 **tie** on control (n=181) and stress (n=320), no discordant pairs; stress fails HES G3 non-interference | `docs/eval_program/M4_REPORT.md`, `results/m4/campaign/`, `designs/M4_preregistration.md` |
 | M5 fresh-agent cold start + backend-neutral episode log | **DONE.** M5.1-M5.5 each verified by a non-author: cold start; episode log from MuJoCo, robosuite and a real Franka (REASSEMBLE "Insert round peg 2.", CC-BY-4.0); `haplous timeline`; MCAP export | `benchmarks/episode_log.py`, `evaluation/timeline.py`, `benchmarks/episode_mcap.py`, `benchmarks/realdata/reassemble_episode_log.py`, `results/m5/` |
+| M6 Haplous Studio release 1 | pending: M6.1 server, M6.2 frontend (parallel), then M6.3 end-to-end (`designs/M6_haplous_studio.md`) | |
 
 ## Architecture decisions in force (details in DECISIONS.tsv)
 
