@@ -407,13 +407,26 @@
         "M6.1",
         "M6.2"
       ],
-      "status": "in_progress",
+      "status": "verified",
       "exit_check": "headless E2E passes; screenshots per step",
       "design": "docs/eval_program/designs/M6_haplous_studio.md",
-      "commit": null,
-      "proof": [],
+      "commit": "126b258 (fix round on eb354c4)",
+      "proof": [
+        "studio/web/e2e/studio.e2e.cjs",
+        "tests/test_studio_e2e.py",
+        "studio/web/src/RerunView.tsx",
+        "docs/eval_program/REPRODUCE.md#m6.3"
+      ],
       "retries": 1,
-      "note": "verifier FAIL at eb354c4: E2E second run timed out waiting for the Rerun viewer seek (charts fine); fix round started from eb354c4 with diagnostics, race hypothesis, 3 consecutive E2E passes required"
+      "note": "verifier FAIL at eb354c4: E2E second run timed out waiting for the Rerun viewer seek (charts fine); fix round started from eb354c4 with diagnostics, race hypothesis, 3 consecutive E2E passes required",
+      "integrated_as": [
+        "75cd4e7",
+        "34545e2",
+        "c7862cd",
+        "57b7e3b",
+        "10d8065"
+      ],
+      "verdict": "PASS by sonnet verifier at 126b258 after FAIL at eb354c4: root cause = viewer emits recording_open before sim_time timeline ingested, single rejected seek never retried; fix waits for readiness and re-applies latest seek; race test red at f49f113, green after; 6x CPU-throttled probe fails on old bundle, passes on new; E2E passed 3x (owner) + 1x (verifier); compare numbers equal official_metrics.json; bundle byte-identical to fresh build. Failure-dump path not exercised"
     }
   ]
 }

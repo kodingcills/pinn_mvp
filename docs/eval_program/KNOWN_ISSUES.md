@@ -68,8 +68,10 @@ Current head of `claude/magical-curie-si1vjr` (M5.5 integrated, 2026-11-13): **9
 | Imported REASSEMBLE "Insert" segment is mostly transport (contact only in the last ~2.5 s of 12.5 s); F/T downsampled to 30 Hz by the derivative; base F/T frame undocumented; tilt is derived assuming EE z is the approach axis | M5.5 owner | documented in metadata |
 | Timeline PNG for real logs: title shows a stray ", None" (null disposition), right-edge label clipped; dataset markers have no test | M5.5 verifier | cosmetic |
 | `scripts/m5_mcap_export.py` and `scripts/m55_reassemble_import.py` write into `results/` with no output-dir option (byte-identical on rerun) | M5.5 verifier | minor |
-| Studio frontend a11y: chart slider has no Home/End/PageUp/PageDown; investigation dialog has no focus trap or Escape; accent link contrast 4.39:1 (just under 4.5) | M6.2 verifier | open, minor |
-| Studio tests mock the Rerun viewer: real 3D seek is checked only by `setTime` arguments until M6.3's E2E | M6.2 verifier | M6.3 |
-| Studio CPU estimate is a flat 3.0 s/episode: the largest possible catalog launch estimates 6.75 min (never triggers the 10-min confirm) but costs ~11.7 min using M4 per-arm means (bare_behavior ~16 s) | M6.1 verifier | assigned to M6.3: per-system estimate |
+| Studio frontend a11y: chart slider has no Home/End/PageUp/PageDown; investigation dialog has no focus trap or Escape; accent link contrast 4.39:1 (just under 4.5) | M6.2 verifier | resolved in M6.3 |
+| Studio tests mock the Rerun viewer: real 3D seek is checked only by `setTime` arguments until M6.3's E2E | M6.2 verifier | resolved in M6.3: real-viewer seek asserted by E2E |
+| Studio CPU estimate is a flat 3.0 s/episode: the largest possible catalog launch estimates 6.75 min (never triggers the 10-min confirm) but costs ~11.7 min using M4 per-arm means (bare_behavior ~16 s) | M6.1 verifier | resolved in M6.3: per-system means from cost.json; full catalog 11.66 CPU-min triggers confirm |
 | Studio worker liveness after a server restart is checked by pid only (pid reuse not handled) | M6.1 owner | shortcut, documented in code |
 | Studio reads `results/` relative to a repo checkout; an installed wheel alone has nothing to serve | M6.1 owner | by design for release 1 |
+| Studio E2E is opt-in (needs Node, a global Playwright on NODE_PATH, the built wasm) and records 2 episodes; its failure-dump path (failure-browser.log/png) has never been exercised | M6.3 fix owner + verifier | documented in REPRODUCE.md |
+| RerunView: unmount does not cancel the readiness poll (harmless setError after unmount); viewer ready/time attributes not reset when the run url changes | M6.3 fix verifier | minor |
