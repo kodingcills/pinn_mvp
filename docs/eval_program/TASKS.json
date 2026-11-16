@@ -359,9 +359,9 @@
     {
       "id": "M6.1",
       "title": "Haplous Studio server: `haplous studio`, local API over existing artifacts, job worker, investigation writer, localhost guards",
-      "owner": null,
+      "owner": "worker-M6.1 (opus)",
       "deps": [],
-      "status": "pending",
+      "status": "in_progress",
       "exit_check": "API tests on committed artifacts; 1-episode job gives VERIFIED M0 run; guards and CPU-cap refusal red then green",
       "design": "docs/eval_program/designs/M6_haplous_studio.md",
       "commit": null,
@@ -371,9 +371,9 @@
     {
       "id": "M6.2",
       "title": "Haplous Studio frontend: Runs, Replay (Rerun 3D + synced charts, event click-to-seek), Compare, Evidence, Launch, Create investigation",
-      "owner": null,
+      "owner": "worker-M6.2 (opus)",
       "deps": [],
-      "status": "pending",
+      "status": "in_progress",
       "exit_check": "build + typecheck + component tests against contract fixtures; bundle committed, size reported",
       "design": "docs/eval_program/designs/M6_haplous_studio.md",
       "commit": null,
