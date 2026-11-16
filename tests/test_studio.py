@@ -36,7 +36,9 @@ PROGRAM_STATE = ("TASKS.json", "PROGRAM_STATE.md", "KNOWN_ISSUES.md", "DECISIONS
 
 @pytest.fixture
 def paths(tmp_path: Path) -> Paths:
-    return Paths(REPO, tmp_path / "studio", tmp_path / "investigations", tmp_path / "replays")
+    paths = Paths.under(tmp_path)  # what `haplous studio --root` uses
+    assert paths == Paths(REPO, tmp_path / "studio", tmp_path / "investigations", tmp_path / "replays")
+    return paths
 
 
 @pytest.fixture
@@ -164,9 +166,13 @@ def test_catalog_is_the_heb_registry(client: TestClient) -> None:
     assert {s["label"] for s in catalog["scenarios"]} == {"DEV"}
     assert catalog["scenarios"][0] == {"task": "peg_insertion", "id": "insert_nominal", "stratum": "physical",
                                        "label": "DEV"}
+    cost = json.loads((REPO / jobs.COST_JSON).read_text())["cpu_s_per_episode_by_arm"]
     for system in catalog["systems"]:
         assert system_by_name(system["id"]).name == system["id"]
-        assert system["cpu_s_per_episode"] == jobs.CPU_S_PER_EPISODE
+        expected = cost[system["id"]]["mean"] if system["id"] in cost else jobs.FALLBACK_CPU_S_PER_EPISODE
+        assert system["cpu_s_per_episode"] == expected
+        assert (jobs.COST_JSON in system["cpu_source"]) == (system["id"] in cost)
+    assert {s["id"] for s in catalog["systems"]} - set(cost) == {"direct_minimal"}
     assert catalog["cap_cpu_minutes"] == 10.0
 
 
@@ -224,17 +230,18 @@ def test_jobs_accept_only_catalog_scenarios_and_registered_systems(client: TestC
     assert not paths.jobs.exists()
 
 
-def test_jobs_over_the_cpu_cap_need_confirm(client: TestClient, paths: Paths, monkeypatch) -> None:
+def test_jobs_over_the_cpu_cap_need_confirm(client: TestClient, paths: Paths) -> None:
+    """The real cap and the real per-system estimate: every catalog scenario x every system is over it."""
     catalog = client.get("/api/catalog").json()
-    n_needed = int(jobs.CPU_CAP_S // jobs.CPU_S_PER_EPISODE) + 1
-    if n_needed > len(catalog["scenarios"]) * len(catalog["systems"]):
-        monkeypatch.setattr(jobs, "CPU_CAP_S", jobs.CPU_S_PER_EPISODE * 2.5)
-        n_needed = 3
-    ids = [s["id"] for s in catalog["scenarios"]][:n_needed]
-    res = client.post("/api/jobs", json={"scenario_ids": ids, "systems": ["haplous_mediated"], "confirm": False})
+    ids, systems = [s["id"] for s in catalog["scenarios"]], [s["id"] for s in catalog["systems"]]
+    res = client.post("/api/jobs", json={"scenario_ids": ids, "systems": systems, "confirm": False})
     assert res.status_code == 409
     body = res.json()
-    assert body["estimate_cpu_minutes"] == n_needed * jobs.CPU_S_PER_EPISODE / 60 > body["cap_cpu_minutes"]
+    per_scenario = sum(s["cpu_s_per_episode"] for s in catalog["systems"])
+    assert body["estimate_cpu_minutes"] == pytest.approx(len(ids) * per_scenario / 60)
+    assert body["estimate_cpu_minutes"] > body["cap_cpu_minutes"] == 10.0
+    # the cap is a real boundary: every scenario with one system stays under it
+    assert jobs.estimate_cpu_s(ids, systems[:1]) < jobs.CPU_CAP_S
     assert not paths.jobs.exists()
 
 

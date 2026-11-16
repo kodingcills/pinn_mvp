@@ -48,7 +48,15 @@ export function RerunView({ url, t_s }: { url: string; t_s: number | null }) {
   useEffect(() => {
     if (t_s == null) return;
     void viewer.current?.then((v) =>
-      v?.setTime({ timeline: TIMELINE, durationNanos: Math.round(t_s * 1e9), playState: "paused" }).catch((e: unknown) => console.warn("rerun setTime", e)),
+      v
+        ?.setTime({ timeline: TIMELINE, durationNanos: Math.round(t_s * 1e9), playState: "paused" })
+        // the viewer's own cursor after the seek, on the DOM for end-to-end checks
+        .then(() => v.getState?.())
+        .then((state) => {
+          const time = state?.recordings.find((r) => r.storeId === state.activeStoreId)?.currentTime?.time;
+          if (time != null && el.current) el.current.dataset.viewerTimeNs = String(time);
+        })
+        .catch((e: unknown) => console.warn("rerun setTime", e)),
     );
   }, [t_s]);
 

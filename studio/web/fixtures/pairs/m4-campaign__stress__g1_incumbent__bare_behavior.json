@@ -1,4 +1,9 @@
 {
+  "campaign_id": "m4-campaign",
+  "population": "stress",
+  "a": "g1_incumbent",
+  "b": "bare_behavior",
+  "field": "bounded_success",
   "matrix": {
     "both": 40,
     "a_only": 20,
@@ -11,6 +16,7 @@
     -0.053125,
     0.028125
   ],
+  "method": "paired_bootstrap_mean",
   "rows": [
     {
       "scenario_id": "m4s_ceiling_retry_00004",
@@ -920,14 +926,14 @@
       "a": false,
       "b": true,
       "stratum": "stratum:rejection_long",
-      "replay_run_id": "m4-campaign-stress-m4s_rejection_long_00007-haplous_mediated"
+      "replay_run_id": "m4-campaign-stress-m4s_rejection_long_00007-bare_behavior"
     },
     {
       "scenario_id": "m4s_rejection_long_00012",
       "a": false,
       "b": true,
       "stratum": "stratum:rejection_long",
-      "replay_run_id": "m4-campaign-stress-m4s_rejection_long_00012-haplous_mediated"
+      "replay_run_id": "m4-campaign-stress-m4s_rejection_long_00012-bare_behavior"
     },
     {
       "scenario_id": "m4s_rejection_long_00017",
@@ -948,7 +954,7 @@
       "a": false,
       "b": true,
       "stratum": "stratum:rejection_long",
-      "replay_run_id": "m4-campaign-stress-m4s_rejection_long_00027-haplous_mediated"
+      "replay_run_id": "m4-campaign-stress-m4s_rejection_long_00027-bare_behavior"
     },
     {
       "scenario_id": "m4s_rejection_long_00032",
@@ -969,7 +975,7 @@
       "a": false,
       "b": true,
       "stratum": "stratum:rejection_long",
-      "replay_run_id": "m4-campaign-stress-m4s_rejection_long_00042-haplous_mediated"
+      "replay_run_id": "m4-campaign-stress-m4s_rejection_long_00042-bare_behavior"
     },
     {
       "scenario_id": "m4s_rejection_long_00047",
@@ -983,7 +989,7 @@
       "a": false,
       "b": true,
       "stratum": "stratum:rejection_long",
-      "replay_run_id": "m4-campaign-stress-m4s_rejection_long_00052-haplous_mediated"
+      "replay_run_id": "m4-campaign-stress-m4s_rejection_long_00052-bare_behavior"
     },
     {
       "scenario_id": "m4s_rejection_long_00057",
@@ -997,7 +1003,7 @@
       "a": false,
       "b": true,
       "stratum": "stratum:rejection_long",
-      "replay_run_id": "m4-campaign-stress-m4s_rejection_long_00062-haplous_mediated"
+      "replay_run_id": "m4-campaign-stress-m4s_rejection_long_00062-bare_behavior"
     },
     {
       "scenario_id": "m4s_rejection_long_00067",
@@ -1039,14 +1045,14 @@
       "a": false,
       "b": true,
       "stratum": "stratum:rejection_long",
-      "replay_run_id": "m4-campaign-stress-m4s_rejection_long_00092-haplous_mediated"
+      "replay_run_id": "m4-campaign-stress-m4s_rejection_long_00092-bare_behavior"
     },
     {
       "scenario_id": "m4s_rejection_long_00097",
       "a": false,
       "b": true,
       "stratum": "stratum:rejection_long",
-      "replay_run_id": "m4-campaign-stress-m4s_rejection_long_00097-haplous_mediated"
+      "replay_run_id": "m4-campaign-stress-m4s_rejection_long_00097-bare_behavior"
     },
     {
       "scenario_id": "m4s_rejection_long_00102",
@@ -1081,14 +1087,14 @@
       "a": false,
       "b": true,
       "stratum": "stratum:rejection_long",
-      "replay_run_id": "m4-campaign-stress-m4s_rejection_long_00122-haplous_mediated"
+      "replay_run_id": "m4-campaign-stress-m4s_rejection_long_00122-bare_behavior"
     },
     {
       "scenario_id": "m4s_rejection_long_00127",
       "a": false,
       "b": true,
       "stratum": "stratum:rejection_long",
-      "replay_run_id": "m4-campaign-stress-m4s_rejection_long_00127-haplous_mediated"
+      "replay_run_id": "m4-campaign-stress-m4s_rejection_long_00127-bare_behavior"
     },
     {
       "scenario_id": "m4s_rejection_long_00132",
@@ -1102,7 +1108,7 @@
       "a": false,
       "b": true,
       "stratum": "stratum:rejection_long",
-      "replay_run_id": "m4-campaign-stress-m4s_rejection_long_00137-haplous_mediated"
+      "replay_run_id": "m4-campaign-stress-m4s_rejection_long_00137-bare_behavior"
     },
     {
       "scenario_id": "m4s_rejection_long_00142",
@@ -1179,7 +1185,7 @@
       "a": false,
       "b": true,
       "stratum": "stratum:rejection_long",
-      "replay_run_id": "m4-campaign-stress-m4s_rejection_long_00192-haplous_mediated"
+      "replay_run_id": "m4-campaign-stress-m4s_rejection_long_00192-bare_behavior"
     },
     {
       "scenario_id": "m4s_rejection_long_00197",
@@ -1242,14 +1248,14 @@
       "a": false,
       "b": true,
       "stratum": "stratum:rejection_long",
-      "replay_run_id": "m4-campaign-stress-m4s_rejection_long_00237-haplous_mediated"
+      "replay_run_id": "m4-campaign-stress-m4s_rejection_long_00237-bare_behavior"
     },
     {
       "scenario_id": "m4s_rejection_long_00242",
       "a": false,
       "b": true,
       "stratum": "stratum:rejection_long",
-      "replay_run_id": "m4-campaign-stress-m4s_rejection_long_00242-haplous_mediated"
+      "replay_run_id": "m4-campaign-stress-m4s_rejection_long_00242-bare_behavior"
     },
     {
       "scenario_id": "m4s_rejection_long_00247",
@@ -1263,21 +1269,21 @@
       "a": false,
       "b": true,
       "stratum": "stratum:rejection_long",
-      "replay_run_id": "m4-campaign-stress-m4s_rejection_long_00252-haplous_mediated"
+      "replay_run_id": "m4-campaign-stress-m4s_rejection_long_00252-bare_behavior"
     },
     {
       "scenario_id": "m4s_rejection_long_00257",
       "a": false,
       "b": true,
       "stratum": "stratum:rejection_long",
-      "replay_run_id": "m4-campaign-stress-m4s_rejection_long_00257-haplous_mediated"
+      "replay_run_id": "m4-campaign-stress-m4s_rejection_long_00257-bare_behavior"
     },
     {
       "scenario_id": "m4s_rejection_long_00262",
       "a": false,
       "b": true,
       "stratum": "stratum:rejection_long",
-      "replay_run_id": "m4-campaign-stress-m4s_rejection_long_00262-haplous_mediated"
+      "replay_run_id": "m4-campaign-stress-m4s_rejection_long_00262-bare_behavior"
     },
     {
       "scenario_id": "m4s_rejection_long_00267",
@@ -1291,21 +1297,21 @@
       "a": false,
       "b": true,
       "stratum": "stratum:rejection_long",
-      "replay_run_id": "m4-campaign-stress-m4s_rejection_long_00272-haplous_mediated"
+      "replay_run_id": "m4-campaign-stress-m4s_rejection_long_00272-bare_behavior"
     },
     {
       "scenario_id": "m4s_rejection_long_00277",
       "a": false,
       "b": true,
       "stratum": "stratum:rejection_long",
-      "replay_run_id": "m4-campaign-stress-m4s_rejection_long_00277-haplous_mediated"
+      "replay_run_id": "m4-campaign-stress-m4s_rejection_long_00277-bare_behavior"
     },
     {
       "scenario_id": "m4s_rejection_long_00282",
       "a": false,
       "b": true,
       "stratum": "stratum:rejection_long",
-      "replay_run_id": "m4-campaign-stress-m4s_rejection_long_00282-haplous_mediated"
+      "replay_run_id": "m4-campaign-stress-m4s_rejection_long_00282-bare_behavior"
     },
     {
       "scenario_id": "m4s_rejection_long_00287",
@@ -1319,7 +1325,7 @@
       "a": false,
       "b": true,
       "stratum": "stratum:rejection_long",
-      "replay_run_id": "m4-campaign-stress-m4s_rejection_long_00292-haplous_mediated"
+      "replay_run_id": "m4-campaign-stress-m4s_rejection_long_00292-bare_behavior"
     },
     {
       "scenario_id": "m4s_rejection_long_00297",
@@ -1333,14 +1339,14 @@
       "a": false,
       "b": true,
       "stratum": "stratum:rejection_long",
-      "replay_run_id": "m4-campaign-stress-m4s_rejection_long_00302-haplous_mediated"
+      "replay_run_id": "m4-campaign-stress-m4s_rejection_long_00302-bare_behavior"
     },
     {
       "scenario_id": "m4s_rejection_long_00307",
       "a": false,
       "b": true,
       "stratum": "stratum:rejection_long",
-      "replay_run_id": "m4-campaign-stress-m4s_rejection_long_00307-haplous_mediated"
+      "replay_run_id": "m4-campaign-stress-m4s_rejection_long_00307-bare_behavior"
     },
     {
       "scenario_id": "m4s_rejection_long_00312",
@@ -1354,7 +1360,7 @@
       "a": false,
       "b": true,
       "stratum": "stratum:rejection_long",
-      "replay_run_id": "m4-campaign-stress-m4s_rejection_long_00317-haplous_mediated"
+      "replay_run_id": "m4-campaign-stress-m4s_rejection_long_00317-bare_behavior"
     },
     {
       "scenario_id": "m4s_stale_long_00001",
@@ -1578,7 +1584,7 @@
       "a": true,
       "b": false,
       "stratum": "stratum:stale_long",
-      "replay_run_id": "m4-campaign-stress-m4s_stale_long_00156-haplous_mediated"
+      "replay_run_id": "m4-campaign-stress-m4s_stale_long_00156-bare_behavior"
     },
     {
       "scenario_id": "m4s_stale_long_00161",
@@ -2253,5 +2259,5 @@
       "replay_run_id": null
     }
   ],
-  "source": "results/m4/campaign/official_metrics.json, raw_rows.jsonl, replay_index.jsonl"
+  "source": "results/m4/campaign/official_metrics.json"
 }

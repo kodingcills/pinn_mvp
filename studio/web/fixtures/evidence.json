@@ -210,28 +210,39 @@
     {
       "id": "M6.1",
       "title": "Haplous Studio server: `haplous studio`, local API over existing artifacts, job worker, investigation writer, localhost guards",
-      "status": "pending",
-      "verdict": null,
-      "commit": null,
-      "owner": null,
-      "proof": []
+      "status": "verified",
+      "verdict": "PASS by sonnet verifier at 4ce88c3: haplous.cli does not load fastapi; uv.lock additions only; bound to 127.0.0.1; Host/Origin/Content-Type guards hold on a real server; 7 static traversal variants and run-id traversal refused; job argv fixed and allow-listed; pairs equal official_metrics.json incl. reversal; series lengths and nulls correct; tamper gives 409; one real job VERIFIED; investigations leave program state untouched; planted defects caught",
+      "commit": "4ce88c3",
+      "owner": "worker-M6.1 (opus)",
+      "proof": [
+        "studio/app.py",
+        "studio/data.py",
+        "studio/jobs.py",
+        "studio/investigations.py",
+        "studio/viewer_wasm.py",
+        "tests/test_studio.py"
+      ]
     },
     {
       "id": "M6.2",
       "title": "Haplous Studio frontend: Runs, Replay (Rerun 3D + synced charts, event click-to-seek), Compare, Evidence, Launch, Create investigation",
-      "status": "pending",
-      "verdict": null,
-      "commit": null,
-      "owner": null,
-      "proof": []
+      "status": "verified",
+      "verdict": "PASS by sonnet verifier at ba34aca: only studio/web and studio/static; npm ci + typecheck + 9/9 vitest; fresh build byte-identical to committed bundle (546 KB, wasm gitignored); no mock code or external fetch targets in bundle; fixtures regenerate identically; Compare numbers match official_metrics.json by independent script; planted defects caught; screenshots show cursor at 1.0 s on all charts. Not checked: real server, real 3D seek (M6.3)",
+      "commit": "ba34aca",
+      "owner": "worker-M6.2 (opus)",
+      "proof": [
+        "studio/web/src/",
+        "studio/static/",
+        "studio/web/src/studio.test.tsx"
+      ]
     },
     {
       "id": "M6.3",
       "title": "Haplous Studio end-to-end: Playwright drives the release-1 definition of done on the real server",
-      "status": "pending",
+      "status": "in_progress",
       "verdict": null,
       "commit": null,
-      "owner": null,
+      "owner": "worker-M6.3 (opus)",
       "proof": []
     }
   ],

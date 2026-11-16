@@ -95,9 +95,11 @@ export function Chart(props: {
         }}
         onPointerMove={(e) => e.buttons === 1 && scrubFrom(e)}
         onKeyDown={(e) => {
-          const step = span / 100;
-          if (e.key === "ArrowRight") onScrub(Math.min(domain[1], (cursor ?? domain[0]) + step));
-          if (e.key === "ArrowLeft") onScrub(Math.max(domain[0], (cursor ?? domain[0]) - step));
+          const now = cursor ?? domain[0];
+          const to = { ArrowRight: now + span / 100, ArrowLeft: now - span / 100, PageUp: now + span / 10, PageDown: now - span / 10, Home: domain[0], End: domain[1] }[e.key];
+          if (to === undefined) return;
+          e.preventDefault();
+          onScrub(Math.min(domain[1], Math.max(domain[0], to)));
         }}
       >
         {windows.map((w) => (

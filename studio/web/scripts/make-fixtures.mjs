@@ -31,28 +31,27 @@ function windowsOf(events, endS) {
   return windows;
 }
 
-function detail(logDir, extraMeta) {
+// Mirrors studio/data.py series(): one entry per observation row (null observation kept as null),
+// command target = the last command logged before that row.
+function detail(logDir) {
   const meta = json(`${logDir}/metadata.json`);
   const rows = jsonl(`${logDir}/telemetry.jsonl`);
   const events = jsonl(`${logDir}/events.jsonl`);
   const dt = meta.timestep_s;
-  const obs = new Map();
-  const cmd = new Map();
-  for (const r of rows) {
-    if (r.kind === "observation") obs.set(r.tick, r.observation);
-    else if (r.kind === "command") cmd.set(r.tick, r.command);
-  }
-  const ticks = [...new Set([...obs.keys(), ...cmd.keys()])].sort((a, b) => a - b);
   const series = { t_s: [], force_z_n: [], pose_m: [], command_target_pose_m: [] };
-  for (const tick of ticks) {
-    const o = obs.get(tick) ?? null;
-    series.t_s.push(tick * dt);
-    series.force_z_n.push(o ? o.force_z_n : null);
-    series.pose_m.push(o ? o.pose_m : null);
-    series.command_target_pose_m.push(cmd.get(tick)?.target_pose_m ?? null);
+  let target = null;
+  for (const r of rows) {
+    if (r.kind === "command") target = r.command.target_pose_m;
+    else if (r.kind === "observation") {
+      const o = r.observation;
+      series.t_s.push(r.tick * dt);
+      series.force_z_n.push(o ? (o.force_z_n ?? null) : null);
+      series.pose_m.push(o ? (o.pose_m ?? null) : null);
+      series.command_target_pose_m.push(target);
+    }
   }
   return {
-    metadata: { ...meta, ...extraMeta },
+    metadata: meta,
     series,
     events: events.map(({ source, kind, tick, t_s, payload }) => ({ source, kind, tick, t_s, payload })),
     windows: windowsOf(events, meta.n_ticks * dt),
@@ -63,17 +62,16 @@ function detail(logDir, extraMeta) {
 const runs = [];
 for (const id of ["m2-heb-insert_dropout_large", "m3-heb-slide_disturbance_recoverable_ceiling"]) {
   const path = `results/recordings/registry/runs/${id}`;
-  const manifest = json(`${path}/manifest.json`);
-  const d = detail(`${path}/artifacts`, { run_id: id, path, tier: manifest.tier, git_commit: manifest.provenance.git_commit });
+  const d = detail(`${path}/artifacts`);
   write(`runs/${id}.json`, d);
   runs.push({
-    id, source: "m0_registry", backend: `mujoco-${d.metadata.mujoco_version}`, scenario_id: d.metadata.scenario_id,
+    id, source: "recordings", backend: `mujoco-${d.metadata.mujoco_version}`, scenario_id: d.metadata.scenario_id,
     system: d.metadata.system, disposition: d.metadata.outcome.disposition, bounded_success: d.metadata.outcome.bounded_success,
     has_3d: true, verified: true, path,
   });
 }
-for (const path of ["results/m5/robosuite-log", "results/m5/reassemble-log"]) {
-  const d = detail(path, { path });
+for (const path of ["results/m5/reassemble-log", "results/m5/robosuite-log"]) { // sorted, as the server lists them
+  const d = detail(path);
   write(`runs/${encodeURIComponent(path)}.json`, d);
   runs.push({
     id: path, source: "episode_log", backend: d.metadata.backend, scenario_id: d.metadata.task_id,
@@ -95,8 +93,9 @@ const populations = Object.entries(metrics.populations).map(([pid, p]) => ({
     id: c.id, candidate: c.candidate, reference: c.reference, decision: c.decision, field: c.field,
   })),
 }));
+const CAMPAIGN = "m4-campaign"; // studio/data.py campaign_dirs(): <results subdir>-<campaign dir>
 write("campaigns.json", [{
-  id: "m4", scoring_epoch: metrics.scoring_epoch, source: "results/m4/campaign/official_metrics.json", populations,
+  id: CAMPAIGN, scoring_epoch: metrics.scoring_epoch, source: "results/m4/campaign/official_metrics.json", populations,
 }]);
 
 for (const [pid, p] of Object.entries(metrics.populations)) {
@@ -107,10 +106,11 @@ for (const [pid, p] of Object.entries(metrics.populations)) {
     const rb = rowsOf(b);
     const rows = [...ra.keys()].sort().map((sid) => {
       const x = ra.get(sid);
-      const replay = replays.find((r) => r.population === pid && r.scenario_id === sid && (r.arm === a || r.arm === b));
+      const replayOf = (arm) => replays.find((r) => r.population === pid && r.scenario_id === sid && r.arm === arm);
+      const replay = replayOf(a) ?? replayOf(b);
       return {
         scenario_id: sid, a: x.bounded_success, b: rb.get(sid).bounded_success,
-        stratum: x.tags.find((t) => t.startsWith("stratum:")) ?? x.tags[0], replay_run_id: replay?.m0_run_id ?? null,
+        stratum: x.tags.find((t) => t in (p.strata ?? {})) ?? null, replay_run_id: replay?.m0_run_id ?? null,
       };
     });
     const matrix = { both: pr.both, a_only: pr.rescued.length, b_only: pr.harmed.length, neither: pr.neither };
@@ -120,20 +120,28 @@ for (const [pid, p] of Object.entries(metrics.populations)) {
     assert.equal(rows.filter((r) => !r.a && r.b).length, matrix.b_only, `${pid} ${key} b_only`);
     assert.equal(rows.length, pr.delta_bounded_success.n_pairs, `${pid} ${key} n`);
     const d = pr.delta_bounded_success;
-    write(`pairs/m4__${pid}__${a}__${b}.json`, {
-      matrix, n: d.n_pairs, diff: d.delta, ci95: [d.ci_low, d.ci_high], rows,
-      source: "results/m4/campaign/official_metrics.json, raw_rows.jsonl, replay_index.jsonl",
+    write(`pairs/${CAMPAIGN}__${pid}__${a}__${b}.json`, {
+      campaign_id: CAMPAIGN, population: pid, a, b, field: d.field,
+      matrix, n: d.n_pairs, diff: d.delta, ci95: [d.ci_low, d.ci_high], method: d.method, rows,
+      source: "results/m4/campaign/official_metrics.json",
     });
   }
 }
 
 // ---- catalog
 const cost = json("results/m4/campaign/cost.json");
+const FALLBACK = "fallback: one insert_nominal x haplous_mediated episode measured via studio.jobs (2.99 s)";
 write("catalog.json", {
   scenarios: JSON.parse(readFileSync(join(here, "heb_scenarios.json"), "utf8")),
-  systems: Object.entries(cost.cpu_s_per_episode_by_arm).map(([id, c]) => ({ id, cpu_s_per_episode: c.mean })),
+  // mirrors studio/jobs.py cpu_per_episode(): M4 measured mean per arm, else the measured fallback
+  systems: ["haplous_mediated", "g1_incumbent", "bare_behavior", "competent_supervisor", "direct_minimal"].map((id) => {
+    const c = cost.cpu_s_per_episode_by_arm[id];
+    return c
+      ? { id, cpu_s_per_episode: c.mean, cpu_source: `results/m4/campaign/cost.json mean, n=${c.n}` }
+      : { id, cpu_s_per_episode: 3.0, cpu_source: FALLBACK };
+  }),
   cap_cpu_minutes: 10,
-  source: "benchmarks.heb insertion+sliding scenarios; CPU means from results/m4/campaign/cost.json",
+  source: `benchmarks.heb.tasks.scenarios_by_id(); CPU-s per episode per system: measured mean from results/m4/campaign/cost.json where M4 ran the arm, else ${FALLBACK}`,
 });
 
 // ---- evidence

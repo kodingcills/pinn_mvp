@@ -5,8 +5,8 @@ checked against what the server actually returns.
 
 Runs no simulation and starts no job: it reads committed artifacts (and the jobs and
 registry under --studio-root, if any) through the FastAPI app in-process. The CPU-cap
-409 is shown by asking for every catalog scenario x system with confirm=false under a
-temporarily lowered cap (stated in the file), so nothing is launched.
+409 is shown by asking for every catalog scenario x system with confirm=false under the
+real cap (its per-system estimate exceeds 10 CPU-minutes; asserted first), so nothing is launched.
 """
 from __future__ import annotations
 
@@ -61,13 +61,11 @@ def main(argv: list[str] | None = None) -> int:
     dump("error_job_unknown_scenario", "POST", "/api/jobs",
          client.post("/api/jobs", json={"scenario_ids": ["fleet_insert_000137"], "systems": ["haplous_mediated"]}))
     catalog = client.get("/api/catalog").json()
-    real_cap, jobs.CPU_CAP_S = jobs.CPU_CAP_S, 30.0
-    try:
-        dump("error_job_over_cap", "POST", "/api/jobs (cap lowered to 30 CPU-s for this dump)",
-             client.post("/api/jobs", json={"scenario_ids": [s["id"] for s in catalog["scenarios"]],
-                                            "systems": [s["id"] for s in catalog["systems"]], "confirm": False}))
-    finally:
-        jobs.CPU_CAP_S = real_cap
+    ids, systems = [s["id"] for s in catalog["scenarios"]], [s["id"] for s in catalog["systems"]]
+    # under the cap this POST would launch a real job
+    assert jobs.estimate_cpu_s(ids, systems) > jobs.CPU_CAP_S, "full catalog no longer exceeds the CPU cap"
+    dump("error_job_over_cap", "POST", "/api/jobs",
+         client.post("/api/jobs", json={"scenario_ids": ids, "systems": systems, "confirm": False}))
     (args.out / "index.json").write_text(json.dumps(index, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     print(json.dumps(index, indent=2, sort_keys=True))
     return 0

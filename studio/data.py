@@ -50,6 +50,12 @@ class Paths:
         return cls(repo, repo / "results" / "studio", repo / "docs" / "eval_program" / "investigations",
                    repo / "replays")
 
+    @classmethod
+    def under(cls, root: Path, repo: Path = REPO_ROOT) -> Paths:
+        """Read committed results from `repo`; write jobs, registry, replays and investigations under `root`."""
+        root = root.resolve()
+        return cls(repo, root / "studio", root / "investigations", root / "replays")
+
     @property
     def registry(self) -> Path:
         return self.studio / "registry"

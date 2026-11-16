@@ -1,16 +1,22 @@
 {
+  "campaign_id": "m4-campaign",
+  "population": "control",
+  "a": "haplous_mediated",
+  "b": "bare_behavior",
+  "field": "bounded_success",
   "matrix": {
-    "both": 19,
-    "a_only": 22,
+    "both": 22,
+    "a_only": 19,
     "b_only": 1,
     "neither": 139
   },
   "n": 181,
-  "diff": 0.11602209944751381,
+  "diff": 0.09944751381215469,
   "ci95": [
-    0.06629834254143646,
-    0.16574585635359115
+    0.055248618784530384,
+    0.14917127071823205
   ],
+  "method": "paired_bootstrap_mean",
   "rows": [
     {
       "scenario_id": "fleet_insert_000000",
@@ -582,7 +588,7 @@
     {
       "scenario_id": "fleet_insert_000118",
       "a": true,
-      "b": false,
+      "b": true,
       "stratum": "task_a",
       "replay_run_id": null
     },
@@ -953,7 +959,7 @@
     {
       "scenario_id": "fleet_insert_000190",
       "a": true,
-      "b": false,
+      "b": true,
       "stratum": "task_a",
       "replay_run_id": null
     },
@@ -1009,7 +1015,7 @@
     {
       "scenario_id": "fleet_slide_000005",
       "a": true,
-      "b": false,
+      "b": true,
       "stratum": "task_b",
       "replay_run_id": null
     },
@@ -1280,5 +1286,5 @@
       "replay_run_id": null
     }
   ],
-  "source": "results/m4/campaign/official_metrics.json, raw_rows.jsonl, replay_index.jsonl"
+  "source": "results/m4/campaign/official_metrics.json"
 }

@@ -50,3 +50,24 @@ MUJOCO_GL=osmesa PYTHONPATH=. /tmp/venv-rs/bin/python scripts/m5_episode_log.py 
 ```
 
 Tests: `.venv/bin/python -m pytest tests/test_episode_log.py -q` (9 tests; no robosuite needed).
+
+## M6.3: Haplous Studio end to end
+
+Drives the release-1 definition of done in headless Chromium against the real server
+(`haplous studio --root <temp dir>`, so jobs, Studio's M0 registry, replays and the investigation
+land in a temp dir and are deleted afterwards). Runs one job: `insert_dropout_large` x
+`haplous_mediated`, `g1_incumbent` (2 episodes, ~30 s total). The over-cap confirmation is checked
+with the real 10 CPU-minute cap (every catalog scenario x every system, ~11.7 CPU-min by estimate)
+and cancelled, so it never runs.
+
+Needs Node 22, a global Playwright with Chromium on `NODE_PATH`, and the built frontend with the
+Rerun wasm (`npm ci && npm run build` copies it to `studio/static/rerun-web-viewer/`, gitignored;
+without it the 3D seek check is skipped and logged).
+
+```bash
+cd studio/web && npm ci && npm run build
+PYTHON=../../.venv/bin/python STUDIO_E2E_SHOTS=/tmp/studio-e2e npm run e2e
+```
+
+The same as an opt-in pytest (skipped unless `STUDIO_E2E=1`):
+`STUDIO_E2E=1 .venv/bin/python -m pytest tests/test_studio_e2e.py -q`.

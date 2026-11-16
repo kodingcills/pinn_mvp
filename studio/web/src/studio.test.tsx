@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router";
-import { Replay } from "./pages/Replay";
+import { InvestigationDialog, Replay } from "./pages/Replay";
 import { Compare } from "./pages/Compare";
 import { LaunchForm } from "./pages/Launch";
 import { Chart } from "./Chart";
@@ -99,6 +99,29 @@ describe("Chart", () => {
     const pieces = subpaths(container.querySelector("path")!.getAttribute("d")!);
     expect(pieces.map((p) => p.split("L").length)).toEqual([2, 2]);
   });
+
+  it("Home, End, PageUp and PageDown move the cursor within the domain", () => {
+    const onScrub = vi.fn();
+    render(<Chart title="f" unit="N" t={[0, 10]} lines={[{ name: "f", color: "red", values: [0, 1] }]} windows={[]} domain={[0, 10]} cursor={5} onScrub={onScrub} />);
+    const slider = screen.getByRole("slider");
+    for (const key of ["Home", "End", "PageUp", "PageDown"]) fireEvent.keyDown(slider, { key });
+    expect(onScrub.mock.calls.map(([t]) => t)).toEqual([0, 10, 6, 4]);
+  });
+});
+
+describe("Investigation dialog", () => {
+  it("Escape closes it and Tab stays inside it", async () => {
+    const onClose = vi.fn();
+    render(<InvestigationDialog runId={M2} t_s={1} runs={[]} onClose={onClose} />);
+    const dialog = screen.getByRole("dialog");
+    expect(within(dialog).getByLabelText("Title")).toHaveFocus();
+    await userEvent.tab({ shift: true });
+    expect(within(dialog).getByRole("button", { name: "Write investigation" })).toHaveFocus();
+    await userEvent.tab();
+    expect(within(dialog).getByLabelText("Title")).toHaveFocus();
+    await userEvent.keyboard("{Escape}");
+    expect(onClose).toHaveBeenCalledOnce();
+  });
 });
 
 describe("Compare", () => {
@@ -125,7 +148,7 @@ describe("Compare", () => {
 
 describe("Launch", () => {
   const catalog: Catalog = {
-    scenarios: [{ id: "insert_nominal", task: "peg_insertion", stratum: "task_a", label: "DEV" }],
+    scenarios: [{ id: "insert_nominal", task: "peg_insertion", stratum: "physical", label: "DEV" }],
     systems: [{ id: "haplous_mediated", cpu_s_per_episode: 1.2 }],
     cap_cpu_minutes: 10,
   };
@@ -139,7 +162,8 @@ describe("Launch", () => {
         calls.push(body);
         return body.confirm
           ? new Response(JSON.stringify({ job_id: "job-7" }), { status: 200 })
-          : new Response(JSON.stringify({ detail: { estimate_cpu_minutes: 12.5, cap_cpu_minutes: 10 } }), { status: 409 });
+          : // the body studio/app.py sends
+            new Response(JSON.stringify({ message: "estimated 12.5 CPU-minutes exceeds the 10 CPU-minute cap; resend with confirm=true", estimate_cpu_minutes: 12.5, cap_cpu_minutes: 10 }), { status: 409 });
       }),
     );
     render(<LaunchForm catalog={catalog} />);

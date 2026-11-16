@@ -74,7 +74,7 @@ export interface Pairs {
 
 export interface Catalog {
   scenarios: { id: string; task: string; stratum: string | null; label: string }[];
-  systems: { id: string; cpu_s_per_episode: number }[];
+  systems: { id: string; cpu_s_per_episode: number; cpu_source?: string }[];
   cap_cpu_minutes: number; // contract addition
   source?: string;
 }

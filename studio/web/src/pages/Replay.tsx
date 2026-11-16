@@ -115,13 +115,22 @@ export function InvestigationDialog(props: { runId: string; t_s: number; runs: R
       setResult({ error: err instanceof ApiError ? `HTTP ${err.status}: ${JSON.stringify(err.body)}` : String(err) });
     }
   };
+  // modal: Escape closes, Tab cycles inside the dialog
+  const onKeyDown = (e: React.KeyboardEvent<HTMLFormElement>) => {
+    if (e.key === "Escape") return props.onClose();
+    if (e.key !== "Tab") return;
+    const focusable = [...e.currentTarget.querySelectorAll<HTMLElement>("input, textarea, select, button:not(:disabled)")];
+    const [first, last] = [focusable[0], focusable[focusable.length - 1]];
+    if (e.shiftKey && document.activeElement === first) (e.preventDefault(), last.focus());
+    else if (!e.shiftKey && document.activeElement === last) (e.preventDefault(), first.focus());
+  };
   return (
     <div className="backdrop">
-      <form role="dialog" aria-label="Create investigation" className="dialog" onSubmit={submit}>
+      <form role="dialog" aria-modal="true" aria-label="Create investigation" className="dialog" onSubmit={submit} onKeyDown={onKeyDown}>
         <h2>Create investigation</h2>
         <label>
           Title
-          <input required value={title} onChange={(e) => setTitle(e.target.value)} />
+          <input required autoFocus value={title} onChange={(e) => setTitle(e.target.value)} />
         </label>
         <label>
           Note

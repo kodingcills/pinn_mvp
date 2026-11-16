@@ -1,6 +1,6 @@
 [
   {
-    "id": "m4",
+    "id": "m4-campaign",
     "scoring_epoch": "hes-m4-e2",
     "source": "results/m4/campaign/official_metrics.json",
     "populations": [

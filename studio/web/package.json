@@ -8,7 +8,8 @@
     "build": "vite build",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "fixtures": "node scripts/make-fixtures.mjs"
+    "fixtures": "node scripts/make-fixtures.mjs",
+    "e2e": "node e2e/studio.e2e.cjs"
   },
   "dependencies": {
     "@rerun-io/web-viewer": "0.43.1",

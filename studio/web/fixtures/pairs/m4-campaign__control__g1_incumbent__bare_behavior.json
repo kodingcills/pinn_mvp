@@ -1,4 +1,9 @@
 {
+  "campaign_id": "m4-campaign",
+  "population": "control",
+  "a": "g1_incumbent",
+  "b": "bare_behavior",
+  "field": "bounded_success",
   "matrix": {
     "both": 22,
     "a_only": 19,
@@ -11,6 +16,7 @@
     0.055248618784530384,
     0.14917127071823205
   ],
+  "method": "paired_bootstrap_mean",
   "rows": [
     {
       "scenario_id": "fleet_insert_000000",
@@ -31,7 +37,7 @@
       "a": true,
       "b": false,
       "stratum": "task_a",
-      "replay_run_id": "m4-campaign-control-fleet_insert_000002-haplous_mediated"
+      "replay_run_id": "m4-campaign-control-fleet_insert_000002-bare_behavior"
     },
     {
       "scenario_id": "fleet_insert_000003",
@@ -73,7 +79,7 @@
       "a": true,
       "b": false,
       "stratum": "task_a",
-      "replay_run_id": "m4-campaign-control-fleet_insert_000010-haplous_mediated"
+      "replay_run_id": "m4-campaign-control-fleet_insert_000010-bare_behavior"
     },
     {
       "scenario_id": "fleet_insert_000011",
@@ -129,7 +135,7 @@
       "a": true,
       "b": false,
       "stratum": "task_a",
-      "replay_run_id": "m4-campaign-control-fleet_insert_000027-haplous_mediated"
+      "replay_run_id": "m4-campaign-control-fleet_insert_000027-bare_behavior"
     },
     {
       "scenario_id": "fleet_insert_000028",
@@ -150,7 +156,7 @@
       "a": true,
       "b": false,
       "stratum": "task_a",
-      "replay_run_id": "m4-campaign-control-fleet_insert_000034-haplous_mediated"
+      "replay_run_id": "m4-campaign-control-fleet_insert_000034-bare_behavior"
     },
     {
       "scenario_id": "fleet_insert_000035",
@@ -164,14 +170,14 @@
       "a": true,
       "b": false,
       "stratum": "task_a",
-      "replay_run_id": "m4-campaign-control-fleet_insert_000036-haplous_mediated"
+      "replay_run_id": "m4-campaign-control-fleet_insert_000036-bare_behavior"
     },
     {
       "scenario_id": "fleet_insert_000037",
       "a": true,
       "b": false,
       "stratum": "task_a",
-      "replay_run_id": "m4-campaign-control-fleet_insert_000037-haplous_mediated"
+      "replay_run_id": "m4-campaign-control-fleet_insert_000037-bare_behavior"
     },
     {
       "scenario_id": "fleet_insert_000038",
@@ -269,7 +275,7 @@
       "a": true,
       "b": false,
       "stratum": "task_a",
-      "replay_run_id": "m4-campaign-control-fleet_insert_000058-haplous_mediated"
+      "replay_run_id": "m4-campaign-control-fleet_insert_000058-bare_behavior"
     },
     {
       "scenario_id": "fleet_insert_000059",
@@ -290,7 +296,7 @@
       "a": true,
       "b": false,
       "stratum": "task_a",
-      "replay_run_id": "m4-campaign-control-fleet_insert_000061-haplous_mediated"
+      "replay_run_id": "m4-campaign-control-fleet_insert_000061-bare_behavior"
     },
     {
       "scenario_id": "fleet_insert_000062",
@@ -353,7 +359,7 @@
       "a": true,
       "b": false,
       "stratum": "task_a",
-      "replay_run_id": "m4-campaign-control-fleet_insert_000074-haplous_mediated"
+      "replay_run_id": "m4-campaign-control-fleet_insert_000074-bare_behavior"
     },
     {
       "scenario_id": "fleet_insert_000075",
@@ -388,7 +394,7 @@
       "a": true,
       "b": false,
       "stratum": "task_a",
-      "replay_run_id": "m4-campaign-control-fleet_insert_000081-haplous_mediated"
+      "replay_run_id": "m4-campaign-control-fleet_insert_000081-bare_behavior"
     },
     {
       "scenario_id": "fleet_insert_000083",
@@ -402,7 +408,7 @@
       "a": true,
       "b": false,
       "stratum": "task_a",
-      "replay_run_id": "m4-campaign-control-fleet_insert_000085-haplous_mediated"
+      "replay_run_id": "m4-campaign-control-fleet_insert_000085-bare_behavior"
     },
     {
       "scenario_id": "fleet_insert_000086",
@@ -521,7 +527,7 @@
       "a": true,
       "b": false,
       "stratum": "task_a",
-      "replay_run_id": "m4-campaign-control-fleet_insert_000104-haplous_mediated"
+      "replay_run_id": "m4-campaign-control-fleet_insert_000104-bare_behavior"
     },
     {
       "scenario_id": "fleet_insert_000105",
@@ -549,7 +555,7 @@
       "a": true,
       "b": false,
       "stratum": "task_a",
-      "replay_run_id": "m4-campaign-control-fleet_insert_000108-haplous_mediated"
+      "replay_run_id": "m4-campaign-control-fleet_insert_000108-bare_behavior"
     },
     {
       "scenario_id": "fleet_insert_000109",
@@ -598,7 +604,7 @@
       "a": true,
       "b": false,
       "stratum": "task_a",
-      "replay_run_id": "m4-campaign-control-fleet_insert_000120-haplous_mediated"
+      "replay_run_id": "m4-campaign-control-fleet_insert_000120-bare_behavior"
     },
     {
       "scenario_id": "fleet_insert_000122",
@@ -675,7 +681,7 @@
       "a": false,
       "b": true,
       "stratum": "task_a",
-      "replay_run_id": "m4-campaign-control-fleet_insert_000137-haplous_mediated"
+      "replay_run_id": "m4-campaign-control-fleet_insert_000137-bare_behavior"
     },
     {
       "scenario_id": "fleet_insert_000139",
@@ -808,7 +814,7 @@
       "a": true,
       "b": false,
       "stratum": "task_a",
-      "replay_run_id": "m4-campaign-control-fleet_insert_000160-haplous_mediated"
+      "replay_run_id": "m4-campaign-control-fleet_insert_000160-bare_behavior"
     },
     {
       "scenario_id": "fleet_insert_000161",
@@ -822,7 +828,7 @@
       "a": true,
       "b": false,
       "stratum": "task_a",
-      "replay_run_id": "m4-campaign-control-fleet_insert_000162-haplous_mediated"
+      "replay_run_id": "m4-campaign-control-fleet_insert_000162-bare_behavior"
     },
     {
       "scenario_id": "fleet_insert_000163",
@@ -836,7 +842,7 @@
       "a": true,
       "b": false,
       "stratum": "task_a",
-      "replay_run_id": "m4-campaign-control-fleet_insert_000164-haplous_mediated"
+      "replay_run_id": "m4-campaign-control-fleet_insert_000164-bare_behavior"
     },
     {
       "scenario_id": "fleet_insert_000165",
@@ -983,7 +989,7 @@
       "a": true,
       "b": false,
       "stratum": "task_a",
-      "replay_run_id": "m4-campaign-control-fleet_insert_000195-haplous_mediated"
+      "replay_run_id": "m4-campaign-control-fleet_insert_000195-bare_behavior"
     },
     {
       "scenario_id": "fleet_insert_000196",
@@ -1193,7 +1199,7 @@
       "a": true,
       "b": false,
       "stratum": "task_b",
-      "replay_run_id": "m4-campaign-control-fleet_slide_000121-haplous_mediated"
+      "replay_run_id": "m4-campaign-control-fleet_slide_000121-bare_behavior"
     },
     {
       "scenario_id": "fleet_slide_000126",
@@ -1280,5 +1286,5 @@
       "replay_run_id": null
     }
   ],
-  "source": "results/m4/campaign/official_metrics.json, raw_rows.jsonl, replay_index.jsonl"
+  "source": "results/m4/campaign/official_metrics.json"
 }

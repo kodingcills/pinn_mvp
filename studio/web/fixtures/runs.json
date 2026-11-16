@@ -1,7 +1,7 @@
 [
   {
     "id": "m2-heb-insert_dropout_large",
-    "source": "m0_registry",
+    "source": "recordings",
     "backend": "mujoco-3.11.0",
     "scenario_id": "insert_dropout_large",
     "system": "haplous_mediated",
@@ -13,7 +13,7 @@
   },
   {
     "id": "m3-heb-slide_disturbance_recoverable_ceiling",
-    "source": "m0_registry",
+    "source": "recordings",
     "backend": "mujoco-3.11.0",
     "scenario_id": "slide_disturbance_recoverable_ceiling",
     "system": "haplous_mediated",
@@ -22,18 +22,6 @@
     "has_3d": true,
     "verified": true,
     "path": "results/recordings/registry/runs/m3-heb-slide_disturbance_recoverable_ceiling"
-  },
-  {
-    "id": "results/m5/robosuite-log",
-    "source": "episode_log",
-    "backend": "robosuite-1.5.2",
-    "scenario_id": "robosuite/1.5.2/Lift",
-    "system": "haplous_mediated",
-    "disposition": "COMPLETE",
-    "bounded_success": null,
-    "has_3d": false,
-    "verified": false,
-    "path": "results/m5/robosuite-log"
   },
   {
     "id": "results/m5/reassemble-log",
@@ -46,5 +34,17 @@
     "has_3d": false,
     "verified": false,
     "path": "results/m5/reassemble-log"
+  },
+  {
+    "id": "results/m5/robosuite-log",
+    "source": "episode_log",
+    "backend": "robosuite-1.5.2",
+    "scenario_id": "robosuite/1.5.2/Lift",
+    "system": "haplous_mediated",
+    "disposition": "COMPLETE",
+    "bounded_success": null,
+    "has_3d": false,
+    "verified": false,
+    "path": "results/m5/robosuite-log"
   }
 ]

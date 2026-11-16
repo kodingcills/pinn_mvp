@@ -60,7 +60,8 @@ export function mockApi(method: string, rawUrl: string, body?: any): MockRespons
     const cpuS = body.scenario_ids.length * body.systems.reduce((acc: number, s: string) => acc + (systems.get(s) ?? 0), 0);
     const estimate = cpuS / 60;
     if (estimate > catalog.cap_cpu_minutes && !body.confirm)
-      return { status: 409, body: { detail: { estimate_cpu_minutes: estimate, cap_cpu_minutes: catalog.cap_cpu_minutes } } };
+      // same body as studio/app.py launch()
+      return { status: 409, body: { message: `estimated ${estimate.toFixed(1)} CPU-minutes exceeds the ${catalog.cap_cpu_minutes} CPU-minute cap; resend with confirm=true`, estimate_cpu_minutes: estimate, cap_cpu_minutes: catalog.cap_cpu_minutes } };
     const job: MockJob = {
       job_id: `job-${jobs.length + 1}`, status: "queued", started: Date.now(), run_ids: [], log_tail: "",
       progress: { done: 0, total: body.scenario_ids.length * body.systems.length },

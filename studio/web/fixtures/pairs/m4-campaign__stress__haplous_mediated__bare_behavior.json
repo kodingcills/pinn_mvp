@@ -1,4 +1,9 @@
 {
+  "campaign_id": "m4-campaign",
+  "population": "stress",
+  "a": "haplous_mediated",
+  "b": "bare_behavior",
+  "field": "bounded_success",
   "matrix": {
     "both": 40,
     "a_only": 20,
@@ -11,6 +16,7 @@
     -0.053125,
     0.028125
   ],
+  "method": "paired_bootstrap_mean",
   "rows": [
     {
       "scenario_id": "m4s_ceiling_retry_00004",
@@ -2253,5 +2259,5 @@
       "replay_run_id": null
     }
   ],
-  "source": "results/m4/campaign/official_metrics.json, raw_rows.jsonl, replay_index.jsonl"
+  "source": "results/m4/campaign/official_metrics.json"
 }

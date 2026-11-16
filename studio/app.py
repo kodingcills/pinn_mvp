@@ -102,10 +102,11 @@ def create_app(paths: Paths | None = None, static_dir: Path = STATIC, wasm_cache
     @app.get("/api/catalog")
     def catalog() -> dict[str, Any]:
         return {"scenarios": list(data.scenario_catalog().values()),
-                "systems": [{"id": s, "cpu_s_per_episode": jobs.CPU_S_PER_EPISODE} for s in data.SYSTEMS],
+                "systems": [{"id": s, "cpu_s_per_episode": cpu, "cpu_source": src}
+                            for s, (cpu, src) in jobs.cpu_per_episode(data.SYSTEMS).items()],
                 "cap_cpu_minutes": jobs.CPU_CAP_S / 60,
-                "source": "benchmarks.heb.tasks.scenarios_by_id(); CPU per episode measured once (one insert_nominal "
-                          "x haplous_mediated episode via studio.jobs, 2.99 s), applied to every system"}
+                "source": f"benchmarks.heb.tasks.scenarios_by_id(); CPU-s per episode per system: measured mean "
+                          f"from {jobs.COST_JSON} where M4 ran the arm, else {jobs.FALLBACK_SOURCE}"}
 
     @app.post("/api/jobs")
     def launch(req: JobRequest) -> dict[str, Any]:
@@ -116,7 +117,7 @@ def create_app(paths: Paths | None = None, static_dir: Path = STATIC, wasm_cache
             raise HTTPException(400, f"unknown or missing scenario ids / systems: {unknown}; only catalog "
                                      "(DEV) scenarios and registered systems can be launched")
         scenario_ids, systems = list(dict.fromkeys(req.scenario_ids)), list(dict.fromkeys(req.systems))
-        estimate = jobs.estimate_cpu_s(len(scenario_ids) * len(systems))
+        estimate = jobs.estimate_cpu_s(scenario_ids, systems)
         if estimate > jobs.CPU_CAP_S and not req.confirm:
             return JSONResponse({"message": f"estimated {estimate / 60:.1f} CPU-minutes exceeds the "
                                             f"{jobs.CPU_CAP_S / 60:g} CPU-minute cap; resend with confirm=true",
@@ -174,7 +175,7 @@ def create_app(paths: Paths | None = None, static_dir: Path = STATIC, wasm_cache
     return app
 
 
-def serve(port: int = 8765, open_browser: bool = True) -> None:
+def serve(port: int = 8765, open_browser: bool = True, root: Path | None = None) -> None:
     import uvicorn
 
     url = f"http://127.0.0.1:{port}/"
@@ -182,4 +183,5 @@ def serve(port: int = 8765, open_browser: bool = True) -> None:
         threading.Timer(1.0, webbrowser.open, (url,)).start()
     print(f"Haplous Studio at {url} (Ctrl-C to stop)", flush=True)
     viewer_wasm.ensure_in_background(STATIC, viewer_wasm.default_cache())
-    uvicorn.run(create_app(), host="127.0.0.1", port=port, log_level="warning")
+    paths = Paths.default() if root is None else Paths.under(root)
+    uvicorn.run(create_app(paths), host="127.0.0.1", port=port, log_level="warning")

@@ -74,7 +74,7 @@ export function LaunchForm({ catalog }: { catalog: Catalog }) {
           <label key={s.id} className="check">
             <input type="checkbox" aria-label={s.id} checked={systems.includes(s.id)} onChange={() => setSystems(toggle(systems, s.id))} />
             <span className="mono">{s.id}</span>
-            <span className="muted num">{s.cpu_s_per_episode.toFixed(2)} CPU-s/episode</span>
+            <span className="muted num" title={s.cpu_source}>{s.cpu_s_per_episode.toFixed(2)} CPU-s/episode</span>
           </label>
         ))}
         <p className="estimate">

@@ -4,7 +4,7 @@
   --ink: #1d1f22;
   --muted: #6b7078;
   --line: #e2e2de;
-  --accent: #2f6fdb;
+  --accent: #2a66cc; /* 5.0:1 on --bg, 5.4:1 white-on-accent (WCAG AA) */
   --ok: #2b7a3d;
   --ok-bg: #e6f2e8;
   --warn: #9a5b00;

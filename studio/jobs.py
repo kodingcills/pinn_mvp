@@ -25,10 +25,13 @@ from typing import Any
 
 from evaluation.run_registry import REPO_ROOT, Registry, record_run
 
-# Measured once (2026-11-16, tests/test_studio.py job): one insert_nominal x haplous_mediated
-# episode (3249 ticks) cost 2.99 s user+sys CPU in the recording child; the worker's own
-# start-up is not counted. Other arms can cost more (results/m4/campaign/cost.json).
-CPU_S_PER_EPISODE = 3.0
+# CPU-s per episode per system: the M4 campaign's measured mean for that arm (501 episodes each).
+COST_JSON = "results/m4/campaign/cost.json"
+# Fallback for a system M4 did not run (direct_minimal), measured once (2026-11-16, tests/test_studio.py
+# job): one insert_nominal x haplous_mediated episode (3249 ticks) cost 2.99 s user+sys CPU in the
+# recording child; the worker's own start-up is not counted.
+FALLBACK_CPU_S_PER_EPISODE = 3.0
+FALLBACK_SOURCE = "fallback: one insert_nominal x haplous_mediated episode measured via studio.jobs (2.99 s)"
 CPU_CAP_S = 600.0
 LOG_TAIL_LINES = 40
 
@@ -43,8 +46,18 @@ def write_record(path: Path, record: dict[str, Any]) -> None:
     os.replace(tmp, path)
 
 
-def estimate_cpu_s(n_episodes: int) -> float:
-    return n_episodes * CPU_S_PER_EPISODE
+def cpu_per_episode(systems: list[str] | tuple[str, ...], repo: Path = REPO_ROOT) -> dict[str, tuple[float, str]]:
+    """{system: (CPU-s per episode, source)}: the M4 measured mean where M4 ran the arm, else the fallback."""
+    try:
+        arms = json.loads((repo / COST_JSON).read_text(encoding="utf-8"))["cpu_s_per_episode_by_arm"]
+    except (OSError, ValueError, KeyError):
+        arms = {}
+    return {s: (arms[s]["mean"], f"{COST_JSON} mean, n={arms[s]['n']}") if s in arms
+            else (FALLBACK_CPU_S_PER_EPISODE, FALLBACK_SOURCE) for s in systems}
+
+
+def estimate_cpu_s(scenario_ids: list[str], systems: list[str]) -> float:
+    return len(scenario_ids) * sum(cpu for cpu, _ in cpu_per_episode(systems).values())
 
 
 def new_job(jobs_dir: Path, registry: Path, scenario_ids: list[str], systems: list[str]) -> dict[str, Any]:
@@ -52,7 +65,7 @@ def new_job(jobs_dir: Path, registry: Path, scenario_ids: list[str], systems: li
     episodes = [{"scenario_id": s, "system": y, "run_id": f"studio-{job_id}-{s}-{y}", "state": None,
                  "outcome": None, "cpu_s": None} for s in scenario_ids for y in systems]
     record = {"job_id": job_id, "created_at": _now(), "status": "queued", "scenario_ids": scenario_ids,
-              "systems": systems, "registry": str(registry), "estimate_cpu_s": estimate_cpu_s(len(episodes)),
+              "systems": systems, "registry": str(registry), "estimate_cpu_s": estimate_cpu_s(scenario_ids, systems),
               "episodes": episodes, "pid": None, "error": None, "finished_at": None}
     jobs_dir.mkdir(parents=True, exist_ok=True)
     write_record(jobs_dir / f"{job_id}.json", record)

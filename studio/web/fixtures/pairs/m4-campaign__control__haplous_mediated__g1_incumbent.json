@@ -1,4 +1,9 @@
 {
+  "campaign_id": "m4-campaign",
+  "population": "control",
+  "a": "haplous_mediated",
+  "b": "g1_incumbent",
+  "field": "bounded_success",
   "matrix": {
     "both": 41,
     "a_only": 0,
@@ -11,6 +16,7 @@
     0,
     0
   ],
+  "method": "paired_bootstrap_mean",
   "rows": [
     {
       "scenario_id": "fleet_insert_000000",
@@ -1280,5 +1286,5 @@
       "replay_run_id": null
     }
   ],
-  "source": "results/m4/campaign/official_metrics.json, raw_rows.jsonl, replay_index.jsonl"
+  "source": "results/m4/campaign/official_metrics.json"
 }
