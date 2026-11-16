@@ -70,3 +70,6 @@ Current head of `claude/magical-curie-si1vjr` (M5.5 integrated, 2026-11-13): **9
 | `scripts/m5_mcap_export.py` and `scripts/m55_reassemble_import.py` write into `results/` with no output-dir option (byte-identical on rerun) | M5.5 verifier | minor |
 | Studio frontend a11y: chart slider has no Home/End/PageUp/PageDown; investigation dialog has no focus trap or Escape; accent link contrast 4.39:1 (just under 4.5) | M6.2 verifier | open, minor |
 | Studio tests mock the Rerun viewer: real 3D seek is checked only by `setTime` arguments until M6.3's E2E | M6.2 verifier | M6.3 |
+| Studio CPU estimate is a flat 3.0 s/episode: the largest possible catalog launch estimates 6.75 min (never triggers the 10-min confirm) but costs ~11.7 min using M4 per-arm means (bare_behavior ~16 s) | M6.1 verifier | assigned to M6.3: per-system estimate |
+| Studio worker liveness after a server restart is checked by pid only (pid reuse not handled) | M6.1 owner | shortcut, documented in code |
+| Studio reads `results/` relative to a repo checkout; an installed wheel alone has nothing to serve | M6.1 owner | by design for release 1 |

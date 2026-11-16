@@ -361,12 +361,23 @@
       "title": "Haplous Studio server: `haplous studio`, local API over existing artifacts, job worker, investigation writer, localhost guards",
       "owner": "worker-M6.1 (opus)",
       "deps": [],
-      "status": "in_progress",
+      "status": "verified",
       "exit_check": "API tests on committed artifacts; 1-episode job gives VERIFIED M0 run; guards and CPU-cap refusal red then green",
       "design": "docs/eval_program/designs/M6_haplous_studio.md",
-      "commit": null,
-      "proof": [],
-      "retries": 0
+      "commit": "4ce88c3",
+      "proof": [
+        "studio/app.py",
+        "studio/data.py",
+        "studio/jobs.py",
+        "studio/investigations.py",
+        "studio/viewer_wasm.py",
+        "tests/test_studio.py"
+      ],
+      "retries": 0,
+      "integrated_as": [
+        "d0afcfe"
+      ],
+      "verdict": "PASS by sonnet verifier at 4ce88c3: haplous.cli does not load fastapi; uv.lock additions only; bound to 127.0.0.1; Host/Origin/Content-Type guards hold on a real server; 7 static traversal variants and run-id traversal refused; job argv fixed and allow-listed; pairs equal official_metrics.json incl. reversal; series lengths and nulls correct; tamper gives 409; one real job VERIFIED; investigations leave program state untouched; planted defects caught"
     },
     {
       "id": "M6.2",
@@ -391,12 +402,12 @@
     {
       "id": "M6.3",
       "title": "Haplous Studio end-to-end: Playwright drives the release-1 definition of done on the real server",
-      "owner": null,
+      "owner": "worker-M6.3 (opus)",
       "deps": [
         "M6.1",
         "M6.2"
       ],
-      "status": "pending",
+      "status": "in_progress",
       "exit_check": "headless E2E passes; screenshots per step",
       "design": "docs/eval_program/designs/M6_haplous_studio.md",
       "commit": null,
