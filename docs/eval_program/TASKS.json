@@ -289,44 +289,144 @@
     {
       "id": "M5.3",
       "title": "haplous timeline <run>: plots + Haplous decision markers from the episode log only",
-      "owner": null,
+      "owner": "worker-M5.3 (opus)",
       "deps": [
         "M5.2"
       ],
-      "status": "pending",
+      "status": "verified",
       "exit_check": "renders without importing any backend; tested on a committed recording",
       "design": "docs/eval_program/designs/M5_backend_neutral_episode_log.md",
-      "commit": null,
-      "proof": [],
-      "retries": 0
+      "commit": "23686f2",
+      "proof": [
+        "evaluation/timeline.py",
+        "tests/test_timeline.py",
+        "haplous/cli/inspection.py"
+      ],
+      "retries": 0,
+      "integrated_as": [
+        "1dae61a"
+      ],
+      "verdict": "PASS by sonnet verifier at 23686f2: CLI wiring only; old text timeline byte-identical to base; rrd read independently: series counts = telemetry, every event a marker at its tick; rrd verify ok; PNGs viewed (dropout shaded 1.0-1.2 s); no backend modules loaded; tamper refused; planted defect caught"
     },
     {
       "id": "M5.4",
       "title": "MCAP export of the episode log (JSONL stays canonical)",
-      "owner": null,
+      "owner": "worker-M5.4 (opus)",
       "deps": [
         "M5.2"
       ],
-      "status": "pending",
+      "status": "verified",
       "exit_check": "round-trip test; opens with per-channel schemas",
       "design": "docs/eval_program/designs/M5_backend_neutral_episode_log.md",
-      "commit": null,
-      "proof": [],
-      "retries": 0
+      "commit": "efce593",
+      "proof": [
+        "benchmarks/episode_mcap.py",
+        "tests/test_episode_mcap.py",
+        "scripts/m5_mcap_export.py",
+        "results/m5/mcap_export.json",
+        "results/m5/robosuite-log.mcap"
+      ],
+      "retries": 0,
+      "integrated_as": [
+        "f0e4528"
+      ],
+      "verdict": "PASS by sonnet verifier at efce593: diff scope clean; round trip exact and deterministic across processes on both logs; committed MCAP equals fresh export; independent make_reader read: 4 channels json/jsonschema, log_time = tick*dt; planted defect caught. Full suite deferred to the combined M5.3+M5.4 integration run (owner: 889/4/1); combined suite after M5.3+M5.4 integration: 895 passed / 4 known / 1 xfailed"
     },
     {
       "id": "M5.5",
       "title": "Import real-robot ROS 2 bag / MCAP into the episode log",
-      "owner": null,
+      "owner": "worker-M5.5 (opus)",
       "deps": [
         "M5.2"
       ],
-      "status": "blocked",
-      "exit_check": "BLOCKED on operator: which robot or dataset",
+      "status": "verified",
+      "exit_check": "real REASSEMBLE insertion segments (HF robot-lev/reassemble, CC-BY-4.0, pinned revision) imported into the episode log format; haplous timeline and MCAP export run on it; attribution recorded; no evaluator truth claimed",
       "design": "docs/eval_program/designs/M5_backend_neutral_episode_log.md",
-      "commit": null,
-      "proof": [],
-      "retries": 0
+      "commit": "c66d144",
+      "proof": [
+        "benchmarks/realdata/reassemble_episode_log.py",
+        "scripts/m55_reassemble_import.py",
+        "results/m5/reassemble-log/",
+        "results/m5/reassemble_import.json",
+        "tests/test_reassemble_import.py"
+      ],
+      "retries": 0,
+      "integrated_as": [
+        "7a34d69"
+      ],
+      "verdict": "PASS by sonnet verifier at c66d144: no haplous/pegsim change; loader filter identical; pinned sha256 match; fresh import byte-identical to committed sample; own pyarrow check of pose/force.base/action mapping and segment ep1/seg2 \"Insert round peg 2.\"; no Haplous/truth claims; CC-BY attribution adequate; MCAP round trip exact on all three logs; timeline rrd verify ok, no backend loaded; planted defect caught"
+    },
+    {
+      "id": "M6.1",
+      "title": "Haplous Studio server: `haplous studio`, local API over existing artifacts, job worker, investigation writer, localhost guards",
+      "owner": "worker-M6.1 (opus)",
+      "deps": [],
+      "status": "verified",
+      "exit_check": "API tests on committed artifacts; 1-episode job gives VERIFIED M0 run; guards and CPU-cap refusal red then green",
+      "design": "docs/eval_program/designs/M6_haplous_studio.md",
+      "commit": "4ce88c3",
+      "proof": [
+        "studio/app.py",
+        "studio/data.py",
+        "studio/jobs.py",
+        "studio/investigations.py",
+        "studio/viewer_wasm.py",
+        "tests/test_studio.py"
+      ],
+      "retries": 0,
+      "integrated_as": [
+        "d0afcfe"
+      ],
+      "verdict": "PASS by sonnet verifier at 4ce88c3: haplous.cli does not load fastapi; uv.lock additions only; bound to 127.0.0.1; Host/Origin/Content-Type guards hold on a real server; 7 static traversal variants and run-id traversal refused; job argv fixed and allow-listed; pairs equal official_metrics.json incl. reversal; series lengths and nulls correct; tamper gives 409; one real job VERIFIED; investigations leave program state untouched; planted defects caught"
+    },
+    {
+      "id": "M6.2",
+      "title": "Haplous Studio frontend: Runs, Replay (Rerun 3D + synced charts, event click-to-seek), Compare, Evidence, Launch, Create investigation",
+      "owner": "worker-M6.2 (opus)",
+      "deps": [],
+      "status": "verified",
+      "exit_check": "build + typecheck + component tests against contract fixtures; bundle committed, size reported",
+      "design": "docs/eval_program/designs/M6_haplous_studio.md",
+      "commit": "ba34aca",
+      "proof": [
+        "studio/web/src/",
+        "studio/static/",
+        "studio/web/src/studio.test.tsx"
+      ],
+      "retries": 0,
+      "integrated_as": [
+        "c4ea6c8"
+      ],
+      "verdict": "PASS by sonnet verifier at ba34aca: only studio/web and studio/static; npm ci + typecheck + 9/9 vitest; fresh build byte-identical to committed bundle (546 KB, wasm gitignored); no mock code or external fetch targets in bundle; fixtures regenerate identically; Compare numbers match official_metrics.json by independent script; planted defects caught; screenshots show cursor at 1.0 s on all charts. Not checked: real server, real 3D seek (M6.3)"
+    },
+    {
+      "id": "M6.3",
+      "title": "Haplous Studio end-to-end: Playwright drives the release-1 definition of done on the real server",
+      "owner": "worker-M6.3 (opus)",
+      "deps": [
+        "M6.1",
+        "M6.2"
+      ],
+      "status": "verified",
+      "exit_check": "headless E2E passes; screenshots per step",
+      "design": "docs/eval_program/designs/M6_haplous_studio.md",
+      "commit": "126b258 (fix round on eb354c4)",
+      "proof": [
+        "studio/web/e2e/studio.e2e.cjs",
+        "tests/test_studio_e2e.py",
+        "studio/web/src/RerunView.tsx",
+        "docs/eval_program/REPRODUCE.md#m6.3"
+      ],
+      "retries": 1,
+      "note": "verifier FAIL at eb354c4: E2E second run timed out waiting for the Rerun viewer seek (charts fine); fix round started from eb354c4 with diagnostics, race hypothesis, 3 consecutive E2E passes required",
+      "integrated_as": [
+        "75cd4e7",
+        "34545e2",
+        "c7862cd",
+        "57b7e3b",
+        "10d8065"
+      ],
+      "verdict": "PASS by sonnet verifier at 126b258 after FAIL at eb354c4: root cause = viewer emits recording_open before sim_time timeline ingested, single rejected seek never retried; fix waits for readiness and re-applies latest seek; race test red at f49f113, green after; 6x CPU-throttled probe fails on old bundle, passes on new; E2E passed 3x (owner) + 1x (verifier); compare numbers equal official_metrics.json; bundle byte-identical to fresh build. Failure-dump path not exercised"
     }
   ]
 }

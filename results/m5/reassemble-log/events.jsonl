@@ -1,0 +1,2 @@
+{"clock": "dataset", "kind": "segment_start", "payload": {"episode_frame": 498, "label": "Insert round peg 2.", "segment_index": 2, "segment_success": true, "task_index": 32}, "source": "dataset", "t_s": 0.0, "tick": 0}
+{"clock": "dataset", "kind": "segment_end", "payload": {"episode_frame": 874, "label": "Insert round peg 2.", "segment_index": 2, "segment_success": true, "task_index": 32}, "source": "dataset", "t_s": 12.533333333333333, "tick": 376}

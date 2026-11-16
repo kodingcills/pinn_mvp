@@ -1,0 +1,47 @@
+[
+  {
+    "id": "m4-campaign",
+    "scoring_epoch": "hes-m4-e2",
+    "source": "results/m4/campaign/official_metrics.json",
+    "populations": [
+      {
+        "id": "control",
+        "n_scenarios": 181,
+        "arms": [
+          "bare_behavior",
+          "competent_supervisor",
+          "g1_incumbent",
+          "haplous_mediated"
+        ],
+        "confirmatory": [
+          {
+            "id": "C2",
+            "candidate": "haplous_mediated",
+            "reference": "g1_incumbent",
+            "decision": "tie (equivalent within 0.05)",
+            "field": "bounded_success"
+          }
+        ]
+      },
+      {
+        "id": "stress",
+        "n_scenarios": 320,
+        "arms": [
+          "bare_behavior",
+          "competent_supervisor",
+          "g1_incumbent",
+          "haplous_mediated"
+        ],
+        "confirmatory": [
+          {
+            "id": "C1",
+            "candidate": "haplous_mediated",
+            "reference": "g1_incumbent",
+            "decision": "tie (equivalent within 0.05)",
+            "field": "bounded_success"
+          }
+        ]
+      }
+    ]
+  }
+]

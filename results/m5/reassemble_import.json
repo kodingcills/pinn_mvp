@@ -1,0 +1,124 @@
+{
+  "claim_problems": [],
+  "command_minus_next_observed_position_max_abs_m": 0.0,
+  "downloaded_sha256": {
+    "data/chunk-000/file-000.parquet": "310dddd1802a032374ae16e6f7adbaefc7b7f82d05212a475e2fba6b20b3fceb",
+    "meta/info.json": "cca14484935320cbeca79647ca2212f720e9148632ede2b6885b2dc7c5636212",
+    "meta/tasks.parquet": "ad2c9ee4738183a0b2d49a882a7e28ebdb279f92933657ca5435276a63b47e1e"
+  },
+  "log_schema": {
+    "events": {
+      "dataset": [
+        "clock",
+        "kind",
+        "payload",
+        "source",
+        "t_s",
+        "tick"
+      ]
+    },
+    "metadata": [
+      "clocks",
+      "format",
+      "n_observations",
+      "n_ticks",
+      "outcome",
+      "system",
+      "timestep_s"
+    ],
+    "telemetry": {
+      "command": [
+        "command.extra",
+        "command.k_z_n_per_m",
+        "command.target_pose_m",
+        "host_monotonic_ns",
+        "kind",
+        "outcome",
+        "tick"
+      ],
+      "observation": [
+        "host_monotonic_ns",
+        "kind",
+        "observation.extra",
+        "observation.force_z_n",
+        "observation.pose_m",
+        "observation.stamp.received_s",
+        "observation.stamp.source_s",
+        "observation.tilt_deg",
+        "tick"
+      ]
+    }
+  },
+  "mcap": {
+    "deterministic": true,
+    "messages": {
+      "/episode/command": 376,
+      "/episode/dataset_events": 2,
+      "/episode/haplous_events": 0,
+      "/episode/machine_events": 0,
+      "/episode/observation": 376
+    },
+    "round_trip_exact": {
+      "events.jsonl": true,
+      "metadata.json": true,
+      "telemetry.jsonl": true
+    }
+  },
+  "n_ticks": 376,
+  "provenance": {
+    "episode_index": 1,
+    "file": "data/chunk-000/file-000.parquet",
+    "original": "REASSEMBLE, TU Wien, https://doi.org/10.48436/0ewrv-8cb44",
+    "repo": "robot-lev/reassemble",
+    "revision": "37d242d3532fb17b6f749a26dad6d7aaacf810cd",
+    "segment_index": [
+      2
+    ],
+    "sha256": "310dddd1802a032374ae16e6f7adbaefc7b7f82d05212a475e2fba6b20b3fceb",
+    "tasks_file": "meta/tasks.parquet",
+    "tasks_sha256": "ad2c9ee4738183a0b2d49a882a7e28ebdb279f92933657ca5435276a63b47e1e",
+    "url": "https://huggingface.co/datasets/robot-lev/reassemble/tree/37d242d3532fb17b6f749a26dad6d7aaacf810cd"
+  },
+  "sample_bytes": {
+    "ATTRIBUTION.txt": 764,
+    "events.jsonl": 455,
+    "metadata.json": 3519,
+    "telemetry.jsonl": 305534
+  },
+  "sample_log": "results/m5/reassemble-log",
+  "segments": [
+    {
+      "end_tick": 376,
+      "episode_frame": 498,
+      "episode_t_s": 16.6,
+      "label": "Insert round peg 2.",
+      "segment_index": 2,
+      "segment_success": true,
+      "start_tick": 0,
+      "task_index": 32
+    }
+  ],
+  "timeline": {
+    "events": [
+      {
+        "kind": "segment_start",
+        "source": "dataset",
+        "t_s": 0.0,
+        "tick": 0
+      },
+      {
+        "kind": "segment_end",
+        "source": "dataset",
+        "t_s": 12.533333333333333,
+        "tick": 376
+      }
+    ],
+    "forbidden_modules_loaded": [],
+    "returncode": 0,
+    "series": {
+      "command.target_pose_m": 376,
+      "force_z_n": 376,
+      "pose_m": 376
+    }
+  }
+}

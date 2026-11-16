@@ -1,0 +1,1290 @@
+{
+  "campaign_id": "m4-campaign",
+  "population": "control",
+  "a": "haplous_mediated",
+  "b": "bare_behavior",
+  "field": "bounded_success",
+  "matrix": {
+    "both": 22,
+    "a_only": 19,
+    "b_only": 1,
+    "neither": 139
+  },
+  "n": 181,
+  "diff": 0.09944751381215469,
+  "ci95": [
+    0.055248618784530384,
+    0.14917127071823205
+  ],
+  "method": "paired_bootstrap_mean",
+  "rows": [
+    {
+      "scenario_id": "fleet_insert_000000",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000001",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000002",
+      "a": true,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": "m4-campaign-control-fleet_insert_000002-haplous_mediated"
+    },
+    {
+      "scenario_id": "fleet_insert_000003",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000004",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000007",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000008",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000009",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000010",
+      "a": true,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": "m4-campaign-control-fleet_insert_000010-haplous_mediated"
+    },
+    {
+      "scenario_id": "fleet_insert_000011",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000013",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000016",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000018",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000019",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000020",
+      "a": true,
+      "b": true,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000022",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000027",
+      "a": true,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": "m4-campaign-control-fleet_insert_000027-haplous_mediated"
+    },
+    {
+      "scenario_id": "fleet_insert_000028",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000032",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000034",
+      "a": true,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": "m4-campaign-control-fleet_insert_000034-haplous_mediated"
+    },
+    {
+      "scenario_id": "fleet_insert_000035",
+      "a": true,
+      "b": true,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000036",
+      "a": true,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": "m4-campaign-control-fleet_insert_000036-haplous_mediated"
+    },
+    {
+      "scenario_id": "fleet_insert_000037",
+      "a": true,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": "m4-campaign-control-fleet_insert_000037-haplous_mediated"
+    },
+    {
+      "scenario_id": "fleet_insert_000038",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000039",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000040",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000042",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000043",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000046",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000048",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000049",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000052",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000053",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000054",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000055",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000056",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000058",
+      "a": true,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": "m4-campaign-control-fleet_insert_000058-haplous_mediated"
+    },
+    {
+      "scenario_id": "fleet_insert_000059",
+      "a": true,
+      "b": true,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000060",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000061",
+      "a": true,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": "m4-campaign-control-fleet_insert_000061-haplous_mediated"
+    },
+    {
+      "scenario_id": "fleet_insert_000062",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000063",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000064",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000067",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000068",
+      "a": true,
+      "b": true,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000071",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000072",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000073",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000074",
+      "a": true,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": "m4-campaign-control-fleet_insert_000074-haplous_mediated"
+    },
+    {
+      "scenario_id": "fleet_insert_000075",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000076",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000079",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000080",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000081",
+      "a": true,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": "m4-campaign-control-fleet_insert_000081-haplous_mediated"
+    },
+    {
+      "scenario_id": "fleet_insert_000083",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000085",
+      "a": true,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": "m4-campaign-control-fleet_insert_000085-haplous_mediated"
+    },
+    {
+      "scenario_id": "fleet_insert_000086",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000087",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000088",
+      "a": true,
+      "b": true,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000090",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000091",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000092",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000093",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000094",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000095",
+      "a": true,
+      "b": true,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000096",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000097",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000098",
+      "a": true,
+      "b": true,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000099",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000100",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000101",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000102",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000104",
+      "a": true,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": "m4-campaign-control-fleet_insert_000104-haplous_mediated"
+    },
+    {
+      "scenario_id": "fleet_insert_000105",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000106",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000107",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000108",
+      "a": true,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": "m4-campaign-control-fleet_insert_000108-haplous_mediated"
+    },
+    {
+      "scenario_id": "fleet_insert_000109",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000113",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000114",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000116",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000118",
+      "a": true,
+      "b": true,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000119",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000120",
+      "a": true,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": "m4-campaign-control-fleet_insert_000120-haplous_mediated"
+    },
+    {
+      "scenario_id": "fleet_insert_000122",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000124",
+      "a": true,
+      "b": true,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000125",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000127",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000128",
+      "a": true,
+      "b": true,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000129",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000131",
+      "a": true,
+      "b": true,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000132",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000134",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000135",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000137",
+      "a": false,
+      "b": true,
+      "stratum": "task_a",
+      "replay_run_id": "m4-campaign-control-fleet_insert_000137-haplous_mediated"
+    },
+    {
+      "scenario_id": "fleet_insert_000139",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000140",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000141",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000142",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000143",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000144",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000145",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000146",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000147",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000150",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000151",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000152",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000154",
+      "a": true,
+      "b": true,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000155",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000156",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000157",
+      "a": true,
+      "b": true,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000158",
+      "a": true,
+      "b": true,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000159",
+      "a": true,
+      "b": true,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000160",
+      "a": true,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": "m4-campaign-control-fleet_insert_000160-haplous_mediated"
+    },
+    {
+      "scenario_id": "fleet_insert_000161",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000162",
+      "a": true,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": "m4-campaign-control-fleet_insert_000162-haplous_mediated"
+    },
+    {
+      "scenario_id": "fleet_insert_000163",
+      "a": true,
+      "b": true,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000164",
+      "a": true,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": "m4-campaign-control-fleet_insert_000164-haplous_mediated"
+    },
+    {
+      "scenario_id": "fleet_insert_000165",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000166",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000167",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000170",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000171",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000175",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000176",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000177",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000179",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000180",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000181",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000182",
+      "a": true,
+      "b": true,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000184",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000185",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000186",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000188",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000190",
+      "a": true,
+      "b": true,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000192",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000193",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000194",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000195",
+      "a": true,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": "m4-campaign-control-fleet_insert_000195-haplous_mediated"
+    },
+    {
+      "scenario_id": "fleet_insert_000196",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000197",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_insert_000199",
+      "a": false,
+      "b": false,
+      "stratum": "task_a",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_slide_000005",
+      "a": true,
+      "b": true,
+      "stratum": "task_b",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_slide_000006",
+      "a": false,
+      "b": false,
+      "stratum": "task_b",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_slide_000012",
+      "a": false,
+      "b": false,
+      "stratum": "task_b",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_slide_000014",
+      "a": false,
+      "b": false,
+      "stratum": "task_b",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_slide_000015",
+      "a": false,
+      "b": false,
+      "stratum": "task_b",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_slide_000017",
+      "a": false,
+      "b": false,
+      "stratum": "task_b",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_slide_000021",
+      "a": false,
+      "b": false,
+      "stratum": "task_b",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_slide_000023",
+      "a": false,
+      "b": false,
+      "stratum": "task_b",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_slide_000024",
+      "a": false,
+      "b": false,
+      "stratum": "task_b",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_slide_000025",
+      "a": false,
+      "b": false,
+      "stratum": "task_b",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_slide_000026",
+      "a": true,
+      "b": true,
+      "stratum": "task_b",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_slide_000029",
+      "a": false,
+      "b": false,
+      "stratum": "task_b",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_slide_000030",
+      "a": false,
+      "b": false,
+      "stratum": "task_b",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_slide_000031",
+      "a": false,
+      "b": false,
+      "stratum": "task_b",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_slide_000033",
+      "a": false,
+      "b": false,
+      "stratum": "task_b",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_slide_000044",
+      "a": false,
+      "b": false,
+      "stratum": "task_b",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_slide_000045",
+      "a": false,
+      "b": false,
+      "stratum": "task_b",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_slide_000051",
+      "a": true,
+      "b": true,
+      "stratum": "task_b",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_slide_000066",
+      "a": false,
+      "b": false,
+      "stratum": "task_b",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_slide_000070",
+      "a": false,
+      "b": false,
+      "stratum": "task_b",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_slide_000082",
+      "a": false,
+      "b": false,
+      "stratum": "task_b",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_slide_000084",
+      "a": true,
+      "b": true,
+      "stratum": "task_b",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_slide_000103",
+      "a": false,
+      "b": false,
+      "stratum": "task_b",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_slide_000110",
+      "a": false,
+      "b": false,
+      "stratum": "task_b",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_slide_000112",
+      "a": false,
+      "b": false,
+      "stratum": "task_b",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_slide_000115",
+      "a": false,
+      "b": false,
+      "stratum": "task_b",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_slide_000121",
+      "a": true,
+      "b": false,
+      "stratum": "task_b",
+      "replay_run_id": "m4-campaign-control-fleet_slide_000121-haplous_mediated"
+    },
+    {
+      "scenario_id": "fleet_slide_000126",
+      "a": false,
+      "b": false,
+      "stratum": "task_b",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_slide_000133",
+      "a": false,
+      "b": false,
+      "stratum": "task_b",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_slide_000148",
+      "a": false,
+      "b": false,
+      "stratum": "task_b",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_slide_000149",
+      "a": false,
+      "b": false,
+      "stratum": "task_b",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_slide_000153",
+      "a": false,
+      "b": false,
+      "stratum": "task_b",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_slide_000168",
+      "a": false,
+      "b": false,
+      "stratum": "task_b",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_slide_000169",
+      "a": false,
+      "b": false,
+      "stratum": "task_b",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_slide_000173",
+      "a": false,
+      "b": false,
+      "stratum": "task_b",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_slide_000174",
+      "a": false,
+      "b": false,
+      "stratum": "task_b",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_slide_000178",
+      "a": false,
+      "b": false,
+      "stratum": "task_b",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_slide_000187",
+      "a": false,
+      "b": false,
+      "stratum": "task_b",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "fleet_slide_000189",
+      "a": false,
+      "b": false,
+      "stratum": "task_b",
+      "replay_run_id": null
+    }
+  ],
+  "source": "results/m4/campaign/official_metrics.json"
+}

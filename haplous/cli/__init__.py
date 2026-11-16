@@ -83,11 +83,33 @@ def _parser() -> argparse.ArgumentParser:
     inspect.add_argument("--json", action="store_true", help="machine-readable output")
     inspect.set_defaults(handler=inspect_command)
 
-    timeline = commands.add_parser("timeline", help="normalized execution timeline from a run or evidence JSON")
-    timeline.add_argument("source")
+    timeline = commands.add_parser(
+        "timeline", help="execution timeline from a run or evidence JSON; plots (.rrd + .png) from an episode log")
+    timeline.add_argument("source", help="run id, evidence JSON, M0 recording run id, or episode-log directory")
     timeline.add_argument("--json", action="store_true", help="machine-readable output")
+    timeline.add_argument("--recordings-root", type=Path, help="M0 registry root holding recordings")
+    timeline.add_argument("--rrd", type=Path, help="episode log: .rrd output path")
+    timeline.add_argument("--png", type=Path, help="episode log: .png output path")
     timeline.set_defaults(handler=timeline_command)
+
+    studio = commands.add_parser("studio", help="local Haplous Studio server on 127.0.0.1 (needs the 'studio' extra)")
+    studio.add_argument("--port", type=int, default=8765)
+    studio.add_argument("--no-browser", action="store_true")
+    studio.add_argument("--root", type=Path, help="write jobs, Studio's M0 registry, replays and investigations under "
+                        "this directory (default: results/studio, replays/, docs/eval_program/investigations)")
+    studio.set_defaults(handler=studio_command)
     return parser
+
+
+def studio_command(args: argparse.Namespace) -> int:
+    # FastAPI lives only in studio/; import it only for this command.
+    try:
+        from studio.app import serve
+    except ImportError as exc:
+        print(f"haplous studio needs the 'studio' extra (pip install -e '.[studio]'): {exc}")
+        return 2
+    serve(port=args.port, open_browser=not args.no_browser, root=args.root)
+    return 0
 
 
 def main(argv: Sequence[str] | None = None) -> int:

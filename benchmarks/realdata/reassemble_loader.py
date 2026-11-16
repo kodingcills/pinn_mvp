@@ -14,7 +14,7 @@ def _array(value: list[float] | np.ndarray) -> FloatArray:
 
 
 def _load_parquet(path: Path, episode_ids: set[int] | None) -> list[Episode]:
-    table = pq.read_table(path)
+    table = pq.read_table(path, filters=None if episode_ids is None else [("episode_index", "in", sorted(episode_ids))])
     rows = table.to_pylist()
     task_path = path.parents[2] / "meta" / "tasks.parquet"
     tasks = {

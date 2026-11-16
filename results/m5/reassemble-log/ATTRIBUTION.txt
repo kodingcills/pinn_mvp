@@ -1,0 +1,6 @@
+Licence: CC-BY-4.0 (https://creativecommons.org/licenses/by/4.0/)
+
+REASSEMBLE: A Multimodal Dataset for Contact-rich Robotic Assembly and Disassembly. Sliwowski, Daniel Jan; Jadav, Shail; Stanovcic, Sergej; Orbik, Jedrzej; Heidersberger, Johannes; Lee, Dongheui. TU Wien, 2025. DOI 10.48436/0ewrv-8cb44, arXiv:2502.05086. Used via the LeRobot-v3 derivative robot-lev/reassemble (reformatted and resampled), CC-BY-4.0. This episode log is a further reformatting: one episode cut to annotated segments.
+
+Source file: robot-lev/reassemble@37d242d3532fb17b6f749a26dad6d7aaacf810cd/data/chunk-000/file-000.parquet (sha256 310dddd1802a032374ae16e6f7adbaefc7b7f82d05212a475e2fba6b20b3fceb),
+episode 1, segment 2. Changes: rows cut to one segment and re-encoded as JSONL.

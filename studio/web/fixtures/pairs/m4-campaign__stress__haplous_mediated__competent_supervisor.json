@@ -1,0 +1,2263 @@
+{
+  "campaign_id": "m4-campaign",
+  "population": "stress",
+  "a": "haplous_mediated",
+  "b": "competent_supervisor",
+  "field": "bounded_success",
+  "matrix": {
+    "both": 40,
+    "a_only": 20,
+    "b_only": 24,
+    "neither": 236
+  },
+  "n": 320,
+  "diff": -0.0125,
+  "ci95": [
+    -0.053125,
+    0.028125
+  ],
+  "method": "paired_bootstrap_mean",
+  "rows": [
+    {
+      "scenario_id": "m4s_ceiling_retry_00004",
+      "a": true,
+      "b": true,
+      "stratum": "stratum:ceiling_retry",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_ceiling_retry_00009",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:ceiling_retry",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_ceiling_retry_00014",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:ceiling_retry",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_ceiling_retry_00019",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:ceiling_retry",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_ceiling_retry_00024",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:ceiling_retry",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_ceiling_retry_00029",
+      "a": true,
+      "b": true,
+      "stratum": "stratum:ceiling_retry",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_ceiling_retry_00034",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:ceiling_retry",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_ceiling_retry_00039",
+      "a": true,
+      "b": true,
+      "stratum": "stratum:ceiling_retry",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_ceiling_retry_00044",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:ceiling_retry",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_ceiling_retry_00049",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:ceiling_retry",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_ceiling_retry_00054",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:ceiling_retry",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_ceiling_retry_00059",
+      "a": true,
+      "b": true,
+      "stratum": "stratum:ceiling_retry",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_ceiling_retry_00064",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:ceiling_retry",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_ceiling_retry_00069",
+      "a": true,
+      "b": true,
+      "stratum": "stratum:ceiling_retry",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_ceiling_retry_00074",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:ceiling_retry",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_ceiling_retry_00079",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:ceiling_retry",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_ceiling_retry_00084",
+      "a": true,
+      "b": true,
+      "stratum": "stratum:ceiling_retry",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_ceiling_retry_00089",
+      "a": true,
+      "b": true,
+      "stratum": "stratum:ceiling_retry",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_ceiling_retry_00094",
+      "a": true,
+      "b": true,
+      "stratum": "stratum:ceiling_retry",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_ceiling_retry_00099",
+      "a": true,
+      "b": true,
+      "stratum": "stratum:ceiling_retry",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_ceiling_retry_00104",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:ceiling_retry",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_ceiling_retry_00109",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:ceiling_retry",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_ceiling_retry_00114",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:ceiling_retry",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_ceiling_retry_00119",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:ceiling_retry",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_ceiling_retry_00124",
+      "a": true,
+      "b": true,
+      "stratum": "stratum:ceiling_retry",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_ceiling_retry_00129",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:ceiling_retry",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_ceiling_retry_00134",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:ceiling_retry",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_ceiling_retry_00139",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:ceiling_retry",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_ceiling_retry_00144",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:ceiling_retry",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_ceiling_retry_00149",
+      "a": true,
+      "b": true,
+      "stratum": "stratum:ceiling_retry",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_ceiling_retry_00154",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:ceiling_retry",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_ceiling_retry_00159",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:ceiling_retry",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_ceiling_retry_00164",
+      "a": true,
+      "b": true,
+      "stratum": "stratum:ceiling_retry",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_ceiling_retry_00169",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:ceiling_retry",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_ceiling_retry_00174",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:ceiling_retry",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_ceiling_retry_00179",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:ceiling_retry",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_ceiling_retry_00184",
+      "a": true,
+      "b": true,
+      "stratum": "stratum:ceiling_retry",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_ceiling_retry_00189",
+      "a": true,
+      "b": true,
+      "stratum": "stratum:ceiling_retry",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_ceiling_retry_00194",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:ceiling_retry",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_ceiling_retry_00199",
+      "a": true,
+      "b": true,
+      "stratum": "stratum:ceiling_retry",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_ceiling_retry_00204",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:ceiling_retry",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_ceiling_retry_00209",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:ceiling_retry",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_ceiling_retry_00214",
+      "a": true,
+      "b": true,
+      "stratum": "stratum:ceiling_retry",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_ceiling_retry_00219",
+      "a": true,
+      "b": true,
+      "stratum": "stratum:ceiling_retry",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_ceiling_retry_00224",
+      "a": true,
+      "b": true,
+      "stratum": "stratum:ceiling_retry",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_ceiling_retry_00229",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:ceiling_retry",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_ceiling_retry_00234",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:ceiling_retry",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_ceiling_retry_00239",
+      "a": true,
+      "b": true,
+      "stratum": "stratum:ceiling_retry",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_ceiling_retry_00244",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:ceiling_retry",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_ceiling_retry_00249",
+      "a": true,
+      "b": true,
+      "stratum": "stratum:ceiling_retry",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_ceiling_retry_00254",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:ceiling_retry",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_ceiling_retry_00259",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:ceiling_retry",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_ceiling_retry_00264",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:ceiling_retry",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_ceiling_retry_00269",
+      "a": true,
+      "b": true,
+      "stratum": "stratum:ceiling_retry",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_ceiling_retry_00274",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:ceiling_retry",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_ceiling_retry_00279",
+      "a": true,
+      "b": true,
+      "stratum": "stratum:ceiling_retry",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_ceiling_retry_00284",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:ceiling_retry",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_ceiling_retry_00289",
+      "a": true,
+      "b": true,
+      "stratum": "stratum:ceiling_retry",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_ceiling_retry_00294",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:ceiling_retry",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_ceiling_retry_00299",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:ceiling_retry",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_ceiling_retry_00304",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:ceiling_retry",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_ceiling_retry_00309",
+      "a": true,
+      "b": true,
+      "stratum": "stratum:ceiling_retry",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_ceiling_retry_00314",
+      "a": true,
+      "b": true,
+      "stratum": "stratum:ceiling_retry",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_ceiling_retry_00319",
+      "a": true,
+      "b": true,
+      "stratum": "stratum:ceiling_retry",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_dropout_long_00000",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:dropout_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_dropout_long_00005",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:dropout_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_dropout_long_00010",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:dropout_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_dropout_long_00015",
+      "a": true,
+      "b": false,
+      "stratum": "stratum:dropout_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_dropout_long_00020",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:dropout_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_dropout_long_00025",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:dropout_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_dropout_long_00030",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:dropout_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_dropout_long_00035",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:dropout_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_dropout_long_00040",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:dropout_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_dropout_long_00045",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:dropout_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_dropout_long_00050",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:dropout_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_dropout_long_00055",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:dropout_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_dropout_long_00060",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:dropout_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_dropout_long_00065",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:dropout_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_dropout_long_00070",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:dropout_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_dropout_long_00075",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:dropout_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_dropout_long_00080",
+      "a": true,
+      "b": false,
+      "stratum": "stratum:dropout_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_dropout_long_00085",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:dropout_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_dropout_long_00090",
+      "a": true,
+      "b": false,
+      "stratum": "stratum:dropout_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_dropout_long_00095",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:dropout_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_dropout_long_00100",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:dropout_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_dropout_long_00105",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:dropout_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_dropout_long_00110",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:dropout_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_dropout_long_00115",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:dropout_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_dropout_long_00120",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:dropout_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_dropout_long_00125",
+      "a": true,
+      "b": false,
+      "stratum": "stratum:dropout_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_dropout_long_00130",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:dropout_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_dropout_long_00135",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:dropout_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_dropout_long_00140",
+      "a": true,
+      "b": false,
+      "stratum": "stratum:dropout_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_dropout_long_00145",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:dropout_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_dropout_long_00150",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:dropout_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_dropout_long_00155",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:dropout_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_dropout_long_00160",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:dropout_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_dropout_long_00165",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:dropout_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_dropout_long_00170",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:dropout_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_dropout_long_00175",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:dropout_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_dropout_long_00180",
+      "a": true,
+      "b": false,
+      "stratum": "stratum:dropout_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_dropout_long_00185",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:dropout_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_dropout_long_00190",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:dropout_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_dropout_long_00195",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:dropout_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_dropout_long_00200",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:dropout_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_dropout_long_00205",
+      "a": true,
+      "b": false,
+      "stratum": "stratum:dropout_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_dropout_long_00210",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:dropout_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_dropout_long_00215",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:dropout_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_dropout_long_00220",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:dropout_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_dropout_long_00225",
+      "a": true,
+      "b": false,
+      "stratum": "stratum:dropout_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_dropout_long_00230",
+      "a": true,
+      "b": false,
+      "stratum": "stratum:dropout_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_dropout_long_00235",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:dropout_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_dropout_long_00240",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:dropout_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_dropout_long_00245",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:dropout_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_dropout_long_00250",
+      "a": true,
+      "b": false,
+      "stratum": "stratum:dropout_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_dropout_long_00255",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:dropout_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_dropout_long_00260",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:dropout_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_dropout_long_00265",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:dropout_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_dropout_long_00270",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:dropout_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_dropout_long_00275",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:dropout_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_dropout_long_00280",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:dropout_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_dropout_long_00285",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:dropout_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_dropout_long_00290",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:dropout_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_dropout_long_00295",
+      "a": true,
+      "b": false,
+      "stratum": "stratum:dropout_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_dropout_long_00300",
+      "a": true,
+      "b": false,
+      "stratum": "stratum:dropout_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_dropout_long_00305",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:dropout_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_dropout_long_00310",
+      "a": true,
+      "b": false,
+      "stratum": "stratum:dropout_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_dropout_long_00315",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:dropout_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_rejection_long_00002",
+      "a": true,
+      "b": true,
+      "stratum": "stratum:rejection_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_rejection_long_00007",
+      "a": false,
+      "b": true,
+      "stratum": "stratum:rejection_long",
+      "replay_run_id": "m4-campaign-stress-m4s_rejection_long_00007-haplous_mediated"
+    },
+    {
+      "scenario_id": "m4s_rejection_long_00012",
+      "a": false,
+      "b": true,
+      "stratum": "stratum:rejection_long",
+      "replay_run_id": "m4-campaign-stress-m4s_rejection_long_00012-haplous_mediated"
+    },
+    {
+      "scenario_id": "m4s_rejection_long_00017",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:rejection_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_rejection_long_00022",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:rejection_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_rejection_long_00027",
+      "a": false,
+      "b": true,
+      "stratum": "stratum:rejection_long",
+      "replay_run_id": "m4-campaign-stress-m4s_rejection_long_00027-haplous_mediated"
+    },
+    {
+      "scenario_id": "m4s_rejection_long_00032",
+      "a": true,
+      "b": true,
+      "stratum": "stratum:rejection_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_rejection_long_00037",
+      "a": true,
+      "b": true,
+      "stratum": "stratum:rejection_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_rejection_long_00042",
+      "a": false,
+      "b": true,
+      "stratum": "stratum:rejection_long",
+      "replay_run_id": "m4-campaign-stress-m4s_rejection_long_00042-haplous_mediated"
+    },
+    {
+      "scenario_id": "m4s_rejection_long_00047",
+      "a": true,
+      "b": true,
+      "stratum": "stratum:rejection_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_rejection_long_00052",
+      "a": false,
+      "b": true,
+      "stratum": "stratum:rejection_long",
+      "replay_run_id": "m4-campaign-stress-m4s_rejection_long_00052-haplous_mediated"
+    },
+    {
+      "scenario_id": "m4s_rejection_long_00057",
+      "a": true,
+      "b": true,
+      "stratum": "stratum:rejection_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_rejection_long_00062",
+      "a": false,
+      "b": true,
+      "stratum": "stratum:rejection_long",
+      "replay_run_id": "m4-campaign-stress-m4s_rejection_long_00062-haplous_mediated"
+    },
+    {
+      "scenario_id": "m4s_rejection_long_00067",
+      "a": true,
+      "b": true,
+      "stratum": "stratum:rejection_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_rejection_long_00072",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:rejection_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_rejection_long_00077",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:rejection_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_rejection_long_00082",
+      "a": true,
+      "b": true,
+      "stratum": "stratum:rejection_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_rejection_long_00087",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:rejection_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_rejection_long_00092",
+      "a": false,
+      "b": true,
+      "stratum": "stratum:rejection_long",
+      "replay_run_id": "m4-campaign-stress-m4s_rejection_long_00092-haplous_mediated"
+    },
+    {
+      "scenario_id": "m4s_rejection_long_00097",
+      "a": false,
+      "b": true,
+      "stratum": "stratum:rejection_long",
+      "replay_run_id": "m4-campaign-stress-m4s_rejection_long_00097-haplous_mediated"
+    },
+    {
+      "scenario_id": "m4s_rejection_long_00102",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:rejection_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_rejection_long_00107",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:rejection_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_rejection_long_00112",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:rejection_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_rejection_long_00117",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:rejection_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_rejection_long_00122",
+      "a": false,
+      "b": true,
+      "stratum": "stratum:rejection_long",
+      "replay_run_id": "m4-campaign-stress-m4s_rejection_long_00122-haplous_mediated"
+    },
+    {
+      "scenario_id": "m4s_rejection_long_00127",
+      "a": false,
+      "b": true,
+      "stratum": "stratum:rejection_long",
+      "replay_run_id": "m4-campaign-stress-m4s_rejection_long_00127-haplous_mediated"
+    },
+    {
+      "scenario_id": "m4s_rejection_long_00132",
+      "a": true,
+      "b": true,
+      "stratum": "stratum:rejection_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_rejection_long_00137",
+      "a": false,
+      "b": true,
+      "stratum": "stratum:rejection_long",
+      "replay_run_id": "m4-campaign-stress-m4s_rejection_long_00137-haplous_mediated"
+    },
+    {
+      "scenario_id": "m4s_rejection_long_00142",
+      "a": true,
+      "b": true,
+      "stratum": "stratum:rejection_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_rejection_long_00147",
+      "a": true,
+      "b": true,
+      "stratum": "stratum:rejection_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_rejection_long_00152",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:rejection_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_rejection_long_00157",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:rejection_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_rejection_long_00162",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:rejection_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_rejection_long_00167",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:rejection_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_rejection_long_00172",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:rejection_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_rejection_long_00177",
+      "a": true,
+      "b": true,
+      "stratum": "stratum:rejection_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_rejection_long_00182",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:rejection_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_rejection_long_00187",
+      "a": true,
+      "b": true,
+      "stratum": "stratum:rejection_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_rejection_long_00192",
+      "a": false,
+      "b": true,
+      "stratum": "stratum:rejection_long",
+      "replay_run_id": "m4-campaign-stress-m4s_rejection_long_00192-haplous_mediated"
+    },
+    {
+      "scenario_id": "m4s_rejection_long_00197",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:rejection_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_rejection_long_00202",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:rejection_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_rejection_long_00207",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:rejection_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_rejection_long_00212",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:rejection_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_rejection_long_00217",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:rejection_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_rejection_long_00222",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:rejection_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_rejection_long_00227",
+      "a": true,
+      "b": true,
+      "stratum": "stratum:rejection_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_rejection_long_00232",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:rejection_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_rejection_long_00237",
+      "a": false,
+      "b": true,
+      "stratum": "stratum:rejection_long",
+      "replay_run_id": "m4-campaign-stress-m4s_rejection_long_00237-haplous_mediated"
+    },
+    {
+      "scenario_id": "m4s_rejection_long_00242",
+      "a": false,
+      "b": true,
+      "stratum": "stratum:rejection_long",
+      "replay_run_id": "m4-campaign-stress-m4s_rejection_long_00242-haplous_mediated"
+    },
+    {
+      "scenario_id": "m4s_rejection_long_00247",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:rejection_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_rejection_long_00252",
+      "a": false,
+      "b": true,
+      "stratum": "stratum:rejection_long",
+      "replay_run_id": "m4-campaign-stress-m4s_rejection_long_00252-haplous_mediated"
+    },
+    {
+      "scenario_id": "m4s_rejection_long_00257",
+      "a": false,
+      "b": true,
+      "stratum": "stratum:rejection_long",
+      "replay_run_id": "m4-campaign-stress-m4s_rejection_long_00257-haplous_mediated"
+    },
+    {
+      "scenario_id": "m4s_rejection_long_00262",
+      "a": false,
+      "b": true,
+      "stratum": "stratum:rejection_long",
+      "replay_run_id": "m4-campaign-stress-m4s_rejection_long_00262-haplous_mediated"
+    },
+    {
+      "scenario_id": "m4s_rejection_long_00267",
+      "a": true,
+      "b": true,
+      "stratum": "stratum:rejection_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_rejection_long_00272",
+      "a": false,
+      "b": true,
+      "stratum": "stratum:rejection_long",
+      "replay_run_id": "m4-campaign-stress-m4s_rejection_long_00272-haplous_mediated"
+    },
+    {
+      "scenario_id": "m4s_rejection_long_00277",
+      "a": false,
+      "b": true,
+      "stratum": "stratum:rejection_long",
+      "replay_run_id": "m4-campaign-stress-m4s_rejection_long_00277-haplous_mediated"
+    },
+    {
+      "scenario_id": "m4s_rejection_long_00282",
+      "a": false,
+      "b": true,
+      "stratum": "stratum:rejection_long",
+      "replay_run_id": "m4-campaign-stress-m4s_rejection_long_00282-haplous_mediated"
+    },
+    {
+      "scenario_id": "m4s_rejection_long_00287",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:rejection_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_rejection_long_00292",
+      "a": false,
+      "b": true,
+      "stratum": "stratum:rejection_long",
+      "replay_run_id": "m4-campaign-stress-m4s_rejection_long_00292-haplous_mediated"
+    },
+    {
+      "scenario_id": "m4s_rejection_long_00297",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:rejection_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_rejection_long_00302",
+      "a": false,
+      "b": true,
+      "stratum": "stratum:rejection_long",
+      "replay_run_id": "m4-campaign-stress-m4s_rejection_long_00302-haplous_mediated"
+    },
+    {
+      "scenario_id": "m4s_rejection_long_00307",
+      "a": false,
+      "b": true,
+      "stratum": "stratum:rejection_long",
+      "replay_run_id": "m4-campaign-stress-m4s_rejection_long_00307-haplous_mediated"
+    },
+    {
+      "scenario_id": "m4s_rejection_long_00312",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:rejection_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_rejection_long_00317",
+      "a": false,
+      "b": true,
+      "stratum": "stratum:rejection_long",
+      "replay_run_id": "m4-campaign-stress-m4s_rejection_long_00317-haplous_mediated"
+    },
+    {
+      "scenario_id": "m4s_stale_long_00001",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:stale_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_stale_long_00006",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:stale_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_stale_long_00011",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:stale_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_stale_long_00016",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:stale_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_stale_long_00021",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:stale_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_stale_long_00026",
+      "a": true,
+      "b": false,
+      "stratum": "stratum:stale_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_stale_long_00031",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:stale_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_stale_long_00036",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:stale_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_stale_long_00041",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:stale_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_stale_long_00046",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:stale_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_stale_long_00051",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:stale_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_stale_long_00056",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:stale_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_stale_long_00061",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:stale_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_stale_long_00066",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:stale_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_stale_long_00071",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:stale_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_stale_long_00076",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:stale_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_stale_long_00081",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:stale_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_stale_long_00086",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:stale_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_stale_long_00091",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:stale_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_stale_long_00096",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:stale_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_stale_long_00101",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:stale_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_stale_long_00106",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:stale_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_stale_long_00111",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:stale_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_stale_long_00116",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:stale_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_stale_long_00121",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:stale_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_stale_long_00126",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:stale_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_stale_long_00131",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:stale_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_stale_long_00136",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:stale_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_stale_long_00141",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:stale_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_stale_long_00146",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:stale_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_stale_long_00151",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:stale_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_stale_long_00156",
+      "a": true,
+      "b": false,
+      "stratum": "stratum:stale_long",
+      "replay_run_id": "m4-campaign-stress-m4s_stale_long_00156-haplous_mediated"
+    },
+    {
+      "scenario_id": "m4s_stale_long_00161",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:stale_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_stale_long_00166",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:stale_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_stale_long_00171",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:stale_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_stale_long_00176",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:stale_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_stale_long_00181",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:stale_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_stale_long_00186",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:stale_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_stale_long_00191",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:stale_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_stale_long_00196",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:stale_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_stale_long_00201",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:stale_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_stale_long_00206",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:stale_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_stale_long_00211",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:stale_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_stale_long_00216",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:stale_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_stale_long_00221",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:stale_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_stale_long_00226",
+      "a": true,
+      "b": false,
+      "stratum": "stratum:stale_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_stale_long_00231",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:stale_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_stale_long_00236",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:stale_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_stale_long_00241",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:stale_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_stale_long_00246",
+      "a": true,
+      "b": false,
+      "stratum": "stratum:stale_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_stale_long_00251",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:stale_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_stale_long_00256",
+      "a": true,
+      "b": false,
+      "stratum": "stratum:stale_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_stale_long_00261",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:stale_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_stale_long_00266",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:stale_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_stale_long_00271",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:stale_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_stale_long_00276",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:stale_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_stale_long_00281",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:stale_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_stale_long_00286",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:stale_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_stale_long_00291",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:stale_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_stale_long_00296",
+      "a": true,
+      "b": false,
+      "stratum": "stratum:stale_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_stale_long_00301",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:stale_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_stale_long_00306",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:stale_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_stale_long_00311",
+      "a": true,
+      "b": false,
+      "stratum": "stratum:stale_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_stale_long_00316",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:stale_long",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_tilt_limit_00003",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:tilt_limit",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_tilt_limit_00008",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:tilt_limit",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_tilt_limit_00013",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:tilt_limit",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_tilt_limit_00018",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:tilt_limit",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_tilt_limit_00023",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:tilt_limit",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_tilt_limit_00028",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:tilt_limit",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_tilt_limit_00033",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:tilt_limit",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_tilt_limit_00038",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:tilt_limit",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_tilt_limit_00043",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:tilt_limit",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_tilt_limit_00048",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:tilt_limit",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_tilt_limit_00053",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:tilt_limit",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_tilt_limit_00058",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:tilt_limit",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_tilt_limit_00063",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:tilt_limit",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_tilt_limit_00068",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:tilt_limit",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_tilt_limit_00073",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:tilt_limit",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_tilt_limit_00078",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:tilt_limit",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_tilt_limit_00083",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:tilt_limit",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_tilt_limit_00088",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:tilt_limit",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_tilt_limit_00093",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:tilt_limit",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_tilt_limit_00098",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:tilt_limit",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_tilt_limit_00103",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:tilt_limit",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_tilt_limit_00108",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:tilt_limit",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_tilt_limit_00113",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:tilt_limit",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_tilt_limit_00118",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:tilt_limit",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_tilt_limit_00123",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:tilt_limit",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_tilt_limit_00128",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:tilt_limit",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_tilt_limit_00133",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:tilt_limit",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_tilt_limit_00138",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:tilt_limit",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_tilt_limit_00143",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:tilt_limit",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_tilt_limit_00148",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:tilt_limit",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_tilt_limit_00153",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:tilt_limit",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_tilt_limit_00158",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:tilt_limit",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_tilt_limit_00163",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:tilt_limit",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_tilt_limit_00168",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:tilt_limit",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_tilt_limit_00173",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:tilt_limit",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_tilt_limit_00178",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:tilt_limit",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_tilt_limit_00183",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:tilt_limit",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_tilt_limit_00188",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:tilt_limit",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_tilt_limit_00193",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:tilt_limit",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_tilt_limit_00198",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:tilt_limit",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_tilt_limit_00203",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:tilt_limit",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_tilt_limit_00208",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:tilt_limit",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_tilt_limit_00213",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:tilt_limit",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_tilt_limit_00218",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:tilt_limit",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_tilt_limit_00223",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:tilt_limit",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_tilt_limit_00228",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:tilt_limit",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_tilt_limit_00233",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:tilt_limit",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_tilt_limit_00238",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:tilt_limit",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_tilt_limit_00243",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:tilt_limit",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_tilt_limit_00248",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:tilt_limit",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_tilt_limit_00253",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:tilt_limit",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_tilt_limit_00258",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:tilt_limit",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_tilt_limit_00263",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:tilt_limit",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_tilt_limit_00268",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:tilt_limit",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_tilt_limit_00273",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:tilt_limit",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_tilt_limit_00278",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:tilt_limit",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_tilt_limit_00283",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:tilt_limit",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_tilt_limit_00288",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:tilt_limit",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_tilt_limit_00293",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:tilt_limit",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_tilt_limit_00298",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:tilt_limit",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_tilt_limit_00303",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:tilt_limit",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_tilt_limit_00308",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:tilt_limit",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_tilt_limit_00313",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:tilt_limit",
+      "replay_run_id": null
+    },
+    {
+      "scenario_id": "m4s_tilt_limit_00318",
+      "a": false,
+      "b": false,
+      "stratum": "stratum:tilt_limit",
+      "replay_run_id": null
+    }
+  ],
+  "source": "results/m4/campaign/official_metrics.json"
+}

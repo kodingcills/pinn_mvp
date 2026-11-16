@@ -1,7 +1,7 @@
 # Known issues (pre-existing; do not count as regressions)
 
 Baseline on `main` @ `4ca4e71`, 2026-11-13: **599 passed, 4 failed, 1 xfailed** (`pytest tests -q`).
-Current head of `claude/magical-curie-si1vjr` (M5.2 integrated, 2026-11-13): **880 passed, 4 failed, 1 xfailed**, the same 4 failures.
+Current head of `claude/magical-curie-si1vjr` (M6 Studio release 1 integrated, 2026-11-16): **944 passed, 4 failed, 1 skipped (opt-in Studio E2E), 1 xfailed**, the same 4 failures.
 
 | Test | Cause (diagnosed in docs/eval_v1, results/diagnostics) |
 |---|---|
@@ -59,3 +59,19 @@ Current head of `claude/magical-curie-si1vjr` (M5.2 integrated, 2026-11-13): **8
 | MuJoCo-path A/A runs only in `scripts/m5_episode_log.py`; a unit test catches a perturbed return value only on the external path | M5.2 verifier | open; add a unit-level MuJoCo return-value check |
 | External episode log is not wrapped in an M0 run (design says identity stays an M0 run) | M5.2 owner | open |
 | `ExternalMachineAdapter.health()` returns the task's `ground_truth()`: grader truth reachable through the Machine protocol (pre-existing; LoggingMachine passes it through) | M5.2 owner | open; truth-leak risk for external tasks |
+| MCAP export not opened in a real Foxglove (unavailable here); fitness judged from the MCAP well-known encodings (`json` + `jsonschema`) only. The MCAP is a derived view, not M0-hashed: never a trust root | M5.4 owner + verifier | open |
+| `tests/test_episode_mcap.py` (like the pyarrow-based replay tests) imports an optional extra at module top: without `.[replay]` the suite stops at collection | M5.4 verifier | consistent with existing tests; optional `pytest.importorskip` |
+| Timeline PNG bridges null-observation gaps (e.g. a dropout) with a straight line; the window is shaded but the line can read as measured data. The `.rrd` correctly has no samples there | M5.3 verifier | open; one-line fix (insert NaN at gaps) |
+| Timeline `.rrd` has no Rerun blueprint (viewer default layout); `rerun rrd verify` cannot be planted red from the renderer | M5.3 owner | minor |
+| REASSEMBLE `action` equals the next frame's measured pose exactly (max diff 0.0 m): imported command rows are hindsight targets, not controller setpoints. Never grade command tracking on imported logs | M5.5 owner + verifier | by nature of the dataset |
+| MCAP schemas now accept null `outcome`, `k_z_n_per_m`, `host_monotonic_ns` for every backend (needed for real logs); `episode_log` checks are unchanged, but the MCAP schema alone no longer rejects a sim log with a null outcome | M5.5 owner + verifier | open; per-source command schema would restore strictness |
+| Imported REASSEMBLE "Insert" segment is mostly transport (contact only in the last ~2.5 s of 12.5 s); F/T downsampled to 30 Hz by the derivative; base F/T frame undocumented; tilt is derived assuming EE z is the approach axis | M5.5 owner | documented in metadata |
+| Timeline PNG for real logs: title shows a stray ", None" (null disposition), right-edge label clipped; dataset markers have no test | M5.5 verifier | cosmetic |
+| `scripts/m5_mcap_export.py` and `scripts/m55_reassemble_import.py` write into `results/` with no output-dir option (byte-identical on rerun) | M5.5 verifier | minor |
+| Studio frontend a11y: chart slider has no Home/End/PageUp/PageDown; investigation dialog has no focus trap or Escape; accent link contrast 4.39:1 (just under 4.5) | M6.2 verifier | resolved in M6.3 |
+| Studio tests mock the Rerun viewer: real 3D seek is checked only by `setTime` arguments until M6.3's E2E | M6.2 verifier | resolved in M6.3: real-viewer seek asserted by E2E |
+| Studio CPU estimate is a flat 3.0 s/episode: the largest possible catalog launch estimates 6.75 min (never triggers the 10-min confirm) but costs ~11.7 min using M4 per-arm means (bare_behavior ~16 s) | M6.1 verifier | resolved in M6.3: per-system means from cost.json; full catalog 11.66 CPU-min triggers confirm |
+| Studio worker liveness after a server restart is checked by pid only (pid reuse not handled) | M6.1 owner | shortcut, documented in code |
+| Studio reads `results/` relative to a repo checkout; an installed wheel alone has nothing to serve | M6.1 owner | by design for release 1 |
+| Studio E2E is opt-in (needs Node, a global Playwright on NODE_PATH, the built wasm) and records 2 episodes; its failure-dump path (failure-browser.log/png) has never been exercised | M6.3 fix owner + verifier | documented in REPRODUCE.md |
+| RerunView: unmount does not cancel the readiness poll (harmless setError after unmount); viewer ready/time attributes not reset when the run url changes | M6.3 fix verifier | minor |
