@@ -68,3 +68,5 @@ Current head of `claude/magical-curie-si1vjr` (M5.5 integrated, 2026-11-13): **9
 | Imported REASSEMBLE "Insert" segment is mostly transport (contact only in the last ~2.5 s of 12.5 s); F/T downsampled to 30 Hz by the derivative; base F/T frame undocumented; tilt is derived assuming EE z is the approach axis | M5.5 owner | documented in metadata |
 | Timeline PNG for real logs: title shows a stray ", None" (null disposition), right-edge label clipped; dataset markers have no test | M5.5 verifier | cosmetic |
 | `scripts/m5_mcap_export.py` and `scripts/m55_reassemble_import.py` write into `results/` with no output-dir option (byte-identical on rerun) | M5.5 verifier | minor |
+| Studio frontend a11y: chart slider has no Home/End/PageUp/PageDown; investigation dialog has no focus trap or Escape; accent link contrast 4.39:1 (just under 4.5) | M6.2 verifier | open, minor |
+| Studio tests mock the Rerun viewer: real 3D seek is checked only by `setTime` arguments until M6.3's E2E | M6.2 verifier | M6.3 |

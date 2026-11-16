@@ -373,12 +373,20 @@
       "title": "Haplous Studio frontend: Runs, Replay (Rerun 3D + synced charts, event click-to-seek), Compare, Evidence, Launch, Create investigation",
       "owner": "worker-M6.2 (opus)",
       "deps": [],
-      "status": "in_progress",
+      "status": "verified",
       "exit_check": "build + typecheck + component tests against contract fixtures; bundle committed, size reported",
       "design": "docs/eval_program/designs/M6_haplous_studio.md",
-      "commit": null,
-      "proof": [],
-      "retries": 0
+      "commit": "ba34aca",
+      "proof": [
+        "studio/web/src/",
+        "studio/static/",
+        "studio/web/src/studio.test.tsx"
+      ],
+      "retries": 0,
+      "integrated_as": [
+        "c4ea6c8"
+      ],
+      "verdict": "PASS by sonnet verifier at ba34aca: only studio/web and studio/static; npm ci + typecheck + 9/9 vitest; fresh build byte-identical to committed bundle (546 KB, wasm gitignored); no mock code or external fetch targets in bundle; fixtures regenerate identically; Compare numbers match official_metrics.json by independent script; planted defects caught; screenshots show cursor at 1.0 s on all charts. Not checked: real server, real 3D seek (M6.3)"
     },
     {
       "id": "M6.3",
