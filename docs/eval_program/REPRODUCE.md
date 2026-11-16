@@ -64,6 +64,12 @@ Needs Node 22, a global Playwright with Chromium on `NODE_PATH`, and the built f
 Rerun wasm (`npm ci && npm run build` copies it to `studio/static/rerun-web-viewer/`, gitignored;
 without it the 3D seek check is skipped and logged).
 
+Every wait is bounded. The job may take up to 10 min, the Replay page then waits up to 240 s for the
+viewer to load the replay `.rrd` (generated on first request by `evaluation.replay`; the viewer
+reports an error after 60 s of loading), then up to 60 s for the seek. On any failure the script
+writes `failure.png` and `failure-browser.log` (browser console, page errors, the `/rrd` and wasm
+requests with timings) to `STUDIO_E2E_SHOTS`.
+
 ```bash
 cd studio/web && npm ci && npm run build
 PYTHON=../../.venv/bin/python STUDIO_E2E_SHOTS=/tmp/studio-e2e npm run e2e

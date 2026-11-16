@@ -169,7 +169,7 @@ def test_catalog_is_the_heb_registry(client: TestClient) -> None:
     cost = json.loads((REPO / jobs.COST_JSON).read_text())["cpu_s_per_episode_by_arm"]
     for system in catalog["systems"]:
         assert system_by_name(system["id"]).name == system["id"]
-        expected = cost[system["id"]]["mean"] if system["id"] in cost else jobs.FALLBACK_CPU_S_PER_EPISODE
+        expected = cost[system["id"]]["mean"] if system["id"] in cost else 3.0  # measured fallback, pinned independently of jobs.py
         assert system["cpu_s_per_episode"] == expected
         assert (jobs.COST_JSON in system["cpu_source"]) == (system["id"] in cost)
     assert {s["id"] for s in catalog["systems"]} - set(cost) == {"direct_minimal"}

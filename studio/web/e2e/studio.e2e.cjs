@@ -45,7 +45,9 @@ async function waitFor(fn, what, timeoutMs, everyMs = 500) {
     try {
       const v = await fn();
       if (v) return v;
-    } catch {}
+    } catch (e) {
+      if (e.fatal) throw e;
+    }
     if (Date.now() > end) throw new Error(`timed out after ${timeoutMs / 1000}s waiting for ${what}`);
     await new Promise((r) => setTimeout(r, everyMs));
   }
@@ -66,14 +68,21 @@ async function main() {
     stdio: ["ignore", "inherit", "inherit"],
   });
   const exited = new Promise((r) => server.on("exit", r));
-  let browser;
+  let browser, page;
+  const trace = []; // browser console, page errors and the rrd/wasm requests, dumped on failure
+  const note = (...a) => trace.push(`${new Date().toISOString().slice(11, 23)} ${a.join(" ")}`);
   try {
     await waitFor(async () => (await fetch(`${base}/api/catalog`)).ok, "the server", 60_000);
     const api = async (p) => (await fetch(base + p)).json();
     const catalog = await api("/api/catalog");
     browser = await chromium.launch();
-    const page = await (await browser.newContext({ viewport: { width: 1440, height: 1000 }, deviceScaleFactor: 2 })).newPage();
-    page.on("pageerror", (e) => log("page error:", e.message));
+    page = await (await browser.newContext({ viewport: { width: 1440, height: 1000 }, deviceScaleFactor: 2 })).newPage();
+    page.on("pageerror", (e) => (log("page error:", e.message), note("pageerror", e.message)));
+    page.on("console", (m) => m.type() !== "debug" && note(`console.${m.type()}`, m.text()));
+    const watched = (r) => /\/rrd$|\.wasm$/.test(r.url());
+    page.on("request", (r) => watched(r) && note("request", r.method(), r.url()));
+    page.on("requestfinished", async (r) => watched(r) && note("finished", (await r.response())?.status(), r.url(), `${Math.round(r.timing().responseEnd)} ms`));
+    page.on("requestfailed", (r) => watched(r) && note("failed", r.url(), r.failure()?.errorText));
     const shot = async (name) => {
       const file = path.join(SHOTS, `${name}.png`);
       await page.screenshot({ path: file, fullPage: true });
@@ -134,7 +143,17 @@ async function main() {
     const wasm = probe.ok;
     if (wasm) {
       const want = String(Math.round(event.t_s * 1e9));
-      const got = await waitFor(() => page.locator(".rerun").getAttribute("data-viewer-time-ns"), "the Rerun viewer seek", 300_000);
+      const rerun = page.locator(".rerun");
+      const clicked = Date.now();
+      // ready = .rrd generated and fetched, wasm started, sim_time timeline loaded (RerunView fails visibly after 60 s of loading)
+      await waitFor(async () => {
+        const warn = await rerun.locator(".note.warn").textContent({ timeout: 100 }).catch(() => null);
+        if (warn) throw Object.assign(new Error(warn), { fatal: true });
+        return (await rerun.getAttribute("data-viewer-ready")) === "true";
+      }, "the Rerun viewer to load the replay .rrd", 240_000);
+      const ready = Date.now();
+      const got = await waitFor(() => rerun.getAttribute("data-viewer-time-ns"), "the Rerun viewer seek after its recording loaded", 60_000);
+      log(`Rerun viewer: ready ${((ready - clicked) / 1000).toFixed(1)} s after the click, seek ${((Date.now() - ready) / 1000).toFixed(1)} s after ready`);
       assert.equal(got, want, "Rerun viewer's own time cursor equals the event time");
       await page.waitForTimeout(3000); // let the canvas draw the frame at that time
       log(`Rerun viewer current time ${got} ns`);
@@ -186,6 +205,12 @@ async function main() {
     await shot("5-evidence");
     log("evidence: LIBERO-Dynamic not executed");
     log("PASS");
+  } catch (e) {
+    const dump = path.join(SHOTS, "failure-browser.log");
+    fs.writeFileSync(dump, trace.join("\n") + "\n");
+    await page?.screenshot({ path: path.join(SHOTS, "failure.png"), fullPage: true }).catch(() => {});
+    log(`FAIL; browser console, page errors and rrd/wasm requests in ${dump}, screenshot ${path.join(SHOTS, "failure.png")}`);
+    throw e;
   } finally {
     await browser?.close();
     server.kill("SIGINT");
