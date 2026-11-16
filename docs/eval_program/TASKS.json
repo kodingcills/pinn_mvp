@@ -412,7 +412,8 @@
       "design": "docs/eval_program/designs/M6_haplous_studio.md",
       "commit": null,
       "proof": [],
-      "retries": 0
+      "retries": 1,
+      "note": "verifier FAIL at eb354c4: E2E second run timed out waiting for the Rerun viewer seek (charts fine); fix round started from eb354c4 with diagnostics, race hypothesis, 3 consecutive E2E passes required"
     }
   ]
 }
