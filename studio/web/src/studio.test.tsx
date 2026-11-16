@@ -8,13 +8,41 @@ import { LaunchForm } from "./pages/Launch";
 import { Chart } from "./Chart";
 import type { Catalog } from "./api";
 
-const viewer = vi.hoisted(() => ({ setTime: vi.fn(async () => undefined), start: vi.fn(async () => undefined), channel: { sendRrd: vi.fn(), close: vi.fn() } }));
+// Like the real 0.43.1 viewer: "recording_open" fires once the recording's identity arrives, its
+// timelines only some frames later, and until then setTime rejects ("has no timelines yet").
+const viewer = vi.hoisted(() => {
+  const v = {
+    loaded: false,
+    time: undefined as bigint | undefined,
+    onOpen: undefined as (() => void) | undefined,
+    start: vi.fn(async () => undefined),
+    setTime: vi.fn(async ({ durationNanos }: { durationNanos: number }) => {
+      if (!v.loaded) throw new Error("recording r has no timelines yet");
+      v.time = BigInt(durationNanos);
+    }),
+    getState: async () => ({
+      activeStoreId: "r",
+      loading: v.loaded ? [] : [{ url: "rrd" }],
+      recordings: [{ storeId: "r", timelines: v.loaded ? [{ name: "sim_time" }] : [], currentTime: { timeline: "sim_time", time: v.time } }],
+    }),
+    channel: {
+      sendRrd: vi.fn(() => {
+        v.loaded = false;
+        setTimeout(() => v.onOpen?.(), 0);
+        setTimeout(() => (v.loaded = true), 50);
+      }),
+      close: vi.fn(),
+    },
+  };
+  return v;
+});
 vi.mock("@rerun-io/web-viewer", () => ({
   WebViewer: class {
     start = viewer.start;
     setTime = viewer.setTime;
+    getState = viewer.getState;
     openChannel = () => viewer.channel;
-    on = (_event: string, cb: () => void) => (setTimeout(cb), () => undefined);
+    on = (event: string, cb: () => void) => (event === "recording_open" && (viewer.onOpen = cb), () => undefined);
     stop = vi.fn();
   },
 }));
@@ -43,6 +71,15 @@ describe("Replay", () => {
     expect(cursors()).toEqual([1, 1, 1]);
     await waitFor(() => expect(viewer.channel.sendRrd).toHaveBeenCalled());
     await waitFor(() => expect(viewer.setTime).toHaveBeenLastCalledWith({ timeline: "sim_time", durationNanos: 1_000_000_000, playState: "paused" }));
+  });
+
+  it("a seek requested before the recording is open lands once its timelines arrive", async () => {
+    viewer.start.mockImplementationOnce(() => new Promise((r) => setTimeout(r, 200))); // the click comes first
+    const { container } = at(`/runs/${M2}`);
+    await userEvent.click(await screen.findByRole("button", { name: /dropout_window_start/ }));
+    const rerun = container.querySelector(".rerun")!;
+    expect(rerun.getAttribute("data-viewer-time-ns")).toBeNull();
+    await waitFor(() => expect(rerun.getAttribute("data-viewer-time-ns")).toBe("1000000000"), { timeout: 3000 });
   });
 
   it("scrubbing one chart moves the others", async () => {
