@@ -1,0 +1,186 @@
+{
+  "scenarios": [
+    {
+      "id": "insert_nominal",
+      "task": "peg_insertion",
+      "stratum": "task_a",
+      "label": "DEV"
+    },
+    {
+      "id": "insert_offset_1mm",
+      "task": "peg_insertion",
+      "stratum": "task_a",
+      "label": "DEV"
+    },
+    {
+      "id": "insert_offset_2mm",
+      "task": "peg_insertion",
+      "stratum": "task_a",
+      "label": "DEV"
+    },
+    {
+      "id": "insert_offset_5mm_infeasible",
+      "task": "peg_insertion",
+      "stratum": "task_a",
+      "label": "DEV"
+    },
+    {
+      "id": "insert_force_limit_2n",
+      "task": "peg_insertion",
+      "stratum": "task_a",
+      "label": "DEV"
+    },
+    {
+      "id": "insert_force_limit_12n",
+      "task": "peg_insertion",
+      "stratum": "task_a",
+      "label": "DEV"
+    },
+    {
+      "id": "insert_force_limit_150n",
+      "task": "peg_insertion",
+      "stratum": "task_a",
+      "label": "DEV"
+    },
+    {
+      "id": "insert_deadline_2s",
+      "task": "peg_insertion",
+      "stratum": "task_a",
+      "label": "DEV"
+    },
+    {
+      "id": "insert_dropout_small",
+      "task": "peg_insertion",
+      "stratum": "task_a",
+      "label": "DEV"
+    },
+    {
+      "id": "insert_dropout_large",
+      "task": "peg_insertion",
+      "stratum": "task_a",
+      "label": "DEV"
+    },
+    {
+      "id": "insert_stale_persistent",
+      "task": "peg_insertion",
+      "stratum": "task_a",
+      "label": "DEV"
+    },
+    {
+      "id": "insert_stale_mid_motion",
+      "task": "peg_insertion",
+      "stratum": "task_a",
+      "label": "DEV"
+    },
+    {
+      "id": "insert_command_rejection_persistent",
+      "task": "peg_insertion",
+      "stratum": "task_a",
+      "label": "DEV"
+    },
+    {
+      "id": "insert_command_rejection_transient",
+      "task": "peg_insertion",
+      "stratum": "task_a",
+      "label": "DEV"
+    },
+    {
+      "id": "insert_machine_fault",
+      "task": "peg_insertion",
+      "stratum": "task_a",
+      "label": "DEV"
+    },
+    {
+      "id": "insert_geometry_fine_facets",
+      "task": "peg_insertion",
+      "stratum": "task_a",
+      "label": "DEV"
+    },
+    {
+      "id": "insert_geometry_tight_clearance",
+      "task": "peg_insertion",
+      "stratum": "task_a",
+      "label": "DEV"
+    },
+    {
+      "id": "insert_geometry_deep_plate",
+      "task": "peg_insertion",
+      "stratum": "task_a",
+      "label": "DEV"
+    },
+    {
+      "id": "slide_nominal",
+      "task": "constrained_slide",
+      "stratum": "task_b",
+      "label": "DEV"
+    },
+    {
+      "id": "slide_disturbance_recoverable",
+      "task": "constrained_slide",
+      "stratum": "task_b",
+      "label": "DEV"
+    },
+    {
+      "id": "slide_disturbance_recoverable_ceiling",
+      "task": "constrained_slide",
+      "stratum": "task_b",
+      "label": "DEV"
+    },
+    {
+      "id": "slide_disturbance_no_recovery",
+      "task": "constrained_slide",
+      "stratum": "task_b",
+      "label": "DEV"
+    },
+    {
+      "id": "slide_disturbance_severe",
+      "task": "constrained_slide",
+      "stratum": "task_b",
+      "label": "DEV"
+    },
+    {
+      "id": "slide_stale_mid_slide",
+      "task": "constrained_slide",
+      "stratum": "task_b",
+      "label": "DEV"
+    },
+    {
+      "id": "slide_deadline_infeasible",
+      "task": "constrained_slide",
+      "stratum": "task_b",
+      "label": "DEV"
+    },
+    {
+      "id": "slide_command_rejection_persistent",
+      "task": "constrained_slide",
+      "stratum": "task_b",
+      "label": "DEV"
+    },
+    {
+      "id": "slide_machine_fault",
+      "task": "constrained_slide",
+      "stratum": "task_b",
+      "label": "DEV"
+    }
+  ],
+  "systems": [
+    {
+      "id": "bare_behavior",
+      "cpu_s_per_episode": 16.334054972820358
+    },
+    {
+      "id": "competent_supervisor",
+      "cpu_s_per_episode": 2.7928491539520977
+    },
+    {
+      "id": "g1_incumbent",
+      "cpu_s_per_episode": 2.5759782536087856
+    },
+    {
+      "id": "haplous_mediated",
+      "cpu_s_per_episode": 1.2125603752195588
+    }
+  ],
+  "cap_cpu_minutes": 10,
+  "source": "benchmarks.heb insertion+sliding scenarios; CPU means from results/m4/campaign/cost.json"
+}

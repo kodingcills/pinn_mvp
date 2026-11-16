@@ -1,0 +1,284 @@
+{
+  "tasks": [
+    {
+      "id": "M2.1",
+      "title": "Record one real HEB/pegsim episode and replay it from artifacts (rrd + mp4)",
+      "status": "verified",
+      "verdict": null,
+      "commit": "6201f9d4e6b4d554ffdc310264aaff278cb28247",
+      "owner": "worker-M2.1",
+      "proof": [
+        "results/recordings/m2-heb-insert_dropout_large.replay_report.json",
+        "scripts/m2_gate.py",
+        "tests/test_recording_replay.py"
+      ]
+    },
+    {
+      "id": "M2.2",
+      "title": "Independent verification of M2.1 at its head SHA",
+      "status": "pass",
+      "verdict": null,
+      "commit": "6201f9d4e6b4d554ffdc310264aaff278cb28247",
+      "owner": "verifier-M2 (sonnet)",
+      "proof": [
+        "verifier re-derived gates 2-8 with its own scripts; fresh re-record gave byte-identical mp4; 7 planted defects"
+      ]
+    },
+    {
+      "id": "M2.3",
+      "title": ".claude/skills/verify-haplous-eval via create-verification-skill, run for real",
+      "status": "verified",
+      "verdict": "PASS by sonnet verifier at 0c28024 (cold-reader journey, 5 defects incl. 2 of its own)",
+      "commit": "0c28024a2c4744955eeeaa7d9cd1f2293bd005e1",
+      "owner": "worker-M2.3 (opus)",
+      "proof": [
+        ".claude/skills/verify-haplous-eval/SKILL.md journey rc 0 in env -i",
+        "plant_defect.py: 3 defect kinds"
+      ]
+    },
+    {
+      "id": "M3.1",
+      "title": "constrained_slide through the same record/replay/M0/HES path without recorder or HES-core edits",
+      "status": "verified",
+      "verdict": "PASS (pipeline) by sonnet verifier at 8d752f8; slide validity partial: 2/9 scenarios depend on 16-tile mesh artifact",
+      "commit": "8d752f8690a0f631c3a2da76ab3e73a4100ab46d",
+      "owner": "worker-M3.1 (opus)",
+      "proof": []
+    },
+    {
+      "id": "M3.2",
+      "title": "Pass-through arm + A/A vs direct across both task families",
+      "status": "verified",
+      "verdict": "PASS by opus verifier at 809c020 (6 scenarios full horizon with machine-side logger + state hashes; 3 planted defects caught)",
+      "commit": "809c020",
+      "owner": "worker-M3.2 (sonnet)",
+      "proof": [
+        "results/passthrough/aa_report.json (39/39 identical, full horizon)",
+        "tests/test_passthrough_aa.py"
+      ]
+    },
+    {
+      "id": "M4.1",
+      "title": "Specify G1 competent incumbent per task from existing guards",
+      "status": "verified",
+      "verdict": "PASS by sonnet verifier: G1 independent (thresholds from declared machine/intent info), no guard artificially weak (mildly strong), audit confirmed; 27/27 dispositions match Haplous (19 C / 5 A / 3 R) because HEB scenarios sit where all competent guards agree; static truth-leak gap found",
+      "commit": "7a91bc09f1b8decfdfa72e132a32ba511678c617",
+      "owner": "worker-M4.1 (opus)",
+      "proof": []
+    },
+    {
+      "id": "M3.3",
+      "title": "Negative tests: truth leakage at the execution boundary, wrong units/frames, wrong scenario pairing, unsupported capability claim; also: document and test that re-sealed events.jsonl tampering is caught only by trust_root (verify-haplous-eval SKILL.md \"How to read it\")",
+      "status": "verified",
+      "verdict": "PASS by sonnet verifier at ae4318f (revert checks, HES output byte-identical to e868d1c, both findings confirmed)",
+      "commit": "ae4318f",
+      "owner": "worker-M3.3 (opus)",
+      "proof": [
+        "tests/test_negative_truth_leak.py",
+        "tests/test_negative_recording.py",
+        "tests/test_negative_pairing.py",
+        "tests/test_negative_capability.py"
+      ]
+    },
+    {
+      "id": "M3.4",
+      "title": "Scenario lookup through the HEB task registry (no hard-coded pack list in benchmarks/recording.py:276); gate 9 plain comparator includes grade_run",
+      "status": "verified",
+      "verdict": "PASS by sonnet verifier at 9af7b21 (P1-P3 + 2 own plants, 27-id equality, both M2 gates 11/11)",
+      "commit": "9af7b21",
+      "owner": "worker-M3.4b (opus, fix round)",
+      "proof": [
+        "tests/test_scenario_registry_lookup.py",
+        "gate 9 graded-vs-graded"
+      ]
+    },
+    {
+      "id": "M3.5",
+      "title": "Stop the scenario id (which names faults) reaching intent.goal_description in benchmarks/heb/systems.py build_intent; flip M3.3's strict xfail test_scenario_id_does_not_cross_execution_boundary to a passing test",
+      "status": "verified",
+      "verdict": "PASS by opus verifier at 3fa0ec5: 27/27 intents leaked before, 0/27 after; independent parity 108/108; HES rendered output byte-identical",
+      "commit": "3fa0ec5 (on b4ea44d)",
+      "owner": "worker-M3.5 (sonnet)",
+      "proof": []
+    },
+    {
+      "id": "M3.6",
+      "title": "Implement locked design OD-1: contract-driven command-mode admission (docs/eval_program/designs/OD1_command_mode_admission.md)",
+      "status": "verified",
+      "verdict": "PASS by sonnet verifier at ea70b7e: design S1-S5 conform, Track B differential 96/96, independent parity 108/108, refusals open no session, mid-run loss stops with 0 commands after loss tick, 2 planted defects caught",
+      "commit": "ea70b7e (on 00ab6ea)",
+      "owner": "worker-M3.6 (opus)",
+      "proof": []
+    },
+    {
+      "id": "M4.1b",
+      "title": "Static guard: systems under test may not read evaluator-only Scenario attributes in decision code; correct G1 design doc section 3",
+      "status": "verified",
+      "verdict": "PASS by opus verifier at 54fff7f: partition correct over all 31 Scenario fields; alias/getattr/helper evasions caught; locals() and shadowed allow-listed callee missed (deliberate evasions only)",
+      "commit": "54fff7f",
+      "owner": "worker-M4.1b (sonnet)",
+      "proof": []
+    },
+    {
+      "id": "M4.2a",
+      "title": "Pre-registration (populations incl. stress beyond hold budget, arms, estimands, statistics, exclusions, epoch) + campaign driver + independent recompute + planted mismatch test + 2-scenario dry run; NO comparative results",
+      "status": "verified",
+      "verdict": "PASS by sonnet verifier at 11eeae6: r1->r2 changed only agreed items; drift refusal works; HES check against committed report (not circular); decide==decision on 20,015 intervals; exclusions recounted (19 control); 67% of stress windows exceed 0.5 s hold budget; store regeneration + corruption detection work",
+      "commit": "11eeae6 (r2 prereg 4502e59 before r2 dry run)",
+      "owner": "worker-M4.2a (opus)",
+      "proof": []
+    },
+    {
+      "id": "M4.2b",
+      "title": "Execute the pre-registered campaign (direct / G1 / Haplous, control + stress populations), HES metrics under a new scoring epoch, independent recompute, rescued/harmed replays",
+      "status": "verified",
+      "verdict": "PASS by sonnet verifier at 092962f: diff = results + renderer + its test + report only; validate passes; recompute 0 metric mismatches; own recount matches every cell; render --check matches; M0 verify []; git_dirty false; replay 0.0 m error; suite 871/4 known/1 xfailed; no binaries",
+      "commit": "092962f",
+      "owner": "worker-M4.2b (opus)",
+      "proof": [
+        "docs/eval_program/M4_REPORT.md",
+        "results/m4/campaign/official_metrics.json",
+        "results/m4/campaign/raw_rows.jsonl"
+      ]
+    },
+    {
+      "id": "M5.1",
+      "title": "Fresh-agent cold start: pick next unblocked task from this ledger, ship it with independent verdict",
+      "status": "verified",
+      "verdict": "PASS (same verifier verdict as M5.2 at 0a926fa; the three doc gaps confirmed)",
+      "commit": "0a926fa",
+      "owner": "worker-M5.1 (opus)",
+      "proof": []
+    },
+    {
+      "id": "M5.2",
+      "title": "Record telemetry+events at the machine-session boundary for any backend; MuJoCo state stream optional",
+      "status": "verified",
+      "verdict": "PASS by sonnet verifier at 0a926fa: no haplous/pegsim change; wrappers pass values through; fresh M2 recording byte-identical to committed; mujoco A/A reproduced; robosuite from committed evidence only (no venv); M2 gate 11/11; suite 880/4 known/1 xfailed; planted 1e-9 N perturbation caught",
+      "commit": "0a926fa",
+      "owner": "worker-M5.1 cold start (opus)",
+      "proof": [
+        "results/m5/episode_log_mujoco.json",
+        "results/m5/episode_log_robosuite.json",
+        "tests/test_episode_log.py",
+        "M2 gate 11/11 --existing on both committed recordings"
+      ]
+    },
+    {
+      "id": "M5.3",
+      "title": "haplous timeline <run>: plots + Haplous decision markers from the episode log only",
+      "status": "verified",
+      "verdict": "PASS by sonnet verifier at 23686f2: CLI wiring only; old text timeline byte-identical to base; rrd read independently: series counts = telemetry, every event a marker at its tick; rrd verify ok; PNGs viewed (dropout shaded 1.0-1.2 s); no backend modules loaded; tamper refused; planted defect caught",
+      "commit": "23686f2",
+      "owner": "worker-M5.3 (opus)",
+      "proof": [
+        "evaluation/timeline.py",
+        "tests/test_timeline.py",
+        "haplous/cli/inspection.py"
+      ]
+    },
+    {
+      "id": "M5.4",
+      "title": "MCAP export of the episode log (JSONL stays canonical)",
+      "status": "verified",
+      "verdict": "PASS by sonnet verifier at efce593: diff scope clean; round trip exact and deterministic across processes on both logs; committed MCAP equals fresh export; independent make_reader read: 4 channels json/jsonschema, log_time = tick*dt; planted defect caught. Full suite deferred to the combined M5.3+M5.4 integration run (owner: 889/4/1); combined suite after M5.3+M5.4 integration: 895 passed / 4 known / 1 xfailed",
+      "commit": "efce593",
+      "owner": "worker-M5.4 (opus)",
+      "proof": [
+        "benchmarks/episode_mcap.py",
+        "tests/test_episode_mcap.py",
+        "scripts/m5_mcap_export.py",
+        "results/m5/mcap_export.json",
+        "results/m5/robosuite-log.mcap"
+      ]
+    },
+    {
+      "id": "M5.5",
+      "title": "Import real-robot ROS 2 bag / MCAP into the episode log",
+      "status": "verified",
+      "verdict": "PASS by sonnet verifier at c66d144: no haplous/pegsim change; loader filter identical; pinned sha256 match; fresh import byte-identical to committed sample; own pyarrow check of pose/force.base/action mapping and segment ep1/seg2 \"Insert round peg 2.\"; no Haplous/truth claims; CC-BY attribution adequate; MCAP round trip exact on all three logs; timeline rrd verify ok, no backend loaded; planted defect caught",
+      "commit": "c66d144",
+      "owner": "worker-M5.5 (opus)",
+      "proof": [
+        "benchmarks/realdata/reassemble_episode_log.py",
+        "scripts/m55_reassemble_import.py",
+        "results/m5/reassemble-log/",
+        "results/m5/reassemble_import.json",
+        "tests/test_reassemble_import.py"
+      ]
+    },
+    {
+      "id": "M6.1",
+      "title": "Haplous Studio server: `haplous studio`, local API over existing artifacts, job worker, investigation writer, localhost guards",
+      "status": "pending",
+      "verdict": null,
+      "commit": null,
+      "owner": null,
+      "proof": []
+    },
+    {
+      "id": "M6.2",
+      "title": "Haplous Studio frontend: Runs, Replay (Rerun 3D + synced charts, event click-to-seek), Compare, Evidence, Launch, Create investigation",
+      "status": "pending",
+      "verdict": null,
+      "commit": null,
+      "owner": null,
+      "proof": []
+    },
+    {
+      "id": "M6.3",
+      "title": "Haplous Studio end-to-end: Playwright drives the release-1 definition of done on the real server",
+      "status": "pending",
+      "verdict": null,
+      "commit": null,
+      "owner": null,
+      "proof": []
+    }
+  ],
+  "known_issues": [
+    {
+      "id": "R05-float-digit",
+      "title": "3 tests in tests/test_r05.py: locked N5 covariance scalar differs in last float digit",
+      "status": "pre-existing"
+    },
+    {
+      "id": "rollout-capture",
+      "title": "test_capture_localization_error_within_clearance: 0.50303 mm vs 0.5 mm threshold",
+      "status": "pre-existing"
+    },
+    {
+      "id": "hes-non-interference",
+      "title": "Committed hes qualify exits 1: non_interference gate 0.786 < 0.95",
+      "status": "open"
+    }
+  ],
+  "benchmarks": [
+    {
+      "id": "heb",
+      "name": "HEB (pegsim MuJoCo)",
+      "executed": true
+    },
+    {
+      "id": "m4-campaign",
+      "name": "M4 confirmatory campaign (control + stress)",
+      "executed": true
+    },
+    {
+      "id": "robosuite",
+      "name": "robosuite 1.5.2 Lift (episode log)",
+      "executed": true
+    },
+    {
+      "id": "reassemble",
+      "name": "REASSEMBLE real-robot log import",
+      "executed": true
+    },
+    {
+      "id": "libero-dynamic",
+      "name": "LIBERO-Dynamic / VLA",
+      "executed": false,
+      "reason": "needs GPU and operator approval"
+    }
+  ],
+  "source": "docs/eval_program/TASKS.json, docs/eval_program/KNOWN_ISSUES.md"
+}

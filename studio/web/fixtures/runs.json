@@ -1,0 +1,50 @@
+[
+  {
+    "id": "m2-heb-insert_dropout_large",
+    "source": "m0_registry",
+    "backend": "mujoco-3.11.0",
+    "scenario_id": "insert_dropout_large",
+    "system": "haplous_mediated",
+    "disposition": "COMPLETE",
+    "bounded_success": true,
+    "has_3d": true,
+    "verified": true,
+    "path": "results/recordings/registry/runs/m2-heb-insert_dropout_large"
+  },
+  {
+    "id": "m3-heb-slide_disturbance_recoverable_ceiling",
+    "source": "m0_registry",
+    "backend": "mujoco-3.11.0",
+    "scenario_id": "slide_disturbance_recoverable_ceiling",
+    "system": "haplous_mediated",
+    "disposition": "COMPLETE",
+    "bounded_success": false,
+    "has_3d": true,
+    "verified": true,
+    "path": "results/recordings/registry/runs/m3-heb-slide_disturbance_recoverable_ceiling"
+  },
+  {
+    "id": "results/m5/robosuite-log",
+    "source": "episode_log",
+    "backend": "robosuite-1.5.2",
+    "scenario_id": "robosuite/1.5.2/Lift",
+    "system": "haplous_mediated",
+    "disposition": "COMPLETE",
+    "bounded_success": null,
+    "has_3d": false,
+    "verified": false,
+    "path": "results/m5/robosuite-log"
+  },
+  {
+    "id": "results/m5/reassemble-log",
+    "source": "episode_log",
+    "backend": "real Franka Emika Panda (REASSEMBLE, NIST Assembly Task Board), offline log",
+    "scenario_id": "reassemble/episode-1/segments-2-2",
+    "system": "none: recorded real-robot dataset; Haplous did not run",
+    "disposition": null,
+    "bounded_success": null,
+    "has_3d": false,
+    "verified": false,
+    "path": "results/m5/reassemble-log"
+  }
+]
