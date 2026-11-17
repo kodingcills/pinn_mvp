@@ -21,6 +21,15 @@ from typing import Mapping, Optional
 import mujoco
 import numpy as np
 
+from haplous.adapters.legacy import CommandOutcome
+from haplous.capabilities import CommandMode, MachineCapabilities, SensingChannel
+from haplous.machine import (
+    CartesianImpedanceTarget,
+    ClockDomain,
+    ControlParameters,
+    MachineObservation,
+    Stamp,
+)
 from pegsim.control import (
     assert_gains_stable,
     compute_and_apply_qfrc,
@@ -31,15 +40,6 @@ from pegsim.rollout import (
     EpisodeConfig,
     ValidatedConfig,
     build_episode_model_data,
-)
-
-from haplous.capabilities import CommandMode, MachineCapabilities, SensingChannel
-from haplous.machine import (
-    CommandOutcome,
-    ControlParameters,
-    MachineObservation,
-    ServoCommand,
-    Stamp,
 )
 
 
@@ -184,7 +184,9 @@ class MuJoCoMachine:
         pose = tuple(float(v) for v in self._data.site_xpos[self._tip_site_id])
         return MachineObservation(
             stamp=Stamp(
-                source_s=0.0, received_s=self._config.receive_delay_s
+                source_s=0.0,
+                received_s=self._config.receive_delay_s,
+                clock=ClockDomain.SIM,
             ),
             pose_m=pose,
             force_z_n=0.0,
@@ -241,7 +243,7 @@ class _MuJoCoSession:
             self._dt,
         )
 
-        self._pending: Optional[ServoCommand] = None
+        self._pending: Optional[CartesianImpedanceTarget] = None
         self._held = np.zeros(self._model.nv)
         self._delayed: list[np.ndarray] = []
         self._stopped = False
@@ -271,6 +273,7 @@ class _MuJoCoSession:
             stamp=Stamp(
                 source_s=t,
                 received_s=t + self._config.receive_delay_s + extra_delay,
+                clock=ClockDomain.SIM,
             ),
             pose_m=(float(tip[0]), float(tip[1]), float(tip[2])),
             force_z_n=float(force[2]),
@@ -286,7 +289,7 @@ class _MuJoCoSession:
         self._observations.append(obs)
         return obs
 
-    def apply(self, command: ServoCommand) -> CommandOutcome:
+    def apply(self, command: CartesianImpedanceTarget) -> CommandOutcome:
         if self._stopped or self._fault is not None or self._ended:
             return CommandOutcome(accepted=False, reason="session_inactive")
         t = float(self._data.time)

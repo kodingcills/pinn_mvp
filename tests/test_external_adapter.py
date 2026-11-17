@@ -17,12 +17,12 @@ from benchmarks.external import (
 from haplous import (
     ExecutionIntent,
     ExecutionState,
-    HaplousRuntime,
     Requirement,
     RequirementKind,
     SuccessCondition,
 )
 from haplous.adapters.external import ExternalMachineAdapter
+from haplous.adapters.legacy import CommandOutcome, sim_runtime
 from haplous.behavior import ExecutionBehavior
 from haplous.capabilities import (
     CommandMode,
@@ -30,12 +30,7 @@ from haplous.capabilities import (
     SensingChannel,
     negotiate,
 )
-from haplous.machine import (
-    CommandOutcome,
-    MachineObservation,
-    ServoCommand,
-    Stamp,
-)
+from haplous.machine import CartesianImpedanceTarget, ClockDomain, MachineObservation, Stamp
 
 ROOT = Path(__file__).resolve().parents[1]
 _ADMISSION_CODES = {
@@ -90,13 +85,13 @@ class FakeExternalTask:
     def observe(self) -> MachineObservation:
         t = self._tick * self._period
         return MachineObservation(
-            stamp=Stamp(source_s=t, received_s=t),
+            stamp=Stamp(source_s=t, received_s=t, clock=ClockDomain.SIM),
             pose_m=(0.0, 0.0, self._pose),
             force_z_n=self._force,
             tilt_deg=0.0,
         )
 
-    def apply_command(self, command: ServoCommand) -> CommandOutcome:
+    def apply_command(self, command: CartesianImpedanceTarget) -> CommandOutcome:
         target_z = command.target_pose_m[2]
         if abs(target_z - self._pose) > 0.0035:
             return CommandOutcome(accepted=False, reason="step_too_large")
@@ -158,8 +153,8 @@ class _HoldBehavior(ExecutionBehavior):
     def begin(self, intent, caps, observation) -> None:
         self._target = intent.goal_position_m
 
-    def step(self, observation) -> ServoCommand:
-        return ServoCommand(target_pose_m=self._target, k_z_n_per_m=500.0)
+    def step(self, observation) -> CartesianImpedanceTarget:
+        return CartesianImpedanceTarget(target_pose_m=self._target, k_z_n_per_m=500.0)
 
 
 def test_external_task_protocol_conformance():
@@ -168,9 +163,9 @@ def test_external_task_protocol_conformance():
     task.reset(seed=3)
     obs = task.observe()
     assert obs.pose_m[2] == 0.005
-    outcome = task.apply_command(ServoCommand((0.0, 0.0, 0.004), 500.0))
+    outcome = task.apply_command(CartesianImpedanceTarget((0.0, 0.0, 0.004), 500.0))
     assert outcome.accepted
-    rejection = task.apply_command(ServoCommand((0.0, 0.0, 0.009), 500.0))
+    rejection = task.apply_command(CartesianImpedanceTarget((0.0, 0.0, 0.009), 500.0))
     assert not rejection.accepted and rejection.reason == "step_too_large"
 
 
@@ -180,7 +175,7 @@ def test_adapter_satisfies_machine_surface():
         start_position_m=(0.0, 0.0, 0.005), horizon_s=5.0
     )
     assert session.observe().pose_m[2] == 0.005
-    assert session.apply(ServoCommand((0.0, 0.0, 0.004), 500.0)).accepted
+    assert session.apply(CartesianImpedanceTarget((0.0, 0.0, 0.004), 500.0)).accepted
     session.step()
     assert not session.ended
     adapter.stop()
@@ -190,7 +185,7 @@ def test_runtime_runs_over_external_adapter():
     task = FakeExternalTask()
     task.reset(seed=3)
     machine = ExternalMachineAdapter(task)
-    runtime = HaplousRuntime(machine, behaviors={"external_slide": _HoldBehavior})
+    runtime = sim_runtime(machine, behaviors={"external_slide": _HoldBehavior})
     feasibility = runtime.submit(_fake_intent())
     assert feasibility.outcome == "SUPPORTED"
     evidence = runtime.execute()
@@ -250,7 +245,7 @@ def test_grader_truth_never_reaches_runtime_health():
     task.reset(seed=3)
     machine = ExternalMachineAdapter(task)
     assert "success" not in machine.health()
-    runtime = HaplousRuntime(machine, behaviors={"external_slide": _HoldBehavior})
+    runtime = sim_runtime(machine, behaviors={"external_slide": _HoldBehavior})
     assert runtime.submit(_fake_intent()).outcome == "SUPPORTED"
     evidence = runtime.execute()
     assert runtime.state == ExecutionState.COMPLETE

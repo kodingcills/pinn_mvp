@@ -50,8 +50,8 @@ def _robosuite_run(log_dir: Path | None) -> tuple[dict, dict | None]:
     from benchmarks.episode_log import LoggingMachine
     from benchmarks.external.robosuite_lift_policy import LiftPolicy
     from benchmarks.external.robosuite_lift_task import RobosuiteLiftTask
-    from haplous import HaplousRuntime
     from haplous.adapters.external import ExternalMachineAdapter
+    from haplous.adapters.legacy import sim_runtime
 
     policy = LiftPolicy()
     task = RobosuiteLiftTask(lambda: policy.gripper_action)
@@ -59,7 +59,7 @@ def _robosuite_run(log_dir: Path | None) -> tuple[dict, dict | None]:
     machine = ExternalMachineAdapter(task)
     if log_dir is not None:
         machine = LoggingMachine(machine, log_dir)
-    runtime = HaplousRuntime(machine, behaviors={"robosuite_lift": lambda: policy})
+    runtime = sim_runtime(machine, behaviors={"robosuite_lift": lambda: policy})
     feasibility = runtime.submit(lift_intent(task.observe()))
     evidence = runtime.execute() if feasibility.outcome != "REFUSED" else runtime.evidence
     seen = {

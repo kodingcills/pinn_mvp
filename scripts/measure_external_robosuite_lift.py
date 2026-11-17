@@ -25,12 +25,12 @@ from benchmarks.external.robosuite_lift_policy import LiftPolicy
 from benchmarks.external.robosuite_lift_task import RobosuiteLiftTask
 from haplous import (
     ExecutionIntent,
-    HaplousRuntime,
     Requirement,
     RequirementKind,
     SuccessCondition,
     __version__ as haplous_version,
 )
+from haplous.adapters.legacy import sim_runtime
 from haplous.adapters.external import ExternalMachineAdapter
 
 
@@ -126,7 +126,7 @@ def _haplous_trial(seed: int) -> Trial:
     task.reset(seed=seed)
     observation = task.observe()
     assert observation is not None
-    runtime = HaplousRuntime(
+    runtime = sim_runtime(
         ExternalMachineAdapter(task),
         behaviors={"robosuite_lift": lambda: policy},
     )

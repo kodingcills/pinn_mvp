@@ -20,21 +20,6 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from benchmarks.external import DemoStreamPolicy, ManiSkillPegInsertionTask
-from haplous import (
-    CommandMode,
-    CommandOutcome,
-    ExecutionIntent,
-    HaplousRuntime,
-    MachineCapabilities,
-    MachineObservation,
-    Requirement,
-    RequirementKind,
-    ServoCommand,
-    SuccessCondition,
-)
-from haplous.adapters.external import ExternalMachineAdapter
-
 from measure_external_maniskill import (
     FORCE_LIMIT_N,
     TILT_LIMIT_DEG,
@@ -43,6 +28,15 @@ from measure_external_maniskill import (
     _success,
 )
 
+from benchmarks.external import DemoStreamPolicy, ManiSkillPegInsertionTask
+from haplous import (
+    ExecutionIntent,
+    Requirement,
+    RequirementKind,
+    SuccessCondition,
+)
+from haplous.adapters.legacy import sim_runtime
+from haplous.adapters.external import ExternalMachineAdapter
 
 RESULTS_ROOT = ROOT / "results" / "external_eval" / "maniskill-3.0.1"
 
@@ -184,7 +178,7 @@ def _run_episode(episode_id: int, system: str) -> dict:
         inner_machine = ExternalMachineAdapter(task)
         machine = TimingMachine(inner_machine)
         behavior = TimingBehavior(policy)
-        runtime = HaplousRuntime(machine, behaviors={"peg_insertion_side": lambda: behavior})
+        runtime = sim_runtime(machine, behaviors={"peg_insertion_side": lambda: behavior})
         observation = task.observe()
         assert observation is not None
         intent = ExecutionIntent(

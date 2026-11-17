@@ -1,12 +1,12 @@
 """Physics integration: the runtime mediates real insertions through the
 MuJoCo machine adapter's live stepping session over the validated research
 substrate primitives."""
+from haplous.adapters.legacy import sim_runtime
 from haplous.behaviors.insertion import (
     insertion_behavior_factory,
     insertion_intent,
     insertion_machine,
 )
-from haplous.runtime import HaplousRuntime
 from haplous.state import ExecutionState
 from pegsim.rollout import VALIDATED_LOOSE_V1
 
@@ -21,7 +21,7 @@ def run_insertion(offset_m, bearing=0.0, **intent_kwargs):
         initial_bearing_rad=bearing,
         **intent_kwargs,
     )
-    runtime = HaplousRuntime(machine, behaviors=BEHAVIORS)
+    runtime = sim_runtime(machine, behaviors=BEHAVIORS)
     feasibility = runtime.submit(intent)
     if feasibility.outcome == "REFUSED":
         return feasibility, runtime, machine

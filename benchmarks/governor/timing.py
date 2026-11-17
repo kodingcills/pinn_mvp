@@ -7,11 +7,13 @@ from collections.abc import Mapping
 from dataclasses import dataclass, replace
 from typing import TYPE_CHECKING
 
-from haplous.machine import CommandOutcome, MachineObservation, ServoCommand, Stamp
+from haplous.adapters.legacy import CommandOutcome
+from haplous.machine import CartesianImpedanceTarget, MachineObservation
 
 if TYPE_CHECKING:
+    from haplous.adapters.legacy import SimSession
     from haplous.capabilities import MachineCapabilities
-    from haplous.machine import Machine, MachineSession
+    from haplous.machine import Machine
 
 
 @dataclass(frozen=True, slots=True)
@@ -28,7 +30,7 @@ class TimingStressConfig:
 class TimingSession:
     def __init__(
         self,
-        inner: MachineSession,
+        inner: SimSession,
         config: TimingStressConfig,
         nominal_period_s: float,
     ) -> None:
@@ -38,7 +40,7 @@ class TimingSession:
         self._rng = random.Random(config.seed)
         self._next_delivery_s: float | None = None
         self._tick = 0
-        self._commands: deque[tuple[int, ServoCommand]] = deque()
+        self._commands: deque[tuple[int, CartesianImpedanceTarget]] = deque()
         self._observations: list[MachineObservation] = []
 
     def observe(self) -> MachineObservation | None:
@@ -65,21 +67,21 @@ class TimingSession:
         )
         delivered = replace(
             observation,
-            stamp=Stamp(
-                source_s=observation.stamp.source_s,
+            stamp=replace(
+                observation.stamp,
                 received_s=observation.stamp.received_s + extra_delay,
             ),
         )
         self._observations.append(delivered)
         return delivered
 
-    def apply(self, command: ServoCommand) -> CommandOutcome:
+    def apply(self, command: CartesianImpedanceTarget) -> CommandOutcome:
         due_tick = self._tick + self._config.command_delay_steps
         self._commands.append((due_tick, command))
         return CommandOutcome(accepted=True)
 
     def step(self) -> None:
-        newest_due: ServoCommand | None = None
+        newest_due: CartesianImpedanceTarget | None = None
         while self._commands and self._commands[0][0] <= self._tick:
             _, newest_due = self._commands.popleft()
         if newest_due is not None:

@@ -5,7 +5,7 @@ import json
 import pytest
 
 from haplous.evidence_store import BoundedMemorySink, JsonlEvidenceStore
-from haplous.runtime import HaplousRuntime
+from haplous.adapters.legacy import sim_runtime
 
 from tests.test_haplous_semantics import (
     ScriptedMachine,
@@ -60,7 +60,7 @@ def test_jsonl_store_roundtrip_and_rotation(tmp_path):
 def test_runtime_with_sink_bounded_archive_no_loss():
     machine = ScriptedMachine(observation=obs(0.0), script=stream(seated_samples(10)))
     sink = BoundedMemorySink(maxsize=10_000)
-    runtime = HaplousRuntime(machine, behaviors=_behaviors(), evidence_sink=sink, max_archived_evidence=8)
+    runtime = sim_runtime(machine, behaviors=_behaviors(), evidence_sink=sink, max_archived_evidence=8)
     intent = make_intent()
     cycles = 100
     for cycle in range(cycles):
@@ -79,12 +79,12 @@ def test_runtime_with_sink_bounded_archive_no_loss():
 def test_runtime_rejects_bounded_archive_without_sink():
     machine = ScriptedMachine(observation=obs(0.0), script=stream(seated_samples(10)))
     with pytest.raises(ValueError, match="requires an evidence_sink"):
-        HaplousRuntime(machine, behaviors=_behaviors(), max_archived_evidence=8)
+        sim_runtime(machine, behaviors=_behaviors(), max_archived_evidence=8)
 
 
 def test_runtime_default_unbounded_unchanged():
     machine = ScriptedMachine(observation=obs(0.0), script=stream(seated_samples(10)))
-    runtime = HaplousRuntime(machine, behaviors=_behaviors())
+    runtime = sim_runtime(machine, behaviors=_behaviors())
     intent = make_intent()
     for cycle in range(20):
         runtime.submit(intent)

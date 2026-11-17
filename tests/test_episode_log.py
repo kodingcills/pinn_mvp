@@ -11,9 +11,9 @@ import pytest
 from benchmarks import episode_log as el
 from benchmarks.recording import run_episode, scenario_by_id
 from evaluation import replay as rp
-from haplous import HaplousRuntime
 from haplous.adapters.external import ExternalMachineAdapter
-from haplous.machine import ServoCommand
+from haplous.adapters.legacy import sim_runtime
+from haplous.machine import CartesianImpedanceTarget
 from tests.test_external_adapter import FakeExternalTask, _fake_intent, _HoldBehavior
 
 REPO = Path(__file__).resolve().parents[1]
@@ -43,7 +43,7 @@ def _fake_episode(log_dir: Path | None):
             seen.append(observation)
             return super().step(observation)
 
-    runtime = HaplousRuntime(machine, behaviors={"external_slide": _Seeing})
+    runtime = sim_runtime(machine, behaviors={"external_slide": _Seeing})
     runtime.submit(_fake_intent())
     evidence = runtime.execute()
     if log_dir is not None:
@@ -92,7 +92,7 @@ def test_session_fault_is_logged_as_a_machine_event(tmp_path):
     machine = el.LoggingMachine(ExternalMachineAdapter(task), tmp_path)
     session = machine.open_session(start_position_m=(0.0, 0.0, 0.005), horizon_s=5.0)
     while not session.ended:
-        session.apply(ServoCommand(session.observe().pose_m, 500.0))
+        session.apply(CartesianImpedanceTarget(session.observe().pose_m, 500.0))
         session.step()
     machine.finish(None, system="none", outcome={})
     events = [json.loads(line) for line in (tmp_path / el.EVENTS).read_text().splitlines()]

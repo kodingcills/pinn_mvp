@@ -21,7 +21,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from haplous.evidence_store import JsonlEvidenceStore
-from haplous.runtime import HaplousRuntime
+from haplous.adapters.legacy import sim_runtime
 from haplous.state import ExecutionState
 
 from tests.test_haplous_reliability import BEHAVIORS
@@ -60,7 +60,7 @@ def main() -> int:
     store = JsonlEvidenceStore(store_dir)
 
     machine = ScriptedMachine(observation=obs(0.0), script=stream(seated_samples(args.ticks_per_cycle)))
-    runtime = HaplousRuntime(
+    runtime = sim_runtime(
         machine, behaviors=BEHAVIORS, evidence_sink=store, max_archived_evidence=args.max_archived
     )
     intent = make_intent()
@@ -106,7 +106,7 @@ def main() -> int:
         abort_machine = ScriptedMachine(
             observation=obs(0.0), script=stream([(0.0, 0.0, -0.001, 30.0, 0.0)] * 30)
         )
-        abort_runtime = HaplousRuntime(
+        abort_runtime = sim_runtime(
             abort_machine, behaviors=BEHAVIORS, evidence_sink=store, max_archived_evidence=args.max_archived
         )
         abort_runtime.submit(make_intent(recovery_policy=None))

@@ -23,12 +23,12 @@ sys.path.insert(0, str(ROOT))
 from benchmarks.external import DemoStreamPolicy, ManiSkillPegInsertionTask
 from haplous import (
     ExecutionIntent,
-    HaplousRuntime,
     Requirement,
     RequirementKind,
     SuccessCondition,
     __version__ as haplous_version,
 )
+from haplous.adapters.legacy import sim_runtime
 from haplous.adapters.external import ExternalMachineAdapter
 
 
@@ -137,7 +137,7 @@ def _haplous_trial(episode_id: int) -> Trial:
     task.reset(seed=_episode_seed(episode_id))
     observation = task.observe()
     assert observation is not None
-    runtime = HaplousRuntime(
+    runtime = sim_runtime(
         ExternalMachineAdapter(task),
         behaviors={"peg_insertion_side": lambda: policy},
     )

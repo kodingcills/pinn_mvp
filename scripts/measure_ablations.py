@@ -61,9 +61,9 @@ class RecoveryDisabledSystem(HaplousSystem):
         condition = realization.condition_factory(scenario, realization.bundle)
         intent = build_intent(scenario, condition)
         intent = replace(intent, recovery_policy=None)
-        from haplous.runtime import HaplousRuntime
+        from haplous.adapters.legacy import sim_runtime
 
-        runtime = HaplousRuntime(
+        runtime = sim_runtime(
             realization.machine,
             behaviors={scenario.task_family: realization.behavior_factory},
         )

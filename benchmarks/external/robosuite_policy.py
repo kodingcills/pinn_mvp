@@ -5,11 +5,11 @@ from enum import Enum, auto
 from typing import assert_never
 
 from haplous import (
+    CartesianImpedanceTarget,
     CommandMode,
     ExecutionIntent,
     MachineCapabilities,
     MachineObservation,
-    ServoCommand,
 )
 
 
@@ -56,7 +56,7 @@ class NutAssemblyPolicy:
         self._nut = self._point(observation, "nut")
         self._peg = self._point(observation, "peg")
 
-    def step(self, observation: MachineObservation) -> ServoCommand:
+    def step(self, observation: MachineObservation) -> CartesianImpedanceTarget:
         if self._phase in {_Phase.ABOVE_NUT, _Phase.AT_NUT}:
             self._nut = self._point(observation, "nut")
         self._phase_steps += 1
@@ -64,7 +64,7 @@ class NutAssemblyPolicy:
         if self._should_advance(observation.pose_m, target):
             self._advance()
             target = self._phase_target()
-        return ServoCommand(target_pose_m=target, k_z_n_per_m=150.0)
+        return CartesianImpedanceTarget(target_pose_m=target, k_z_n_per_m=150.0)
 
     def _phase_target(self) -> tuple[float, float, float]:
         nx, ny, nz = self._nut

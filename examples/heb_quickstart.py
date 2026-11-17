@@ -4,7 +4,8 @@ repository checkout (the MuJoCo adapter wraps the pegsim research
 substrate)."""
 from pegsim.rollout import VALIDATED_LOOSE_V1
 
-from haplous import ExecutionState, HaplousRuntime, RecoveryPolicy
+from haplous import ExecutionState, RecoveryPolicy
+from haplous.adapters.legacy import sim_runtime
 from haplous.behaviors.insertion import (
     insertion_behavior_factory,
     insertion_intent,
@@ -25,7 +26,7 @@ def main() -> None:
             max_recovery_actions=1,
         ),
     )
-    runtime = HaplousRuntime(
+    runtime = sim_runtime(
         machine,
         behaviors={"peg_insertion": insertion_behavior_factory(bundle)},
     )

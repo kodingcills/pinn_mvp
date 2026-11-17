@@ -27,12 +27,12 @@ sys.path.insert(0, str(ROOT))
 from benchmarks.external import DemoStreamPolicy, ManiSkillPegInsertionTask
 from haplous import (
     ExecutionIntent,
-    HaplousRuntime,
     Requirement,
     RequirementKind,
     SuccessCondition,
     __version__ as haplous_version,
 )
+from haplous.adapters.legacy import sim_runtime
 from haplous.adapters.external import ExternalMachineAdapter
 
 sys.path.insert(0, str(ROOT / "scripts"))
@@ -100,7 +100,7 @@ def _run_haplous(policy: DemoStreamPolicy, task: ManiSkillPegInsertionTask) -> t
     started = time.perf_counter()
     obs = task.observe()
     assert obs is not None
-    runtime = HaplousRuntime(
+    runtime = sim_runtime(
         ExternalMachineAdapter(task),
         behaviors={"peg_insertion_side": lambda: policy},
     )
