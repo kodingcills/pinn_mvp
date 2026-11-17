@@ -106,7 +106,8 @@ class ExternalMachineAdapter:
         self._task.stop()
 
     def health(self) -> Mapping[str, float | str | bool]:
-        return self._task.ground_truth()
+        # Machine health only: ground_truth() is grader-owned and never crosses into the runtime (#13).
+        return {"status": "ok"}
 
 
 def open_task_session(task: "ExternalTask", *, seed: int) -> ExternalMachineSession:

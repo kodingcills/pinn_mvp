@@ -231,3 +231,36 @@ def test_no_external_framework_imports_in_haplous_package():
             for module in modules:
                 root = module.split(".")[0]
                 assert root not in banned, f"{path} imports {module}"
+
+
+class _TruthSaysUnhealthyTask(FakeExternalTask):
+    """Grader truth that would abort the run if it reached the runtime."""
+
+    def ground_truth(self):
+        return {"status": "unhealthy", "success": True}
+
+    def task_result(self):
+        return {"success": True}
+
+
+def test_grader_truth_never_reaches_runtime_health():
+    # Issue #13: health() used to forward ground_truth(), so this grader-only
+    # "status" aborted the run with machine_unhealthy.
+    task = _TruthSaysUnhealthyTask()
+    task.reset(seed=3)
+    machine = ExternalMachineAdapter(task)
+    assert "success" not in machine.health()
+    runtime = HaplousRuntime(machine, behaviors={"external_slide": _HoldBehavior})
+    assert runtime.submit(_fake_intent()).outcome == "SUPPORTED"
+    evidence = runtime.execute()
+    assert runtime.state == ExecutionState.COMPLETE
+    assert not any(e.payload.get("reason") == "machine_unhealthy" for e in evidence.events)
+
+
+def test_haplous_package_never_calls_grader_truth():
+    # Issue #13: no runtime path may call ground_truth()/task_result().
+    for path in sorted((ROOT / "haplous").rglob("*.py")):
+        tree = ast.parse(path.read_text(encoding="utf-8"))
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Attribute) and node.attr in {"ground_truth", "task_result"}:
+                raise AssertionError(f"{path}:{node.lineno} reads .{node.attr}")
