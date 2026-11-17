@@ -1,0 +1,1113 @@
+{
+  "arms": {
+    "g1_incumbent": {
+      "applied_command_count": 3248,
+      "closed_loop_hold_counterfactual": {
+        "bounded_success": true,
+        "disposition": "COMPLETE",
+        "graded_disposition": "COMPLETE",
+        "hard_violations": [],
+        "max_tilt_deg": 0.12915698231017964,
+        "peak_abs_force_n": 2.4066671913228634,
+        "reason": null,
+        "task_success": true
+      },
+      "commands_applied_during_hold_window": 41,
+      "committed_peak_abs_force_n": 296.6918227526485,
+      "first_contact_during_hold": {
+        "force_z_n": 0.5081202597460632,
+        "in_contact": 1.0,
+        "pose_m": [
+          -0.0017955935443718697,
+          7.082016251212044e-05,
+          1.0786371660220437e-16
+        ],
+        "t_s": 0.5195,
+        "tilt_deg": 0.0
+      },
+      "hold_entered": {
+        "source": "window start (G1 emits no hold event)",
+        "t_s": 0.407
+      },
+      "hold_exited": null,
+      "last_command_before_hold": {
+        "k_z_n_per_m": 500.0,
+        "t_s": 0.4065,
+        "target_pose_m": [
+          -0.0017955935443718697,
+          7.082016251212044e-05,
+          0.0009300000000001215
+        ]
+      },
+      "mujoco_auto_reset": {
+        "pre_reset_state": {
+          "force_z_n": 0.0,
+          "in_contact": 0.0,
+          "pose_m": [
+            -6.152998935505299,
+            9.099019310116292,
+            -32.48275383187365
+          ],
+          "t_s": 0.759,
+          "tilt_deg": 163.40192790275228
+        },
+        "t_tick_s": 0.7595,
+        "tick": 1519
+      },
+      "outcome": {
+        "bounded_success": false,
+        "disposition": "COMPLETE",
+        "graded_disposition": "COMPLETE",
+        "hard_violations": [
+          {
+            "code": "process_force",
+            "limit": 25.0,
+            "t_s": 0.7509999999999727,
+            "value": 296.6918227526485
+          }
+        ],
+        "reason": null,
+        "refusal_codes": [],
+        "task_success": true
+      },
+      "peak_force": {
+        "force_z_n": 296.6918227526485,
+        "in_contact": 1.0,
+        "pose_m": [
+          -0.02123428555034028,
+          -0.0006754362129934863,
+          0.026690886141822235
+        ],
+        "t_s": 0.751,
+        "tilt_deg": 126.70869034064964
+      },
+      "peak_matches_committed": true,
+      "stale_window_s": [
+        0.40708216870955305,
+        0.7793800347890835
+      ],
+      "state_at_hold_entry": {
+        "force_z_n": 0.0,
+        "in_contact": 0.0,
+        "pose_m": [
+          -0.0017955935443718697,
+          7.082016251212044e-05,
+          0.0011250000000001198
+        ],
+        "t_s": 0.407,
+        "tilt_deg": 0.0
+      },
+      "tilt_trace_during_hold": [
+        {
+          "force_z_n": 0.0,
+          "in_contact": 0.0,
+          "pose_m": [
+            -0.0017972187196856513,
+            7.082662969040639e-05,
+            4.5889747535364246e-07
+          ],
+          "t_s": 0.54,
+          "tilt_deg": 0.06258040457831422
+        },
+        {
+          "force_z_n": 0.0,
+          "in_contact": 0.0,
+          "pose_m": [
+            -0.001857631375307688,
+            7.12021703999877e-05,
+            6.793316089426523e-06
+          ],
+          "t_s": 0.58,
+          "tilt_deg": 0.3151233513831303
+        },
+        {
+          "force_z_n": 0.0,
+          "in_contact": 0.0,
+          "pose_m": [
+            -0.0022101527542355,
+            7.345883091657922e-05,
+            1.8171894725812055e-05
+          ],
+          "t_s": 0.62,
+          "tilt_deg": 1.2372359927611538
+        },
+        {
+          "force_z_n": 0.0,
+          "in_contact": 0.0,
+          "pose_m": [
+            -0.003707124344776427,
+            8.308823353949565e-05,
+            0.00010485678405611295
+          ],
+          "t_s": 0.66,
+          "tilt_deg": 4.78760733332613
+        },
+        {
+          "force_z_n": 0.0,
+          "in_contact": 0.0,
+          "pose_m": [
+            -0.009493880928981827,
+            0.00012035094158600452,
+            0.0013017753596630114
+          ],
+          "t_s": 0.7,
+          "tilt_deg": 18.47354501259445
+        },
+        {
+          "force_z_n": 0.0,
+          "in_contact": 0.0,
+          "pose_m": [
+            -0.024991689265853448,
+            0.00022010797606867338,
+            0.016100526569604028
+          ],
+          "t_s": 0.74,
+          "tilt_deg": 69.37774628796195
+        }
+      ]
+    },
+    "haplous_mediated": {
+      "applied_command_count": 815,
+      "closed_loop_hold_counterfactual": {
+        "bounded_success": true,
+        "disposition": "COMPLETE",
+        "graded_disposition": "COMPLETE",
+        "hard_violations": [],
+        "max_tilt_deg": 0.12915698231017964,
+        "peak_abs_force_n": 2.4066671913228634,
+        "reason": null,
+        "task_success": true
+      },
+      "commands_applied_during_hold_window": 0,
+      "committed_peak_abs_force_n": 296.6918227526485,
+      "first_contact_during_hold": {
+        "force_z_n": 0.5081202597460632,
+        "in_contact": 1.0,
+        "pose_m": [
+          -0.0017955935443718697,
+          7.082016251212044e-05,
+          1.0786371660220437e-16
+        ],
+        "t_s": 0.5195,
+        "tilt_deg": 0.0
+      },
+      "hold_entered": {
+        "source": "haplous evidence",
+        "t_s": 0.4075
+      },
+      "hold_exited": {
+        "kind": "outcome",
+        "t_s": 0.7509999999999727
+      },
+      "last_command_before_hold": {
+        "k_z_n_per_m": 500.0,
+        "t_s": 0.407,
+        "target_pose_m": [
+          -0.0017955935443718697,
+          7.082016251212044e-05,
+          0.0009250000000001215
+        ]
+      },
+      "mujoco_auto_reset": null,
+      "outcome": {
+        "bounded_success": false,
+        "disposition": "ABORTED",
+        "graded_disposition": "ABORTED",
+        "hard_violations": [
+          {
+            "code": "process_force",
+            "limit": 25.0,
+            "t_s": 0.7509999999999727,
+            "value": 296.6918227526485
+          }
+        ],
+        "reason": "hard_constraint_process_force",
+        "refusal_codes": [],
+        "task_success": false
+      },
+      "peak_force": {
+        "force_z_n": 296.6918227526485,
+        "in_contact": 1.0,
+        "pose_m": [
+          -0.02123428555034028,
+          -0.0006754362129934863,
+          0.026690886141822235
+        ],
+        "t_s": 0.751,
+        "tilt_deg": 126.70869034064964
+      },
+      "peak_matches_committed": true,
+      "stale_window_s": [
+        0.40708216870955305,
+        0.7793800347890835
+      ],
+      "state_at_hold_entry": {
+        "force_z_n": 0.0,
+        "in_contact": 0.0,
+        "pose_m": [
+          -0.0017955935443718697,
+          7.082016251212044e-05,
+          0.0011200000000001198
+        ],
+        "t_s": 0.4075,
+        "tilt_deg": 0.0
+      },
+      "tilt_trace_during_hold": [
+        {
+          "force_z_n": 0.0,
+          "in_contact": 0.0,
+          "pose_m": [
+            -0.0017972187196856513,
+            7.082662969040639e-05,
+            4.5889747535364246e-07
+          ],
+          "t_s": 0.54,
+          "tilt_deg": 0.06258040457831422
+        },
+        {
+          "force_z_n": 0.0,
+          "in_contact": 0.0,
+          "pose_m": [
+            -0.001857631375307688,
+            7.12021703999877e-05,
+            6.793316089426523e-06
+          ],
+          "t_s": 0.58,
+          "tilt_deg": 0.3151233513831303
+        },
+        {
+          "force_z_n": 0.0,
+          "in_contact": 0.0,
+          "pose_m": [
+            -0.0022101527542355,
+            7.345883091657922e-05,
+            1.8171894725812055e-05
+          ],
+          "t_s": 0.62,
+          "tilt_deg": 1.2372359927611538
+        },
+        {
+          "force_z_n": 0.0,
+          "in_contact": 0.0,
+          "pose_m": [
+            -0.003707124344776427,
+            8.308823353949565e-05,
+            0.00010485678405611295
+          ],
+          "t_s": 0.66,
+          "tilt_deg": 4.78760733332613
+        },
+        {
+          "force_z_n": 0.0,
+          "in_contact": 0.0,
+          "pose_m": [
+            -0.009493880928981827,
+            0.00012035094158600452,
+            0.0013017753596630114
+          ],
+          "t_s": 0.7,
+          "tilt_deg": 18.47354501259445
+        },
+        {
+          "force_z_n": 0.0,
+          "in_contact": 0.0,
+          "pose_m": [
+            -0.024991689265853448,
+            0.00022010797606867338,
+            0.016100526569604028
+          ],
+          "t_s": 0.74,
+          "tilt_deg": 69.37774628796195
+        }
+      ]
+    }
+  },
+  "m4_force_exceedances_vs_fault_window": {
+    "n_inside_window": 57,
+    "n_rows": 60,
+    "rows": [
+      {
+        "arm": "bare_behavior",
+        "inside_window": true,
+        "max_tilt_deg": 169.97742887041218,
+        "reason": null,
+        "scenario_id": "m4s_rejection_long_00022",
+        "value_n": 171.93986560509236,
+        "violation_t_s": 0.7144999999999767,
+        "window_s": [
+          0.6353433846559257,
+          1.4438775051595534
+        ]
+      },
+      {
+        "arm": "g1_incumbent",
+        "inside_window": true,
+        "max_tilt_deg": 121.63626687300922,
+        "reason": "force_limit",
+        "scenario_id": "m4s_rejection_long_00022",
+        "value_n": 171.93986560509236,
+        "violation_t_s": 0.7144999999999767,
+        "window_s": [
+          0.6353433846559257,
+          1.4438775051595534
+        ]
+      },
+      {
+        "arm": "haplous_mediated",
+        "inside_window": true,
+        "max_tilt_deg": 121.63626687300922,
+        "reason": "hard_constraint_process_force",
+        "scenario_id": "m4s_rejection_long_00022",
+        "value_n": 171.93986560509236,
+        "violation_t_s": 0.7144999999999767,
+        "window_s": [
+          0.6353433846559257,
+          1.4438775051595534
+        ]
+      },
+      {
+        "arm": "bare_behavior",
+        "inside_window": false,
+        "max_tilt_deg": 98.55884967128772,
+        "reason": null,
+        "scenario_id": "m4s_rejection_long_00072",
+        "value_n": 197.01272156766072,
+        "violation_t_s": 0.0045000000000000005,
+        "window_s": [
+          0.49663996148136746,
+          1.032398419791138
+        ]
+      },
+      {
+        "arm": "g1_incumbent",
+        "inside_window": false,
+        "max_tilt_deg": 98.55884967128772,
+        "reason": "force_limit",
+        "scenario_id": "m4s_rejection_long_00072",
+        "value_n": 197.01272156766072,
+        "violation_t_s": 0.0045000000000000005,
+        "window_s": [
+          0.49663996148136746,
+          1.032398419791138
+        ]
+      },
+      {
+        "arm": "haplous_mediated",
+        "inside_window": false,
+        "max_tilt_deg": 98.55884967128772,
+        "reason": "hard_constraint_process_force",
+        "scenario_id": "m4s_rejection_long_00072",
+        "value_n": 197.01272156766072,
+        "violation_t_s": 0.0045000000000000005,
+        "window_s": [
+          0.49663996148136746,
+          1.032398419791138
+        ]
+      },
+      {
+        "arm": "bare_behavior",
+        "inside_window": true,
+        "max_tilt_deg": 179.33858782389237,
+        "reason": "machine_fault_tilt_guard",
+        "scenario_id": "m4s_rejection_long_00102",
+        "value_n": 25.198210037053002,
+        "violation_t_s": 0.7374999999999742,
+        "window_s": [
+          0.4605023768423387,
+          0.8619321423698929
+        ]
+      },
+      {
+        "arm": "g1_incumbent",
+        "inside_window": true,
+        "max_tilt_deg": 149.69130948071245,
+        "reason": "force_limit",
+        "scenario_id": "m4s_rejection_long_00102",
+        "value_n": 25.198210037053002,
+        "violation_t_s": 0.7374999999999742,
+        "window_s": [
+          0.4605023768423387,
+          0.8619321423698929
+        ]
+      },
+      {
+        "arm": "haplous_mediated",
+        "inside_window": true,
+        "max_tilt_deg": 149.69130948071245,
+        "reason": "hard_constraint_process_force",
+        "scenario_id": "m4s_rejection_long_00102",
+        "value_n": 25.198210037053002,
+        "violation_t_s": 0.7374999999999742,
+        "window_s": [
+          0.4605023768423387,
+          0.8619321423698929
+        ]
+      },
+      {
+        "arm": "bare_behavior",
+        "inside_window": true,
+        "max_tilt_deg": 179.7425448153177,
+        "reason": "machine_fault_tilt_guard",
+        "scenario_id": "m4s_rejection_long_00107",
+        "value_n": 25.172085215992162,
+        "violation_t_s": 0.7909999999999683,
+        "window_s": [
+          0.4664027160490872,
+          1.3370957872387812
+        ]
+      },
+      {
+        "arm": "g1_incumbent",
+        "inside_window": true,
+        "max_tilt_deg": 145.9631825933409,
+        "reason": "force_limit",
+        "scenario_id": "m4s_rejection_long_00107",
+        "value_n": 25.172085215992162,
+        "violation_t_s": 0.7909999999999683,
+        "window_s": [
+          0.4664027160490872,
+          1.3370957872387812
+        ]
+      },
+      {
+        "arm": "haplous_mediated",
+        "inside_window": true,
+        "max_tilt_deg": 145.9631825933409,
+        "reason": "hard_constraint_process_force",
+        "scenario_id": "m4s_rejection_long_00107",
+        "value_n": 25.172085215992162,
+        "violation_t_s": 0.7909999999999683,
+        "window_s": [
+          0.4664027160490872,
+          1.3370957872387812
+        ]
+      },
+      {
+        "arm": "bare_behavior",
+        "inside_window": true,
+        "max_tilt_deg": 179.18986960252136,
+        "reason": "machine_fault_tilt_guard",
+        "scenario_id": "m4s_rejection_long_00117",
+        "value_n": 45.154562843785236,
+        "violation_t_s": 0.7774999999999698,
+        "window_s": [
+          0.34265404838851243,
+          1.2043559436530593
+        ]
+      },
+      {
+        "arm": "g1_incumbent",
+        "inside_window": true,
+        "max_tilt_deg": 136.79658231697354,
+        "reason": "force_limit",
+        "scenario_id": "m4s_rejection_long_00117",
+        "value_n": 45.154562843785236,
+        "violation_t_s": 0.7774999999999698,
+        "window_s": [
+          0.34265404838851243,
+          1.2043559436530593
+        ]
+      },
+      {
+        "arm": "haplous_mediated",
+        "inside_window": true,
+        "max_tilt_deg": 136.79658231697354,
+        "reason": "hard_constraint_process_force",
+        "scenario_id": "m4s_rejection_long_00117",
+        "value_n": 45.154562843785236,
+        "violation_t_s": 0.7774999999999698,
+        "window_s": [
+          0.34265404838851243,
+          1.2043559436530593
+        ]
+      },
+      {
+        "arm": "bare_behavior",
+        "inside_window": true,
+        "max_tilt_deg": 154.88818009232804,
+        "reason": "machine_fault_tilt_guard",
+        "scenario_id": "m4s_rejection_long_00162",
+        "value_n": 146.67617801462256,
+        "violation_t_s": 0.730499999999975,
+        "window_s": [
+          0.4345576159617145,
+          0.9987855189095686
+        ]
+      },
+      {
+        "arm": "g1_incumbent",
+        "inside_window": true,
+        "max_tilt_deg": 128.21301017762568,
+        "reason": "force_limit",
+        "scenario_id": "m4s_rejection_long_00162",
+        "value_n": 146.67617801462256,
+        "violation_t_s": 0.730499999999975,
+        "window_s": [
+          0.4345576159617145,
+          0.9987855189095686
+        ]
+      },
+      {
+        "arm": "haplous_mediated",
+        "inside_window": true,
+        "max_tilt_deg": 128.21301017762568,
+        "reason": "hard_constraint_process_force",
+        "scenario_id": "m4s_rejection_long_00162",
+        "value_n": 146.67617801462256,
+        "violation_t_s": 0.730499999999975,
+        "window_s": [
+          0.4345576159617145,
+          0.9987855189095686
+        ]
+      },
+      {
+        "arm": "bare_behavior",
+        "inside_window": true,
+        "max_tilt_deg": 96.28916947972714,
+        "reason": "machine_fault_tilt_guard",
+        "scenario_id": "m4s_rejection_long_00167",
+        "value_n": 46.871245052695684,
+        "violation_t_s": 1.0139999999999438,
+        "window_s": [
+          0.8489032313030114,
+          1.7557618265336907
+        ]
+      },
+      {
+        "arm": "g1_incumbent",
+        "inside_window": true,
+        "max_tilt_deg": 78.26091992581946,
+        "reason": "force_limit",
+        "scenario_id": "m4s_rejection_long_00167",
+        "value_n": 46.871245052695684,
+        "violation_t_s": 1.0139999999999438,
+        "window_s": [
+          0.8489032313030114,
+          1.7557618265336907
+        ]
+      },
+      {
+        "arm": "haplous_mediated",
+        "inside_window": true,
+        "max_tilt_deg": 78.26091992581946,
+        "reason": "hard_constraint_process_force",
+        "scenario_id": "m4s_rejection_long_00167",
+        "value_n": 46.871245052695684,
+        "violation_t_s": 1.0139999999999438,
+        "window_s": [
+          0.8489032313030114,
+          1.7557618265336907
+        ]
+      },
+      {
+        "arm": "bare_behavior",
+        "inside_window": true,
+        "max_tilt_deg": 179.76136898200926,
+        "reason": "machine_fault_tilt_guard",
+        "scenario_id": "m4s_rejection_long_00182",
+        "value_n": 25.80851943417096,
+        "violation_t_s": 0.7604999999999716,
+        "window_s": [
+          0.31429649450989716,
+          0.829456203972341
+        ]
+      },
+      {
+        "arm": "g1_incumbent",
+        "inside_window": true,
+        "max_tilt_deg": 148.85390323337555,
+        "reason": "force_limit",
+        "scenario_id": "m4s_rejection_long_00182",
+        "value_n": 25.80851943417096,
+        "violation_t_s": 0.7604999999999716,
+        "window_s": [
+          0.31429649450989716,
+          0.829456203972341
+        ]
+      },
+      {
+        "arm": "haplous_mediated",
+        "inside_window": true,
+        "max_tilt_deg": 148.85390323337555,
+        "reason": "hard_constraint_process_force",
+        "scenario_id": "m4s_rejection_long_00182",
+        "value_n": 25.80851943417096,
+        "violation_t_s": 0.7604999999999716,
+        "window_s": [
+          0.31429649450989716,
+          0.829456203972341
+        ]
+      },
+      {
+        "arm": "bare_behavior",
+        "inside_window": true,
+        "max_tilt_deg": 179.12695159894653,
+        "reason": "machine_fault_tilt_guard",
+        "scenario_id": "m4s_rejection_long_00212",
+        "value_n": 25.53851920914777,
+        "violation_t_s": 0.7734999999999702,
+        "window_s": [
+          0.3556722085670274,
+          1.0192982957136225
+        ]
+      },
+      {
+        "arm": "g1_incumbent",
+        "inside_window": true,
+        "max_tilt_deg": 153.86285988059936,
+        "reason": "force_limit",
+        "scenario_id": "m4s_rejection_long_00212",
+        "value_n": 25.53851920914777,
+        "violation_t_s": 0.7734999999999702,
+        "window_s": [
+          0.3556722085670274,
+          1.0192982957136225
+        ]
+      },
+      {
+        "arm": "haplous_mediated",
+        "inside_window": true,
+        "max_tilt_deg": 153.86285988059936,
+        "reason": "hard_constraint_process_force",
+        "scenario_id": "m4s_rejection_long_00212",
+        "value_n": 25.53851920914777,
+        "violation_t_s": 0.7734999999999702,
+        "window_s": [
+          0.3556722085670274,
+          1.0192982957136225
+        ]
+      },
+      {
+        "arm": "bare_behavior",
+        "inside_window": true,
+        "max_tilt_deg": 179.4161042817772,
+        "reason": "machine_fault_tilt_guard",
+        "scenario_id": "m4s_rejection_long_00217",
+        "value_n": 25.26349087386923,
+        "violation_t_s": 0.783999999999969,
+        "window_s": [
+          0.38849701472853454,
+          1.221360120715919
+        ]
+      },
+      {
+        "arm": "g1_incumbent",
+        "inside_window": true,
+        "max_tilt_deg": 162.71319345511898,
+        "reason": "force_limit",
+        "scenario_id": "m4s_rejection_long_00217",
+        "value_n": 25.26349087386923,
+        "violation_t_s": 0.783999999999969,
+        "window_s": [
+          0.38849701472853454,
+          1.221360120715919
+        ]
+      },
+      {
+        "arm": "haplous_mediated",
+        "inside_window": true,
+        "max_tilt_deg": 162.71319345511898,
+        "reason": "hard_constraint_process_force",
+        "scenario_id": "m4s_rejection_long_00217",
+        "value_n": 25.26349087386923,
+        "violation_t_s": 0.783999999999969,
+        "window_s": [
+          0.38849701472853454,
+          1.221360120715919
+        ]
+      },
+      {
+        "arm": "bare_behavior",
+        "inside_window": true,
+        "max_tilt_deg": 179.87352110537915,
+        "reason": "machine_fault_tilt_guard",
+        "scenario_id": "m4s_rejection_long_00247",
+        "value_n": 25.538879548086683,
+        "violation_t_s": 0.7429999999999736,
+        "window_s": [
+          0.3542295052242485,
+          0.7851776320719053
+        ]
+      },
+      {
+        "arm": "g1_incumbent",
+        "inside_window": true,
+        "max_tilt_deg": 144.2101817065528,
+        "reason": "force_limit",
+        "scenario_id": "m4s_rejection_long_00247",
+        "value_n": 25.538879548086683,
+        "violation_t_s": 0.7429999999999736,
+        "window_s": [
+          0.3542295052242485,
+          0.7851776320719053
+        ]
+      },
+      {
+        "arm": "haplous_mediated",
+        "inside_window": true,
+        "max_tilt_deg": 144.2101817065528,
+        "reason": "hard_constraint_process_force",
+        "scenario_id": "m4s_rejection_long_00247",
+        "value_n": 25.538879548086683,
+        "violation_t_s": 0.7429999999999736,
+        "window_s": [
+          0.3542295052242485,
+          0.7851776320719053
+        ]
+      },
+      {
+        "arm": "bare_behavior",
+        "inside_window": true,
+        "max_tilt_deg": 179.63951531578957,
+        "reason": "machine_fault_tilt_guard",
+        "scenario_id": "m4s_rejection_long_00297",
+        "value_n": 25.79150852898092,
+        "violation_t_s": 0.7329999999999747,
+        "window_s": [
+          0.46030106775794,
+          1.3926757302121886
+        ]
+      },
+      {
+        "arm": "g1_incumbent",
+        "inside_window": true,
+        "max_tilt_deg": 150.7146531592971,
+        "reason": "force_limit",
+        "scenario_id": "m4s_rejection_long_00297",
+        "value_n": 25.79150852898092,
+        "violation_t_s": 0.7329999999999747,
+        "window_s": [
+          0.46030106775794,
+          1.3926757302121886
+        ]
+      },
+      {
+        "arm": "haplous_mediated",
+        "inside_window": true,
+        "max_tilt_deg": 150.7146531592971,
+        "reason": "hard_constraint_process_force",
+        "scenario_id": "m4s_rejection_long_00297",
+        "value_n": 25.79150852898092,
+        "violation_t_s": 0.7329999999999747,
+        "window_s": [
+          0.46030106775794,
+          1.3926757302121886
+        ]
+      },
+      {
+        "arm": "g1_incumbent",
+        "inside_window": true,
+        "max_tilt_deg": 4.132393492353996,
+        "reason": "watchdog_timeout",
+        "scenario_id": "m4s_stale_long_00031",
+        "value_n": 39.476717182217115,
+        "violation_t_s": 0.7959999999999677,
+        "window_s": [
+          0.7461289450200147,
+          1.5689691401566002
+        ]
+      },
+      {
+        "arm": "haplous_mediated",
+        "inside_window": true,
+        "max_tilt_deg": 4.108364419648597,
+        "reason": "hard_constraint_process_force",
+        "scenario_id": "m4s_stale_long_00031",
+        "value_n": 39.476717182217115,
+        "violation_t_s": 0.7959999999999677,
+        "window_s": [
+          0.7461289450200147,
+          1.5689691401566002
+        ]
+      },
+      {
+        "arm": "g1_incumbent",
+        "inside_window": true,
+        "max_tilt_deg": 6.8750171741554365,
+        "reason": "machine_fault_tilt_guard",
+        "scenario_id": "m4s_stale_long_00061",
+        "value_n": 31.618519208556098,
+        "violation_t_s": 0.8439999999999624,
+        "window_s": [
+          0.6719807977957903,
+          1.0315765686971716
+        ]
+      },
+      {
+        "arm": "haplous_mediated",
+        "inside_window": true,
+        "max_tilt_deg": 6.8750171741554365,
+        "reason": "hard_constraint_process_force",
+        "scenario_id": "m4s_stale_long_00061",
+        "value_n": 31.618519208556098,
+        "violation_t_s": 0.8439999999999624,
+        "window_s": [
+          0.6719807977957903,
+          1.0315765686971716
+        ]
+      },
+      {
+        "arm": "g1_incumbent",
+        "inside_window": true,
+        "max_tilt_deg": 178.7458285950781,
+        "reason": "machine_fault_tilt_guard",
+        "scenario_id": "m4s_stale_long_00071",
+        "value_n": 26.496386907616294,
+        "violation_t_s": 0.8139999999999658,
+        "window_s": [
+          0.55218689072087,
+          0.9153291119002255
+        ]
+      },
+      {
+        "arm": "haplous_mediated",
+        "inside_window": true,
+        "max_tilt_deg": 150.84325762866348,
+        "reason": "hard_constraint_process_force",
+        "scenario_id": "m4s_stale_long_00071",
+        "value_n": 26.496386907616294,
+        "violation_t_s": 0.8139999999999658,
+        "window_s": [
+          0.55218689072087,
+          0.9153291119002255
+        ]
+      },
+      {
+        "arm": "g1_incumbent",
+        "inside_window": true,
+        "max_tilt_deg": 6.2821937303201585,
+        "reason": null,
+        "scenario_id": "m4s_stale_long_00086",
+        "value_n": 36.533563936463715,
+        "violation_t_s": 0.8599999999999607,
+        "window_s": [
+          0.7860217059055448,
+          1.159737067586026
+        ]
+      },
+      {
+        "arm": "haplous_mediated",
+        "inside_window": true,
+        "max_tilt_deg": 6.045599014403788,
+        "reason": "hard_constraint_process_force",
+        "scenario_id": "m4s_stale_long_00086",
+        "value_n": 36.533563936463715,
+        "violation_t_s": 0.8599999999999607,
+        "window_s": [
+          0.7860217059055448,
+          1.159737067586026
+        ]
+      },
+      {
+        "arm": "g1_incumbent",
+        "inside_window": true,
+        "max_tilt_deg": 178.31483578561236,
+        "reason": "watchdog_timeout",
+        "scenario_id": "m4s_stale_long_00096",
+        "value_n": 27.250041626070697,
+        "violation_t_s": 0.738999999999974,
+        "window_s": [
+          0.37410781945973814,
+          1.1695150300519814
+        ]
+      },
+      {
+        "arm": "haplous_mediated",
+        "inside_window": true,
+        "max_tilt_deg": 149.81229224022798,
+        "reason": "hard_constraint_process_force",
+        "scenario_id": "m4s_stale_long_00096",
+        "value_n": 27.250041626070697,
+        "violation_t_s": 0.738999999999974,
+        "window_s": [
+          0.37410781945973814,
+          1.1695150300519814
+        ]
+      },
+      {
+        "arm": "g1_incumbent",
+        "inside_window": true,
+        "max_tilt_deg": 172.7310563727826,
+        "reason": "watchdog_timeout",
+        "scenario_id": "m4s_stale_long_00106",
+        "value_n": 40.177613992643856,
+        "violation_t_s": 0.7804999999999694,
+        "window_s": [
+          0.6265765400139843,
+          1.2517382831136308
+        ]
+      },
+      {
+        "arm": "haplous_mediated",
+        "inside_window": true,
+        "max_tilt_deg": 105.92910787700772,
+        "reason": "hard_constraint_process_force",
+        "scenario_id": "m4s_stale_long_00106",
+        "value_n": 40.177613992643856,
+        "violation_t_s": 0.7804999999999694,
+        "window_s": [
+          0.6265765400139843,
+          1.2517382831136308
+        ]
+      },
+      {
+        "arm": "g1_incumbent",
+        "inside_window": true,
+        "max_tilt_deg": 179.6378110471964,
+        "reason": "watchdog_timeout",
+        "scenario_id": "m4s_stale_long_00111",
+        "value_n": 26.013594883467995,
+        "violation_t_s": 0.7424999999999736,
+        "window_s": [
+          0.3990521724624151,
+          1.3502932744388896
+        ]
+      },
+      {
+        "arm": "haplous_mediated",
+        "inside_window": true,
+        "max_tilt_deg": 153.23271232229092,
+        "reason": "hard_constraint_process_force",
+        "scenario_id": "m4s_stale_long_00111",
+        "value_n": 26.013594883467995,
+        "violation_t_s": 0.7424999999999736,
+        "window_s": [
+          0.3990521724624151,
+          1.3502932744388896
+        ]
+      },
+      {
+        "arm": "g1_incumbent",
+        "inside_window": true,
+        "max_tilt_deg": 163.40192790275228,
+        "reason": null,
+        "scenario_id": "m4s_stale_long_00116",
+        "value_n": 296.6918227526485,
+        "violation_t_s": 0.7509999999999727,
+        "window_s": [
+          0.40708216870955305,
+          0.7793800347890835
+        ]
+      },
+      {
+        "arm": "haplous_mediated",
+        "inside_window": true,
+        "max_tilt_deg": 126.70869034064964,
+        "reason": "hard_constraint_process_force",
+        "scenario_id": "m4s_stale_long_00116",
+        "value_n": 296.6918227526485,
+        "violation_t_s": 0.7509999999999727,
+        "window_s": [
+          0.40708216870955305,
+          0.7793800347890835
+        ]
+      },
+      {
+        "arm": "g1_incumbent",
+        "inside_window": true,
+        "max_tilt_deg": 179.13042946797768,
+        "reason": "machine_fault_tilt_guard",
+        "scenario_id": "m4s_stale_long_00151",
+        "value_n": 25.28643248438795,
+        "violation_t_s": 0.8334999999999636,
+        "window_s": [
+          0.38958952472195285,
+          0.8561830987398145
+        ]
+      },
+      {
+        "arm": "haplous_mediated",
+        "inside_window": true,
+        "max_tilt_deg": 155.9654472449226,
+        "reason": "hard_constraint_process_force",
+        "scenario_id": "m4s_stale_long_00151",
+        "value_n": 25.28643248438795,
+        "violation_t_s": 0.8334999999999636,
+        "window_s": [
+          0.38958952472195285,
+          0.8561830987398145
+        ]
+      },
+      {
+        "arm": "g1_incumbent",
+        "inside_window": true,
+        "max_tilt_deg": 178.87305658945593,
+        "reason": "watchdog_timeout",
+        "scenario_id": "m4s_stale_long_00221",
+        "value_n": 30.171959346599003,
+        "violation_t_s": 0.7734999999999702,
+        "window_s": [
+          0.41037464069751295,
+          1.3268009823486149
+        ]
+      },
+      {
+        "arm": "haplous_mediated",
+        "inside_window": true,
+        "max_tilt_deg": 144.66862083849045,
+        "reason": "hard_constraint_process_force",
+        "scenario_id": "m4s_stale_long_00221",
+        "value_n": 30.171959346599003,
+        "violation_t_s": 0.7734999999999702,
+        "window_s": [
+          0.41037464069751295,
+          1.3268009823486149
+        ]
+      },
+      {
+        "arm": "g1_incumbent",
+        "inside_window": true,
+        "max_tilt_deg": 178.31314809294392,
+        "reason": "watchdog_timeout",
+        "scenario_id": "m4s_stale_long_00241",
+        "value_n": 25.66922815253819,
+        "violation_t_s": 0.8179999999999653,
+        "window_s": [
+          0.39182757151502295,
+          1.0643552997855696
+        ]
+      },
+      {
+        "arm": "haplous_mediated",
+        "inside_window": true,
+        "max_tilt_deg": 154.5257599848582,
+        "reason": "hard_constraint_process_force",
+        "scenario_id": "m4s_stale_long_00241",
+        "value_n": 25.66922815253819,
+        "violation_t_s": 0.8179999999999653,
+        "window_s": [
+          0.39182757151502295,
+          1.0643552997855696
+        ]
+      },
+      {
+        "arm": "g1_incumbent",
+        "inside_window": true,
+        "max_tilt_deg": 178.2149106701723,
+        "reason": "watchdog_timeout",
+        "scenario_id": "m4s_stale_long_00261",
+        "value_n": 25.33050577678509,
+        "violation_t_s": 0.7169999999999764,
+        "window_s": [
+          0.5066338644663263,
+          1.2718326204675887
+        ]
+      },
+      {
+        "arm": "haplous_mediated",
+        "inside_window": true,
+        "max_tilt_deg": 162.4543761901743,
+        "reason": "hard_constraint_process_force",
+        "scenario_id": "m4s_stale_long_00261",
+        "value_n": 25.33050577678509,
+        "violation_t_s": 0.7169999999999764,
+        "window_s": [
+          0.5066338644663263,
+          1.2718326204675887
+        ]
+      }
+    ]
+  },
+  "population": "m4_stress@v1 (frozen; one case reproduced for diagnosis only)",
+  "scenario_id": "m4s_stale_long_00116"
+}
