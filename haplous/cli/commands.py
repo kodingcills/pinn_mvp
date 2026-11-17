@@ -12,6 +12,20 @@ import haplous
 from haplous.cli.benchmarks import registered_benchmarks
 from haplous.cli.registry import RunRegistry
 
+# Import names each extra provides (pyproject.toml [project.optional-dependencies]).
+EXTRAS = {
+    "sim": ("mujoco", "numpy"),
+    "eval": ("yaml", "matplotlib", "pyarrow", "jsonschema", "rfc8785", "cryptography", "rerun", "mcap"),
+    "studio": ("fastapi", "uvicorn", "pydantic"),
+    "dev": ("pytest", "ruff", "mypy"),
+}
+
+
+def extra_for_module(name: str | None) -> str | None:
+    root = (name or "").split(".")[0]
+    return next((extra for extra, modules in EXTRAS.items() if root in modules), None)
+
+
 SYSTEM_NAMES = (
     "direct_minimal",
     "bare_behavior",
@@ -125,6 +139,10 @@ def doctor_command(args: Namespace) -> int:
     import shutil
 
     checks = [("haplous core", "OK", haplous.__version__)]
+    for extra, modules in EXTRAS.items():
+        missing = [module for module in modules if importlib.util.find_spec(module) is None]
+        detail = f"missing: {' '.join(missing)}; pip install 'haplous[{extra}]'" if missing else " ".join(modules)
+        checks.append((f"extra [{extra}]", "MISSING" if missing else "OK", detail))
     if importlib.util.find_spec("mujoco") is None:
         checks.append(("mujoco", "NOT INSTALLED", ""))
     else:
