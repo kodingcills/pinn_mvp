@@ -32,7 +32,7 @@ import pyarrow.parquet as pq
 
 from benchmarks.episode_log import EVENTS, FORMAT, METADATA, TELEMETRY, _observation_row
 from benchmarks.realdata.reassemble_loader import load_reassemble
-from haplous.machine import MachineObservation, Stamp
+from haplous.machine import ClockDomain, MachineObservation, Stamp
 
 SOURCE = "dataset"
 CLOCK = "dataset"
@@ -90,7 +90,7 @@ def import_segments(parquet: Path, out_dir: Path, *, episode: int, segments: lis
             pose, act = rec.pose_tcp, ex["action"]
             fb, tb = ex["observation.force.base"], ex["observation.torque.base"]
             obs = MachineObservation(
-                stamp=Stamp(source_s=_f32(rec.t_s), received_s=_f32(rec.t_s)),
+                stamp=Stamp(source_s=_f32(rec.t_s), received_s=_f32(rec.t_s), clock=ClockDomain.PRODUCER),
                 pose_m=tuple(_f32(v) for v in pose[:3]), force_z_n=_f32(fb[2]), tilt_deg=tilt_deg(pose[3:7]),
                 extra=(("force_x_n", _f32(fb[0])), ("force_y_n", _f32(fb[1])),
                        ("torque_x_nm", _f32(tb[0])), ("torque_y_nm", _f32(tb[1])), ("torque_z_nm", _f32(tb[2])),

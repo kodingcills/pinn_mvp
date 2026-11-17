@@ -14,11 +14,9 @@ from haplous.behaviors.insertion import (
     insertion_machine,
 )
 from haplous.intent import RecoveryPolicy
-from haplous.machine import Stamp
-from haplous.runtime import HaplousRuntime
+from haplous.adapters.legacy import sim_runtime
 from haplous.state import ExecutionState
 from pegsim.rollout import VALIDATED_LOOSE_V1
-
 from tests.test_haplous_semantics import (
     HoldBehavior,
     ScriptedMachine,
@@ -44,7 +42,7 @@ INSERTION_BEHAVIORS = {
 def test_state_latency_fault_refuses_execution():
     """Every observation arrives 0.1 s after it was sampled."""
     machine = ScriptedMachine(observation=obs(0.0, received=0.1))
-    runtime = HaplousRuntime(machine, behaviors=BEHAVIORS)
+    runtime = sim_runtime(machine, behaviors=BEHAVIORS)
     runtime.submit(make_intent())
     evidence = runtime.execute()
     assert runtime.state is ExecutionState.REFUSED
@@ -65,7 +63,7 @@ def test_command_rejection_fault_aborts_with_structured_reason():
             raise RuntimeError("controller rejected motion command")
 
     machine = RejectingMachine(observation=obs(0.0))
-    runtime = HaplousRuntime(machine, behaviors=BEHAVIORS)
+    runtime = sim_runtime(machine, behaviors=BEHAVIORS)
     runtime.submit(make_intent())
     evidence = runtime.execute()
     assert runtime.state is ExecutionState.ABORTED
@@ -80,7 +78,7 @@ def test_machine_fault_at_session_start_aborts():
     machine = ScriptedMachine(
         observation=obs(0.0), script=[RuntimeError("actuator fault")]
     )
-    runtime = HaplousRuntime(machine, behaviors=BEHAVIORS)
+    runtime = sim_runtime(machine, behaviors=BEHAVIORS)
     runtime.submit(make_intent())
     evidence = runtime.execute()
     assert runtime.state is ExecutionState.ABORTED
@@ -91,7 +89,7 @@ def test_machine_fault_at_session_start_aborts():
 def test_limited_control_mode_refused():
     caps = std_caps(command_modes=frozenset())
     machine = ScriptedMachine(caps=caps, observation=obs(0.0))
-    runtime = HaplousRuntime(machine, behaviors=BEHAVIORS)
+    runtime = sim_runtime(machine, behaviors=BEHAVIORS)
     result = runtime.submit(make_intent())
     assert result.outcome == "REFUSED"
     assert result.reasons[0].code == "unsupported_control_mode"
@@ -109,8 +107,8 @@ def stale_tail(script, onset_tick, end_tick=None, extra_delay_s=0.1):
         if onset_tick <= i and (end_tick is None or i < end_tick):
             item = replace(
                 item,
-                stamp=Stamp(
-                    source_s=item.stamp.source_s,
+                stamp=replace(
+                    item.stamp,
                     received_s=item.stamp.source_s + extra_delay_s,
                 ),
             )
@@ -126,7 +124,7 @@ def test_mid_motion_stale_delivery_detected_on_first_stale_tick():
     script = stream(seated_samples(30, z=-0.002, fz=1.0))
     script = stale_tail(script, onset_tick=20)
     machine = ScriptedMachine(observation=obs(0.0), script=script)
-    runtime = HaplousRuntime(machine, behaviors=BEHAVIORS)
+    runtime = sim_runtime(machine, behaviors=BEHAVIORS)
     runtime.submit(make_intent(recovery_policy=None))
     evidence = runtime.execute()
     holds = [
@@ -142,7 +140,7 @@ def test_mid_motion_machine_fault_zero_tick_stop_latency():
     script = stream(seated_samples(20, z=-0.002, fz=1.0))
     script.append(RuntimeError("actuator fault"))
     machine = ScriptedMachine(observation=obs(0.0), script=script)
-    runtime = HaplousRuntime(machine, behaviors=BEHAVIORS)
+    runtime = sim_runtime(machine, behaviors=BEHAVIORS)
     runtime.submit(make_intent())
     evidence = runtime.execute()
     assert runtime.state is ExecutionState.ABORTED
@@ -162,7 +160,7 @@ def test_no_command_authorized_from_stale_state():
     script += stream(seated_samples(40), period=0.005)[18:]
     script = stale_tail(script, onset_tick=15, end_tick=18, extra_delay_s=0.05)
     machine = ScriptedMachine(observation=obs(0.0), script=script)
-    runtime = HaplousRuntime(machine, behaviors=BEHAVIORS)
+    runtime = sim_runtime(machine, behaviors=BEHAVIORS)
     runtime.submit(
         make_intent(
             recovery_policy=RecoveryPolicy(
@@ -194,7 +192,7 @@ def test_adapter_latency_fault_refuses_before_motion():
         VALIDATED_LOOSE_V1, state_max_age_s=0.02, receive_delay_s=0.05
     )
     intent = insertion_intent(VALIDATED_LOOSE_V1.task, initial_offset_m=0.0)
-    runtime = HaplousRuntime(machine, behaviors=INSERTION_BEHAVIORS)
+    runtime = sim_runtime(machine, behaviors=INSERTION_BEHAVIORS)
     runtime.submit(intent)
     evidence = runtime.execute()
     assert runtime.state is ExecutionState.REFUSED
@@ -211,7 +209,7 @@ def test_adapter_packet_loss_small_window_degrades_and_completes():
     intent = insertion_intent(
         VALIDATED_LOOSE_V1.task, initial_offset_m=0.001, initial_bearing_rad=1.3
     )
-    runtime = HaplousRuntime(machine, behaviors=INSERTION_BEHAVIORS)
+    runtime = sim_runtime(machine, behaviors=INSERTION_BEHAVIORS)
     feasibility = runtime.submit(intent)
     assert feasibility.outcome == "SUPPORTED"
     runtime.execute()
@@ -238,7 +236,7 @@ def test_adapter_packet_loss_large_window_holds_and_resumes():
     intent = insertion_intent(
         VALIDATED_LOOSE_V1.task, initial_offset_m=0.001, initial_bearing_rad=3.3
     )
-    runtime = HaplousRuntime(machine, behaviors=INSERTION_BEHAVIORS)
+    runtime = sim_runtime(machine, behaviors=INSERTION_BEHAVIORS)
     runtime.submit(intent)
     runtime.execute()
     assert runtime.state is ExecutionState.COMPLETE
@@ -259,7 +257,7 @@ def test_adapter_stale_window_mid_motion_holds_with_latency():
         stale_windows_s=((1.0, 1.4, 0.05),),
     )
     intent = insertion_intent(VALIDATED_LOOSE_V1.task, initial_offset_m=0.0)
-    runtime = HaplousRuntime(machine, behaviors=INSERTION_BEHAVIORS)
+    runtime = sim_runtime(machine, behaviors=INSERTION_BEHAVIORS)
     runtime.submit(intent)
     runtime.execute()
     assert runtime.state is ExecutionState.COMPLETE
@@ -277,7 +275,7 @@ def test_adapter_persistent_command_rejection_holds_and_resumes():
         command_rejection_windows_s=((1.0, 1.01),),
     )
     intent = insertion_intent(VALIDATED_LOOSE_V1.task, initial_offset_m=0.0)
-    runtime = HaplousRuntime(machine, behaviors=INSERTION_BEHAVIORS)
+    runtime = sim_runtime(machine, behaviors=INSERTION_BEHAVIORS)
     runtime.submit(intent)
     runtime.execute()
     assert runtime.state is ExecutionState.COMPLETE
@@ -299,7 +297,7 @@ def test_adapter_transient_command_rejection_completes():
         command_rejection_windows_s=((1.0, 1.0005),),
     )
     intent = insertion_intent(VALIDATED_LOOSE_V1.task, initial_offset_m=0.0)
-    runtime = HaplousRuntime(machine, behaviors=INSERTION_BEHAVIORS)
+    runtime = sim_runtime(machine, behaviors=INSERTION_BEHAVIORS)
     runtime.submit(intent)
     runtime.execute()
     assert runtime.state is ExecutionState.COMPLETE
@@ -310,7 +308,7 @@ def test_adapter_transient_command_rejection_completes():
 def test_adapter_machine_fault_mid_motion_aborts_at_fault_time():
     machine = insertion_machine(VALIDATED_LOOSE_V1, fault_at_s=1.5)
     intent = insertion_intent(VALIDATED_LOOSE_V1.task, initial_offset_m=0.0)
-    runtime = HaplousRuntime(machine, behaviors=INSERTION_BEHAVIORS)
+    runtime = sim_runtime(machine, behaviors=INSERTION_BEHAVIORS)
     runtime.submit(intent)
     runtime.execute()
     assert runtime.state is ExecutionState.ABORTED
@@ -339,7 +337,7 @@ def test_adapter_stale_window_resumes_without_recovery():
             max_recovery_actions=5,
         ),
     )
-    runtime = HaplousRuntime(machine, behaviors=INSERTION_BEHAVIORS)
+    runtime = sim_runtime(machine, behaviors=INSERTION_BEHAVIORS)
     runtime.submit(intent)
     runtime.execute()
     assert runtime.state is ExecutionState.COMPLETE

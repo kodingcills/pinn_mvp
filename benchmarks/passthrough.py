@@ -110,7 +110,7 @@ class Trajectory:
     """The observable record of one trial. Every field in COMPARED_FIELDS."""
 
     observations: tuple
-    commands: tuple  # ServoCommand emitted by the behaviour, in order
+    commands: tuple  # CartesianImpedanceTarget emitted by the behaviour, in order
     applied_command_times: tuple
     disposition: str
     reason: str | None

@@ -22,7 +22,7 @@ from benchmarks.heb import mujoco_backend, systems
 from benchmarks.heb.insertion import insertion_scenarios
 from benchmarks.heb.protocol import Scenario
 from benchmarks.heb.sliding import sliding_scenarios
-from haplous.machine import CommandOutcome
+from haplous.adapters.legacy import CommandOutcome
 
 # Scenario fields a system may legitimately receive (requirements, geometry,
 # start state, recovery policy, task family). Everything else is benchmark truth.

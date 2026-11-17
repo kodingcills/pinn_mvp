@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING, Protocol, runtime_checkable
 if TYPE_CHECKING:
     from haplous.capabilities import CommandMode, MachineCapabilities
     from haplous.intent import ExecutionIntent
-    from haplous.machine import MachineObservation, ServoCommand
+    from haplous.machine import CartesianImpedanceTarget, MachineObservation
 
 
 @runtime_checkable
@@ -24,7 +24,7 @@ class ExecutionBehavior(Protocol):
     called once per supervision tick with the freshest observation and
     returns the next servo command.
 
-    Command contract (OD-1). ServoCommand carries no mode tag, so the modes
+    Command contract (OD-1). CartesianImpedanceTarget carries no mode tag, so the modes
     a behavior's commands need are a declared fact. The runtime refuses a
     behavior that does not declare required_command_modes. A substitute
     (required, native) is admitted only if the behavior authorizes it here,
@@ -42,4 +42,4 @@ class ExecutionBehavior(Protocol):
         observation: "MachineObservation",
     ) -> None: ...
 
-    def step(self, observation: "MachineObservation") -> "ServoCommand": ...
+    def step(self, observation: "MachineObservation") -> "CartesianImpedanceTarget": ...

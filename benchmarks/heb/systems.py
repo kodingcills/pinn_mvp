@@ -8,6 +8,9 @@ from __future__ import annotations
 import math
 import time
 
+from benchmarks.heb.divergence import divergence_detail
+from benchmarks.heb.protocol import Realization, Scenario, SystemRun
+from haplous.adapters.legacy import LegacyMachine, SimTickSource
 from haplous.intent import (
     ExecutionIntent,
     RecoveryPolicy,
@@ -17,9 +20,6 @@ from haplous.intent import (
 )
 from haplous.machine import Machine, MachineObservation
 from haplous.runtime import HaplousRuntime
-
-from benchmarks.heb.divergence import divergence_detail
-from benchmarks.heb.protocol import Realization, Scenario, SystemRun
 
 
 def build_intent(
@@ -129,9 +129,11 @@ class HaplousSystem:
     def run(self, realization: Realization, scenario: Scenario) -> SystemRun:
         condition = realization.condition_factory(scenario, realization.bundle)
         intent = build_intent(scenario, condition)
+        machine = LegacyMachine(realization.machine)
         runtime = HaplousRuntime(
-            realization.machine,
+            machine,
             behaviors={scenario.task_family: realization.behavior_factory},
+            tick_source=SimTickSource(machine),
         )
         t0 = time.perf_counter()
         feasibility = runtime.submit(intent)

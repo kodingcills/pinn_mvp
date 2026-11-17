@@ -1,13 +1,13 @@
 """The Haplous runtime spine: submit intent -> negotiate feasibility ->
 authorize execution on fresh state -> supervise a live session (observe ->
-evaluate constraints -> decide -> command -> step) -> recover / degrade /
-refuse / abort / complete -> evidence.
+evaluate constraints -> decide -> submit -> wait for the next tick) ->
+recover / degrade / refuse / abort / complete -> evidence.
 
 Supervision is live: on every tick the runtime observes fresh machine
-state, validates it, evaluates constraints, and only then applies the
-behavior's command and advances the machine one period. Stop, abort,
-degrade, recovery, and refusal can all occur mid-motion, before task
-completion."""
+state, validates it, evaluates constraints, and only then submits the
+behavior's command as an ActionEnvelope and waits on the integration's
+TickSource. The runtime never advances the world. Stop, abort, degrade,
+recovery, and refusal can all occur mid-motion, before task completion."""
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Callable, Mapping, Optional
@@ -24,7 +24,13 @@ from haplous.capabilities import (
 from haplous.constraints import Constraint, build_constraints
 from haplous.evidence import ExecutionEvidence
 from haplous.intent import ExecutionIntent, RequirementKind
-from haplous.machine import Machine, MachineObservation, MachineSession
+from haplous.machine import (
+    ActionEnvelope,
+    Machine,
+    MachineObservation,
+    MachineSession,
+    TickSource,
+)
 from haplous.state import ExecutionState, ExecutionStateTracker
 
 if TYPE_CHECKING:
@@ -48,6 +54,8 @@ class HaplousRuntime:
         behaviors: Optional[Mapping[str, Callable[[], ExecutionBehavior]]] = None,
         evidence_sink: Optional["EvidenceSink"] = None,
         max_archived_evidence: Optional[int] = None,
+        *,
+        tick_source: TickSource,
     ) -> None:
         if max_archived_evidence is not None and evidence_sink is None:
             raise ValueError(
@@ -55,6 +63,7 @@ class HaplousRuntime:
                 "eviction without a sink would silently lose evidence"
             )
         self._machine = machine
+        self._ticks = tick_source
         self._behaviors = dict(behaviors or {})
         self._tracker = ExecutionStateTracker()
         self._evidence = ExecutionEvidence()
@@ -267,6 +276,9 @@ class HaplousRuntime:
         window_span_s = 1.5 * success.window_s if success.window_s else None
         last_source: Optional[float] = None
         rejected_streak = 0
+        # lease_epoch stays 0 until leases exist (#17).
+        command_id = 0
+        correlation_id = f"execution-{self._archive_seq}"
         degraded_announced = False
         recovery_episode: set[str] = set()
         breached_codes: set[str] = set()
@@ -366,7 +378,7 @@ class HaplousRuntime:
                             to="degraded",
                         )
                         degraded_announced = True
-                    session.step()
+                    self._ticks.wait()
                     if session.ended:
                         self._finish_on_session_end(session, window)
                         return
@@ -623,8 +635,16 @@ class HaplousRuntime:
 
                 # Behavior decision on fresh state, then authorize.
                 if not skip_command:
-                    command = behavior.step(obs)
-                    outcome = session.apply(command)
+                    command_id += 1
+                    outcome = session.submit(ActionEnvelope(
+                        command_id=command_id,
+                        lease_epoch=0,
+                        origin_source_s=obs.stamp.source_s,
+                        clock=obs.stamp.clock,
+                        valid_until_s=obs.stamp.source_s + state_max_age_s,
+                        payload=behavior.step(obs),
+                        correlation_id=correlation_id,
+                    ))
                     if outcome.accepted:
                         if holding and rejected_streak > 0:
                             # Restoration after command rejection: the
@@ -680,7 +700,7 @@ class HaplousRuntime:
                                     untrusted_ticks=untrusted_ticks,
                                 )
                                 return
-                session.step()
+                self._ticks.wait()
                 if session.ended:
                     if session.fault is not None:
                         self._abort_machine_fault(session, last_source)

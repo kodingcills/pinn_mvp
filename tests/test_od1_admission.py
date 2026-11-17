@@ -7,10 +7,10 @@ import itertools
 import pytest
 
 from evaluation.track_b import _resolve_mode
+from haplous.adapters.legacy import sim_runtime
 from haplous.behaviors.insertion import InsertionExecutionBehavior
 from haplous.behaviors.sliding import SlideExecutionBehavior
 from haplous.capabilities import CommandMode, negotiate
-from haplous.runtime import HaplousRuntime
 from haplous.state import ExecutionState
 from tests.test_haplous_semantics import (
     HoldBehavior,
@@ -36,7 +36,7 @@ def contracted(required=frozenset({CI}), authorized=frozenset(), non_substitutab
 
 def submit(behavior, caps, script=()):
     machine = ScriptedMachine(caps=caps, observation=obs(0.0), script=script)
-    runtime = HaplousRuntime(machine, behaviors={"motion": behavior})
+    runtime = sim_runtime(machine, behaviors={"motion": behavior})
     return runtime, machine, runtime.submit(make_intent())
 
 
@@ -140,7 +140,7 @@ class LosingMachine(ScriptedMachine):
 
 def test_capability_loss_mid_run_aborts_through_stop():
     machine = LosingMachine(5, observation=obs(0.0), script=stream([(0.0, 0.0, 0.0, 1.0, 0.0)] * 50))
-    runtime = HaplousRuntime(machine, behaviors={"motion": contracted()})
+    runtime = sim_runtime(machine, behaviors={"motion": contracted()})
     assert runtime.submit(make_intent()).outcome == "SUPPORTED"
     evidence = runtime.execute()
     assert runtime.state is ExecutionState.ABORTED

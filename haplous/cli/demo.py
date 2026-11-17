@@ -12,7 +12,8 @@ from haplous.cli.registry import JsonMapping, RunMetadata, RunRegistry
 
 
 def _demo_leg(offset_m: float, *, max_force_n: float | None = None) -> dict:
-    from haplous import HaplousRuntime, RecoveryPolicy
+    from haplous import RecoveryPolicy
+    from haplous.adapters.legacy import sim_runtime
     from haplous.behaviors.insertion import (
         insertion_behavior_factory,
         insertion_intent,
@@ -33,7 +34,7 @@ def _demo_leg(offset_m: float, *, max_force_n: float | None = None) -> dict:
             max_recovery_actions=1,
         ),
     )
-    runtime = HaplousRuntime(
+    runtime = sim_runtime(
         machine,
         behaviors={"peg_insertion": insertion_behavior_factory(bundle)},
     )

@@ -11,33 +11,28 @@ import random
 
 import pytest
 
-from haplous.adapters.mujoco_adapter import MuJoCoMachine, MuJoCoMachineConfig
+from haplous.adapters.mujoco_adapter import MuJoCoMachine
 from haplous.behaviors.insertion import (
     insertion_behavior_factory,
     insertion_intent,
 )
 from haplous.capabilities import CommandMode, MachineCapabilities, SensingChannel
 from haplous.intent import (
-    ExecutionIntent,
     RecoveryPolicy,
     Requirement,
     RequirementKind,
     SuccessCondition,
 )
-from haplous.machine import MachineObservation, ServoCommand, Stamp
-from haplous.runtime import HaplousRuntime
+from haplous.adapters.legacy import sim_runtime
 from haplous.state import ExecutionState
-
 from pegsim.rollout import VALIDATED_LOOSE_V1
-
 from tests.test_haplous_semantics import (
     HoldBehavior,
     ScriptedMachine,
     make_intent,
     obs,
-    std_caps,
-    stream,
     seated_samples,
+    stream,
 )
 
 TERMINAL = {ExecutionState.COMPLETE, ExecutionState.ABORTED, ExecutionState.REFUSED}
@@ -56,7 +51,7 @@ def test_soak_ten_thousand_runtime_cycles():
     machine = ScriptedMachine(
         observation=obs(0.0), script=stream(seated_samples(40))
     )
-    runtime = HaplousRuntime(machine, behaviors=BEHAVIORS)
+    runtime = sim_runtime(machine, behaviors=BEHAVIORS)
     intent = make_intent()
     for cycle in range(10_000):
         feasibility = runtime.submit(intent)
@@ -80,7 +75,7 @@ def test_soak_aborted_cycles_keep_evidence_lineage():
         observation=obs(0.0),
         script=stream([(0.0, 0.0, -0.001, 30.0, 0.0)] * 20),
     )
-    runtime = HaplousRuntime(machine, behaviors=BEHAVIORS)
+    runtime = sim_runtime(machine, behaviors=BEHAVIORS)
     intent = make_intent(recovery_policy=None)
     for cycle in range(2_000):
         runtime.submit(intent)
@@ -227,7 +222,7 @@ def test_property_fuzzer_invariants():
             script=_random_script(rng, n_ticks),
             reject_windows_s=cfg["reject_windows_s"],
         )
-        runtime = HaplousRuntime(machine, behaviors=BEHAVIORS)
+        runtime = sim_runtime(machine, behaviors=BEHAVIORS)
         intent = _random_intent(rng)
         feasibility = runtime.submit(intent)
         if feasibility.outcome == "REFUSED":
@@ -275,7 +270,7 @@ def test_property_refused_never_executes():
             observation=obs(0.0),
             script=stream(seated_samples(20)),
         )
-        runtime = HaplousRuntime(machine, behaviors=BEHAVIORS)
+        runtime = sim_runtime(machine, behaviors=BEHAVIORS)
         result = runtime.submit(make_intent())
         if result.outcome == "REFUSED":
             with pytest.raises(RuntimeError):
@@ -298,7 +293,7 @@ def test_property_recovery_requires_permission():
         permitted = rng.choice(
             [frozenset(), frozenset({"process_force"})]
         )
-        runtime = HaplousRuntime(machine, behaviors=BEHAVIORS)
+        runtime = sim_runtime(machine, behaviors=BEHAVIORS)
         runtime.submit(
             make_intent(
                 recovery_policy=RecoveryPolicy(
@@ -324,6 +319,5 @@ def test_property_recovery_requires_permission():
 
 
 def _never_condition():
-    from haplous.intent import SuccessCondition
 
     return SuccessCondition("unreachable", lambda observations: False)

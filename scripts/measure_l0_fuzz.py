@@ -19,7 +19,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 import random
 
 from haplous.state import ExecutionState
-from haplous.runtime import HaplousRuntime
+from haplous.adapters.legacy import sim_runtime
 
 from tests.test_haplous_reliability import (
     BEHAVIORS,
@@ -51,7 +51,7 @@ def run_case(case: int, rng: random.Random) -> tuple[int, dict[str, bool]]:
         script=_random_script(rng, n_ticks),
         reject_windows_s=cfg["reject_windows_s"],
     )
-    runtime = HaplousRuntime(machine, behaviors=BEHAVIORS)
+    runtime = sim_runtime(machine, behaviors=BEHAVIORS)
     intent = _random_intent(rng)
     feasibility = runtime.submit(intent)
     if feasibility.outcome == "REFUSED":
