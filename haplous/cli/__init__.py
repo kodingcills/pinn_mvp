@@ -4,7 +4,7 @@ import argparse
 from collections.abc import Sequence
 from pathlib import Path
 
-from haplous.cli.commands import doctor_command, list_command
+from haplous.cli.commands import doctor_command, extra_for_module, list_command
 from haplous.cli.demo import demo_command
 from haplous.cli.execution import eval_command, run_command
 from haplous.cli.inspection import (
@@ -106,7 +106,7 @@ def studio_command(args: argparse.Namespace) -> int:
     try:
         from studio.app import serve
     except ImportError as exc:
-        print(f"haplous studio needs the 'studio' extra (pip install -e '.[studio]'): {exc}")
+        print(f"haplous studio needs the 'studio' extra (pip install 'haplous[studio]'): {exc}")
         return 2
     serve(port=args.port, open_browser=not args.no_browser, root=args.root)
     return 0
@@ -114,7 +114,14 @@ def studio_command(args: argparse.Namespace) -> int:
 
 def main(argv: Sequence[str] | None = None) -> int:
     args = _parser().parse_args(argv)
-    return args.handler(args)
+    try:
+        return args.handler(args)
+    except ModuleNotFoundError as exc:
+        extra = extra_for_module(exc.name)
+        if extra is None:
+            raise
+        print(f"haplous {args.command} needs the '{extra}' extra (pip install 'haplous[{extra}]'): {exc}")
+        return 2
 
 
 __all__ = ["main"]

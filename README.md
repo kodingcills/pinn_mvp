@@ -10,17 +10,46 @@ Everything here runs on a CPU. No GPU is needed.
 
 ## Install
 
-Needs Python 3.12+ and [uv](https://docs.astral.sh/uv/).
+Needs Python 3.12+. For working in this repository (Studio, benchmarks, the test suite), use
+[uv](https://docs.astral.sh/uv/):
 
 ```bash
 uv sync --extra all
 ```
 
-Check the environment:
+Check the environment. `doctor` lists each extra as OK or MISSING:
 
 ```bash
 .venv/bin/haplous doctor
 ```
+
+The repository builds one distribution, `haplous`. Its core has **no dependencies**: the runtime
+uses only the standard library. Everything else is an extra:
+
+| Extra | Adds | For |
+|---|---|---|
+| (none) | nothing | the runtime: `import haplous`, your own `Machine`, `haplous doctor` |
+| `sim` | mujoco, numpy | `pegsim`, the MuJoCo HEB backend, `haplous demo` |
+| `eval` | `sim` + registry, replay, plots | HEB/HES evaluation, the M0 run registry, `.rrd` replays |
+| `studio` | `eval` + FastAPI, uvicorn | `haplous studio` |
+| `dev` | pytest, ruff, mypy | development tools |
+| `all` | `eval`, `studio`, `dev` + h5py, hypothesis | the full test suite |
+
+To use the runtime without a checkout, build the wheel and install it (nothing is published to
+a package index):
+
+```bash
+uv build --wheel
+pip install 'dist/haplous-0.5.0-py3-none-any.whl'          # runtime only
+pip install 'dist/haplous-0.5.0-py3-none-any.whl[sim]'     # plus the MuJoCo simulator
+python examples/stub_machine_contract.py                   # runtime contract on a stub machine
+```
+
+A command that needs a missing extra says which one, for example
+`haplous demo needs the 'sim' extra (pip install 'haplous[sim]')`. `scripts/wheel_smoke.sh`
+builds the wheel and checks it in fresh venvs (bare, `[sim]`, `[studio]`). A Studio installed
+from the wheel starts and serves its API, but its run library is empty: committed runs live in
+the checkout's `results/`. To uninstall, `pip uninstall haplous`.
 
 ## Haplous Studio (start here)
 
