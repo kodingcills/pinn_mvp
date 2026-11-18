@@ -1,8 +1,11 @@
 """Studio jobs: allow-listed recordings of catalog scenarios x registered systems.
 
 The server writes the job record once (status `queued`) and starts one worker
-process; from then on the worker is the record's only writer. Each episode is
-an M0 run in Studio's registry, recorded the way `scripts/record_episode.py`
+process; from then on the worker is the record's only writer. The worker also
+rewrites `<job_id>.heartbeat` every HEARTBEAT_S with the record's nonce: a server
+that did not start the worker (after a restart) trusts only a fresh heartbeat
+carrying that nonce, never the pid, which the OS may have given to another process.
+Each episode is an M0 run in Studio's registry, recorded the way `scripts/record_episode.py`
 (haplous_mediated) and `scripts/m4_campaign.py record-one` (other arms) do.
 
     python -m studio.jobs run <job.json>                     # worker (started by the server)
@@ -18,6 +21,8 @@ import resource
 import secrets
 import subprocess
 import sys
+import threading
+import time
 from collections.abc import Mapping
 from datetime import UTC, datetime
 from pathlib import Path
@@ -34,6 +39,8 @@ FALLBACK_CPU_S_PER_EPISODE = 3.0
 FALLBACK_SOURCE = "fallback: one insert_nominal x haplous_mediated episode measured via studio.jobs (2.99 s)"
 CPU_CAP_S = 600.0
 LOG_TAIL_LINES = 40
+HEARTBEAT_S = 1.0  # the worker rewrites its heartbeat this often
+STALE_S = 15.0  # a heartbeat older than this (wall-clock seconds) means the worker is gone
 
 
 def _now() -> str:
@@ -41,9 +48,17 @@ def _now() -> str:
 
 
 def write_record(path: Path, record: dict[str, Any]) -> None:
-    tmp = path.with_suffix(".tmp")
-    tmp.write_text(json.dumps(record, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    """Write-temp, fsync, rename: a reader or a crash sees the old record or the new one, never a torn one."""
+    tmp = path.with_name(path.name + ".tmp")
+    with tmp.open("w", encoding="utf-8") as fh:
+        fh.write(json.dumps(record, indent=2, sort_keys=True) + "\n")
+        fh.flush()
+        os.fsync(fh.fileno())
     os.replace(tmp, path)
+
+
+def heartbeat_path(job_path: Path) -> Path:
+    return job_path.with_name(f"{job_path.stem}.heartbeat")
 
 
 def cpu_per_episode(systems: list[str] | tuple[str, ...], repo: Path = REPO_ROOT) -> dict[str, tuple[float, str]]:
@@ -66,7 +81,7 @@ def new_job(jobs_dir: Path, registry: Path, scenario_ids: list[str], systems: li
                  "outcome": None, "cpu_s": None} for s in scenario_ids for y in systems]
     record = {"job_id": job_id, "created_at": _now(), "status": "queued", "scenario_ids": scenario_ids,
               "systems": systems, "registry": str(registry), "estimate_cpu_s": estimate_cpu_s(scenario_ids, systems),
-              "episodes": episodes, "pid": None, "error": None, "finished_at": None}
+              "episodes": episodes, "nonce": secrets.token_hex(16), "pid": None, "error": None, "finished_at": None}
     jobs_dir.mkdir(parents=True, exist_ok=True)
     write_record(jobs_dir / f"{job_id}.json", record)
     return record
@@ -82,22 +97,42 @@ def start_worker(jobs_dir: Path, job_id: str) -> subprocess.Popen:
     return proc
 
 
-def _alive(record: dict[str, Any], proc: subprocess.Popen | None) -> bool:
-    if proc is not None:
-        return proc.poll() is None
-    # shortcut: a worker started by an earlier server process is checked by pid only (pid reuse not handled).
-    return record["pid"] is not None and Path(f"/proc/{record['pid']}").exists()
+def _not_live(path: Path, record: dict[str, Any], proc: subprocess.Popen | None) -> str | None:
+    """None while the job's worker is provably alive, else why it is not."""
+    if proc is not None:  # started by this server: the process handle is the identity
+        return None if proc.poll() is None else f"worker exited (code {proc.returncode}) without finishing the job record"
+    try:
+        beat = json.loads(heartbeat_path(path).read_text(encoding="utf-8"))
+        nonce, age = beat["nonce"], time.time() - float(beat["t"])
+    except FileNotFoundError:
+        if record["status"] == "queued" and time.time() - path.stat().st_mtime < STALE_S:
+            return None  # the worker is still starting up
+        return f"no worker heartbeat (pid {record.get('pid')} alone is not proof of a live worker)"
+    except (OSError, ValueError, KeyError, TypeError) as exc:
+        return f"worker heartbeat unreadable ({type(exc).__name__})"
+    if nonce != record.get("nonce"):
+        return "worker heartbeat nonce does not match the job record"
+    if age > STALE_S:
+        return f"worker heartbeat stale: last written {age:.0f} s ago (limit {STALE_S:g} s); the worker is gone"
+    return None
 
 
 def view(jobs_dir: Path, job_id: str, workers: Mapping[str, subprocess.Popen]) -> dict[str, Any] | None:
-    """The record as the API shows it: an unfinished record whose worker is gone reads as failed."""
+    """The record as the API shows it. An unfinished record whose worker is not provably alive, or a record
+    that cannot be read, reads as failed with the reason. The view never writes the record."""
     path = jobs_dir / f"{job_id}.json"
     if not path.is_file():
         return None
-    record = json.loads(path.read_text(encoding="utf-8"))
-    if record["status"] in ("queued", "running") and not _alive(record, workers.get(job_id)):
-        record = {**record, "status": "failed", "error": "worker exited without finishing the job record"}
-    done = [e for e in record["episodes"] if e["state"] is not None]
+    try:
+        record = json.loads(path.read_text(encoding="utf-8"))
+        done = [e for e in record["episodes"] if e["state"] is not None]
+        unfinished = record["status"] in ("queued", "running")
+    except (OSError, ValueError, KeyError, TypeError) as exc:
+        record, done, unfinished = {"job_id": job_id, "status": "failed", "episodes": [],
+                                    "error": f"job record unreadable ({type(exc).__name__}: {exc})"}, [], False
+    reason = _not_live(path, record, workers.get(job_id)) if unfinished else None
+    if reason is not None:
+        record = {**record, "status": "failed", "error": reason}
     log = jobs_dir / f"{job_id}.log"
     tail = log.read_text(encoding="utf-8", errors="replace").splitlines()[-LOG_TAIL_LINES:] if log.is_file() else []
     return {**record, "progress": {"done": len(done), "total": len(record["episodes"])},
@@ -130,8 +165,20 @@ def _children_cpu_s() -> float:
     return usage.ru_utime + usage.ru_stime
 
 
+def _beat(path: Path, nonce: str) -> None:
+    write_record(heartbeat_path(path), {"nonce": nonce, "pid": os.getpid(), "t": time.time()})
+
+
+def _heartbeat(path: Path, nonce: str) -> None:
+    while True:
+        time.sleep(HEARTBEAT_S)
+        _beat(path, nonce)
+
+
 def run_job(path: Path) -> int:
     job = json.loads(path.read_text(encoding="utf-8"))
+    _beat(path, job["nonce"])  # before `running`: a running record always has a heartbeat
+    threading.Thread(target=_heartbeat, args=(path, job["nonce"]), daemon=True, name="heartbeat").start()
     job.update(status="running", pid=os.getpid())
     write_record(path, job)
     try:

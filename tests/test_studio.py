@@ -7,6 +7,8 @@ import base64
 import hashlib
 import io
 import json
+import os
+import signal
 import subprocess
 import sys
 import tarfile
@@ -45,6 +47,24 @@ def paths(tmp_path: Path) -> Paths:
 def client(paths: Paths) -> TestClient:
     return TestClient(create_app(paths, static_dir=paths.studio / "no-static", wasm_cache=paths.studio / "wasm"),
                       base_url=BASE)
+
+
+def test_artifact_root_resolution(tmp_path: Path, monkeypatch) -> None:
+    """HAPLOUS_STUDIO_ROOT, else the checkout's own layout, else a per-user data dir (a wheel install)."""
+    monkeypatch.delenv("HAPLOUS_STUDIO_ROOT", raising=False)
+    assert Paths.default() == Paths(REPO, REPO / "results/studio", REPO / "docs/eval_program/investigations",
+                                    REPO / "replays")
+    site = tmp_path / "site-packages"  # no pyproject.toml: not a checkout
+    site.mkdir()
+    monkeypatch.setenv("HOME", str(tmp_path / "home"))
+    monkeypatch.setenv("XDG_DATA_HOME", str(tmp_path / "xdg"))
+    monkeypatch.setattr(sys, "platform", "linux")
+    assert Paths.default(site) == Paths.under(tmp_path / "xdg/haplous-studio", repo=site)
+    monkeypatch.setattr(sys, "platform", "darwin")
+    assert Paths.default(site) == Paths.under(tmp_path / "home/Library/Application Support/haplous-studio", repo=site)
+    monkeypatch.setenv("HAPLOUS_STUDIO_ROOT", str(tmp_path / "env"))
+    assert Paths.default(site) == Paths.under(tmp_path / "env", repo=site)
+    assert Paths.default().studio == tmp_path / "env/studio"
 
 
 def _jsonl(path: Path) -> list[dict]:
@@ -245,8 +265,20 @@ def test_jobs_over_the_cpu_cap_need_confirm(client: TestClient, paths: Paths) ->
     assert not paths.jobs.exists()
 
 
-def test_one_episode_job_produces_a_verified_m0_run(client: TestClient, paths: Paths) -> None:
-    """The only simulation in this file: one short recorded episode."""
+def _app(paths: Paths) -> TestClient:
+    """A fresh server process's view: no in-memory worker handles."""
+    return TestClient(create_app(paths, static_dir=paths.studio / "no-static", wasm_cache=paths.studio / "wasm"),
+                      base_url=BASE)
+
+
+def test_one_episode_job_without_a_checkout(tmp_path: Path) -> None:
+    """One short recorded episode with no committed results (a wheel install's view): launch, list, open,
+    replay, then a restarted server shows the completed job unchanged."""
+    (tmp_path / "no-checkout").mkdir()
+    paths = Paths.under(tmp_path / "root", repo=tmp_path / "no-checkout")
+    client = _app(paths)
+    assert client.get("/api/runs").json() == []
+    assert client.get("/api/evidence").json()["tasks"] == []
     res = client.post("/api/jobs", json={"scenario_ids": ["insert_nominal"], "systems": ["haplous_mediated"]})
     assert res.status_code == 200, res.text
     job_id = res.json()["job_id"]
@@ -262,12 +294,88 @@ def test_one_episode_job_produces_a_verified_m0_run(client: TestClient, paths: P
     assert Registry(paths.registry).check(run_id) == []
     assert Registry(paths.registry).state(run_id) == "VERIFIED"
     listed = {r["id"]: r for r in client.get("/api/runs").json()}[run_id]
+    assert [r["id"] for r in client.get("/api/runs").json()] == [run_id]
     assert (listed["source"], listed["verified"], listed["has_3d"]) == ("studio", True, True)
     assert (listed["scenario_id"], listed["system"]) == ("insert_nominal", "haplous_mediated")
     detail = client.get(f"/api/runs/{run_id}").json()
     assert detail["m0"]["state"] == "VERIFIED" and detail["m0"]["config"]["studio_job"] == job_id
-    assert len(detail["series"]["t_s"]) == detail["metadata"]["n_observations"]
+    assert len(detail["series"]["t_s"]) == detail["metadata"]["n_observations"] > 0 and detail["events"]
+    assert client.get(f"/api/runs/{run_id}/rrd").content[:4] == b"RRF2"
     print(f"measured CPU per episode: {job['episodes'][0]['cpu_s']:.2f} s")
+    record_bytes = (paths.jobs / f"{job_id}.json").read_bytes()
+    restarted = _app(paths)
+    assert restarted.get(f"/api/jobs/{job_id}").json() == client.get(f"/api/jobs/{job_id}").json()
+    assert (paths.jobs / f"{job_id}.json").read_bytes() == record_bytes
+
+
+def _running_record(paths: Paths, job_id: str, pid: int) -> dict:
+    record = {"job_id": job_id, "created_at": "2026-01-01T00:00:00Z", "status": "running",
+              "scenario_ids": ["insert_nominal"], "systems": ["haplous_mediated"], "registry": str(paths.registry),
+              "estimate_cpu_s": 3.0, "nonce": "n" * 32, "pid": pid, "error": None, "finished_at": None,
+              "episodes": [{"scenario_id": "insert_nominal", "system": "haplous_mediated", "run_id": "r",
+                            "state": None, "outcome": None, "cpu_s": None}]}
+    paths.jobs.mkdir(parents=True, exist_ok=True)
+    (paths.jobs / f"{job_id}.json").write_text(json.dumps(record))
+    return record
+
+
+def _beat(paths: Paths, job_id: str, nonce: str, age_s: float) -> None:
+    (paths.jobs / f"{job_id}.heartbeat").write_text(json.dumps({"nonce": nonce, "pid": 1, "t": time.time() - age_s}))
+
+
+def test_a_live_unrelated_pid_is_not_a_live_worker(client: TestClient, paths: Paths) -> None:
+    """Only a fresh heartbeat carrying the record's nonce proves the worker; the pid proves nothing."""
+    _running_record(paths, "20260101T000000-aaaaaa", os.getpid())  # this test process: alive, not a worker
+
+    def job() -> dict:
+        return client.get("/api/jobs/20260101T000000-aaaaaa").json()
+
+    assert (job()["status"], "no worker heartbeat" in job()["error"]) == ("failed", True)
+    _beat(paths, "20260101T000000-aaaaaa", "x" * 32, 0)
+    assert (job()["status"], "nonce" in job()["error"]) == ("failed", True)
+    _beat(paths, "20260101T000000-aaaaaa", "n" * 32, jobs.STALE_S + 5)
+    assert (job()["status"], "stale" in job()["error"]) == ("failed", True)
+    _beat(paths, "20260101T000000-aaaaaa", "n" * 32, 0)
+    assert (job()["status"], job()["error"]) == ("running", None)
+
+
+def test_completed_job_survives_restart_unchanged(paths: Paths) -> None:
+    record = {**_running_record(paths, "20260101T000000-bbbbbb", 999_999_999), "status": "succeeded",
+              "finished_at": "2026-01-01T00:01:00Z"}
+    record["episodes"][0].update(state="VERIFIED", outcome="completed", cpu_s=3.0)
+    (paths.jobs / "20260101T000000-bbbbbb.json").write_text(json.dumps(record))
+    views = [_app(paths).get("/api/jobs/20260101T000000-bbbbbb").json() for _ in range(2)]
+    assert views[0] == views[1] == {**record, "progress": {"done": 1, "total": 1}, "run_ids": ["r"], "log_tail": ""}
+
+
+def test_corrupt_or_partial_job_record_reads_failed(client: TestClient, paths: Paths) -> None:
+    paths.jobs.mkdir(parents=True)
+    (paths.jobs / "20260101T000000-cccccc.json").write_text('{"job_id": "20260101T000000-cccccc", "sta')
+    (paths.jobs / "20260101T000000-dddddd.json").write_text("[]")
+    (paths.jobs / "20260101T000000-cccccc.json.tmp").write_text("{")  # a write that never got renamed
+    listed = client.get("/api/jobs").json()
+    assert [(j["job_id"], j["status"]) for j in listed] == [("20260101T000000-dddddd", "failed"),
+                                                            ("20260101T000000-cccccc", "failed")]
+    got = client.get("/api/jobs/20260101T000000-cccccc").json()
+    assert "unreadable" in got["error"] and got["progress"] == {"done": 0, "total": 0}
+
+
+def test_killed_worker_reads_failed_after_restart(client: TestClient, paths: Paths, monkeypatch) -> None:
+    """Kill the real worker (and its recording child) mid-job; a restarted server reports it failed."""
+    res = client.post("/api/jobs", json={"scenario_ids": ["insert_nominal"], "systems": ["haplous_mediated"]})
+    job_id = res.json()["job_id"]
+    beat = paths.jobs / f"{job_id}.heartbeat"
+    deadline = time.monotonic() + 120
+    while not beat.is_file() or client.get(f"/api/jobs/{job_id}").json()["status"] != "running":
+        assert time.monotonic() < deadline, client.get(f"/api/jobs/{job_id}").json()
+        time.sleep(0.2)
+    pid = json.loads((paths.jobs / f"{job_id}.json").read_text())["pid"]
+    os.killpg(pid, signal.SIGKILL)  # the worker leads its own session; its zombie pid stays until reaped
+    monkeypatch.setattr(jobs, "STALE_S", 1.0)
+    time.sleep(1.5)
+    job = _app(paths).get(f"/api/jobs/{job_id}").json()
+    assert job["status"] == "failed" and "stale" in job["error"], job
+    assert json.loads((paths.jobs / f"{job_id}.json").read_text())["status"] == "running"  # the view never writes
 
 
 # ---------------------------------------------------------------- investigations
