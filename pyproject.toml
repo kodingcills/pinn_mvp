@@ -11,7 +11,7 @@ dependencies = []
 [project.optional-dependencies]
 # pegsim MuJoCo substrate, HEB MuJoCo backend, `haplous demo`.
 sim = [
-    "mujoco>=3.11.0",
+    "mujoco>=3.11.0,<3.12",  # evidence was produced on 3.11; MuJoCo 4 is untested here
     "numpy>=2.5.1",
 ]
 # Evaluation and reporting (HEB, HES, M0 registry, replay): manifests, Parquet tables, plots.
