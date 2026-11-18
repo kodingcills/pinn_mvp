@@ -38,6 +38,12 @@ class Unreadable(RuntimeError):
     """The artifact exists but cannot be served as trusted data (integrity, format)."""
 
 
+def user_data_dir() -> Path:
+    if sys.platform == "darwin":
+        return Path.home() / "Library" / "Application Support" / "haplous-studio"
+    return Path(os.environ.get("XDG_DATA_HOME") or Path.home() / ".local" / "share") / "haplous-studio"
+
+
 @dataclass(frozen=True)
 class Paths:
     repo: Path
@@ -47,8 +53,14 @@ class Paths:
 
     @classmethod
     def default(cls, repo: Path = REPO_ROOT) -> Paths:
-        return cls(repo, repo / "results" / "studio", repo / "docs" / "eval_program" / "investigations",
-                   repo / "replays")
+        """`$HAPLOUS_STUDIO_ROOT`, else the checkout's own layout, else a per-user data dir (a wheel install,
+        where `repo` is site-packages and holds no committed results)."""
+        if os.environ.get("HAPLOUS_STUDIO_ROOT"):
+            return cls.under(Path(os.environ["HAPLOUS_STUDIO_ROOT"]), repo)
+        if (repo / "pyproject.toml").is_file():
+            return cls(repo, repo / "results" / "studio", repo / "docs" / "eval_program" / "investigations",
+                       repo / "replays")
+        return cls.under(user_data_dir(), repo)
 
     @classmethod
     def under(cls, root: Path, repo: Path = REPO_ROOT) -> Paths:
@@ -363,8 +375,11 @@ def _issue(row: dict[str, Any]) -> dict[str, Any]:
 
 def evidence(paths: Paths) -> dict[str, Any]:
     program = paths.repo / "docs" / "eval_program"
-    tasks_doc = json.loads((program / "TASKS.json").read_text(encoding="utf-8"))
     issues = program / "KNOWN_ISSUES.md"
+    if not (program / "TASKS.json").is_file():  # no checkout: no committed program evidence
+        return {"integration_branch": None, "tasks": [], "known_issues": [], "benchmarks": BENCHMARKS,
+                "source": f"none: {paths.rel(program / 'TASKS.json')} is absent (not a repository checkout)"}
+    tasks_doc = json.loads((program / "TASKS.json").read_text(encoding="utf-8"))
     return {
         "integration_branch": tasks_doc.get("integration_branch"),
         "tasks": [{**{k: t.get(k) for k in ("id", "title", "owner", "status", "verdict", "commit", "deps",

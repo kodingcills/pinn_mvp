@@ -96,7 +96,8 @@ def _parser() -> argparse.ArgumentParser:
     studio.add_argument("--port", type=int, default=8765)
     studio.add_argument("--no-browser", action="store_true")
     studio.add_argument("--root", type=Path, help="write jobs, Studio's M0 registry, replays and investigations under "
-                        "this directory (default: results/studio, replays/, docs/eval_program/investigations)")
+                        "this directory (default: $HAPLOUS_STUDIO_ROOT; in a checkout results/studio, replays/, "
+                        "docs/eval_program/investigations; else a per-user data dir)")
     studio.set_defaults(handler=studio_command)
     return parser
 

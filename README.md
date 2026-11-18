@@ -47,9 +47,10 @@ python examples/stub_machine_contract.py                   # runtime contract on
 
 A command that needs a missing extra says which one, for example
 `haplous demo needs the 'sim' extra (pip install 'haplous[sim]')`. `scripts/wheel_smoke.sh`
-builds the wheel and checks it in fresh venvs (bare, `[sim]`, `[studio]`). A Studio installed
-from the wheel starts and serves its API, but its run library is empty: committed runs live in
-the checkout's `results/`. To uninstall, `pip uninstall haplous`.
+builds the wheel and checks it in fresh venvs (bare, `[sim]`, `[studio]`, where it launches and
+replays one recorded episode). A Studio installed from the wheel keeps its own run library (see
+`--root` below); the committed runs and campaigns in the checkout's `results/` appear only when
+running from a checkout. To uninstall, `pip uninstall haplous`.
 
 ## Haplous Studio (start here)
 
@@ -73,7 +74,12 @@ From a replay, **Create investigation** writes a task file under
 reproduction command. Hand it to a Claude Code session to work on.
 
 Options: `--port N`, `--no-browser`, and `--root DIR` (write jobs, recordings, replays and
-investigations under `DIR` instead of the repository).
+investigations under `DIR`). Without `--root`, Studio uses `$HAPLOUS_STUDIO_ROOT`; else, in a
+checkout, the repository (`results/studio/`, `replays/`, `docs/eval_program/investigations/`);
+else a per-user data dir (`~/.local/share/haplous-studio` on Linux,
+`~/Library/Application Support/haplous-studio` on macOS). A job survives a server restart: the
+worker writes a heartbeat every second, and a job whose heartbeat is older than 15 s reads
+`failed` with the reason.
 
 The 3D viewer (Rerun, about 70 MB) is downloaded once on first start from a pinned npm package,
 checked against its sha512, and cached in `~/.cache/haplous-studio/`. Until it arrives, or when
