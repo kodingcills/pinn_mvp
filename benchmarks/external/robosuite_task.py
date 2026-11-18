@@ -20,12 +20,12 @@ from haplous import (
     CartesianImpedanceTarget,
     ClockDomain,
     CommandMode,
+    CommandOutcome,
     MachineCapabilities,
     MachineObservation,
     SensingChannel,
     Stamp,
 )
-from haplous.adapters.legacy import CommandOutcome
 
 TASK_ID: Final = "robosuite/1.5.2/NutAssemblySquare"
 CONTROL_FREQUENCY_HZ: Final = 20

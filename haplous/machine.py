@@ -86,6 +86,17 @@ class CartesianImpedanceTarget:
 
 
 @dataclass(frozen=True)
+class CommandOutcome:
+    """Result of handing a target to a step-driven simulator session or
+    ExternalTask (haplous.adapters.legacy). Not part of the product session
+    protocol, which answers with Ack. A rejected target means the simulator
+    keeps holding its previous one."""
+
+    accepted: bool
+    reason: str | None = None
+
+
+@dataclass(frozen=True)
 class ActionEnvelope:
     """The only form in which a command reaches a machine (ARCH-001
     decision 3). command_id is unique within one session; lease_epoch is

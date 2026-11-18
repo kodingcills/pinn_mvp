@@ -21,12 +21,12 @@ from haplous import (
     CartesianImpedanceTarget,
     ClockDomain,
     CommandMode,
+    CommandOutcome,
     MachineCapabilities,
     MachineObservation,
     SensingChannel,
     Stamp,
 )
-from haplous.adapters.legacy import CommandOutcome
 
 TASK_ID: Final = "maniskill/3.0.1/PegInsertionSide"
 CONTROL_FREQUENCY_HZ: Final = 20

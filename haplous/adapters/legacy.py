@@ -6,7 +6,6 @@ Machine whose sessions accept ActionEnvelopes, and SimTickSource advances
 the simulator one supervision period per runtime tick."""
 from __future__ import annotations
 
-from dataclasses import dataclass
 from collections.abc import Mapping
 from typing import TYPE_CHECKING, Any, Protocol, runtime_checkable
 
@@ -15,21 +14,13 @@ from haplous.machine import (
     AckStatus,
     ActionEnvelope,
     CartesianImpedanceTarget,
+    CommandOutcome,
     MachineObservation,
 )
 from haplous.runtime import HaplousRuntime
 
 if TYPE_CHECKING:
     from haplous.capabilities import MachineCapabilities
-
-
-@dataclass(frozen=True)
-class CommandOutcome:
-    """Result of handing a target to a simulator session. A rejected target
-    means the simulator keeps holding its previous one."""
-
-    accepted: bool
-    reason: str | None = None
 
 
 @runtime_checkable
