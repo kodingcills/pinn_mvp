@@ -2,7 +2,7 @@
 defined in `evaluation.replay`.
 
 The recorder attaches through `mujoco_backend.build_realization(
-machine_factory=...)`. `RecordingMachine` is a `MuJoCoMachine` whose session
+machine_factory=...)`. `RecordingMachine` is the HEB `DivergenceGuardedMachine` whose session
 is wrapped in the backend-neutral `benchmarks.episode_log.LoggingSession`
 (telemetry and events) plus the MuJoCo-only add-ons: the state stream read
 after every physics step, the model, disturbance and fault-window events. It
@@ -41,10 +41,10 @@ import pyarrow as pa
 
 from benchmarks.episode_log import EpisodeLog, LoggingSession
 from benchmarks.heb import mujoco_backend, systems, tasks
+from benchmarks.heb.divergence import DivergenceGuardedMachine, DivergenceGuardedSession
 from benchmarks.heb.metrics import grade_run
 from benchmarks.heb.protocol import Scenario, SystemRun
 from evaluation import replay as fmt
-from haplous.adapters.mujoco_adapter import MuJoCoMachine, _MuJoCoSession
 
 TRACKED_SITE = "peg_tip"
 
@@ -166,7 +166,7 @@ class _RecordingSession(LoggingSession):
     """Neutral logging plus the MuJoCo add-ons. A tick is one physics step
     (a fault step does not advance MjData.time, so it is not a tick)."""
 
-    def __init__(self, inner: _MuJoCoSession, recorder: EpisodeRecorder) -> None:
+    def __init__(self, inner: DivergenceGuardedSession, recorder: EpisodeRecorder) -> None:
         super().__init__(inner, recorder.log, clock=lambda: float(inner._data.time))
         self._stream = recorder.stream
         self._stream.append(0, inner._data)
@@ -180,7 +180,7 @@ class _RecordingSession(LoggingSession):
             self._stream.append(self.tick, self.inner._data)
 
 
-class RecordingMachine(MuJoCoMachine):
+class RecordingMachine(DivergenceGuardedMachine):
     def __init__(self, bundle, *, config, recorder: EpisodeRecorder) -> None:
         if config.observation_decimation != 1:
             raise ValueError("recording assumes one physics step per session step (observation_decimation=1)")

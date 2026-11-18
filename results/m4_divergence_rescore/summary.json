@@ -1,0 +1,1225 @@
+{
+  "audit": {
+    "arms": [
+      "haplous_mediated",
+      "g1_incumbent"
+    ],
+    "n_per_population": 30,
+    "seed": 21
+  },
+  "cpu": {
+    "budget_s": 1500,
+    "estimate_s": 1135.0,
+    "used_s": 1866.1,
+    "wall_s": 1350.8
+  },
+  "diverged": [
+    {
+      "arm": "g1_incumbent",
+      "divergence": {
+        "signals": [
+          "mjWARN_BADQACC",
+          "sim_time_decreased"
+        ],
+        "t_s": 1.0979999999999346
+      },
+      "population": "control",
+      "rescored": {
+        "bounded_success": false,
+        "graded_disposition": "SIM_DIVERGED",
+        "n_hard_violations": 3,
+        "reason": "machine_fault_sim_diverged",
+        "reported_disposition": "ABORTED",
+        "task_success": false
+      },
+      "scenario_id": "fleet_insert_000019",
+      "sealed": {
+        "bounded_success": false,
+        "graded_disposition": "ABORTED",
+        "n_hard_violations": 3,
+        "reason": "machine_fault_tilt_guard",
+        "reported_disposition": "ABORTED",
+        "task_success": false
+      },
+      "why": "proxy"
+    },
+    {
+      "arm": "g1_incumbent",
+      "divergence": {
+        "signals": [
+          "mjWARN_BADQACC",
+          "sim_time_decreased"
+        ],
+        "t_s": 1.121499999999932
+      },
+      "population": "control",
+      "rescored": {
+        "bounded_success": false,
+        "graded_disposition": "SIM_DIVERGED",
+        "n_hard_violations": 1,
+        "reason": "machine_fault_sim_diverged",
+        "reported_disposition": "ABORTED",
+        "task_success": false
+      },
+      "scenario_id": "fleet_insert_000101",
+      "sealed": {
+        "bounded_success": false,
+        "graded_disposition": "ABORTED",
+        "n_hard_violations": 3,
+        "reason": "force_limit",
+        "reported_disposition": "ABORTED",
+        "task_success": false
+      },
+      "why": "proxy"
+    },
+    {
+      "arm": "g1_incumbent",
+      "divergence": {
+        "signals": [
+          "mjWARN_BADQACC",
+          "sim_time_decreased"
+        ],
+        "t_s": 1.2369999999999193
+      },
+      "population": "control",
+      "rescored": {
+        "bounded_success": false,
+        "graded_disposition": "SIM_DIVERGED",
+        "n_hard_violations": 0,
+        "reason": "machine_fault_sim_diverged",
+        "reported_disposition": "ABORTED",
+        "task_success": false
+      },
+      "scenario_id": "fleet_insert_000135",
+      "sealed": {
+        "bounded_success": false,
+        "graded_disposition": "ABORTED",
+        "n_hard_violations": 1,
+        "reason": "force_limit",
+        "reported_disposition": "ABORTED",
+        "task_success": false
+      },
+      "why": "proxy"
+    },
+    {
+      "arm": "haplous_mediated",
+      "divergence": {
+        "signals": [
+          "mjWARN_BADQACC",
+          "sim_time_decreased"
+        ],
+        "t_s": 1.2369999999999193
+      },
+      "population": "control",
+      "rescored": {
+        "bounded_success": false,
+        "graded_disposition": "SIM_DIVERGED",
+        "n_hard_violations": 0,
+        "reason": "machine_fault_sim_diverged",
+        "reported_disposition": "ABORTED",
+        "task_success": false
+      },
+      "scenario_id": "fleet_insert_000135",
+      "sealed": {
+        "bounded_success": false,
+        "graded_disposition": "ABORTED",
+        "n_hard_violations": 1,
+        "reason": "hard_constraint_process_force",
+        "reported_disposition": "ABORTED",
+        "task_success": false
+      },
+      "why": "proxy"
+    },
+    {
+      "arm": "g1_incumbent",
+      "divergence": {
+        "signals": [
+          "mjWARN_BADQACC",
+          "sim_time_decreased"
+        ],
+        "t_s": 1.1624999999999275
+      },
+      "population": "control",
+      "rescored": {
+        "bounded_success": false,
+        "graded_disposition": "SIM_DIVERGED",
+        "n_hard_violations": 1,
+        "reason": "machine_fault_sim_diverged",
+        "reported_disposition": "ABORTED",
+        "task_success": false
+      },
+      "scenario_id": "fleet_insert_000167",
+      "sealed": {
+        "bounded_success": false,
+        "graded_disposition": "ABORTED",
+        "n_hard_violations": 2,
+        "reason": "force_limit",
+        "reported_disposition": "ABORTED",
+        "task_success": false
+      },
+      "why": "proxy"
+    },
+    {
+      "arm": "bare_behavior",
+      "divergence": {
+        "signals": [
+          "mjWARN_BADQACC",
+          "sim_time_decreased"
+        ],
+        "t_s": 0.7524999999999725
+      },
+      "population": "stress",
+      "rescored": {
+        "bounded_success": false,
+        "graded_disposition": "SIM_DIVERGED",
+        "n_hard_violations": 3,
+        "reason": "machine_fault_sim_diverged",
+        "reported_disposition": "ABORTED",
+        "task_success": false
+      },
+      "scenario_id": "m4s_rejection_long_00022",
+      "sealed": {
+        "bounded_success": false,
+        "graded_disposition": "COMPLETE",
+        "n_hard_violations": 2880,
+        "reason": null,
+        "reported_disposition": "COMPLETE",
+        "task_success": true
+      },
+      "why": "proxy"
+    },
+    {
+      "arm": "bare_behavior",
+      "divergence": {
+        "signals": [
+          "mjWARN_BADQACC",
+          "sim_time_decreased"
+        ],
+        "t_s": 1.3314999999999089
+      },
+      "population": "stress",
+      "rescored": {
+        "bounded_success": false,
+        "graded_disposition": "SIM_DIVERGED",
+        "n_hard_violations": 0,
+        "reason": "machine_fault_sim_diverged",
+        "reported_disposition": "ABORTED",
+        "task_success": false
+      },
+      "scenario_id": "m4s_rejection_long_00047",
+      "sealed": {
+        "bounded_success": true,
+        "graded_disposition": "COMPLETE",
+        "n_hard_violations": 0,
+        "reason": null,
+        "reported_disposition": "COMPLETE",
+        "task_success": true
+      },
+      "why": "proxy"
+    },
+    {
+      "arm": "competent_supervisor",
+      "divergence": {
+        "signals": [
+          "mjWARN_BADQACC",
+          "sim_time_decreased"
+        ],
+        "t_s": 1.3314999999999089
+      },
+      "population": "stress",
+      "rescored": {
+        "bounded_success": false,
+        "graded_disposition": "SIM_DIVERGED",
+        "n_hard_violations": 0,
+        "reason": "machine_fault_sim_diverged",
+        "reported_disposition": "ABORTED",
+        "task_success": false
+      },
+      "scenario_id": "m4s_rejection_long_00047",
+      "sealed": {
+        "bounded_success": true,
+        "graded_disposition": "COMPLETE",
+        "n_hard_violations": 0,
+        "reason": null,
+        "reported_disposition": "COMPLETE",
+        "task_success": true
+      },
+      "why": "proxy"
+    },
+    {
+      "arm": "g1_incumbent",
+      "divergence": {
+        "signals": [
+          "mjWARN_BADQACC",
+          "sim_time_decreased"
+        ],
+        "t_s": 1.3314999999999089
+      },
+      "population": "stress",
+      "rescored": {
+        "bounded_success": false,
+        "graded_disposition": "SIM_DIVERGED",
+        "n_hard_violations": 0,
+        "reason": "machine_fault_sim_diverged",
+        "reported_disposition": "ABORTED",
+        "task_success": false
+      },
+      "scenario_id": "m4s_rejection_long_00047",
+      "sealed": {
+        "bounded_success": true,
+        "graded_disposition": "COMPLETE",
+        "n_hard_violations": 0,
+        "reason": null,
+        "reported_disposition": "COMPLETE",
+        "task_success": true
+      },
+      "why": "proxy"
+    },
+    {
+      "arm": "haplous_mediated",
+      "divergence": {
+        "signals": [
+          "mjWARN_BADQACC",
+          "sim_time_decreased"
+        ],
+        "t_s": 1.3314999999999089
+      },
+      "population": "stress",
+      "rescored": {
+        "bounded_success": false,
+        "graded_disposition": "SIM_DIVERGED",
+        "n_hard_violations": 0,
+        "reason": "machine_fault_sim_diverged",
+        "reported_disposition": "ABORTED",
+        "task_success": false
+      },
+      "scenario_id": "m4s_rejection_long_00047",
+      "sealed": {
+        "bounded_success": true,
+        "graded_disposition": "COMPLETE",
+        "n_hard_violations": 0,
+        "reason": null,
+        "reported_disposition": "COMPLETE",
+        "task_success": true
+      },
+      "why": "proxy"
+    },
+    {
+      "arm": "bare_behavior",
+      "divergence": {
+        "signals": [
+          "mjWARN_BADQACC",
+          "sim_time_decreased"
+        ],
+        "t_s": 1.2599999999999167
+      },
+      "population": "stress",
+      "rescored": {
+        "bounded_success": false,
+        "graded_disposition": "SIM_DIVERGED",
+        "n_hard_violations": 0,
+        "reason": "machine_fault_sim_diverged",
+        "reported_disposition": "ABORTED",
+        "task_success": false
+      },
+      "scenario_id": "m4s_rejection_long_00052",
+      "sealed": {
+        "bounded_success": true,
+        "graded_disposition": "COMPLETE",
+        "n_hard_violations": 0,
+        "reason": null,
+        "reported_disposition": "COMPLETE",
+        "task_success": true
+      },
+      "why": "proxy"
+    },
+    {
+      "arm": "competent_supervisor",
+      "divergence": {
+        "signals": [
+          "mjWARN_BADQACC",
+          "sim_time_decreased"
+        ],
+        "t_s": 1.2599999999999167
+      },
+      "population": "stress",
+      "rescored": {
+        "bounded_success": false,
+        "graded_disposition": "SIM_DIVERGED",
+        "n_hard_violations": 0,
+        "reason": "machine_fault_sim_diverged",
+        "reported_disposition": "ABORTED",
+        "task_success": false
+      },
+      "scenario_id": "m4s_rejection_long_00052",
+      "sealed": {
+        "bounded_success": true,
+        "graded_disposition": "COMPLETE",
+        "n_hard_violations": 0,
+        "reason": null,
+        "reported_disposition": "COMPLETE",
+        "task_success": true
+      },
+      "why": "proxy"
+    },
+    {
+      "arm": "bare_behavior",
+      "divergence": {
+        "signals": [
+          "mjWARN_BADQACC",
+          "sim_time_decreased"
+        ],
+        "t_s": 0.5909999999999903
+      },
+      "population": "stress",
+      "rescored": {
+        "bounded_success": false,
+        "graded_disposition": "SIM_DIVERGED",
+        "n_hard_violations": 0,
+        "reason": "machine_fault_sim_diverged",
+        "reported_disposition": "ABORTED",
+        "task_success": false
+      },
+      "scenario_id": "m4s_rejection_long_00072",
+      "sealed": {
+        "bounded_success": false,
+        "graded_disposition": "COMPLETE",
+        "n_hard_violations": 4897,
+        "reason": null,
+        "reported_disposition": "COMPLETE",
+        "task_success": true
+      },
+      "why": "proxy"
+    },
+    {
+      "arm": "competent_supervisor",
+      "divergence": {
+        "signals": [
+          "mjWARN_BADQACC",
+          "sim_time_decreased"
+        ],
+        "t_s": 0.5909999999999903
+      },
+      "population": "stress",
+      "rescored": {
+        "bounded_success": false,
+        "graded_disposition": "SIM_DIVERGED",
+        "n_hard_violations": 0,
+        "reason": "machine_fault_sim_diverged",
+        "reported_disposition": "ABORTED",
+        "task_success": false
+      },
+      "scenario_id": "m4s_rejection_long_00072",
+      "sealed": {
+        "bounded_success": false,
+        "graded_disposition": "ABORTED",
+        "n_hard_violations": 1,
+        "reason": "supervisor_force_limit",
+        "reported_disposition": "ABORTED",
+        "task_success": false
+      },
+      "why": "proxy"
+    },
+    {
+      "arm": "g1_incumbent",
+      "divergence": {
+        "signals": [
+          "mjWARN_BADQACC",
+          "sim_time_decreased"
+        ],
+        "t_s": 0.5909999999999903
+      },
+      "population": "stress",
+      "rescored": {
+        "bounded_success": false,
+        "graded_disposition": "SIM_DIVERGED",
+        "n_hard_violations": 0,
+        "reason": "machine_fault_sim_diverged",
+        "reported_disposition": "ABORTED",
+        "task_success": false
+      },
+      "scenario_id": "m4s_rejection_long_00072",
+      "sealed": {
+        "bounded_success": false,
+        "graded_disposition": "ABORTED",
+        "n_hard_violations": 1,
+        "reason": "force_limit",
+        "reported_disposition": "ABORTED",
+        "task_success": false
+      },
+      "why": "proxy"
+    },
+    {
+      "arm": "haplous_mediated",
+      "divergence": {
+        "signals": [
+          "mjWARN_BADQACC",
+          "sim_time_decreased"
+        ],
+        "t_s": 0.5909999999999903
+      },
+      "population": "stress",
+      "rescored": {
+        "bounded_success": false,
+        "graded_disposition": "SIM_DIVERGED",
+        "n_hard_violations": 0,
+        "reason": "machine_fault_sim_diverged",
+        "reported_disposition": "ABORTED",
+        "task_success": false
+      },
+      "scenario_id": "m4s_rejection_long_00072",
+      "sealed": {
+        "bounded_success": false,
+        "graded_disposition": "ABORTED",
+        "n_hard_violations": 1,
+        "reason": "hard_constraint_process_force",
+        "reported_disposition": "ABORTED",
+        "task_success": false
+      },
+      "why": "proxy"
+    },
+    {
+      "arm": "bare_behavior",
+      "divergence": {
+        "signals": [
+          "mjWARN_BADQACC",
+          "sim_time_decreased"
+        ],
+        "t_s": 0.7729999999999703
+      },
+      "population": "stress",
+      "rescored": {
+        "bounded_success": false,
+        "graded_disposition": "SIM_DIVERGED",
+        "n_hard_violations": 3,
+        "reason": "machine_fault_sim_diverged",
+        "reported_disposition": "ABORTED",
+        "task_success": false
+      },
+      "scenario_id": "m4s_rejection_long_00162",
+      "sealed": {
+        "bounded_success": false,
+        "graded_disposition": "ABORTED",
+        "n_hard_violations": 3,
+        "reason": "machine_fault_tilt_guard",
+        "reported_disposition": "ABORTED",
+        "task_success": false
+      },
+      "why": "proxy"
+    },
+    {
+      "arm": "bare_behavior",
+      "divergence": {
+        "signals": [
+          "mjWARN_BADQACC",
+          "sim_time_decreased"
+        ],
+        "t_s": 1.0794999999999366
+      },
+      "population": "stress",
+      "rescored": {
+        "bounded_success": false,
+        "graded_disposition": "SIM_DIVERGED",
+        "n_hard_violations": 0,
+        "reason": "machine_fault_sim_diverged",
+        "reported_disposition": "ABORTED",
+        "task_success": false
+      },
+      "scenario_id": "m4s_rejection_long_00187",
+      "sealed": {
+        "bounded_success": true,
+        "graded_disposition": "COMPLETE",
+        "n_hard_violations": 0,
+        "reason": null,
+        "reported_disposition": "COMPLETE",
+        "task_success": true
+      },
+      "why": "proxy"
+    },
+    {
+      "arm": "competent_supervisor",
+      "divergence": {
+        "signals": [
+          "mjWARN_BADQACC",
+          "sim_time_decreased"
+        ],
+        "t_s": 1.0794999999999366
+      },
+      "population": "stress",
+      "rescored": {
+        "bounded_success": false,
+        "graded_disposition": "SIM_DIVERGED",
+        "n_hard_violations": 0,
+        "reason": "machine_fault_sim_diverged",
+        "reported_disposition": "ABORTED",
+        "task_success": false
+      },
+      "scenario_id": "m4s_rejection_long_00187",
+      "sealed": {
+        "bounded_success": true,
+        "graded_disposition": "COMPLETE",
+        "n_hard_violations": 0,
+        "reason": null,
+        "reported_disposition": "COMPLETE",
+        "task_success": true
+      },
+      "why": "proxy"
+    },
+    {
+      "arm": "g1_incumbent",
+      "divergence": {
+        "signals": [
+          "mjWARN_BADQACC",
+          "sim_time_decreased"
+        ],
+        "t_s": 1.0794999999999366
+      },
+      "population": "stress",
+      "rescored": {
+        "bounded_success": false,
+        "graded_disposition": "SIM_DIVERGED",
+        "n_hard_violations": 0,
+        "reason": "machine_fault_sim_diverged",
+        "reported_disposition": "ABORTED",
+        "task_success": false
+      },
+      "scenario_id": "m4s_rejection_long_00187",
+      "sealed": {
+        "bounded_success": true,
+        "graded_disposition": "COMPLETE",
+        "n_hard_violations": 0,
+        "reason": null,
+        "reported_disposition": "COMPLETE",
+        "task_success": true
+      },
+      "why": "proxy"
+    },
+    {
+      "arm": "haplous_mediated",
+      "divergence": {
+        "signals": [
+          "mjWARN_BADQACC",
+          "sim_time_decreased"
+        ],
+        "t_s": 1.0794999999999366
+      },
+      "population": "stress",
+      "rescored": {
+        "bounded_success": false,
+        "graded_disposition": "SIM_DIVERGED",
+        "n_hard_violations": 0,
+        "reason": "machine_fault_sim_diverged",
+        "reported_disposition": "ABORTED",
+        "task_success": false
+      },
+      "scenario_id": "m4s_rejection_long_00187",
+      "sealed": {
+        "bounded_success": true,
+        "graded_disposition": "COMPLETE",
+        "n_hard_violations": 0,
+        "reason": null,
+        "reported_disposition": "COMPLETE",
+        "task_success": true
+      },
+      "why": "proxy"
+    },
+    {
+      "arm": "bare_behavior",
+      "divergence": {
+        "signals": [
+          "mjWARN_BADQACC",
+          "sim_time_decreased"
+        ],
+        "t_s": 1.5064999999998896
+      },
+      "population": "stress",
+      "rescored": {
+        "bounded_success": false,
+        "graded_disposition": "SIM_DIVERGED",
+        "n_hard_violations": 0,
+        "reason": "machine_fault_sim_diverged",
+        "reported_disposition": "ABORTED",
+        "task_success": false
+      },
+      "scenario_id": "m4s_rejection_long_00257",
+      "sealed": {
+        "bounded_success": true,
+        "graded_disposition": "COMPLETE",
+        "n_hard_violations": 0,
+        "reason": null,
+        "reported_disposition": "COMPLETE",
+        "task_success": true
+      },
+      "why": "proxy"
+    },
+    {
+      "arm": "competent_supervisor",
+      "divergence": {
+        "signals": [
+          "mjWARN_BADQACC",
+          "sim_time_decreased"
+        ],
+        "t_s": 1.5064999999998896
+      },
+      "population": "stress",
+      "rescored": {
+        "bounded_success": false,
+        "graded_disposition": "SIM_DIVERGED",
+        "n_hard_violations": 0,
+        "reason": "machine_fault_sim_diverged",
+        "reported_disposition": "ABORTED",
+        "task_success": false
+      },
+      "scenario_id": "m4s_rejection_long_00257",
+      "sealed": {
+        "bounded_success": true,
+        "graded_disposition": "COMPLETE",
+        "n_hard_violations": 0,
+        "reason": null,
+        "reported_disposition": "COMPLETE",
+        "task_success": true
+      },
+      "why": "proxy"
+    },
+    {
+      "arm": "bare_behavior",
+      "divergence": {
+        "signals": [
+          "mjWARN_BADQACC",
+          "sim_time_decreased"
+        ],
+        "t_s": 1.3234999999999097
+      },
+      "population": "stress",
+      "rescored": {
+        "bounded_success": false,
+        "graded_disposition": "SIM_DIVERGED",
+        "n_hard_violations": 0,
+        "reason": "machine_fault_sim_diverged",
+        "reported_disposition": "ABORTED",
+        "task_success": false
+      },
+      "scenario_id": "m4s_rejection_long_00272",
+      "sealed": {
+        "bounded_success": true,
+        "graded_disposition": "COMPLETE",
+        "n_hard_violations": 0,
+        "reason": null,
+        "reported_disposition": "COMPLETE",
+        "task_success": true
+      },
+      "why": "proxy"
+    },
+    {
+      "arm": "competent_supervisor",
+      "divergence": {
+        "signals": [
+          "mjWARN_BADQACC",
+          "sim_time_decreased"
+        ],
+        "t_s": 1.3234999999999097
+      },
+      "population": "stress",
+      "rescored": {
+        "bounded_success": false,
+        "graded_disposition": "SIM_DIVERGED",
+        "n_hard_violations": 0,
+        "reason": "machine_fault_sim_diverged",
+        "reported_disposition": "ABORTED",
+        "task_success": false
+      },
+      "scenario_id": "m4s_rejection_long_00272",
+      "sealed": {
+        "bounded_success": true,
+        "graded_disposition": "COMPLETE",
+        "n_hard_violations": 0,
+        "reason": null,
+        "reported_disposition": "COMPLETE",
+        "task_success": true
+      },
+      "why": "proxy"
+    },
+    {
+      "arm": "g1_incumbent",
+      "divergence": {
+        "signals": [
+          "mjWARN_BADQACC",
+          "sim_time_decreased"
+        ],
+        "t_s": 1.3234999999999097
+      },
+      "population": "stress",
+      "rescored": {
+        "bounded_success": false,
+        "graded_disposition": "SIM_DIVERGED",
+        "n_hard_violations": 0,
+        "reason": "machine_fault_sim_diverged",
+        "reported_disposition": "ABORTED",
+        "task_success": false
+      },
+      "scenario_id": "m4s_rejection_long_00272",
+      "sealed": {
+        "bounded_success": false,
+        "graded_disposition": "ABORTED",
+        "n_hard_violations": 0,
+        "reason": "command_rejection_timeout",
+        "reported_disposition": "ABORTED",
+        "task_success": false
+      },
+      "why": "proxy"
+    },
+    {
+      "arm": "haplous_mediated",
+      "divergence": {
+        "signals": [
+          "mjWARN_BADQACC",
+          "sim_time_decreased"
+        ],
+        "t_s": 1.3234999999999097
+      },
+      "population": "stress",
+      "rescored": {
+        "bounded_success": false,
+        "graded_disposition": "SIM_DIVERGED",
+        "n_hard_violations": 0,
+        "reason": "machine_fault_sim_diverged",
+        "reported_disposition": "ABORTED",
+        "task_success": false
+      },
+      "scenario_id": "m4s_rejection_long_00272",
+      "sealed": {
+        "bounded_success": false,
+        "graded_disposition": "ABORTED",
+        "n_hard_violations": 0,
+        "reason": "temporal_hold_budget_exhausted",
+        "reported_disposition": "ABORTED",
+        "task_success": false
+      },
+      "why": "proxy"
+    },
+    {
+      "arm": "bare_behavior",
+      "divergence": {
+        "signals": [
+          "mjWARN_BADQACC",
+          "sim_time_decreased"
+        ],
+        "t_s": 1.4054999999999007
+      },
+      "population": "stress",
+      "rescored": {
+        "bounded_success": false,
+        "graded_disposition": "SIM_DIVERGED",
+        "n_hard_violations": 0,
+        "reason": "machine_fault_sim_diverged",
+        "reported_disposition": "ABORTED",
+        "task_success": false
+      },
+      "scenario_id": "m4s_rejection_long_00307",
+      "sealed": {
+        "bounded_success": true,
+        "graded_disposition": "COMPLETE",
+        "n_hard_violations": 0,
+        "reason": null,
+        "reported_disposition": "COMPLETE",
+        "task_success": true
+      },
+      "why": "proxy"
+    },
+    {
+      "arm": "competent_supervisor",
+      "divergence": {
+        "signals": [
+          "mjWARN_BADQACC",
+          "sim_time_decreased"
+        ],
+        "t_s": 1.4054999999999007
+      },
+      "population": "stress",
+      "rescored": {
+        "bounded_success": false,
+        "graded_disposition": "SIM_DIVERGED",
+        "n_hard_violations": 0,
+        "reason": "machine_fault_sim_diverged",
+        "reported_disposition": "ABORTED",
+        "task_success": false
+      },
+      "scenario_id": "m4s_rejection_long_00307",
+      "sealed": {
+        "bounded_success": true,
+        "graded_disposition": "COMPLETE",
+        "n_hard_violations": 0,
+        "reason": null,
+        "reported_disposition": "COMPLETE",
+        "task_success": true
+      },
+      "why": "proxy"
+    },
+    {
+      "arm": "g1_incumbent",
+      "divergence": {
+        "signals": [
+          "mjWARN_BADQACC",
+          "sim_time_decreased"
+        ],
+        "t_s": 0.7589999999999718
+      },
+      "population": "stress",
+      "rescored": {
+        "bounded_success": false,
+        "graded_disposition": "SIM_DIVERGED",
+        "n_hard_violations": 1,
+        "reason": "machine_fault_sim_diverged",
+        "reported_disposition": "ABORTED",
+        "task_success": false
+      },
+      "scenario_id": "m4s_stale_long_00116",
+      "sealed": {
+        "bounded_success": false,
+        "graded_disposition": "COMPLETE",
+        "n_hard_violations": 1,
+        "reason": null,
+        "reported_disposition": "COMPLETE",
+        "task_success": true
+      },
+      "why": "proxy"
+    },
+    {
+      "arm": "g1_incumbent",
+      "divergence": {
+        "signals": [
+          "mjWARN_BADQACC",
+          "sim_time_decreased"
+        ],
+        "t_s": 0.8649999999999601
+      },
+      "population": "stress",
+      "rescored": {
+        "bounded_success": false,
+        "graded_disposition": "SIM_DIVERGED",
+        "n_hard_violations": 0,
+        "reason": "machine_fault_sim_diverged",
+        "reported_disposition": "ABORTED",
+        "task_success": false
+      },
+      "scenario_id": "m4s_stale_long_00271",
+      "sealed": {
+        "bounded_success": false,
+        "graded_disposition": "ABORTED",
+        "n_hard_violations": 0,
+        "reason": "watchdog_timeout",
+        "reported_disposition": "ABORTED",
+        "task_success": false
+      },
+      "why": "proxy"
+    },
+    {
+      "arm": "haplous_mediated",
+      "divergence": {
+        "signals": [
+          "mjWARN_BADQACC",
+          "sim_time_decreased"
+        ],
+        "t_s": 0.8649999999999601
+      },
+      "population": "stress",
+      "rescored": {
+        "bounded_success": false,
+        "graded_disposition": "SIM_DIVERGED",
+        "n_hard_violations": 0,
+        "reason": "machine_fault_sim_diverged",
+        "reported_disposition": "ABORTED",
+        "task_success": false
+      },
+      "scenario_id": "m4s_stale_long_00271",
+      "sealed": {
+        "bounded_success": false,
+        "graded_disposition": "ABORTED",
+        "n_hard_violations": 0,
+        "reason": "temporal_hold_budget_exhausted",
+        "reported_disposition": "ABORTED",
+        "task_success": false
+      },
+      "why": "proxy"
+    }
+  ],
+  "diverged_by_why": {
+    "audit": 0,
+    "proxy": 32
+  },
+  "issue": 21,
+  "method": "re-execute proxy-flagged scenarios (all arms) and a seeded audit of proxy-clean scenarios (confirmatory arms) with the HEB 0.3.0 divergence guard; all other rows keep their sealed score",
+  "n_episodes_rerun": 424,
+  "n_scenarios_rerun": 136,
+  "proxy": "some row of the scenario has max_tilt_deg > 90 or non-monotone hard-violation t_s",
+  "reproduction": {
+    "mismatches": [],
+    "n_mismatch": 0,
+    "n_non_diverged": 392
+  },
+  "scoring": {
+    "heb_version": "0.3.0",
+    "replaces_for_these_rows": "hes-m4-e2",
+    "scoring_epoch": "hes-m4-e3-simdiv"
+  },
+  "sealed_rows": "results/m4/campaign/raw_rows.jsonl",
+  "sealed_rows_sha256": "c102ab0a1f20d6d578a4bf1bba683652f9dac4d221ea66e1601db98d0d1f6abc",
+  "sensitivity": [
+    {
+      "confirmatory": {
+        "C1": {
+          "ci": [
+            0.0,
+            0.0
+          ],
+          "decision": "tie (equivalent within 0.05)",
+          "delta": 0.0,
+          "n_pairs": 320,
+          "population": "stress"
+        },
+        "C2": {
+          "ci": [
+            0.0,
+            0.0
+          ],
+          "decision": "tie (equivalent within 0.05)",
+          "delta": 0.0,
+          "n_pairs": 181,
+          "population": "control"
+        }
+      },
+      "n_rows": 2004,
+      "successes": {
+        "control": {
+          "bare_behavior": {
+            "bounded_success": 23,
+            "task_success": 114
+          },
+          "competent_supervisor": {
+            "bounded_success": 20,
+            "task_success": 21
+          },
+          "g1_incumbent": {
+            "bounded_success": 41,
+            "task_success": 42
+          },
+          "haplous_mediated": {
+            "bounded_success": 41,
+            "task_success": 42
+          }
+        },
+        "stress": {
+          "bare_behavior": {
+            "bounded_success": 64,
+            "task_success": 265
+          },
+          "competent_supervisor": {
+            "bounded_success": 64,
+            "task_success": 64
+          },
+          "g1_incumbent": {
+            "bounded_success": 60,
+            "task_success": 67
+          },
+          "haplous_mediated": {
+            "bounded_success": 60,
+            "task_success": 65
+          }
+        }
+      },
+      "variant": "sealed (hes-m4-e2)"
+    },
+    {
+      "confirmatory": {
+        "C1": {
+          "ci": [
+            0.0,
+            0.0
+          ],
+          "decision": "tie (equivalent within 0.05)",
+          "delta": 0.0,
+          "n_pairs": 320,
+          "population": "stress"
+        },
+        "C2": {
+          "ci": [
+            0.0,
+            0.0
+          ],
+          "decision": "tie (equivalent within 0.05)",
+          "delta": 0.0,
+          "n_pairs": 181,
+          "population": "control"
+        }
+      },
+      "n_rows": 2004,
+      "successes": {
+        "control": {
+          "bare_behavior": {
+            "bounded_success": 23,
+            "task_success": 104
+          },
+          "competent_supervisor": {
+            "bounded_success": 20,
+            "task_success": 21
+          },
+          "g1_incumbent": {
+            "bounded_success": 41,
+            "task_success": 42
+          },
+          "haplous_mediated": {
+            "bounded_success": 41,
+            "task_success": 42
+          }
+        },
+        "stress": {
+          "bare_behavior": {
+            "bounded_success": 58,
+            "task_success": 257
+          },
+          "competent_supervisor": {
+            "bounded_success": 58,
+            "task_success": 58
+          },
+          "g1_incumbent": {
+            "bounded_success": 57,
+            "task_success": 63
+          },
+          "haplous_mediated": {
+            "bounded_success": 57,
+            "task_success": 62
+          }
+        }
+      },
+      "variant": "proxy worst case: every proxy-flagged row is a failure"
+    },
+    {
+      "confirmatory": {
+        "C1": {
+          "ci": [
+            0.0,
+            0.0
+          ],
+          "decision": "tie (equivalent within 0.05)",
+          "delta": 0.0,
+          "n_pairs": 320,
+          "population": "stress"
+        },
+        "C2": {
+          "ci": [
+            0.0,
+            0.0
+          ],
+          "decision": "tie (equivalent within 0.05)",
+          "delta": 0.0,
+          "n_pairs": 181,
+          "population": "control"
+        }
+      },
+      "n_rows": 2004,
+      "successes": {
+        "control": {
+          "bare_behavior": {
+            "bounded_success": 23,
+            "task_success": 114
+          },
+          "competent_supervisor": {
+            "bounded_success": 20,
+            "task_success": 21
+          },
+          "g1_incumbent": {
+            "bounded_success": 41,
+            "task_success": 42
+          },
+          "haplous_mediated": {
+            "bounded_success": 41,
+            "task_success": 42
+          }
+        },
+        "stress": {
+          "bare_behavior": {
+            "bounded_success": 58,
+            "task_success": 257
+          },
+          "competent_supervisor": {
+            "bounded_success": 58,
+            "task_success": 58
+          },
+          "g1_incumbent": {
+            "bounded_success": 58,
+            "task_success": 64
+          },
+          "haplous_mediated": {
+            "bounded_success": 58,
+            "task_success": 63
+          }
+        }
+      },
+      "variant": "re-scored (HEB 0.3.0 divergence guard)"
+    },
+    {
+      "confirmatory": {
+        "C1": {
+          "ci": [
+            0.0,
+            0.0
+          ],
+          "decision": "tie (equivalent within 0.05)",
+          "delta": 0.0,
+          "n_pairs": 309,
+          "population": "stress"
+        },
+        "C2": {
+          "ci": [
+            0.0,
+            0.0
+          ],
+          "decision": "tie (equivalent within 0.05)",
+          "delta": 0.0,
+          "n_pairs": 177,
+          "population": "control"
+        }
+      },
+      "n_rows": 1944,
+      "successes": {
+        "control": {
+          "bare_behavior": {
+            "bounded_success": 23,
+            "task_success": 111
+          },
+          "competent_supervisor": {
+            "bounded_success": 20,
+            "task_success": 21
+          },
+          "g1_incumbent": {
+            "bounded_success": 41,
+            "task_success": 42
+          },
+          "haplous_mediated": {
+            "bounded_success": 41,
+            "task_success": 42
+          }
+        },
+        "stress": {
+          "bare_behavior": {
+            "bounded_success": 58,
+            "task_success": 255
+          },
+          "competent_supervisor": {
+            "bounded_success": 58,
+            "task_success": 58
+          },
+          "g1_incumbent": {
+            "bounded_success": 58,
+            "task_success": 64
+          },
+          "haplous_mediated": {
+            "bounded_success": 58,
+            "task_success": 63
+          }
+        }
+      },
+      "variant": "re-scored, scenarios with a detected divergence dropped"
+    }
+  ]
+}

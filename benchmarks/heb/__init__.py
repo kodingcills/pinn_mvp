@@ -8,4 +8,5 @@ definitions, perturbation schedules, ground-truth grading, and metrics
 itself. HEB is versioned independently (HEB 0.1.0).
 """
 
-HEB_VERSION = "0.2.0"
+# 0.3.0 (#21): episodes whose simulation diverged are graded SIM_DIVERGED, never success.
+HEB_VERSION = "0.3.0"
