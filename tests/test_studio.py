@@ -8,6 +8,7 @@ import hashlib
 import io
 import json
 import os
+import shutil
 import signal
 import subprocess
 import sys
@@ -75,14 +76,14 @@ def test_runs_lists_committed_recordings_and_episode_logs(client: TestClient) ->
     runs = {r["id"]: r for r in client.get("/api/runs").json()}
     assert {M2, M3, *LOGS} <= runs.keys()
     keys = {"id", "source", "backend", "scenario_id", "system", "disposition", "bounded_success", "has_3d",
-            "verified", "path"}
+            "ledger_state", "path"}
     assert all(set(r) == keys for r in runs.values())
     assert runs[M2] | {"path": None} == {
         "id": M2, "source": "recordings", "backend": "mujoco-3.11.0", "scenario_id": "insert_dropout_large",
         "system": "haplous_mediated", "disposition": "COMPLETE", "bounded_success": True, "has_3d": True,
-        "verified": True, "path": None}
+        "ledger_state": "VERIFIED", "path": None}
     assert runs[M2]["path"] == f"results/recordings/registry/runs/{M2}"
-    assert [runs[i]["has_3d"] for i in LOGS] == [False, False]
+    assert [(runs[i]["has_3d"], runs[i]["ledger_state"]) for i in LOGS] == [(False, None), (False, None)]
     assert runs["results/m5/robosuite-log"]["backend"] == "robosuite-1.5.2"
 
 
@@ -133,6 +134,32 @@ def test_rrd_is_derived_once_and_cached(client: TestClient, paths: Paths) -> Non
     mtime = cached.stat().st_mtime_ns
     assert client.get(f"/api/runs/{M2}/rrd").content == first.content
     assert cached.stat().st_mtime_ns == mtime
+
+
+def test_corrupt_run_is_refused_despite_a_cached_rrd_and_not_listed_as_verified(tmp_path: Path) -> None:
+    """Issue #23: one flipped telemetry byte. The ledger still says VERIFIED; the list says only that,
+    and detail and replay both refuse, even with a .rrd cached from before the corruption."""
+    repo = tmp_path / "repo"
+    shutil.copytree(REPO / "results/recordings/registry", repo / "results/recordings/registry")
+    paths = Paths(repo, tmp_path / "studio", tmp_path / "investigations", tmp_path / "replays")
+    cached = paths.replays / M2 / f"{M2}.rrd"
+    cached.parent.mkdir(parents=True)
+    cached.write_bytes(b"RRF2 cached before the corruption")
+    client = TestClient(create_app(paths, static_dir=tmp_path / "no-static", wasm_cache=tmp_path / "wasm"),
+                        base_url=BASE)
+    assert client.get(f"/api/runs/{M2}/rrd").content == cached.read_bytes()  # intact: the cache is served
+
+    telemetry = repo / "results/recordings/registry/runs" / M2 / "artifacts/telemetry.jsonl"
+    raw = bytearray(telemetry.read_bytes())
+    raw[100] ^= 1
+    telemetry.write_bytes(bytes(raw))
+
+    listed = {r["id"]: r for r in client.get("/api/runs").json()}[M2]
+    assert listed["ledger_state"] == "VERIFIED" and "verified" not in listed
+    for url in (f"/api/runs/{M2}", f"/api/runs/{M2}/rrd"):
+        res = client.get(url)
+        assert res.status_code == 409 and "artifact hash mismatch: telemetry.jsonl" in res.json()["detail"], url
+    assert client.get(f"/api/runs/{M3}").status_code == 200  # the intact sibling in the same registry
 
 
 def test_campaign_pairs_are_the_committed_numbers(client: TestClient) -> None:
@@ -295,7 +322,7 @@ def test_one_episode_job_without_a_checkout(tmp_path: Path) -> None:
     assert Registry(paths.registry).state(run_id) == "VERIFIED"
     listed = {r["id"]: r for r in client.get("/api/runs").json()}[run_id]
     assert [r["id"] for r in client.get("/api/runs").json()] == [run_id]
-    assert (listed["source"], listed["verified"], listed["has_3d"]) == ("studio", True, True)
+    assert (listed["source"], listed["ledger_state"], listed["has_3d"]) == ("studio", "VERIFIED", True)
     assert (listed["scenario_id"], listed["system"]) == ("insert_nominal", "haplous_mediated")
     detail = client.get(f"/api/runs/{run_id}").json()
     assert detail["m0"]["state"] == "VERIFIED" and detail["m0"]["config"]["studio_job"] == job_id

@@ -147,8 +147,9 @@ def run_summary(paths: Paths, ref: RunRef) -> dict[str, Any]:
         "disposition": "SIM_DIVERGED" if outcome.get("graded_disposition") == "SIM_DIVERGED" else outcome.get("disposition"),
         "bounded_success": outcome.get("bounded_success"),
         "has_3d": has_3d(ref, meta),
-        # Ledger state; the detail endpoint re-hashes every artifact before serving.
-        "verified": ref.state == "VERIFIED",
+        # The ledger's word at index time, not a re-hash: hashing every run per listing costs O(registry bytes).
+        # The detail and replay endpoints re-run the M0 check and refuse (409) a run that fails it.
+        "ledger_state": ref.state,
         "path": paths.rel(ref.log_dir.parent if ref.root is not None else ref.log_dir),
     }
 
@@ -168,6 +169,14 @@ def m0_record(ref: RunRef) -> dict[str, Any] | None:
             "manifest_sha256": registry.manifest_digest(ref.id), "command": manifest.get("command"),
             "config": manifest.get("config"), "git_commit": provenance.get("git_commit"),
             "git_dirty": provenance.get("git_dirty")}
+
+
+def checked_m0(ref: RunRef) -> dict[str, Any] | None:
+    """The M0 record, re-hashed now; Unreadable if any problem is found."""
+    m0 = m0_record(ref)
+    if m0 is not None and m0["problems"]:
+        raise Unreadable(f"M0 integrity check failed for {ref.id}: {m0['problems']}")
+    return m0
 
 
 def series(log_dir: Path, dt: float) -> dict[str, list[Any]]:
@@ -192,9 +201,7 @@ def series(log_dir: Path, dt: float) -> dict[str, list[Any]]:
 
 def run_detail(paths: Paths, run_id: str) -> dict[str, Any]:
     ref = get_ref(paths, run_id)
-    m0 = m0_record(ref)
-    if m0 is not None and m0["problems"]:
-        raise Unreadable(f"M0 integrity check failed for {run_id}: {m0['problems']}")
+    m0 = checked_m0(ref)
     try:
         tl = timeline.load(ref.log_dir)
     except timeline.TimelineRefused as exc:
@@ -220,6 +227,7 @@ def ensure_rrd(paths: Paths, run_id: str) -> Path:
     ref = get_ref(paths, run_id)
     if not has_3d(ref, _metadata(ref)):
         raise NotFound(f"run {run_id!r} has no MuJoCo state stream (no 3D)")
+    checked_m0(ref)  # a cached .rrd is only as trustworthy as the artifacts it was derived from
     out = paths.replays / run_id / f"{run_id}.rrd"
     with _rrd_lock:
         if not out.is_file():
