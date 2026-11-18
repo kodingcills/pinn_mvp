@@ -67,7 +67,7 @@ for (const id of ["m2-heb-insert_dropout_large", "m3-heb-slide_disturbance_recov
   runs.push({
     id, source: "recordings", backend: `mujoco-${d.metadata.mujoco_version}`, scenario_id: d.metadata.scenario_id,
     system: d.metadata.system, disposition: d.metadata.outcome.disposition, bounded_success: d.metadata.outcome.bounded_success,
-    has_3d: true, verified: true, path,
+    has_3d: true, ledger_state: "VERIFIED", path,
   });
 }
 for (const path of ["results/m5/reassemble-log", "results/m5/robosuite-log"]) { // sorted, as the server lists them
@@ -76,7 +76,7 @@ for (const path of ["results/m5/reassemble-log", "results/m5/robosuite-log"]) { 
   runs.push({
     id: path, source: "episode_log", backend: d.metadata.backend, scenario_id: d.metadata.task_id,
     system: d.metadata.system, disposition: d.metadata.outcome.disposition, bounded_success: d.metadata.outcome.bounded_success ?? null,
-    has_3d: false, verified: false, path,
+    has_3d: false, ledger_state: null, path,
   });
 }
 write("runs.json", runs);

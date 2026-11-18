@@ -8,7 +8,7 @@
     "disposition": "COMPLETE",
     "bounded_success": true,
     "has_3d": true,
-    "verified": true,
+    "ledger_state": "VERIFIED",
     "path": "results/recordings/registry/runs/m2-heb-insert_dropout_large"
   },
   {
@@ -20,7 +20,7 @@
     "disposition": "COMPLETE",
     "bounded_success": false,
     "has_3d": true,
-    "verified": true,
+    "ledger_state": "VERIFIED",
     "path": "results/recordings/registry/runs/m3-heb-slide_disturbance_recoverable_ceiling"
   },
   {
@@ -32,7 +32,7 @@
     "disposition": null,
     "bounded_success": null,
     "has_3d": false,
-    "verified": false,
+    "ledger_state": null,
     "path": "results/m5/reassemble-log"
   },
   {
@@ -44,7 +44,7 @@
     "disposition": "COMPLETE",
     "bounded_success": null,
     "has_3d": false,
-    "verified": false,
+    "ledger_state": null,
     "path": "results/m5/robosuite-log"
   }
 ]

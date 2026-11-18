@@ -25,6 +25,7 @@ events still work.
 ## What the server provides beyond the design text (checked against `scripts/studio_fixtures.py` output in M6.3)
 
 - SPA fallback: serve `index.html` for `/runs/...`, `/compare`, `/launch`, `/evidence`.
+- `GET /api/runs` carries `ledger_state` (the M0 ledger state, or null outside M0) instead of the design's `verified`: the list does not re-hash. Detail and `/rrd` re-run the M0 check and answer 409 on failure (#23).
 - Run ids may contain `/` (episode-log paths); the client sends them URL-encoded (`%2F`).
 - `GET /api/campaigns` → `[{id, source, populations: [{id, n_scenarios, arms[], confirmatory: [{id, candidate, reference, decision}]}]}]`.
 - Pairs: `ci95` is `[low, high]`; optional `source` (artifact paths).
