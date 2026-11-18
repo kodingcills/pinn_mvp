@@ -119,4 +119,4 @@ against `bare_behavior` and `competent_supervisor` are not recomputed here.
 - The guard detects MuJoCo's own reset signals. It does not judge physically implausible but finite
   motion, such as a fast pose jump without a reset. The pre-divergence observations, including any
   numerically blown-up samples just before the reset, are still graded for hard violations.
-- The tie partly reflects a mechanism the two guarded arms share (#19), not equivalent guards.
+- The tie partly reflects a mechanism the two guarded arms share (open-loop hold during a hold; diagnosed in #19, tracked in #22), not equivalent guards.
