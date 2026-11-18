@@ -78,6 +78,7 @@ def estimate_cpu_s(items: list[dict], rows: list[dict], cfg: dict) -> float:
 
 def run_item(item: dict) -> list[dict]:
     from benchmarks.heb.systems import system_by_name
+    from evaluation.experiment import _prune_violations  # the sealed rows' bounded sample (first 5)
 
     cfg = m4.load_config()
     scenario = next(s for s in m4.generate(cfg["populations"][item["population"]]) if s.id == item["scenario_id"])
@@ -90,7 +91,7 @@ def run_item(item: dict) -> list[dict]:
             "reported_disposition": rec.reported_disposition, "reason": rec.reason,
             "graded_disposition": rec.graded_disposition, "task_success": rec.task_success,
             "bounded_success": rec.bounded_success, "n_hard_violations": len(rec.hard_violations),
-            "hard_violations": list(rec.hard_violations), "task_metrics": metrics,
+            "hard_violations": _prune_violations(rec.hard_violations)[0], "task_metrics": metrics,
         })
     return out
 
