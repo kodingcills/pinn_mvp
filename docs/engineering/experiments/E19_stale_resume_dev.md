@@ -111,9 +111,10 @@ The primary realization runs all 5 arms on all 64 scenarios. The secondary runs
 Descriptive only: peak |Fz| (median, p90, max), tumble count (max tilt > 10 deg), and
 sim-divergence count.
 
-New scoring version `e19-v1`. A trial whose observation `source_s` ever decreases has diverged and
-auto-reset. It is flagged `sim_diverged` and graded `task_success = false`. This applies to E19
-only. M4 evidence is not rescored.
+Scoring: HEB 0.3.0 / epoch `hes-m4-e3-simdiv` (#21) supersedes the draft `e19-v1` rule. A
+diverged trial ends at the divergence with fault `sim_diverged`, graded `SIM_DIVERGED` (no task or
+bounded success). For E1 and E3/E5, `sim_diverged` trials count as an exceedance-free failure in
+every arm alike and are reported separately; the diverged count per arm is a descriptive estimand.
 
 ## 5. Pairing and statistics
 
@@ -133,19 +134,31 @@ only. M4 evidence is not rescored.
 Here ΔE1 is the primary paired delta in exceedance rate, where negative is better. ΔE2 is the
 same pairing on bounded success.
 
-1. **REVERT** applies if the ΔE1 CI low is > 0, or the ΔE2 CI high is < -0.05, or the candidate
-   produces a hard-violation code that no other arm produces.
+1. **REVERT** applies if, on EITHER fault (stale or rejection), the ΔE1 CI low is > 0 or the ΔE2
+   CI high is < -0.05, or the candidate produces a hard-violation code that no other arm produces.
 2. **NO INCREMENTAL VALUE** applies if the ΔE1 CI contains 0 and the ΔE2 CI lies inside ±0.05. It
    also applies if `haplous_candidate - g1_parity` lies inside ±0.05 on both E1 and E2. In that
    case the mechanism is ordinary integration practice, not Haplous value. It may still ship as a
    default, but it does not count toward Gate C.
-3. **KEEP** applies if the ΔE1 CI high is < 0, the ΔE2 CI low is >= -0.05, E4 is no more than
+3. **KEEP** requires an instantiated, run `g1_parity` arm (the same hold change given to G1);
+   without it KEEP is unreachable and the result is REVISE. KEEP applies if the ΔE1 CI high is < 0, the ΔE2 CI low is >= -0.05, E4 is no more than
    0.05 above `g1_incumbent` (point), and the E5 median is <= 0.10 s.
 4. **REVISE** covers anything else, for example fewer exceedances bought with more stops or time.
 
 Scope note, decided now. Suppose `haplous_mediated` and `g1_incumbent` both show <= 1/32
 exceedances under closed_loop_hold. Then the M4 exceedance is reported as an artifact of a
 machine whose hold is open loop. Any KEEP is then scoped to machines that declare such a hold.
+
+### Amendments before any run (2026-11-18, from the step 1–2 verifier; no E19 row existed)
+
+- `g1_parity` must be instantiated for KEEP (rule 3); rejection regressions can trigger REVERT
+  (rule 1); `sim_diverged` handling follows HEB 0.3.0 (section 4).
+- Power: with n = 32 scenarios per fault, the rule-2 condition "ΔE2 CI inside ±0.05" is met only
+  with near-zero discordance; most real effects will land in REVISE. This is accepted for a
+  development comparison; a KEEP would need a separately authorized confirmatory replication.
+- This population is built around the observed failure (stale/rejection windows crossing contact
+  onset). Results are development evidence for that failure mode only and must not be cited as
+  general value or as real-world rates.
 
 ## 7. Candidate mechanisms (for the step-3 amendment), ranked
 
