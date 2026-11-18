@@ -11,7 +11,7 @@ Backlog: GitHub Issues. This file holds only the current state and the next acti
 
 | Epic | Children (priority, status) |
 |---|---|
-| #9 Gate A Developer Alpha | #13 truth leak in `health()` (P0, fixed `03775a2`, verifier PASS; closes with the PR) · #14 runtime-only distribution (P1, in progress) · #15 Studio job identity + artifact root (P1, blocked by #14) |
+| #9 Gate A Developer Alpha | #13 truth leak in `health()` (P0, fixed `03775a2`, verifier PASS; closes with the PR) · #14 runtime-only distribution (P1, integrated `8e675c0`, verifier PASS; closes with the PR) · #15 Studio job identity + artifact root (P1, in progress: E2E passed, suite pending) |
 | #10 Gate B Generalized execution | #16 remove world stepping, envelopes, legacy adapter (P1, in progress) · #17 async lifecycle + lease (P1, blocked by #16) · #18 second command surface (P1, blocked by #16, #17) · #22 hold semantics undeclared (P1, blocked by #16; Gate C mechanism B) |
 | #11 Gate C Differential value | #19 stale-hold force exceedance (P1): steps 1–2 done `1aefc64`, verifier PASS (root cause: open-loop hold during the hold, not resume); step 3 via #22 |
 | #12 Gate D Evaluator engine | #21 diverged/auto-reset episodes graded as valid (P0, in progress) · #20 claim-to-experiment compiler (P1, queued; WIP limit) |
@@ -29,6 +29,7 @@ Classification: VALIDATED LIMITATION (research-substrate tests), not product blo
 
 ## Next actions
 
-1. #14 (packaging), #16 (step removal), #21 (divergence, benchmarks-layer only) in parallel worktrees.
+1. Resume after the 2026-11-17 usage limit: #16, #21, #15 owners resumed via SendMessage (work was saved in their worktrees). On their reports: independent verify, integrate, comment on the issue.
+2. At integration of #16: migrate `examples/stub_machine_contract.py` off `ServoCommand`/`session.step()`.
 2. After #16: #17 then #18; #22 (hold semantics) and the amended E19 run (#19 step 3).
 3. #15 after #14; #20 when WIP allows.
