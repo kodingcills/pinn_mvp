@@ -11,8 +11,8 @@ degradation, recovery, and abort can all occur mid-motion."""
 from __future__ import annotations
 
 import time
-from dataclasses import dataclass
 from collections.abc import Callable, Mapping
+from dataclasses import dataclass
 from enum import StrEnum
 from typing import TYPE_CHECKING, Protocol, runtime_checkable
 
@@ -199,7 +199,7 @@ class Machine(Protocol):
     do through capabilities(), may only act through open_session()/stop(),
     and may only know state through observe()/health()."""
 
-    def capabilities(self) -> "MachineCapabilities": ...
+    def capabilities(self) -> MachineCapabilities: ...
 
     def observe(self) -> MachineObservation | None: ...
 
