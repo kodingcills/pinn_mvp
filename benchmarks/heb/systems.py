@@ -18,6 +18,7 @@ from haplous.intent import (
 from haplous.machine import Machine, MachineObservation
 from haplous.runtime import HaplousRuntime
 
+from benchmarks.heb.divergence import divergence_detail
 from benchmarks.heb.protocol import Realization, Scenario, SystemRun
 
 
@@ -175,6 +176,7 @@ class HaplousSystem:
                 "evidence_events": len(evidence.events),
                 "applied_command_times": tuple(applied),
                 "refusal_stage": refusal_stage,
+                **divergence_detail(realization.machine),
             },
         )
 
@@ -273,7 +275,7 @@ class SupervisedSystem:
             reason=reason,
             observations=tuple(observations),
             wall_s=wall,
-            detail={"applied_command_times": tuple(applied)},
+            detail={"applied_command_times": tuple(applied), **divergence_detail(machine)},
         )
 
 
@@ -351,7 +353,7 @@ class BareSystem:
             reason=reason,
             observations=tuple(observations),
             wall_s=wall,
-            detail={"applied_command_times": tuple(applied)},
+            detail={"applied_command_times": tuple(applied), **divergence_detail(machine)},
         )
 
 

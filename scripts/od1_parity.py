@@ -8,6 +8,7 @@ exact repr of every observation).
 
     python scripts/od1_parity.py                  # before + after + compare
     python scripts/od1_parity.py collect OUT.json  # one side, current imports
+    python scripts/od1_parity.py --before REF --out PATH [--design TEXT]  # against another head
 """
 from __future__ import annotations
 
@@ -88,8 +89,10 @@ def main() -> int:
     if sys.argv[1:2] == ["collect"]:
         collect(Path(sys.argv[2]))
         return 0
+    args = dict(zip(sys.argv[1::2], sys.argv[2::2], strict=True))
+    out = Path(args.get("--out", OUT))
     before_sha = subprocess.check_output(
-        ["git", "rev-parse", BEFORE_REF], cwd=ROOT, text=True).strip()
+        ["git", "rev-parse", args.get("--before", BEFORE_REF)], cwd=ROOT, text=True).strip()
     after_sha = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip()
     dirty = subprocess.check_output(["git", "status", "--porcelain", "haplous"], cwd=ROOT, text=True)
     with tempfile.TemporaryDirectory() as tmp:
@@ -114,7 +117,7 @@ def main() -> int:
                        "compared_sha256": {side: _digest(rows[k]) for side, rows in
                                            (("before", b), ("after", a))}})
     report = {
-        "design": "docs/eval_program/designs/OD1_command_mode_admission.md section 6",
+        "design": args.get("--design", "docs/eval_program/designs/OD1_command_mode_admission.md section 6"),
         "before_commit": before_sha,
         "after_commit": after_sha,
         "after_haplous_tree_dirty": bool(dirty.strip()),
@@ -126,9 +129,9 @@ def main() -> int:
         "identical": all(t["identical"] for t in trials),
         "trials": trials,
     }
-    OUT.parent.mkdir(parents=True, exist_ok=True)
-    OUT.write_text(json.dumps(report, indent=1, sort_keys=True, default=repr) + "\n")
-    print(f"{report['n_identical']}/{report['n_trials']} identical -> {OUT.relative_to(ROOT)}")
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(json.dumps(report, indent=1, sort_keys=True, default=repr) + "\n")
+    print(f"{report['n_identical']}/{report['n_trials']} identical -> {out}")
     return 0 if report["identical"] else 1
 
 

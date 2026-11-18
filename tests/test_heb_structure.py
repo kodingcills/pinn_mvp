@@ -13,6 +13,7 @@ def test_heb_file_set_is_expected():
     assert set(names) == {
         "__init__.py",
         "counterfactual.py",
+        "divergence.py",
         "false_refusal.py",
         "insertion.py",
         "metrics.py",

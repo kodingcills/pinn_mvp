@@ -143,7 +143,8 @@ def run_summary(paths: Paths, ref: RunRef) -> dict[str, Any]:
         "backend": backend,
         "scenario_id": meta.get("scenario_id") or meta.get("task_id"),
         "system": meta.get("system"),
-        "disposition": outcome.get("disposition"),
+        # HEB 0.3.0 (#21): the benchmark's SIM_DIVERGED grade overrides the system's own disposition.
+        "disposition": "SIM_DIVERGED" if outcome.get("graded_disposition") == "SIM_DIVERGED" else outcome.get("disposition"),
         "bounded_success": outcome.get("bounded_success"),
         "has_3d": has_3d(ref, meta),
         # Ledger state; the detail endpoint re-hashes every artifact before serving.

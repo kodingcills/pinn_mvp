@@ -80,6 +80,7 @@ REASON_ROOT_CAUSE: dict[str, str] = {
     "supervisor_deadline": "EXECUTION_SEMANTICS",
     "machine_fault_tilt_guard": "CONTROL",
     "machine_fault_machine_fault": "PHYSICS",
+    "machine_fault_sim_diverged": "SIMULATOR",
     "machine_error_RuntimeError": "ADAPTER",
     "state_unavailable_at_start": "EXECUTION_SEMANTICS",
     "state_too_stale": "EXECUTION_SEMANTICS",
@@ -88,6 +89,8 @@ REASON_ROOT_CAUSE: dict[str, str] = {
 
 
 def _root_cause_for(row: Mapping[str, Any]) -> str:
+    if row.get("graded_disposition") == "SIM_DIVERGED":
+        return "SIMULATOR"  # benchmark-graded; overrides any system-reported reason
     attribution = str(row.get("failure_attribution") or "").strip().upper()
     if attribution in ROOT_CAUSES:
         return attribution

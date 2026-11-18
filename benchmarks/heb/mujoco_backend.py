@@ -8,15 +8,16 @@ from __future__ import annotations
 
 from dataclasses import replace
 
-from haplous.adapters.mujoco_adapter import MuJoCoMachine, MuJoCoMachineConfig
+from haplous.adapters.mujoco_adapter import MuJoCoMachineConfig
 
 from benchmarks.heb import tasks
+from benchmarks.heb.divergence import DivergenceGuardedMachine
 from benchmarks.heb.protocol import Realization, Scenario
 
 
 def build_realization(
     scenario: Scenario,
-    machine_factory=MuJoCoMachine,
+    machine_factory=DivergenceGuardedMachine,
     behavior_factory_override=None,
     machine_config_overrides: dict | None = None,
 ) -> Realization:

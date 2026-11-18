@@ -14,6 +14,7 @@ from __future__ import annotations
 import time
 
 from benchmarks.heb import systems
+from benchmarks.heb.divergence import divergence_detail
 from benchmarks.heb.protocol import Realization, Scenario, SystemRun
 from haplous.intent import RequirementKind
 from haplous.machine import MachineObservation
@@ -129,6 +130,7 @@ class G1IncumbentSystem:
                 reason,
                 observations,
                 applied_command_times=tuple(getattr(session, "applied_command_times", ())),
+                **divergence_detail(machine),
             )
 
         while True:
