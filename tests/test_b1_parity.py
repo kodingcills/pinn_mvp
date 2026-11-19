@@ -3,7 +3,12 @@ LegacySession / SimTickSource path reproduce, field for field, the
 pre-#16 trials committed in results/b1/parity.json (driver:
 scripts/od1_parity.py). The full 108-trial sweep is the driver's job;
 these trials cover accepted and rejected acks, observation-loss ticks, a
-machine fault and a slide."""
+machine fault and a slide.
+
+#22: the hold trials changed by design on the zero-order MuJoCo machine, so
+they run on `PreI22AssumptionMachine` (same physics, declared closed-loop
+hold), which takes the pre-#22 plain-hold path. Matching the committed
+digests is the parity proof for that path."""
 from __future__ import annotations
 
 import json
@@ -12,6 +17,7 @@ from pathlib import Path
 import pytest
 
 from benchmarks.heb import mujoco_backend, tasks
+from benchmarks.heb.hold_realizations import PreI22AssumptionMachine
 from scripts.od1_parity import _digest, trial_row
 
 REPORT = Path(__file__).resolve().parents[1] / "results" / "b1" / "parity.json"
@@ -24,7 +30,7 @@ def test_haplous_mediated_matches_the_pre_16_trial(scenario_id):
     committed = {(t["scenario_id"], t["system"]): t for t in json.loads(REPORT.read_text())["trials"]}
     before = committed[(scenario_id, "haplous_mediated")]
     scenario = tasks.scenarios_by_id()[scenario_id]
-    row = trial_row(mujoco_backend.build_realization(scenario), scenario, "haplous_mediated")
+    row = trial_row(mujoco_backend.build_realization(scenario, machine_factory=PreI22AssumptionMachine), scenario, "haplous_mediated")
     assert {f: row[f] for f in before["before"]} == before["before"]
     assert _digest(row) == before["compared_sha256"]["before"]
     assert row["stamp_clocks"] == ["sim"]

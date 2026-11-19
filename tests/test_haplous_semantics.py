@@ -10,6 +10,7 @@ import pytest
 from haplous.adapters.legacy import CommandOutcome, sim_runtime
 from haplous.capabilities import (
     CommandMode,
+    HoldSemantics,
     MachineCapabilities,
     SensingChannel,
 )
@@ -46,6 +47,7 @@ def std_caps(**overrides) -> MachineCapabilities:
         execution_horizon_s=16.3,
         expected_duration_s=4.0,
         supports_stop=True,
+        hold_semantics=HoldSemantics.CLOSED_LOOP_HOLD,
     )
     values.update(overrides)
     return MachineCapabilities(**values)

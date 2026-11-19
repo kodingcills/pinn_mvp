@@ -269,7 +269,11 @@ def test_adapter_stale_window_mid_motion_holds_with_latency():
     assert "temporal_revalidation_resumed" in kinds
 
 
-def test_adapter_persistent_command_rejection_holds_and_resumes():
+def test_adapter_persistent_command_rejection_stops_the_zero_order_machine():
+    """#22: the MuJoCo machine replays its last wrench open loop and cannot
+    take a re-assertion while it rejects commands, so the rejection hold is
+    a stop (closed-loop machines still hold and resume:
+    tests/test_hold_semantics.py)."""
     machine = insertion_machine(
         VALIDATED_LOOSE_V1,
         command_rejection_windows_s=((1.0, 1.01),),
@@ -278,15 +282,15 @@ def test_adapter_persistent_command_rejection_holds_and_resumes():
     runtime = sim_runtime(machine, behaviors=INSERTION_BEHAVIORS)
     runtime.submit(intent)
     runtime.execute()
-    assert runtime.state is ExecutionState.COMPLETE
+    assert runtime.state is ExecutionState.ABORTED
     rejections = [
         e for e in runtime.evidence.events if e.kind == "command_rejected"
     ]
-    assert len(rejections) >= 3
+    assert len(rejections) == 3
     assert rejections[0].t_s == pytest.approx(1.0, abs=1e-9)
-    kinds = [e.kind for e in runtime.evidence.events]
-    assert "temporal_hold_entered" in kinds
-    assert "temporal_revalidation_resumed" in kinds
+    outcome = [e for e in runtime.evidence.events if e.kind == "outcome"][-1].payload
+    assert (outcome["reason"], outcome["cause"]) == ("hold_unsupported_by_machine", "command_rejection")
+    assert machine.stop_calls >= 1
 
 
 def test_adapter_transient_command_rejection_completes():

@@ -16,6 +16,7 @@ import time
 from benchmarks.heb import systems
 from benchmarks.heb.divergence import divergence_detail
 from benchmarks.heb.protocol import Realization, Scenario, SystemRun
+from haplous.capabilities import HoldSemantics
 from haplous.intent import RequirementKind
 from haplous.machine import MachineObservation
 
@@ -48,14 +49,22 @@ def unmet_command_modes(behavior: object, caps) -> list[str] | None:
 
 class G1IncumbentSystem:
     """``disabled`` removes named guards; it exists for the planted
-    guard-removal tests and is never used by an arm name."""
+    guard-removal tests and is never used by an arm name.
 
-    def __init__(self, disabled: frozenset[str] = frozenset()) -> None:
+    ``hold_semantics_aware`` is the E19 ``g1_parity`` arm (#22): G1 given the
+    same hold change as Haplous, from the machine's declared hold semantics.
+    On a zero-order or heartbeat machine it re-applies its last accepted
+    command on untrusted ticks and stops on a rejected command; on an
+    undeclared machine it stops on any hold. Closed-loop machines keep the
+    plain hold. Off by default: ``g1_incumbent`` is unchanged."""
+
+    def __init__(self, disabled: frozenset[str] = frozenset(), *, hold_semantics_aware: bool = False) -> None:
         unknown = set(disabled) - GUARDS
         if unknown:
             raise ValueError(f"unknown G1 guards {sorted(unknown)}")
-        self.name = "g1_incumbent"
+        self.name = "g1_parity" if hold_semantics_aware else "g1_incumbent"
         self._on = GUARDS - frozenset(disabled)
+        self._hold_aware = hold_semantics_aware
 
     def _pre_motion(self, machine, behavior, caps, limits, max_age) -> tuple[str, ...]:
         codes: list[str] = []
@@ -122,6 +131,8 @@ class G1IncumbentSystem:
         max_untrusted = int(caps.max_hold_unobserved_s / caps.state_period_s)
         untrusted = rejected = retries = 0
         episode_t: float | None = None
+        hold = caps.hold_semantics if self._hold_aware else HoldSemantics.CLOSED_LOOP_HOLD
+        last_accepted = None
 
         def stop(disposition, reason):
             session.stop()
@@ -146,6 +157,10 @@ class G1IncumbentSystem:
                 untrusted += 1
                 if untrusted > max_untrusted:
                     return stop("ABORTED", "watchdog_timeout")
+                if hold is HoldSemantics.UNDECLARED:
+                    return stop("ABORTED", "hold_unsupported_by_machine")
+                if hold is not HoldSemantics.CLOSED_LOOP_HOLD:
+                    command = last_accepted  # active hold: re-apply, no new decision
             else:
                 untrusted = 0
                 t = obs.stamp.source_s
@@ -184,6 +199,10 @@ class G1IncumbentSystem:
                     command = behavior.step(obs)
             if command is not None:
                 accepted = session.apply(command).accepted
+                if accepted:
+                    last_accepted = command
+                elif hold is not HoldSemantics.CLOSED_LOOP_HOLD:
+                    return stop("ABORTED", "hold_unsupported_by_machine")
                 if "command_rejection" in self._on:
                     rejected = 0 if accepted else rejected + 1
                     if rejected > max_untrusted:

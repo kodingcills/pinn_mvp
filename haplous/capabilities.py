@@ -16,6 +16,16 @@ class CommandMode(Enum):
     FORCE_CONTROLLED_DESCENT = "force_controlled_descent"
 
 
+class HoldSemantics(Enum):
+    """What the machine physically does on a period with no new command
+    (docs/engineering/designs/I22_hold_semantics.md)."""
+
+    CLOSED_LOOP_HOLD = "closed_loop_hold"  # servos the last accepted setpoint on live state
+    ZERO_ORDER_WRENCH = "zero_order_wrench"  # replays its last actuation output open loop
+    REQUIRES_HEARTBEAT = "requires_heartbeat"  # faults or stops unless commanded every period
+    UNDECLARED = "undeclared"
+
+
 class SensingChannel(Enum):
     POSE = "pose"
     FORCE_Z = "force_z"
@@ -51,6 +61,9 @@ class MachineCapabilities:
     # False: the host owns authority outright and every envelope carries
     # the constant epoch 0.
     leased_authority: bool = False
+    # The runtime picks hold, active hold or stop from this
+    # (haplous.runtime.HOLD_POLICY); undeclared gets no hold assumption.
+    hold_semantics: HoldSemantics = HoldSemantics.UNDECLARED
 
 
 @dataclass(frozen=True)

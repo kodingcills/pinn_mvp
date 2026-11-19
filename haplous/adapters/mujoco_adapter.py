@@ -22,7 +22,7 @@ import mujoco
 import numpy as np
 
 from haplous.adapters.legacy import CommandOutcome
-from haplous.capabilities import CommandMode, MachineCapabilities, SensingChannel
+from haplous.capabilities import CommandMode, HoldSemantics, MachineCapabilities, SensingChannel
 from haplous.machine import (
     CartesianImpedanceTarget,
     ClockDomain,
@@ -158,6 +158,9 @@ class MuJoCoMachine:
             execution_horizon_s=b.max_seconds,
             expected_duration_s=c.expected_duration_s,
             supports_stop=True,
+            # A tick with no newly accepted command replays the last joint
+            # wrench open loop (step(), below).
+            hold_semantics=HoldSemantics.ZERO_ORDER_WRENCH,
         )
 
     def open_session(

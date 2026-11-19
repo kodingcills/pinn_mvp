@@ -10,11 +10,13 @@ TickSource. The runtime never advances the world. Stop, abort, degrade,
 recovery, and refusal can all occur mid-motion, before task completion."""
 from __future__ import annotations
 
+from enum import Enum
 from typing import TYPE_CHECKING, Callable, Mapping, Optional
 
 from haplous.behavior import ExecutionBehavior
 from haplous.capabilities import (
     FeasibilityResult,
+    HoldSemantics,
     MachineCapabilities,
     RefusalReason,
     command_mode_admission,
@@ -39,6 +41,27 @@ if TYPE_CHECKING:
 
 _GAP_TOLERANCE_FACTOR = 1.5
 _COMMAND_REJECTION_LIMIT = 3
+
+
+class HoldAction(Enum):
+    HOLD = "hold"  # withhold commands; the machine holds by itself
+    ACTIVE_HOLD = "active_hold"  # re-assert the last accepted setpoint every period
+    STOP = "stop"
+
+
+_H, _A, _S = HoldAction.HOLD, HoldAction.ACTIVE_HOLD, HoldAction.STOP
+# (declared hold semantics, hold cause) -> action
+# (docs/engineering/designs/I22_hold_semantics.md).
+HOLD_POLICY: Mapping[HoldSemantics, Mapping[str, HoldAction]] = {
+    HoldSemantics.CLOSED_LOOP_HOLD: dict(
+        observation_loss=_H, freshness_gap=_H, stale_state=_H, command_rejection=_H),
+    HoldSemantics.ZERO_ORDER_WRENCH: dict(
+        observation_loss=_A, freshness_gap=_A, stale_state=_A, command_rejection=_S),
+    HoldSemantics.REQUIRES_HEARTBEAT: dict(
+        observation_loss=_A, freshness_gap=_A, stale_state=_A, command_rejection=_S),
+    HoldSemantics.UNDECLARED: dict(
+        observation_loss=_S, freshness_gap=_S, stale_state=_S, command_rejection=_S),
+}
 
 
 def _reason_record(r: RefusalReason) -> dict:
@@ -165,6 +188,7 @@ class HaplousRuntime:
                 "max_initial_offset_m": caps.max_initial_offset_m,
                 "execution_horizon_s": caps.execution_horizon_s,
                 "supports_stop": caps.supports_stop,
+                "hold_semantics": caps.hold_semantics.value,
             },
         )
         if feasibility.outcome == "REFUSED":
@@ -298,6 +322,61 @@ class HaplousRuntime:
             else 0
         )
 
+        hold_policy = HOLD_POLICY[caps.hold_semantics]
+
+        def enter_hold(cause: str, t_s: float, **data) -> bool:
+            """Apply the declared hold semantics to a hold cause; True if
+            the policy stops the machine (terminal). A STOP cause stops even
+            while a hold with another cause is active."""
+            nonlocal holding, hold_cause
+            action = hold_policy[cause]
+            if holding and action is not HoldAction.STOP:
+                return False
+            holding = True
+            hold_cause = cause
+            self._evidence.append(
+                "temporal_hold_entered",
+                t_s=t_s,
+                cause=cause,
+                action=action.value,
+                hold_semantics=caps.hold_semantics.value,
+                **data,
+            )
+            if action is HoldAction.STOP:
+                self._machine.stop()
+                self._tracker.transition(ExecutionState.ABORTED)
+                self._evidence.append(
+                    "outcome",
+                    t_s=t_s,
+                    result="ABORTED",
+                    reason="hold_unsupported_by_machine",
+                    cause=cause,
+                    hold_semantics=caps.hold_semantics.value,
+                )
+                return True
+            return False
+
+        def reassert(t_s: float, clock) -> bool:
+            """Active hold: re-submit the last accepted payload as a new
+            envelope (no new decision); True if terminal."""
+            nonlocal command_id
+            last = ledger.newest_accepted
+            if last is None:
+                return False
+            command_id += 1
+            envelope = ActionEnvelope(
+                command_id=command_id,
+                lease_epoch=epoch,
+                origin_source_s=t_s,
+                clock=clock,
+                valid_until_s=t_s + state_max_age_s,
+                payload=last.payload,
+                correlation_id=correlation_id,
+            )
+            ledger.issued(envelope)
+            ack = session.submit(envelope)
+            return settle(ledger.judge(ack, t_s, clock), ack.status, t_s)
+
         def settle(j: Judgement, status: str | None, t_s: float) -> bool:
             """Apply one judged ack to command authority; True if terminal."""
             nonlocal holding, hold_cause, untrusted_ticks, rejected_streak
@@ -305,7 +384,9 @@ class HaplousRuntime:
                 self._evidence.append("ack_ignored", t_s=t_s, command_id=j.command_id,
                                       status=status, reason=j.reason)
             elif j.verdict is Verdict.ACCEPTED:
-                if holding and rejected_streak > 0:
+                # Only a rejection hold resumes on acceptance; an accepted
+                # active-hold re-assertion on stale state never does.
+                if holding and hold_cause == "command_rejection":
                     # Restoration after command rejection: the
                     # machine accepts again; this tick's
                     # constraints were evaluated on fresh state
@@ -339,14 +420,8 @@ class HaplousRuntime:
                     # the machine holds; attempts continue so
                     # restoration is discoverable. The hold budget
                     # bounds the exposure.
-                    if not holding:
-                        holding = True
-                        hold_cause = "command_rejection"
-                        self._evidence.append(
-                            "temporal_hold_entered",
-                            t_s=t_s,
-                            cause="command_rejection",
-                        )
+                    if enter_hold("command_rejection", t_s):
+                        return True
                     untrusted_ticks += 1
                     if untrusted_ticks > max_hold_ticks:
                         self._machine.stop()
@@ -448,13 +523,8 @@ class HaplousRuntime:
                             untrusted_ticks=untrusted_ticks,
                         )
                         return
-                    if not holding:
-                        holding = True
-                        self._evidence.append(
-                            "temporal_hold_entered",
-                            t_s=last_source,
-                            cause="observation_loss",
-                        )
+                    if enter_hold("observation_loss", last_source):
+                        return
                     if self._tracker.state is ExecutionState.EXECUTING:
                         self._tracker.transition(ExecutionState.DEGRADED)
                         self._evidence.append(
@@ -463,6 +533,10 @@ class HaplousRuntime:
                             to="degraded",
                         )
                         degraded_announced = True
+                    if hold_policy[hold_cause] is HoldAction.ACTIVE_HOLD and reassert(
+                        last_source + untrusted_ticks * period_s, window[-1].stamp.clock
+                    ):
+                        return
                     self._ticks.wait()
                     if session.ended:
                         self._finish_on_session_end(session, window, last_source)
@@ -486,15 +560,8 @@ class HaplousRuntime:
                         # Temporal-integrity fault: suspend authority and
                         # hold; revalidation happens on the first fresh
                         # observation. Never a terminal outcome by itself.
-                        if not holding:
-                            holding = True
-                            hold_cause = "freshness_gap"
-                            self._evidence.append(
-                                "temporal_hold_entered",
-                                t_s=obs.stamp.source_s,
-                                cause="freshness_gap",
-                                gap_s=gap_s,
-                            )
+                        if enter_hold("freshness_gap", obs.stamp.source_s, gap_s=gap_s):
+                            return
                         untrusted_ticks += 1
                         if untrusted_ticks > max_hold_ticks:
                             self._machine.stop()
@@ -574,15 +641,8 @@ class HaplousRuntime:
                             # Temporal-integrity fault (stale delivery):
                             # suspend authority and hold; the fresh
                             # revalidation below decides resumption.
-                            if not holding:
-                                holding = True
-                                hold_cause = "stale_state"
-                                self._evidence.append(
-                                    "temporal_hold_entered",
-                                    t_s=obs.stamp.source_s,
-                                    cause="stale_state",
-                                    age_s=obs.stamp.age_s,
-                                )
+                            if enter_hold("stale_state", obs.stamp.source_s, age_s=obs.stamp.age_s):
+                                return
                             untrusted_ticks += 1
                             if untrusted_ticks > max_hold_ticks:
                                 self._machine.stop()
@@ -747,6 +807,12 @@ class HaplousRuntime:
                     j = ledger.judge(ack, envelope.origin_source_s, envelope.clock)
                     if settle(j, ack.status, obs.stamp.source_s):
                         return
+                elif (
+                    holding
+                    and hold_policy[hold_cause] is HoldAction.ACTIVE_HOLD
+                    and reassert(obs.stamp.source_s, obs.stamp.clock)
+                ):
+                    return
                 self._ticks.wait()
                 if session.ended:
                     self._finish_on_session_end(session, window, last_source)

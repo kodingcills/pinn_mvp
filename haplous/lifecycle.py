@@ -71,6 +71,12 @@ class CommandLedger:
         self._commands[envelope.command_id] = self._pending[envelope.command_id] = _Command(envelope)
         self._last_issued = envelope.command_id
 
+    @property
+    def newest_accepted(self) -> ActionEnvelope | None:
+        """The envelope of the newest accepted command, if any."""
+        cmd = self._commands.get(self._newest_accepted)
+        return cmd.envelope if cmd is not None else None
+
     def judge(self, ack: Ack, now_s: float, clock: ClockDomain) -> Judgement:
         """Judge one ack received at `now_s` on `clock`."""
         cid = ack.command_id
