@@ -1,0 +1,6 @@
+[robosuite WARNING] No private macro file found! (macros.py:57)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:58)
+[robosuite WARNING] To setup, run: python /tmp/claude-0/-home-user-pinn-mvp/a4419b98-d394-5c13-9a4d-5292a55f599b/scratchpad/i18/venv-rs/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:59)
+[robosuite WARNING] Could not import robosuite_models. Some robots may not be available. If you want to use these robots, please install robosuite_models from source (https://github.com/ARISE-Initiative/robosuite_models) or through pip install. (__init__.py:30)
+[robosuite WARNING] Could not load the mink-based whole-body IK. Make sure you install related import properly, otherwise you will not be able to use the default IK controller setting for GR1 robot. (__init__.py:40)
+[robosuite INFO] Loading controller configuration from: /tmp/claude-0/-home-user-pinn-mvp/a4419b98-d394-5c13-9a4d-5292a55f599b/scratchpad/i18/venv-rs/lib/python3.12/site-packages/robosuite/controllers/config/robots/default_panda.json (composite_controller_factory.py:121)
