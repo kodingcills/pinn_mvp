@@ -17,8 +17,8 @@ candidates the issue names.
 
 The spike measured three things in option (a). The controller accepts `input_type="absolute"`,
 so a joint target is its setpoint, and it tracks a 0.3 rad step to within 1.7 mrad. The
-policy's own kinematic model (`panda_inertial.xml`, mount at (-0.56, 0, 0.912), grip site
-0.097 m along the hand axis) agrees with robosuite's end-effector position within 0.5 mm. A
+policy's own kinematic model (the `panda_inertial.xml` geometry, mount at (-0.56, 0, 0.912),
+grip site 0.097 m along the hand axis) agrees with robosuite's end-effector position within 0.5 mm. A
 joint-space scripted Lift succeeds on seeds 0, 1 and 2, at 3.0 s to 3.5 s of sim time.
 
 **Decision: (a).** It is the only option that reuses an existing task and an independent
@@ -65,6 +65,11 @@ evidence about a physical Panda (HARDWARE_NOT_VALIDATED).
 - The `feasibility.capabilities` record gains `stop_response`.
 - `motion_started` gains `payload_kinds`, the payload types the behaviour's contract admits.
   Guard 2 holds every dispatched command to them.
+- Both fields are omitted when they hold the legacy values (`actuation_off`,
+  `["CartesianImpedanceTarget"]`). This follows the existing `disclosures` precedent.
+  Sealed recordings are byte-compared against fresh runs (`tests/test_episode_log.py`, the M4
+  store index), so Cartesian evidence keeps its #17 bytes. Emitting the fields always broke
+  those comparisons in the first full-suite run.
 - The episode log's command rows carry the payload as written (`positions_rad` or
   `target_pose_m`). `evaluation.timeline` and Studio's `series` plot Cartesian targets only,
   and they now skip joint rows instead of raising.
@@ -78,7 +83,10 @@ evidence about a physical Panda (HARDWARE_NOT_VALIDATED).
   `HOLD_POSITION`. Its observations add `q0..q6` and drop `task_success`, which is grader
   truth.
 - `JointLiftPolicy` uses the same phases as `LiftPolicy`. On each tick it takes one damped
-  least-squares step on its own Panda model, closed on the observed grip position.
+  least-squares step on its own Panda model, closed on the observed grip position. The model
+  is Franka's modified-DH chain in numpy, because `benchmarks/external` may not import
+  mujoco. A test pins it to `panda_inertial.xml` at 1e-9 m, and its Jacobian to finite
+  differences.
 - `lift_joint_intent` completes when the observed cube height is above 0.84 m. That is the
   height Lift itself uses, but the grader is still `_check_success`.
 

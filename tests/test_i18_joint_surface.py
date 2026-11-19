@@ -143,12 +143,25 @@ def test_command_outside_the_contract_aborts_before_dispatch_on_a_dual_mode_mach
     assert machine.stop_calls >= 1
 
 
-def test_motion_started_records_the_contract_payload_kind():
-    machine = ScriptedMachine(observation=obs(0.0), script=stream(seated_samples()))
-    runtime = sim_runtime(machine, behaviors={"motion": HoldBehavior})
+class JointHold(HoldBehavior):
+    required_command_modes = frozenset({JP})
+
+    def step(self, observation):
+        return JOINT_TARGET
+
+
+@pytest.mark.parametrize("behavior, modes, kinds", [
+    (JointHold, frozenset({JP}), ["JointPositionTarget"]),
+    # Absent on the legacy surface: sealed recordings keep their bytes.
+    (HoldBehavior, frozenset({CI}), None),
+])
+def test_motion_started_records_a_non_legacy_payload_kind(behavior, modes, kinds):
+    machine = ScriptedMachine(caps=std_caps(command_modes=modes), observation=obs(0.0),
+                              script=stream(seated_samples(z=0.0, fz=0.0)))
+    runtime = sim_runtime(machine, behaviors={"motion": behavior})
     runtime.submit(make_intent())
     started = next(e for e in runtime.execute().events if e.kind == "motion_started").payload
-    assert started["payload_kinds"] == ["CartesianImpedanceTarget"]
+    assert started.get("payload_kinds") == kinds
 
 
 def test_studio_and_timeline_read_a_log_with_joint_commands(tmp_path):
@@ -167,3 +180,29 @@ def test_studio_and_timeline_read_a_log_with_joint_commands(tmp_path):
     (tmp_path / timeline.METADATA).write_text(json.dumps({"timestep_s": 0.05, "n_observations": 1, "n_ticks": 1}))
     assert timeline.load(tmp_path)["target_pose_m"] == []
     assert series(tmp_path, 0.05)["command_target_pose_m"] == [None]
+
+
+def test_policy_kinematics_match_the_repo_panda_model():
+    """JointLiftPolicy's DH chain is the geometry of panda_inertial.xml."""
+    from pathlib import Path
+
+    import mujoco
+    import numpy as np
+
+    from benchmarks.external import robosuite_lift_joint as rj
+
+    model = mujoco.MjModel.from_xml_path(str(Path(rj.__file__).parents[1] / "realdata" / "panda_inertial.xml"))
+    data = mujoco.MjData(model)
+    hand = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_BODY, "hand")
+    rng = np.random.default_rng(18)
+    for _ in range(20):
+        q = rng.uniform(model.jnt_range[:, 0], model.jnt_range[:, 1])
+        data.qpos[:] = q
+        mujoco.mj_kinematics(model, data)
+        xmat = data.xmat[hand].reshape(3, 3)
+        tip = rj.BASE_POS_M + data.xpos[hand] + xmat @ (0.0, 0.0, 0.097)
+        got, _, jac = rj._kinematics(q)
+        assert np.allclose(got, tip, atol=1e-9)
+        eps = 1e-6
+        numeric = np.column_stack([(rj._kinematics(q + eps * e)[0] - got) / eps for e in np.eye(7)])
+        assert np.allclose(jac[:3], numeric, atol=1e-5)

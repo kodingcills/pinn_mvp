@@ -18,6 +18,7 @@ from haplous.capabilities import (
     FeasibilityResult,
     MachineCapabilities,
     RefusalReason,
+    StopResponse,
     command_mode_admission,
     mode_names,
     negotiate,
@@ -29,6 +30,7 @@ from haplous.intent import ExecutionIntent, RequirementKind
 from haplous.lifecycle import CommandLedger, Judgement, Verdict
 from haplous.machine import (
     ActionEnvelope,
+    CartesianImpedanceTarget,
     Machine,
     MachineObservation,
     MachineSession,
@@ -41,6 +43,14 @@ if TYPE_CHECKING:
 
 _GAP_TOLERANCE_FACTOR = 1.5
 _COMMAND_REJECTION_LIMIT = 3
+
+
+def _surface_record(key: str, value, legacy) -> dict:
+    """{key: value}, or {} on the legacy Cartesian surface: sealed recordings
+    are byte-compared, so evidence of Cartesian runs keeps its #17 shape (#18)."""
+    if value == legacy:
+        return {}
+    return {key: value.value if isinstance(value, StopResponse) else value}
 
 
 def _reason_record(r: RefusalReason) -> dict:
@@ -167,7 +177,7 @@ class HaplousRuntime:
                 "max_initial_offset_m": caps.max_initial_offset_m,
                 "execution_horizon_s": caps.execution_horizon_s,
                 "supports_stop": caps.supports_stop,
-                "stop_response": caps.stop_response.value,
+                **_surface_record("stop_response", caps.stop_response, StopResponse.ACTUATION_OFF),
             },
         )
         if feasibility.outcome == "REFUSED":
@@ -390,10 +400,14 @@ class HaplousRuntime:
                 state_period_s=period_s,
                 # The payload types the behaviour's contract admits; the
                 # dispatch guard below holds every command to them.
-                payload_kinds=sorted(
-                    t.__name__
-                    for t, modes in PAYLOAD_MODES.items()
-                    if modes & behavior.required_command_modes
+                **_surface_record(
+                    "payload_kinds",
+                    sorted(
+                        t.__name__
+                        for t, modes in PAYLOAD_MODES.items()
+                        if modes & behavior.required_command_modes
+                    ),
+                    [CartesianImpedanceTarget.__name__],
                 ),
             )
             window.append(first)

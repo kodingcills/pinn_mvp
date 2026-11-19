@@ -5,8 +5,9 @@ The arm runs robosuite's own JointPositionController with its packaged
 defaults (kp=50, critically damped, mass-matrix decoupling plus gravity
 compensation, torques clipped to the Panda actuator ranges), switched to
 absolute input so a JointPositionTarget is the controller's setpoint. The
-policy owns its own kinematic model of the Panda (panda_inertial.xml in
-this repo), not robosuite's. Completion truth stays with robosuite:
+policy owns its own kinematic model of the Panda (Franka's published
+modified-DH parameters, the geometry of benchmarks/realdata/panda_inertial.xml),
+not robosuite's. Completion truth stays with robosuite:
 task_result() reports `_check_success`, which the runtime never reads.
 """
 
@@ -14,7 +15,6 @@ from __future__ import annotations
 
 from collections.abc import Callable
 from dataclasses import replace
-from pathlib import Path
 from typing import Final
 
 import numpy as np
@@ -39,12 +39,22 @@ N_JOINTS: Final = 7
 # Lift's own success height: table top (0.8 m) + 0.04 m. The runtime sees
 # the cube height as an observation; the grader is `_check_success`.
 CUBE_LIFTED_Z_M: Final = 0.84
-PANDA_XML: Final = Path(__file__).resolve().parents[1] / "realdata" / "panda_inertial.xml"
-# Policy-side kinematic calibration, measured once in the I18 spike against
-# robosuite 1.5.2: the Panda mount (identity rotation) and the grip site on
-# the hand z axis. FK agrees with robosuite's eef within 0.5 mm.
+# Franka Panda modified DH (a, d, alpha) per joint; the flange is 0.107 m
+# along joint 7's axis.
+PANDA_MDH: Final = (
+    (0.0, 0.333, 0.0),
+    (0.0, 0.0, -np.pi / 2),
+    (0.0, 0.316, np.pi / 2),
+    (0.0825, 0.0, np.pi / 2),
+    (-0.0825, 0.384, -np.pi / 2),
+    (0.0, 0.0, np.pi / 2),
+    (0.088, 0.0, np.pi / 2),
+)
+# Policy-side calibration, measured once in the I18 spike against robosuite
+# 1.5.2: the Panda mount (identity rotation) and the grip site, 0.097 m past
+# the hand (flange + 0.107 m). FK agrees with robosuite's eef within 0.5 mm.
 BASE_POS_M: Final = np.array([-0.56, 0.0, 0.912])
-TOOL_OFFSET_M: Final = np.array([0.0, 0.0, 0.097])
+TOOL_Z_M: Final = 0.107 + 0.097
 
 
 class RobosuiteLiftJointTask(RobosuiteLiftTask):
@@ -150,12 +160,6 @@ class JointLiftPolicy:
     _DAMPING = 1e-4
 
     def __init__(self) -> None:
-        import mujoco
-
-        self._mj = mujoco
-        self._model = mujoco.MjModel.from_xml_path(str(PANDA_XML))
-        self._data = mujoco.MjData(self._model)
-        self._hand = mujoco.mj_name2id(self._model, mujoco.mjtObj.mjOBJ_BODY, "hand")
         self._phase = 0
         self._phase_steps = 0
         self._gripper = -1.0
@@ -168,7 +172,7 @@ class JointLiftPolicy:
     def begin(self, intent: ExecutionIntent, caps: MachineCapabilities, observation: MachineObservation) -> None:
         del intent, caps
         self._phase, self._phase_steps, self._gripper = 0, 0, -1.0
-        self._r0 = self._fk(_joints(observation))[1]
+        self._r0 = _kinematics(_joints(observation))[1]
 
     def step(self, observation: MachineObservation) -> JointPositionTarget:
         q = _joints(observation)
@@ -181,9 +185,8 @@ class JointLiftPolicy:
                 self._gripper = 1.0
         elif self._phase == 2 and self._phase_steps >= 12:
             self._phase, self._phase_steps = 3, 0
-        _, r = self._fk(q)
+        _, r, jac = _kinematics(q)
         rot_err = 0.5 * sum(np.cross(r[:, i], self._r0[:, i]) for i in range(3))
-        jac = self._jacobian(q)
         dq = jac.T @ np.linalg.solve(jac @ jac.T + self._DAMPING * np.eye(6),
                                      np.r_[np.clip(self._goal(cube) - x, -self._STEP_M, self._STEP_M), rot_err])
         return JointPositionTarget(positions_rad=tuple(float(v) for v in q + dq))
@@ -191,19 +194,25 @@ class JointLiftPolicy:
     def _goal(self, cube: np.ndarray) -> np.ndarray:
         return cube + (0.0, 0.0, (0.12, 0.012, 0.012, 0.22)[self._phase])
 
-    def _fk(self, q: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
-        self._data.qpos[:] = q
-        self._mj.mj_kinematics(self._model, self._data)
-        r = self._data.xmat[self._hand].reshape(3, 3).copy()
-        return BASE_POS_M + self._data.xpos[self._hand] + r @ TOOL_OFFSET_M, r
 
-    def _jacobian(self, q: np.ndarray) -> np.ndarray:
-        tip, _ = self._fk(q)
-        self._mj.mj_comPos(self._model, self._data)
-        jp = np.zeros((3, self._model.nv))
-        jr = np.zeros((3, self._model.nv))
-        self._mj.mj_jac(self._model, self._data, jp, jr, tip - BASE_POS_M, self._hand)
-        return np.vstack([jp, jr])
+
+def _kinematics(q: np.ndarray) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """Grip-site position (world), hand rotation and the 6x7 geometric
+    Jacobian at q, from the modified-DH chain."""
+    t = np.eye(4)
+    axes, origins = [], []
+    for (a, d, alpha), theta in zip(PANDA_MDH, q, strict=True):
+        ca, sa, ct, st = np.cos(alpha), np.sin(alpha), np.cos(theta), np.sin(theta)
+        t = t @ np.array([[ct, -st, 0.0, a],
+                          [st * ca, ct * ca, -sa, -d * sa],
+                          [st * sa, ct * sa, ca, d * ca],
+                          [0.0, 0.0, 0.0, 1.0]])
+        axes.append(t[:3, 2].copy())
+        origins.append(t[:3, 3].copy())
+    tip = t[:3, 3] + TOOL_Z_M * t[:3, 2]
+    jac = np.vstack([np.column_stack([np.cross(z, tip - o) for z, o in zip(axes, origins, strict=True)]),
+                     np.column_stack(axes)])
+    return BASE_POS_M + tip, t[:3, :3], jac
 
 
 def _joints(observation: MachineObservation) -> np.ndarray:
