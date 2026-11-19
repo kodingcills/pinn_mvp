@@ -135,6 +135,7 @@ def main() -> int:
         trials.append({"scenario_id": k[0], "system": k[1], "identical": not diffs,
                        "differing_fields": diffs,
                        "before": {f: b[k][f] for f in SCALARS},
+                       "after": {f: a[k][f] for f in SCALARS},
                        "stamp_clocks": {"before": b[k]["stamp_clocks"], "after": a[k]["stamp_clocks"]},
                        "compared_sha256": {side: _digest(rows[k]) for side, rows in
                                            (("before", b), ("after", a))}})
