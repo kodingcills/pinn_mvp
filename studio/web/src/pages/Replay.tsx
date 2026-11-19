@@ -40,7 +40,7 @@ export function ReplayView({ id, detail, runs }: { id: string; detail: RunDetail
               <span className="mono">{summary.scenario_id}</span>
               <span className="mono">{summary.system}</span>
               <span>{outcomeOf(summary)}</span>
-              {summary.verified && <span className="badge ok">verified</span>}
+              {summary.ledger_state === "VERIFIED" && <span className="badge ok" title="M0 artifacts re-hashed on open">verified</span>}
             </>
           )}
           <span className="num">t = {t == null ? "—" : `${t.toFixed(4)} s`}</span>

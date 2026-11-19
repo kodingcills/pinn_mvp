@@ -1,18 +1,22 @@
 [project]
-name = "pegsim"
-description = "pegsim research substrate + Haplous physical-execution runtime (v0.5-sim pre-hardware candidate)"
+name = "haplous"
+description = "Haplous physical-execution runtime (stdlib only), with the pegsim simulation substrate, evaluation and Studio as extras"
 readme = "README.md"
 requires-python = ">=3.12"
 license = { text = "Proprietary" }
 dynamic = ["version"]
-dependencies = [
-    "mujoco>=3.11.0",
-    "numpy>=2.5.1",
-]
+# The runtime is stdlib-only (tests/test_import_closure.py); everything else is an extra.
+dependencies = []
 
 [project.optional-dependencies]
-# Evaluation and reporting: manifests, Parquet result tables, plots.
+# pegsim MuJoCo substrate, HEB MuJoCo backend, `haplous demo`.
+sim = [
+    "mujoco>=3.11.0,<3.12",  # evidence was produced on 3.11; MuJoCo 4 is untested here
+    "numpy>=2.5.1",
+]
+# Evaluation and reporting (HEB, HES, M0 registry, replay): manifests, Parquet tables, plots.
 eval = [
+    "haplous[sim,registry,replay]",
     "matplotlib>=3.11.1",
     "pyarrow>=25.0.1",
     "pyyaml>=6.0",
@@ -31,6 +35,7 @@ replay = [
 ]
 # Haplous Studio local server (`haplous studio`); httpx only for its tests.
 studio = [
+    "haplous[eval]",
     "fastapi==0.163.1",
     "uvicorn==0.54.0",
     "httpx==0.28.1",
@@ -43,20 +48,9 @@ dev = [
 ]
 # Everything needed to run the full repository test suite.
 all = [
+    "haplous[eval,studio,dev]",
     "h5py>=3.11",
-    "jsonschema[format-nongpl]>=4.23",
-    "rfc8785>=0.1.4",
-    "cryptography>=43",
     "hypothesis>=6.100",
-    "matplotlib>=3.11.1",
-    "mcap==1.6.0",
-    "pyarrow>=25.0.1",
-    "pyyaml>=6.0",
-    "pytest>=9.1.1",
-    "rerun-sdk>=0.43.1",
-    "fastapi==0.163.1",
-    "uvicorn==0.54.0",
-    "httpx==0.28.1",
 ]
 
 [project.scripts]

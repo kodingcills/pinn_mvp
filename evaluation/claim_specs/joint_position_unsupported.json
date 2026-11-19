@@ -1,0 +1,13 @@
+{
+  "property_id": "od1_admission",
+  "statement": "A task requiring a joint-position command surface is refused on machines without one",
+  "requirements": {"required_command_modes": ["joint_position"]},
+  "machine_profiles": ["mujoco_heb", "mujoco_fcd_only", "mujoco_ci_only"],
+  "task_family": "peg_insertion",
+  "comparators": ["haplous_mediated", "g1_incumbent", "bare_behavior"],
+  "population": "admission_dev@v1",
+  "n_scenarios": 3,
+  "budget_cpu_min": 4.0,
+  "seed": 20022,
+  "tier": "DEV"
+}

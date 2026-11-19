@@ -38,6 +38,12 @@ class Unreadable(RuntimeError):
     """The artifact exists but cannot be served as trusted data (integrity, format)."""
 
 
+def user_data_dir() -> Path:
+    if sys.platform == "darwin":
+        return Path.home() / "Library" / "Application Support" / "haplous-studio"
+    return Path(os.environ.get("XDG_DATA_HOME") or Path.home() / ".local" / "share") / "haplous-studio"
+
+
 @dataclass(frozen=True)
 class Paths:
     repo: Path
@@ -47,8 +53,14 @@ class Paths:
 
     @classmethod
     def default(cls, repo: Path = REPO_ROOT) -> Paths:
-        return cls(repo, repo / "results" / "studio", repo / "docs" / "eval_program" / "investigations",
-                   repo / "replays")
+        """`$HAPLOUS_STUDIO_ROOT`, else the checkout's own layout, else a per-user data dir (a wheel install,
+        where `repo` is site-packages and holds no committed results)."""
+        if os.environ.get("HAPLOUS_STUDIO_ROOT"):
+            return cls.under(Path(os.environ["HAPLOUS_STUDIO_ROOT"]), repo)
+        if (repo / "pyproject.toml").is_file():
+            return cls(repo, repo / "results" / "studio", repo / "docs" / "eval_program" / "investigations",
+                       repo / "replays")
+        return cls.under(user_data_dir(), repo)
 
     @classmethod
     def under(cls, root: Path, repo: Path = REPO_ROOT) -> Paths:
@@ -131,11 +143,13 @@ def run_summary(paths: Paths, ref: RunRef) -> dict[str, Any]:
         "backend": backend,
         "scenario_id": meta.get("scenario_id") or meta.get("task_id"),
         "system": meta.get("system"),
-        "disposition": outcome.get("disposition"),
+        # HEB 0.3.0 (#21): the benchmark's SIM_DIVERGED grade overrides the system's own disposition.
+        "disposition": "SIM_DIVERGED" if outcome.get("graded_disposition") == "SIM_DIVERGED" else outcome.get("disposition"),
         "bounded_success": outcome.get("bounded_success"),
         "has_3d": has_3d(ref, meta),
-        # Ledger state; the detail endpoint re-hashes every artifact before serving.
-        "verified": ref.state == "VERIFIED",
+        # The ledger's word at index time, not a re-hash: hashing every run per listing costs O(registry bytes).
+        # The detail and replay endpoints re-run the M0 check and refuse (409) a run that fails it.
+        "ledger_state": ref.state,
         "path": paths.rel(ref.log_dir.parent if ref.root is not None else ref.log_dir),
     }
 
@@ -155,6 +169,14 @@ def m0_record(ref: RunRef) -> dict[str, Any] | None:
             "manifest_sha256": registry.manifest_digest(ref.id), "command": manifest.get("command"),
             "config": manifest.get("config"), "git_commit": provenance.get("git_commit"),
             "git_dirty": provenance.get("git_dirty")}
+
+
+def checked_m0(ref: RunRef) -> dict[str, Any] | None:
+    """The M0 record, re-hashed now; Unreadable if any problem is found."""
+    m0 = m0_record(ref)
+    if m0 is not None and m0["problems"]:
+        raise Unreadable(f"M0 integrity check failed for {ref.id}: {m0['problems']}")
+    return m0
 
 
 def series(log_dir: Path, dt: float) -> dict[str, list[Any]]:
@@ -179,9 +201,7 @@ def series(log_dir: Path, dt: float) -> dict[str, list[Any]]:
 
 def run_detail(paths: Paths, run_id: str) -> dict[str, Any]:
     ref = get_ref(paths, run_id)
-    m0 = m0_record(ref)
-    if m0 is not None and m0["problems"]:
-        raise Unreadable(f"M0 integrity check failed for {run_id}: {m0['problems']}")
+    m0 = checked_m0(ref)
     try:
         tl = timeline.load(ref.log_dir)
     except timeline.TimelineRefused as exc:
@@ -207,6 +227,7 @@ def ensure_rrd(paths: Paths, run_id: str) -> Path:
     ref = get_ref(paths, run_id)
     if not has_3d(ref, _metadata(ref)):
         raise NotFound(f"run {run_id!r} has no MuJoCo state stream (no 3D)")
+    checked_m0(ref)  # a cached .rrd is only as trustworthy as the artifacts it was derived from
     out = paths.replays / run_id / f"{run_id}.rrd"
     with _rrd_lock:
         if not out.is_file():
@@ -363,8 +384,11 @@ def _issue(row: dict[str, Any]) -> dict[str, Any]:
 
 def evidence(paths: Paths) -> dict[str, Any]:
     program = paths.repo / "docs" / "eval_program"
-    tasks_doc = json.loads((program / "TASKS.json").read_text(encoding="utf-8"))
     issues = program / "KNOWN_ISSUES.md"
+    if not (program / "TASKS.json").is_file():  # no checkout: no committed program evidence
+        return {"integration_branch": None, "tasks": [], "known_issues": [], "benchmarks": BENCHMARKS,
+                "source": f"none: {paths.rel(program / 'TASKS.json')} is absent (not a repository checkout)"}
+    tasks_doc = json.loads((program / "TASKS.json").read_text(encoding="utf-8"))
     return {
         "integration_branch": tasks_doc.get("integration_branch"),
         "tasks": [{**{k: t.get(k) for k in ("id", "title", "owner", "status", "verdict", "commit", "deps",

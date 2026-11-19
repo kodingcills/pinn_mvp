@@ -16,15 +16,14 @@ from __future__ import annotations
 import math
 from typing import Callable
 
+from haplous.capabilities import CommandMode
+from haplous.intent import ExecutionIntent, RequirementKind
+from haplous.machine import CartesianImpedanceTarget, MachineObservation
 from pegsim.rollout import (
     SLIDE_F_CONTACT_N,
     SLIDE_F_MIN_N,
     ValidatedConfig,
 )
-
-from haplous.capabilities import CommandMode
-from haplous.intent import ExecutionIntent, RequirementKind
-from haplous.machine import MachineObservation, ServoCommand
 
 _SLIDE_SPEED_MPS = 0.005
 _KI_N_PER_N_S = 2.0
@@ -113,7 +112,7 @@ class SlideExecutionBehavior:
         raw = (math.atan2(tip[1], tip[0]) - self._theta_start) * self._direction
         return max(raw * self._r_path, 0.0)
 
-    def step(self, observation: MachineObservation) -> ServoCommand:
+    def step(self, observation: MachineObservation) -> CartesianImpedanceTarget:
         assert self._period_s is not None, "begin() before step()"
         tip = observation.pose_m
         fz = abs(observation.force_z_n)
@@ -177,7 +176,7 @@ class SlideExecutionBehavior:
         else:
             z_des = self._z_raw
             k_z = self._k_z_approach
-        return ServoCommand(
+        return CartesianImpedanceTarget(
             target_pose_m=(xy[0], xy[1], z_des), k_z_n_per_m=k_z
         )
 

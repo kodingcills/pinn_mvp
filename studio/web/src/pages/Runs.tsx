@@ -65,7 +65,11 @@ export function Runs() {
                       <td className="small">{r.backend}</td>
                       <td>{outcomeOf(r)}</td>
                       <td>
-                        {r.verified && <span className="badge ok" title="M0 ledger verified">verified</span>}
+                        {r.ledger_state === "VERIFIED" && (
+                          <span className="badge" title="M0 ledger state. Every artifact is re-hashed (verified) when the run is opened.">
+                            ledger: verified
+                          </span>
+                        )}
                         {r.has_3d && <span className="badge" title="MuJoCo state stream: 3D replay available">3D</span>}
                       </td>
                     </tr>

@@ -15,11 +15,11 @@ import h5py
 import numpy as np
 
 from haplous import (
+    CartesianImpedanceTarget,
     CommandMode,
     ExecutionIntent,
     MachineCapabilities,
     MachineObservation,
-    ServoCommand,
 )
 
 
@@ -58,13 +58,13 @@ class DemoStreamPolicy:
         self._rotation = self._actions[0, 3:6].copy()
         self._gripper = float(self._actions[0, 6])
 
-    def step(self, observation: MachineObservation) -> ServoCommand:
+    def step(self, observation: MachineObservation) -> CartesianImpedanceTarget:
         # target = current EE pose + recorded position delta: the adapter
         # re-derives (target - current) so the frozen action stream is
         # reproduced exactly while Haplous only ever sees an absolute pose
         # command.
         if self._index >= len(self._actions):
-            return ServoCommand(target_pose_m=observation.pose_m, k_z_n_per_m=0.0)
+            return CartesianImpedanceTarget(target_pose_m=observation.pose_m, k_z_n_per_m=0.0)
         action = self._actions[self._index]
         self._rotation = action[3:6].copy()
         self._gripper = float(action[6])
@@ -74,4 +74,4 @@ class DemoStreamPolicy:
             observation.pose_m[1] + float(action[1]),
             observation.pose_m[2] + float(action[2]),
         )
-        return ServoCommand(target_pose_m=target, k_z_n_per_m=0.0)
+        return CartesianImpedanceTarget(target_pose_m=target, k_z_n_per_m=0.0)

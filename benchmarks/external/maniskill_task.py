@@ -1,7 +1,7 @@
 """ManiSkill 3.0.1 PegInsertionSide-v1 external-task adapter (SAPIEN/PhysX CPU).
 
 The benchmark's ``pd_ee_pose`` controller owns rotation tracking and the
-gripper. Haplous ``ServoCommand`` carries the Cartesian position target; the
+gripper. Haplous ``CartesianImpedanceTarget`` carries the Cartesian position target; the
 recorded stream's rotation delta and gripper components ride as task-owned
 actuation channels (same pattern as the robosuite adapter's controller-owned
 ``kp`` and gripper). Contact force is a PhysX impulse-derived proxy: the net
@@ -18,15 +18,15 @@ from typing import Final
 import numpy as np
 
 from haplous import (
+    CartesianImpedanceTarget,
+    ClockDomain,
     CommandMode,
     CommandOutcome,
     MachineCapabilities,
     MachineObservation,
     SensingChannel,
-    ServoCommand,
     Stamp,
 )
-
 
 TASK_ID: Final = "maniskill/3.0.1/PegInsertionSide"
 CONTROL_FREQUENCY_HZ: Final = 20
@@ -131,7 +131,7 @@ class ManiSkillPegInsertionTask:
         peg = np.asarray(u.peg.pose.p, dtype=float).reshape(-1)
         box = np.asarray(u.box.pose.p, dtype=float).reshape(-1)
         return MachineObservation(
-            stamp=Stamp(source_s=now, received_s=now),
+            stamp=Stamp(source_s=now, received_s=now, clock=ClockDomain.SIM),
             pose_m=(float(pos[0]), float(pos[1]), float(pos[2])),
             force_z_n=float(fz),
             tilt_deg=_tool_tilt_deg(quat_wxyz),
@@ -154,7 +154,7 @@ class ManiSkillPegInsertionTask:
         # predicate is peg-head-in-hole overlap, benchmark-owned
         return getattr(self, "_last_info", {}).get("success", False)
 
-    def apply_command(self, command: ServoCommand) -> CommandOutcome:
+    def apply_command(self, command: CartesianImpedanceTarget) -> CommandOutcome:
         if self._stopped or self._env is None:
             return CommandOutcome(accepted=False, reason="session_inactive")
         u = self._env.unwrapped

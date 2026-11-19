@@ -37,7 +37,7 @@ from haplous.behaviors.insertion import (
     insertion_intent,
     insertion_machine,
 )
-from haplous.runtime import HaplousRuntime
+from haplous.adapters.legacy import sim_runtime
 from haplous.state import ExecutionState
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -135,7 +135,7 @@ def run_mediated(spec: ScenarioSpec) -> dict:
     behaviors = {
         "peg_insertion": insertion_behavior_factory(spec.bundle)
     }
-    runtime = HaplousRuntime(machine, behaviors=behaviors)
+    runtime = sim_runtime(machine, behaviors=behaviors)
     t0 = time.perf_counter()
     feasibility = runtime.submit(intent)
     feasibility_latency_s = time.perf_counter() - t0

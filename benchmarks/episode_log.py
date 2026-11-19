@@ -22,13 +22,8 @@ from dataclasses import asdict
 from pathlib import Path
 from typing import Any
 
-from haplous.machine import (
-    CommandOutcome,
-    Machine,
-    MachineObservation,
-    MachineSession,
-    ServoCommand,
-)
+from haplous.adapters.legacy import CommandOutcome, SimSession
+from haplous.machine import CartesianImpedanceTarget, Machine, MachineObservation
 
 FORMAT = "haplous-episode-log-v1"
 TELEMETRY = "telemetry.jsonl"
@@ -44,6 +39,8 @@ def _observation_row(obs: MachineObservation | None) -> dict[str, Any] | None:
         return None
     row = asdict(obs)
     row["extra"] = dict(obs.extra)
+    # Format v1 names its clocks in metadata["clocks"]; the per-stamp domain (#16) is not a v1 field.
+    del row["stamp"]["clock"]
     return row
 
 
@@ -67,7 +64,7 @@ class EpisodeLog:
         self._line(self._telemetry, {"tick": tick, "host_monotonic_ns": time.monotonic_ns(),
                                      "kind": "observation", "observation": _observation_row(obs)})
 
-    def command(self, tick: int, command: ServoCommand, outcome: CommandOutcome) -> None:
+    def command(self, tick: int, command: CartesianImpedanceTarget, outcome: CommandOutcome) -> None:
         self._line(self._telemetry, {"tick": tick, "host_monotonic_ns": time.monotonic_ns(),
                                      "kind": "command", "command": asdict(command), "outcome": asdict(outcome)})
 
@@ -89,11 +86,11 @@ class EpisodeLog:
 
 
 class LoggingSession:
-    """A MachineSession that logs everything it passes through. `tick`
+    """A SimSession that logs everything it passes through. `tick`
     counts session steps that advanced the machine: with `clock`, a step
     counts only when the clock value changed; without, every step counts."""
 
-    def __init__(self, inner: MachineSession, log: EpisodeLog,
+    def __init__(self, inner: SimSession, log: EpisodeLog,
                  clock: Callable[[], float] | None = None) -> None:
         self.inner = inner
         self.log = log
@@ -105,7 +102,7 @@ class LoggingSession:
         self.log.observation(self.tick, obs)
         return obs
 
-    def apply(self, command: ServoCommand) -> CommandOutcome:
+    def apply(self, command: CartesianImpedanceTarget) -> CommandOutcome:
         outcome = self.inner.apply(command)
         self.log.command(self.tick, command, outcome)
         return outcome

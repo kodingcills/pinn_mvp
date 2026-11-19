@@ -9,7 +9,7 @@ from benchmarks.heb.sliding import sliding_scenarios
 from benchmarks.heb.systems import build_intent
 from benchmarks.heb import mujoco_backend
 
-from haplous.runtime import HaplousRuntime
+from haplous.adapters.legacy import sim_runtime
 from haplous.state import ExecutionState
 
 
@@ -18,7 +18,7 @@ def _run(scenario_id: str):
     realization = mujoco_backend.build_realization(scen)
     condition = realization.condition_factory(scen, realization.bundle)
     intent = build_intent(scen, condition)
-    runtime = HaplousRuntime(
+    runtime = sim_runtime(
         realization.machine,
         behaviors={scen.task_family: realization.behavior_factory},
     )

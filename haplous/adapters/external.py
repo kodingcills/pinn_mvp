@@ -17,18 +17,19 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Mapping, Protocol, runtime_checkable
 
-from haplous.machine import CommandOutcome, MachineObservation, ServoCommand
+from haplous.adapters.legacy import CommandOutcome
+from haplous.machine import CartesianImpedanceTarget, MachineObservation
 
 if TYPE_CHECKING:
+    from haplous.adapters.legacy import SimSession
     from haplous.capabilities import MachineCapabilities
-    from haplous.machine import Machine, MachineSession
 
 
 @runtime_checkable
 class ExternalTask(Protocol):
     """One externally owned contact/assembly task. Lifecycle: reset(seed)
     establishes the start realization; the session protocol is identical
-    to MachineSession; ground_truth() exposes framework-owned truth that
+    to SimSession; ground_truth() exposes framework-owned truth that
     the runtime never touches."""
 
     task_id: str
@@ -39,7 +40,7 @@ class ExternalTask(Protocol):
 
     def observe(self) -> MachineObservation | None: ...
 
-    def apply_command(self, command: ServoCommand) -> CommandOutcome: ...
+    def apply_command(self, command: CartesianImpedanceTarget) -> CommandOutcome: ...
 
     def step(self) -> None: ...
 
@@ -55,7 +56,7 @@ class ExternalTask(Protocol):
 
 
 class ExternalMachineSession:
-    """MachineSession view over one started ExternalTask episode."""
+    """SimSession view over one started ExternalTask episode."""
 
     def __init__(self, task: "ExternalTask") -> None:
         self._task = task
@@ -63,7 +64,7 @@ class ExternalMachineSession:
     def observe(self) -> MachineObservation | None:
         return self._task.observe()
 
-    def apply(self, command: ServoCommand) -> CommandOutcome:
+    def apply(self, command: CartesianImpedanceTarget) -> CommandOutcome:
         return self._task.apply_command(command)
 
     def step(self) -> None:
@@ -99,14 +100,15 @@ class ExternalMachineAdapter:
         *,
         start_position_m: tuple[float, float, float],
         horizon_s: float,
-    ) -> "MachineSession":
+    ) -> "SimSession":
         return ExternalMachineSession(self._task)
 
     def stop(self) -> None:
         self._task.stop()
 
     def health(self) -> Mapping[str, float | str | bool]:
-        return self._task.ground_truth()
+        # Machine health only: ground_truth() is grader-owned and never crosses into the runtime (#13).
+        return {"status": "ok"}
 
 
 def open_task_session(task: "ExternalTask", *, seed: int) -> ExternalMachineSession:

@@ -11,13 +11,14 @@ from benchmarks.governor import (
     TimingStressConfig,
 )
 from benchmarks.governor.heb import execution_metrics
+from haplous.adapters.legacy import CommandOutcome
 from haplous.capabilities import MachineCapabilities
-from haplous.machine import CommandOutcome, MachineObservation, ServoCommand, Stamp
+from haplous.machine import CartesianImpedanceTarget, ClockDomain, MachineObservation, Stamp
 
 
 def observation(t_s: float, force_n: float = 0.0) -> MachineObservation:
     return MachineObservation(
-        stamp=Stamp(source_s=t_s, received_s=t_s),
+        stamp=Stamp(source_s=t_s, received_s=t_s, clock=ClockDomain.SIM),
         pose_m=(0.1, -0.2, 0.3),
         force_z_n=force_n,
         tilt_deg=0.0,
@@ -27,7 +28,7 @@ def observation(t_s: float, force_n: float = 0.0) -> MachineObservation:
 class RecordingSession:
     def __init__(self, observations: list[MachineObservation]) -> None:
         self.observations = observations
-        self.commands: list[ServoCommand] = []
+        self.commands: list[CartesianImpedanceTarget] = []
         self.index = 0
         self.steps = 0
         self.stopped = False
@@ -39,7 +40,7 @@ class RecordingSession:
         self.index += 1
         return result
 
-    def apply(self, command: ServoCommand) -> CommandOutcome:
+    def apply(self, command: CartesianImpedanceTarget) -> CommandOutcome:
         self.commands.append(command)
         return CommandOutcome(accepted=True)
 
@@ -96,8 +97,8 @@ class RecordingMachine:
         return {"status": "ok"}
 
 
-def command(k_z: float = 1000.0) -> ServoCommand:
-    return ServoCommand(target_pose_m=(1.0, 2.0, -3.0), k_z_n_per_m=k_z)
+def command(k_z: float = 1000.0) -> CartesianImpedanceTarget:
+    return CartesianImpedanceTarget(target_pose_m=(1.0, 2.0, -3.0), k_z_n_per_m=k_z)
 
 
 def test_governor_preserves_command_below_activation_force() -> None:
@@ -216,14 +217,14 @@ def test_execution_metrics_integrate_force_and_contact_oscillation() -> None:
     samples = (
         observation(0.0, 0.0),
         MachineObservation(
-            stamp=Stamp(source_s=1.0, received_s=1.0),
+            stamp=Stamp(source_s=1.0, received_s=1.0, clock=ClockDomain.SIM),
             pose_m=(0.0, 0.0, 0.0),
             force_z_n=2.0,
             tilt_deg=0.0,
             extra=(("in_contact", 1.0),),
         ),
         MachineObservation(
-            stamp=Stamp(source_s=2.0, received_s=2.0),
+            stamp=Stamp(source_s=2.0, received_s=2.0, clock=ClockDomain.SIM),
             pose_m=(0.0, 0.0, 0.0),
             force_z_n=4.0,
             tilt_deg=0.0,

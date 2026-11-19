@@ -28,13 +28,20 @@ from haplous.intent import (
     SuccessCondition,
 )
 from haplous.machine import (
+    Ack,
+    AckStatus,
+    ActionEnvelope,
+    CartesianImpedanceTarget,
+    ClockDomain,
     CommandOutcome,
     ControlParameters,
+    LeasedSession,
     Machine,
     MachineObservation,
     MachineSession,
-    ServoCommand,
+    RealtimeTickSource,
     Stamp,
+    TickSource,
 )
 from haplous.runtime import HaplousRuntime
 from haplous.state import (
@@ -46,6 +53,11 @@ from haplous.state import (
 __version__ = "0.5.0"
 
 __all__ = [
+    "Ack",
+    "AckStatus",
+    "ActionEnvelope",
+    "CartesianImpedanceTarget",
+    "ClockDomain",
     "CommandMode",
     "CommandOutcome",
     "Constraint",
@@ -58,17 +70,19 @@ __all__ = [
     "FeasibilityResult",
     "HaplousRuntime",
     "IllegalTransitionError",
+    "LeasedSession",
     "Machine",
     "MachineCapabilities",
     "MachineObservation",
     "MachineSession",
+    "RealtimeTickSource",
     "RecoveryPolicy",
     "RefusalReason",
     "Requirement",
     "RequirementKind",
     "SensingChannel",
-    "ServoCommand",
     "Stamp",
     "SuccessCondition",
+    "TickSource",
     "__version__",
 ]

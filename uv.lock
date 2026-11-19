@@ -544,6 +544,135 @@ wheels = [
 ]
 
 [[package]]
+name = "haplous"
+source = { editable = "." }
+
+[package.optional-dependencies]
+all = [
+    { name = "cryptography" },
+    { name = "fastapi" },
+    { name = "h5py" },
+    { name = "httpx" },
+    { name = "hypothesis" },
+    { name = "jsonschema", extra = ["format-nongpl"] },
+    { name = "matplotlib" },
+    { name = "mcap" },
+    { name = "mujoco" },
+    { name = "mypy" },
+    { name = "numpy" },
+    { name = "pyarrow" },
+    { name = "pytest" },
+    { name = "pyyaml" },
+    { name = "rerun-sdk" },
+    { name = "rfc8785" },
+    { name = "ruff" },
+    { name = "uvicorn" },
+]
+dev = [
+    { name = "mypy" },
+    { name = "pytest" },
+    { name = "ruff" },
+]
+eval = [
+    { name = "cryptography" },
+    { name = "jsonschema", extra = ["format-nongpl"] },
+    { name = "matplotlib" },
+    { name = "mcap" },
+    { name = "mujoco" },
+    { name = "numpy" },
+    { name = "pyarrow" },
+    { name = "pyyaml" },
+    { name = "rerun-sdk" },
+    { name = "rfc8785" },
+]
+registry = [
+    { name = "cryptography" },
+    { name = "jsonschema", extra = ["format-nongpl"] },
+    { name = "rfc8785" },
+]
+replay = [
+    { name = "mcap" },
+    { name = "pyarrow" },
+    { name = "rerun-sdk" },
+]
+sim = [
+    { name = "mujoco" },
+    { name = "numpy" },
+]
+studio = [
+    { name = "cryptography" },
+    { name = "fastapi" },
+    { name = "httpx" },
+    { name = "jsonschema", extra = ["format-nongpl"] },
+    { name = "matplotlib" },
+    { name = "mcap" },
+    { name = "mujoco" },
+    { name = "numpy" },
+    { name = "pyarrow" },
+    { name = "pyyaml" },
+    { name = "rerun-sdk" },
+    { name = "rfc8785" },
+    { name = "uvicorn" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "cryptography", marker = "extra == 'all'", specifier = ">=43" },
+    { name = "cryptography", marker = "extra == 'eval'", specifier = ">=43" },
+    { name = "cryptography", marker = "extra == 'registry'", specifier = ">=43" },
+    { name = "cryptography", marker = "extra == 'studio'", specifier = ">=43" },
+    { name = "fastapi", marker = "extra == 'all'", specifier = "==0.163.1" },
+    { name = "fastapi", marker = "extra == 'studio'", specifier = "==0.163.1" },
+    { name = "h5py", marker = "extra == 'all'", specifier = ">=3.11" },
+    { name = "httpx", marker = "extra == 'all'", specifier = "==0.28.1" },
+    { name = "httpx", marker = "extra == 'studio'", specifier = "==0.28.1" },
+    { name = "hypothesis", marker = "extra == 'all'", specifier = ">=6.100" },
+    { name = "jsonschema", extras = ["format-nongpl"], marker = "extra == 'all'", specifier = ">=4.23" },
+    { name = "jsonschema", extras = ["format-nongpl"], marker = "extra == 'eval'", specifier = ">=4.23" },
+    { name = "jsonschema", extras = ["format-nongpl"], marker = "extra == 'registry'", specifier = ">=4.23" },
+    { name = "jsonschema", extras = ["format-nongpl"], marker = "extra == 'studio'", specifier = ">=4.23" },
+    { name = "matplotlib", marker = "extra == 'all'", specifier = ">=3.11.1" },
+    { name = "matplotlib", marker = "extra == 'eval'", specifier = ">=3.11.1" },
+    { name = "matplotlib", marker = "extra == 'studio'", specifier = ">=3.11.1" },
+    { name = "mcap", marker = "extra == 'all'", specifier = "==1.6.0" },
+    { name = "mcap", marker = "extra == 'eval'", specifier = "==1.6.0" },
+    { name = "mcap", marker = "extra == 'replay'", specifier = "==1.6.0" },
+    { name = "mcap", marker = "extra == 'studio'", specifier = "==1.6.0" },
+    { name = "mujoco", marker = "extra == 'all'", specifier = ">=3.11.0,<3.12" },
+    { name = "mujoco", marker = "extra == 'eval'", specifier = ">=3.11.0,<3.12" },
+    { name = "mujoco", marker = "extra == 'sim'", specifier = ">=3.11.0,<3.12" },
+    { name = "mujoco", marker = "extra == 'studio'", specifier = ">=3.11.0,<3.12" },
+    { name = "mypy", marker = "extra == 'all'", specifier = ">=1.11" },
+    { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.11" },
+    { name = "numpy", marker = "extra == 'all'", specifier = ">=2.5.1" },
+    { name = "numpy", marker = "extra == 'eval'", specifier = ">=2.5.1" },
+    { name = "numpy", marker = "extra == 'sim'", specifier = ">=2.5.1" },
+    { name = "numpy", marker = "extra == 'studio'", specifier = ">=2.5.1" },
+    { name = "pyarrow", marker = "extra == 'all'", specifier = ">=25.0.1" },
+    { name = "pyarrow", marker = "extra == 'eval'", specifier = ">=25.0.1" },
+    { name = "pyarrow", marker = "extra == 'replay'", specifier = ">=25.0.1" },
+    { name = "pyarrow", marker = "extra == 'studio'", specifier = ">=25.0.1" },
+    { name = "pytest", marker = "extra == 'all'", specifier = ">=9.1.1" },
+    { name = "pytest", marker = "extra == 'dev'", specifier = ">=9.1.1" },
+    { name = "pyyaml", marker = "extra == 'all'", specifier = ">=6.0" },
+    { name = "pyyaml", marker = "extra == 'eval'", specifier = ">=6.0" },
+    { name = "pyyaml", marker = "extra == 'studio'", specifier = ">=6.0" },
+    { name = "rerun-sdk", marker = "extra == 'all'", specifier = ">=0.43.1" },
+    { name = "rerun-sdk", marker = "extra == 'eval'", specifier = ">=0.43.1" },
+    { name = "rerun-sdk", marker = "extra == 'replay'", specifier = ">=0.43.1" },
+    { name = "rerun-sdk", marker = "extra == 'studio'", specifier = ">=0.43.1" },
+    { name = "rfc8785", marker = "extra == 'all'", specifier = ">=0.1.4" },
+    { name = "rfc8785", marker = "extra == 'eval'", specifier = ">=0.1.4" },
+    { name = "rfc8785", marker = "extra == 'registry'", specifier = ">=0.1.4" },
+    { name = "rfc8785", marker = "extra == 'studio'", specifier = ">=0.1.4" },
+    { name = "ruff", marker = "extra == 'all'", specifier = ">=0.6" },
+    { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.6" },
+    { name = "uvicorn", marker = "extra == 'all'", specifier = "==0.54.0" },
+    { name = "uvicorn", marker = "extra == 'studio'", specifier = "==0.54.0" },
+]
+provides-extras = ["all", "dev", "eval", "registry", "replay", "sim", "studio"]
+
+[[package]]
 name = "httpcore"
 version = "1.0.9"
 source = { registry = "https://pypi.org/simple" }
@@ -1208,93 +1337,6 @@ sdist = { url = "https://files.pythonhosted.org/packages/5a/82/42f767fc1c1143d6f
 wheels = [
     { url = "https://files.pythonhosted.org/packages/f1/d9/7fb5aa316bc299258e68c73ba3bddbc499654a07f151cba08f6153988714/pathspec-1.1.1-py3-none-any.whl", hash = "sha256:a00ce642f577bf7f473932318056212bc4f8bfdf53128c78bbd5af0b9b20b189", size = 57328, upload-time = "2026-04-27T01:46:07.06Z" },
 ]
-
-[[package]]
-name = "pegsim"
-source = { editable = "." }
-dependencies = [
-    { name = "mujoco" },
-    { name = "numpy" },
-]
-
-[package.optional-dependencies]
-all = [
-    { name = "cryptography" },
-    { name = "fastapi" },
-    { name = "h5py" },
-    { name = "httpx" },
-    { name = "hypothesis" },
-    { name = "jsonschema", extra = ["format-nongpl"] },
-    { name = "matplotlib" },
-    { name = "mcap" },
-    { name = "pyarrow" },
-    { name = "pytest" },
-    { name = "pyyaml" },
-    { name = "rerun-sdk" },
-    { name = "rfc8785" },
-    { name = "uvicorn" },
-]
-dev = [
-    { name = "mypy" },
-    { name = "pytest" },
-    { name = "ruff" },
-]
-eval = [
-    { name = "matplotlib" },
-    { name = "pyarrow" },
-    { name = "pyyaml" },
-]
-registry = [
-    { name = "cryptography" },
-    { name = "jsonschema", extra = ["format-nongpl"] },
-    { name = "rfc8785" },
-]
-replay = [
-    { name = "mcap" },
-    { name = "pyarrow" },
-    { name = "rerun-sdk" },
-]
-studio = [
-    { name = "fastapi" },
-    { name = "httpx" },
-    { name = "uvicorn" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "cryptography", marker = "extra == 'all'", specifier = ">=43" },
-    { name = "cryptography", marker = "extra == 'registry'", specifier = ">=43" },
-    { name = "fastapi", marker = "extra == 'all'", specifier = "==0.163.1" },
-    { name = "fastapi", marker = "extra == 'studio'", specifier = "==0.163.1" },
-    { name = "h5py", marker = "extra == 'all'", specifier = ">=3.11" },
-    { name = "httpx", marker = "extra == 'all'", specifier = "==0.28.1" },
-    { name = "httpx", marker = "extra == 'studio'", specifier = "==0.28.1" },
-    { name = "hypothesis", marker = "extra == 'all'", specifier = ">=6.100" },
-    { name = "jsonschema", extras = ["format-nongpl"], marker = "extra == 'all'", specifier = ">=4.23" },
-    { name = "jsonschema", extras = ["format-nongpl"], marker = "extra == 'registry'", specifier = ">=4.23" },
-    { name = "matplotlib", marker = "extra == 'all'", specifier = ">=3.11.1" },
-    { name = "matplotlib", marker = "extra == 'eval'", specifier = ">=3.11.1" },
-    { name = "mcap", marker = "extra == 'all'", specifier = "==1.6.0" },
-    { name = "mcap", marker = "extra == 'replay'", specifier = "==1.6.0" },
-    { name = "mujoco", specifier = ">=3.11.0" },
-    { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.11" },
-    { name = "numpy", specifier = ">=2.5.1" },
-    { name = "pyarrow", marker = "extra == 'all'", specifier = ">=25.0.1" },
-    { name = "pyarrow", marker = "extra == 'eval'", specifier = ">=25.0.1" },
-    { name = "pyarrow", marker = "extra == 'replay'", specifier = ">=25.0.1" },
-    { name = "pytest", marker = "extra == 'all'", specifier = ">=9.1.1" },
-    { name = "pytest", marker = "extra == 'dev'", specifier = ">=9.1.1" },
-    { name = "pyyaml", marker = "extra == 'all'", specifier = ">=6.0" },
-    { name = "pyyaml", marker = "extra == 'eval'", specifier = ">=6.0" },
-    { name = "rerun-sdk", marker = "extra == 'all'", specifier = ">=0.43.1" },
-    { name = "rerun-sdk", marker = "extra == 'replay'", specifier = ">=0.43.1" },
-    { name = "rfc8785", marker = "extra == 'all'", specifier = ">=0.1.4" },
-    { name = "rfc8785", marker = "extra == 'registry'", specifier = ">=0.1.4" },
-    { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.6" },
-    { name = "uvicorn", marker = "extra == 'all'", specifier = "==0.54.0" },
-    { name = "uvicorn", marker = "extra == 'studio'", specifier = "==0.54.0" },
-]
-provides-extras = ["all", "dev", "eval", "registry", "replay", "studio"]
 
 [[package]]
 name = "pillow"

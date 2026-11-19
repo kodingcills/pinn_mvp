@@ -3,15 +3,12 @@ benchmark-owned disturbance schedule: disturbances fire exactly once at
 the intended step, in deterministic order, and re-fire in a fresh
 episode; the non-spiral (slide) bundle constructs and steps without
 touching spiral machinery."""
-import math
 
-import numpy as np
 import pytest
 
-from pegsim.rollout import VALIDATED_LOOSE_V1, VALIDATED_SLIDE_V1
-
 from haplous.adapters.mujoco_adapter import MuJoCoMachine, MuJoCoMachineConfig
-from haplous.machine import ServoCommand
+from haplous.machine import CartesianImpedanceTarget
+from pegsim.rollout import VALIDATED_LOOSE_V1, VALIDATED_SLIDE_V1
 
 
 def _free_fall_trace(machine, n_steps):
@@ -21,7 +18,7 @@ def _free_fall_trace(machine, n_steps):
         start_position_m=(0.0, 0.0, 0.0), horizon_s=16.3
     )
     session.apply(
-        ServoCommand(
+        CartesianImpedanceTarget(
             target_pose_m=tuple(float(v) for v in session.observe().pose_m),
             k_z_n_per_m=2000.0,
         )
@@ -65,7 +62,7 @@ def test_multiple_disturbances_fire_in_order():
         start_position_m=(0.0, 0.0, 0.0), horizon_s=16.3
     )
     session.apply(
-        ServoCommand(
+        CartesianImpedanceTarget(
             target_pose_m=tuple(float(v) for v in session.observe().pose_m),
             k_z_n_per_m=2000.0,
         )
@@ -97,7 +94,7 @@ def test_disturbance_schedule_refires_in_new_episode():
             start_position_m=(0.0, 0.0, 0.0), horizon_s=0.0009
         )
         session.apply(
-            ServoCommand(
+            CartesianImpedanceTarget(
                 target_pose_m=(
                     float(session.observe().pose_m[0]),
                     float(session.observe().pose_m[1]),
@@ -129,7 +126,7 @@ def test_slide_bundle_session_steps_without_spiral():
     first = session.observe()
     for _ in range(20):
         outcome = session.apply(
-            ServoCommand(
+            CartesianImpedanceTarget(
                 target_pose_m=tuple(float(v) for v in first.pose_m),
                 k_z_n_per_m=2000.0,
             )

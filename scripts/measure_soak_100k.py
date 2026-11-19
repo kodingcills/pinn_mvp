@@ -14,7 +14,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from haplous.runtime import HaplousRuntime
+from haplous.adapters.legacy import sim_runtime
 from haplous.state import ExecutionState
 
 from tests.test_haplous_reliability import BEHAVIORS, TERMINAL
@@ -32,7 +32,7 @@ def main() -> int:
     t0 = time.time()
 
     machine = ScriptedMachine(observation=obs(0.0), script=stream(seated_samples(args.ticks_per_cycle)))
-    runtime = HaplousRuntime(machine, behaviors=BEHAVIORS)
+    runtime = sim_runtime(machine, behaviors=BEHAVIORS)
     intent = make_intent()
 
     gc_before = gc.get_stats()[0]["collections"]
@@ -65,7 +65,7 @@ def main() -> int:
     machine_ab = ScriptedMachine(
         observation=obs(0.0), script=stream([(0.0, 0.0, -0.001, 30.0, 0.0)] * 30)
     )
-    runtime_ab = HaplousRuntime(machine_ab, behaviors=BEHAVIORS)
+    runtime_ab = sim_runtime(machine_ab, behaviors=BEHAVIORS)
     intent_ab = make_intent(recovery_policy=None)
     for cycle in range(args.abort_cycles):
         runtime_ab.submit(intent_ab)
@@ -85,7 +85,7 @@ def main() -> int:
     # Replay determinism: same scripted machine twice, identical evidence.
     def run_once() -> str:
         m = ScriptedMachine(observation=obs(0.0), script=stream(seated_samples(40)))
-        r = HaplousRuntime(m, behaviors=BEHAVIORS)
+        r = sim_runtime(m, behaviors=BEHAVIORS)
         r.submit(intent)
         r.execute()
         text = r.evidence.to_json()

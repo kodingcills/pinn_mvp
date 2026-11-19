@@ -10,17 +10,47 @@ Everything here runs on a CPU. No GPU is needed.
 
 ## Install
 
-Needs Python 3.12+ and [uv](https://docs.astral.sh/uv/).
+Needs Python 3.12+. For working in this repository (Studio, benchmarks, the test suite), use
+[uv](https://docs.astral.sh/uv/):
 
 ```bash
 uv sync --extra all
 ```
 
-Check the environment:
+Check the environment. `doctor` lists each extra as OK or MISSING:
 
 ```bash
 .venv/bin/haplous doctor
 ```
+
+The repository builds one distribution, `haplous`. Its core has **no dependencies**: the runtime
+uses only the standard library. Everything else is an extra:
+
+| Extra | Adds | For |
+|---|---|---|
+| (none) | nothing | the runtime: `import haplous`, your own `Machine`, `haplous doctor` |
+| `sim` | mujoco, numpy | `pegsim`, the MuJoCo HEB backend, `haplous demo` |
+| `eval` | `sim` + registry, replay, plots | HEB/HES evaluation, the M0 run registry, `.rrd` replays |
+| `studio` | `eval` + FastAPI, uvicorn | `haplous studio` |
+| `dev` | pytest, ruff, mypy | development tools |
+| `all` | `eval`, `studio`, `dev` + h5py, hypothesis | the full test suite |
+
+To use the runtime without a checkout, build the wheel and install it (nothing is published to
+a package index):
+
+```bash
+uv build --wheel
+pip install 'dist/haplous-0.5.0-py3-none-any.whl'          # runtime only
+pip install 'dist/haplous-0.5.0-py3-none-any.whl[sim]'     # plus the MuJoCo simulator
+python examples/stub_machine_contract.py                   # runtime contract on a stub machine
+```
+
+A command that needs a missing extra says which one, for example
+`haplous demo needs the 'sim' extra (pip install 'haplous[sim]')`. `scripts/wheel_smoke.sh`
+builds the wheel and checks it in fresh venvs (bare, `[sim]`, `[studio]`, where it launches and
+replays one recorded episode). A Studio installed from the wheel keeps its own run library (see
+`--root` below); the committed runs and campaigns in the checkout's `results/` appear only when
+running from a checkout. To uninstall, `pip uninstall haplous`.
 
 ## Haplous Studio (start here)
 
@@ -44,7 +74,12 @@ From a replay, **Create investigation** writes a task file under
 reproduction command. Hand it to a Claude Code session to work on.
 
 Options: `--port N`, `--no-browser`, and `--root DIR` (write jobs, recordings, replays and
-investigations under `DIR` instead of the repository).
+investigations under `DIR`). Without `--root`, Studio uses `$HAPLOUS_STUDIO_ROOT`; else, in a
+checkout, the repository (`results/studio/`, `replays/`, `docs/eval_program/investigations/`);
+else a per-user data dir (`~/.local/share/haplous-studio` on Linux,
+`~/Library/Application Support/haplous-studio` on macOS). A job survives a server restart: the
+worker writes a heartbeat every second, and a job whose heartbeat is older than 15 s reads
+`failed` with the reason.
 
 The 3D viewer (Rerun, about 70 MB) is downloaded once on first start from a pinned npm package,
 checked against its sha512, and cached in `~/.cache/haplous-studio/`. Until it arrives, or when

@@ -1,16 +1,20 @@
-"""OD-1 parity (locked design OD1_command_mode_admission.md, section 6).
+"""Paired HEB parity: OD-1 (locked design OD1_command_mode_admission.md,
+section 6) and B1 / issue #16 (ARCH-001 migration and parity section).
 
 Every insertion and slide HEB scenario x every benchmark system, run on the
-standard MuJoCoMachine, before (a `git archive` export of the pre-OD-1 head)
-and after (this tree). Compared per trial on reported disposition, reason,
-refusal codes, graded outcome and the observation stream (SHA-256 over the
-exact repr of every observation).
+standard MuJoCoMachine, before (a `git archive` export of BEFORE) and after
+(this tree). Compared per trial on reported disposition, reason, refusal
+codes, graded outcome and the observation stream (SHA-256 over the pre-#16
+repr of every observation, see `_observation_repr`).
 
-    python scripts/od1_parity.py                  # before + after + compare
-    python scripts/od1_parity.py collect OUT.json  # one side, current imports
+    python scripts/od1_parity.py                    # OD-1: c9997c6 -> results/od1/parity.json
+    python scripts/od1_parity.py --before 03775a2 --out results/b1/parity.json \\
+        --design "docs/engineering/ARCH_NOTE_001_execution_boundary.md migration and parity (#16)"
+    python scripts/od1_parity.py collect OUT.json    # one side, current imports
 """
 from __future__ import annotations
 
+import argparse
 import hashlib
 import json
 import os
@@ -22,6 +26,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 BEFORE_REF = "c9997c6"
 OUT = ROOT / "results" / "od1" / "parity.json"
+DESIGN = "docs/eval_program/designs/OD1_command_mode_admission.md section 6"
 SYSTEMS = ("direct_minimal", "bare_behavior", "competent_supervisor", "haplous_mediated")
 COMPARED = (
     "reported_disposition", "reason", "refusal_codes", "graded_disposition",
@@ -38,38 +43,51 @@ def _digest(row: dict) -> str:
     return hashlib.sha256(blob.encode()).hexdigest()
 
 
+def _observation_repr(o) -> str:
+    """repr(o) exactly as MachineObservation printed before #16. #16 added
+    Stamp.clock; it is reported per side in `stamp_clocks`, not hashed, so
+    digests stay comparable with pre-#16 trees and with OD-1's report."""
+    s = o.stamp
+    return (f"MachineObservation(stamp=Stamp(source_s={s.source_s!r}, received_s={s.received_s!r}), "
+            f"pose_m={o.pose_m!r}, force_z_n={o.force_z_n!r}, tilt_deg={o.tilt_deg!r}, extra={o.extra!r})")
+
+
+def trial_row(realization, scenario, name: str) -> dict:
+    """One (scenario, system) trial; every system opens a fresh session."""
+    from benchmarks.heb.metrics import grade_run
+    from benchmarks.heb.systems import system_by_name
+
+    run = system_by_name(name).run(realization, scenario)
+    graded, success, bounded, violations, metrics = grade_run(scenario, realization.bundle, run)
+    blob = "\n".join(_observation_repr(o) for o in run.observations).encode()
+    return {
+        "scenario_id": scenario.id,
+        "system": run.system,
+        "reported_disposition": run.disposition,
+        "reason": run.reason,
+        "refusal_codes": list(run.refusal_codes),
+        "graded_disposition": graded,
+        "task_success": success,
+        "bounded_success": bounded,
+        "hard_violations": violations,
+        # wall_s is wall-clock time, never reproducible across runs.
+        "task_metrics": {k: v for k, v in metrics.items() if k != "wall_s"},
+        "n_observations": len(run.observations),
+        "observations_sha256": hashlib.sha256(blob).hexdigest(),
+        "stamp_clocks": sorted({str(getattr(o.stamp, "clock", None)) for o in run.observations}),
+    }
+
+
 def collect(out: Path) -> None:
     import haplous
     from benchmarks.heb import mujoco_backend
     from benchmarks.heb.insertion import insertion_scenarios
-    from benchmarks.heb.metrics import grade_run
     from benchmarks.heb.sliding import sliding_scenarios
-    from benchmarks.heb.systems import system_by_name
 
     rows = []
     for scenario in insertion_scenarios() + sliding_scenarios():
         realization = mujoco_backend.build_realization(scenario)
-        for name in SYSTEMS:
-            run = system_by_name(name).run(realization, scenario)
-            graded, success, bounded, violations, metrics = grade_run(
-                scenario, realization.bundle, run
-            )
-            blob = "\n".join(repr(o) for o in run.observations).encode()
-            rows.append({
-                "scenario_id": scenario.id,
-                "system": run.system,
-                "reported_disposition": run.disposition,
-                "reason": run.reason,
-                "refusal_codes": list(run.refusal_codes),
-                "graded_disposition": graded,
-                "task_success": success,
-                "bounded_success": bounded,
-                "hard_violations": violations,
-                # wall_s is wall-clock time, never reproducible across runs.
-                "task_metrics": {k: v for k, v in metrics.items() if k != "wall_s"},
-                "n_observations": len(run.observations),
-                "observations_sha256": hashlib.sha256(blob).hexdigest(),
-            })
+        rows.extend(trial_row(realization, scenario, name) for name in SYSTEMS)
     out.write_text(json.dumps(
         {"haplous_file": haplous.__file__, "rows": rows}, default=repr, sort_keys=True
     ))
@@ -88,8 +106,14 @@ def main() -> int:
     if sys.argv[1:2] == ["collect"]:
         collect(Path(sys.argv[2]))
         return 0
+    parser = argparse.ArgumentParser(prog="scripts/od1_parity.py")
+    parser.add_argument("--before", default=BEFORE_REF, help="git ref of the before side")
+    parser.add_argument("--out", type=Path, default=OUT)
+    parser.add_argument("--design", default=DESIGN)
+    args = parser.parse_args()
+    out = args.out if args.out.is_absolute() else ROOT / args.out
     before_sha = subprocess.check_output(
-        ["git", "rev-parse", BEFORE_REF], cwd=ROOT, text=True).strip()
+        ["git", "rev-parse", args.before], cwd=ROOT, text=True).strip()
     after_sha = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip()
     dirty = subprocess.check_output(["git", "status", "--porcelain", "haplous"], cwd=ROOT, text=True)
     with tempfile.TemporaryDirectory() as tmp:
@@ -111,10 +135,11 @@ def main() -> int:
         trials.append({"scenario_id": k[0], "system": k[1], "identical": not diffs,
                        "differing_fields": diffs,
                        "before": {f: b[k][f] for f in SCALARS},
+                       "stamp_clocks": {"before": b[k]["stamp_clocks"], "after": a[k]["stamp_clocks"]},
                        "compared_sha256": {side: _digest(rows[k]) for side, rows in
                                            (("before", b), ("after", a))}})
     report = {
-        "design": "docs/eval_program/designs/OD1_command_mode_admission.md section 6",
+        "design": args.design,
         "before_commit": before_sha,
         "after_commit": after_sha,
         "after_haplous_tree_dirty": bool(dirty.strip()),
@@ -126,9 +151,9 @@ def main() -> int:
         "identical": all(t["identical"] for t in trials),
         "trials": trials,
     }
-    OUT.parent.mkdir(parents=True, exist_ok=True)
-    OUT.write_text(json.dumps(report, indent=1, sort_keys=True, default=repr) + "\n")
-    print(f"{report['n_identical']}/{report['n_trials']} identical -> {OUT.relative_to(ROOT)}")
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(json.dumps(report, indent=1, sort_keys=True, default=repr) + "\n")
+    print(f"{report['n_identical']}/{report['n_trials']} identical -> {out}")
     return 0 if report["identical"] else 1
 
 

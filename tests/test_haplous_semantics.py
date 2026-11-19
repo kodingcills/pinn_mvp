@@ -7,6 +7,7 @@ from dataclasses import replace
 
 import pytest
 
+from haplous.adapters.legacy import CommandOutcome, sim_runtime
 from haplous.capabilities import (
     CommandMode,
     MachineCapabilities,
@@ -19,8 +20,7 @@ from haplous.intent import (
     RequirementKind,
     SuccessCondition,
 )
-from haplous.machine import CommandOutcome, MachineObservation, ServoCommand, Stamp
-from haplous.runtime import HaplousRuntime
+from haplous.machine import CartesianImpedanceTarget, ClockDomain, MachineObservation, Stamp
 from haplous.state import (
     ExecutionState,
     ExecutionStateTracker,
@@ -53,7 +53,7 @@ def std_caps(**overrides) -> MachineCapabilities:
 
 def obs(t, x=0.0, y=0.0, z=-0.010, fz=15.0, tilt=0.0, received=None):
     return MachineObservation(
-        stamp=Stamp(source_s=t, received_s=t if received is None else received),
+        stamp=Stamp(source_s=t, received_s=t if received is None else received, clock=ClockDomain.SIM),
         pose_m=(x, y, z),
         force_z_n=fz,
         tilt_deg=tilt,
@@ -125,8 +125,8 @@ class HoldBehavior:
     def begin(self, intent, caps, observation) -> None:
         self.begin_calls += 1
 
-    def step(self, observation) -> ServoCommand:
-        return ServoCommand(
+    def step(self, observation) -> CartesianImpedanceTarget:
+        return CartesianImpedanceTarget(
             target_pose_m=observation.pose_m, k_z_n_per_m=self.k_z
         )
 
@@ -155,7 +155,7 @@ class ScriptedMachine:
         self.open_session_calls = []
         self.stop_calls = 0
         self.health_claims = health_claims or {"status": "ok"}
-        self.applied_commands: list[tuple[float, ServoCommand]] = []
+        self.applied_commands: list[tuple[float, CartesianImpedanceTarget]] = []
 
     def capabilities(self):
         return self._caps
@@ -204,7 +204,7 @@ class ScriptedSession:
             # Repeat the last content, re-stamped at the advancing session
             # clock, so "hold forever" scripts still produce a live clock.
             return replace(
-                self._last, stamp=Stamp(source_s=self._t, received_s=self._t)
+                self._last, stamp=Stamp(source_s=self._t, received_s=self._t, clock=ClockDomain.SIM)
             )
         return None
 
@@ -219,7 +219,7 @@ class ScriptedSession:
         self._last = item
         return item
 
-    def apply(self, command: ServoCommand) -> CommandOutcome:
+    def apply(self, command: CartesianImpedanceTarget) -> CommandOutcome:
         if self._ended or self._fault is not None:
             return CommandOutcome(accepted=False, reason="session_inactive")
         if any(lo <= self._t <= hi for lo, hi in self._reject_windows_s):
@@ -250,7 +250,7 @@ class ScriptedSession:
 
 def runtime_over(machine, **intent_kwargs):
     behaviors = {"motion": HoldBehavior}
-    runtime = HaplousRuntime(machine, behaviors=behaviors)
+    runtime = sim_runtime(machine, behaviors=behaviors)
     runtime.submit(make_intent(**intent_kwargs))
     return runtime
 
@@ -271,7 +271,7 @@ def test_refuses_unsupported_requirement():
         sensing=frozenset({SensingChannel.POSE, SensingChannel.TILT})
     )
     machine = ScriptedMachine(caps=caps, observation=obs(0.0))
-    runtime = HaplousRuntime(machine, behaviors={"motion": HoldBehavior})
+    runtime = sim_runtime(machine, behaviors={"motion": HoldBehavior})
     result = runtime.submit(make_intent())
     assert result.outcome == "REFUSED"
     assert result.reasons[0].code == "missing_force_measurement"
@@ -286,7 +286,7 @@ def test_hard_force_over_sensed_range_degrades_and_enforces_at_ceiling():
     false_refusal_summary.json): the refused execution completed at
     2.18 N against the 150 N contract."""
     machine = ScriptedMachine(observation=obs(0.0))
-    runtime = HaplousRuntime(machine, behaviors={"motion": HoldBehavior})
+    runtime = sim_runtime(machine, behaviors={"motion": HoldBehavior})
     result = runtime.submit(
         make_intent(
             requirements=(
@@ -303,7 +303,7 @@ def test_hard_force_over_sensed_range_degrades_and_enforces_at_ceiling():
 
 def test_hard_tolerance_below_resolution_refuses():
     machine = ScriptedMachine(observation=obs(0.0))
-    runtime = HaplousRuntime(machine, behaviors={"motion": HoldBehavior})
+    runtime = sim_runtime(machine, behaviors={"motion": HoldBehavior})
     result = runtime.submit(
         make_intent(
             requirements=(
@@ -323,7 +323,7 @@ def test_soft_requirement_degrades_never_refuses():
     machine = ScriptedMachine(
         observation=obs(0.0), script=stream(seated_samples())
     )
-    runtime = HaplousRuntime(machine, behaviors={"motion": HoldBehavior})
+    runtime = sim_runtime(machine, behaviors={"motion": HoldBehavior})
     result = runtime.submit(
         make_intent(
             requirements=(
@@ -342,7 +342,7 @@ def test_soft_requirement_degrades_never_refuses():
 
 def test_unreachable_goal_refuses():
     machine = ScriptedMachine(observation=obs(0.0))
-    runtime = HaplousRuntime(machine, behaviors={"motion": HoldBehavior})
+    runtime = sim_runtime(machine, behaviors={"motion": HoldBehavior})
     result = runtime.submit(
         make_intent(
             requirements=(
@@ -358,7 +358,7 @@ def test_unreachable_goal_refuses():
 
 def test_unknown_behavior_refuses():
     machine = ScriptedMachine(observation=obs(0.0), script=stream(seated_samples()))
-    runtime = HaplousRuntime(machine)  # no behaviors registered
+    runtime = sim_runtime(machine)  # no behaviors registered
     result = runtime.submit(make_intent())
     assert result.outcome == "REFUSED"
     assert result.reasons[-1].code == "behavior_unavailable"
@@ -678,7 +678,7 @@ def test_stop_request_issued_on_hard_fault():
 
 def test_missing_success_condition_refuses():
     machine = ScriptedMachine(observation=obs(0.0))
-    runtime = HaplousRuntime(machine, behaviors={"motion": HoldBehavior})
+    runtime = sim_runtime(machine, behaviors={"motion": HoldBehavior})
     result = runtime.submit(make_intent(success_condition=None))
     assert result.outcome == "REFUSED"
     assert result.reasons[0].code == "missing_success_condition"
@@ -766,6 +766,6 @@ def test_execute_requires_ready():
     machine = ScriptedMachine(
         observation=obs(0.0), script=stream(seated_samples())
     )
-    runtime = HaplousRuntime(machine, behaviors={"motion": HoldBehavior})
+    runtime = sim_runtime(machine, behaviors={"motion": HoldBehavior})
     with pytest.raises(RuntimeError):
         runtime.execute()

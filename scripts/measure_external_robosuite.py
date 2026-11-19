@@ -21,12 +21,12 @@ sys.path.insert(0, str(ROOT))
 from benchmarks.external import NutAssemblyPolicy, RobosuiteNutAssemblyTask
 from haplous import (
     ExecutionIntent,
-    HaplousRuntime,
     Requirement,
     RequirementKind,
     SuccessCondition,
     __version__ as haplous_version,
 )
+from haplous.adapters.legacy import sim_runtime
 from haplous.adapters.external import ExternalMachineAdapter
 
 
@@ -111,7 +111,7 @@ def _haplous_trial(seed: int) -> tuple[Trial, str]:
     task.reset(seed=seed)
     observation = task.observe()
     assert observation is not None
-    runtime = HaplousRuntime(
+    runtime = sim_runtime(
         ExternalMachineAdapter(task),
         behaviors={"nut_assembly_square": lambda: policy},
     )

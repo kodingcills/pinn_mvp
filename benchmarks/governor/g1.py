@@ -12,11 +12,13 @@ from collections.abc import Mapping
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
-from haplous.machine import CommandOutcome, MachineObservation, ServoCommand
+from haplous.adapters.legacy import CommandOutcome
+from haplous.machine import CartesianImpedanceTarget, MachineObservation
 
 if TYPE_CHECKING:
+    from haplous.adapters.legacy import SimSession
     from haplous.capabilities import MachineCapabilities
-    from haplous.machine import Machine, MachineSession
+    from haplous.machine import Machine
 
 
 @dataclass(frozen=True, slots=True)
@@ -30,7 +32,7 @@ class GovernorConfig:
 
 
 class GovernorSession:
-    def __init__(self, inner: MachineSession, config: GovernorConfig) -> None:
+    def __init__(self, inner: SimSession, config: GovernorConfig) -> None:
         self._inner = inner
         self._config = config
         self._forces: deque[float] = deque(maxlen=config.window_samples)
@@ -45,12 +47,12 @@ class GovernorSession:
             self._observations.append(observation)
         return observation
 
-    def apply(self, command: ServoCommand) -> CommandOutcome:
+    def apply(self, command: CartesianImpedanceTarget) -> CommandOutcome:
         scale = self._stiffness_scale()
         if scale < 1.0:
             self._attenuation_count += 1
             self._minimum_applied_scale = min(self._minimum_applied_scale, scale)
-        governed = ServoCommand(
+        governed = CartesianImpedanceTarget(
             target_pose_m=command.target_pose_m,
             k_z_n_per_m=command.k_z_n_per_m * scale,
         )

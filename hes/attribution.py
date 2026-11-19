@@ -195,6 +195,10 @@ def attribute(
             first_divergence="refuse_before_attempt",
         )
 
+    if row.get("graded_disposition") == "SIM_DIVERGED":
+        # Benchmark-graded (HEB 0.3.0): the simulation diverged; no system reason is trusted.
+        return _finish(CauseLayer.INFRASTRUCTURE, None, severity, 1.0, "graded:sim_diverged",
+                       first_divergence="sim_diverged")
     mapped = _REASON_MAP.get(reason)
     if mapped is not None:
         layer, sub = mapped

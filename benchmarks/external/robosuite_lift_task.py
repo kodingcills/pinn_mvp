@@ -18,15 +18,15 @@ from typing import Final
 import numpy as np
 
 from haplous import (
+    CartesianImpedanceTarget,
+    ClockDomain,
     CommandMode,
     CommandOutcome,
     MachineCapabilities,
     MachineObservation,
     SensingChannel,
-    ServoCommand,
     Stamp,
 )
-
 
 TASK_ID: Final = "robosuite/1.5.2/Lift"
 CONTROL_FREQUENCY_HZ: Final = 20
@@ -125,7 +125,7 @@ class RobosuiteLiftTask:
         now = float(self._env.sim.data.time)
         success = bool(self._env._check_success())
         return MachineObservation(
-            stamp=Stamp(source_s=now, received_s=now),
+            stamp=Stamp(source_s=now, received_s=now, clock=ClockDomain.SIM),
             pose_m=(float(pose[0]), float(pose[1]), float(pose[2])),
             force_z_n=float(force[2]),
             tilt_deg=_vertical_tilt_deg(quat),
@@ -138,7 +138,7 @@ class RobosuiteLiftTask:
             ),
         )
 
-    def apply_command(self, command: ServoCommand) -> CommandOutcome:
+    def apply_command(self, command: CartesianImpedanceTarget) -> CommandOutcome:
         if self._stopped or self._observation is None:
             return CommandOutcome(accepted=False, reason="session_inactive")
         current = np.asarray(self._observation["robot0_eef_pos"], dtype=float)

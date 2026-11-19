@@ -17,15 +17,6 @@ from typing import Callable, Optional
 
 import numpy as np
 
-from pegsim.rollout import (
-    COMMIT_RELEASE_FRACTION,
-    TARGET_DEPTH_MARGIN_M,
-    VALIDATED_LOOSE_V1,
-    ValidatedConfig,
-    Z_FLAT_TAU_S,
-)
-from pegsim.search import ArchimedeanSpiral
-
 from haplous.adapters.mujoco_adapter import MuJoCoMachine, MuJoCoMachineConfig
 from haplous.capabilities import CommandMode
 from haplous.intent import (
@@ -35,7 +26,15 @@ from haplous.intent import (
     RequirementKind,
     SuccessCondition,
 )
-from haplous.machine import MachineObservation, ServoCommand
+from haplous.machine import CartesianImpedanceTarget, MachineObservation
+from pegsim.rollout import (
+    COMMIT_RELEASE_FRACTION,
+    TARGET_DEPTH_MARGIN_M,
+    VALIDATED_LOOSE_V1,
+    Z_FLAT_TAU_S,
+    ValidatedConfig,
+)
+from pegsim.search import ArchimedeanSpiral
 
 _SEATED_Z_SPAN_M = 10e-6
 
@@ -218,7 +217,7 @@ class InsertionExecutionBehavior:
         self._z_des_prev = tip_z
         self._z_des_leashed = tip_z
 
-    def step(self, observation: MachineObservation) -> ServoCommand:
+    def step(self, observation: MachineObservation) -> CartesianImpedanceTarget:
         assert self._control_period_s is not None, "begin() before step()"
         tip = np.array(observation.pose_m)
         mouth_x = observation.extra_value("mouth_x")
@@ -292,7 +291,7 @@ class InsertionExecutionBehavior:
 
         self._k_z_prev_active = k_z_active
         self._z_des_prev = self._z_des_leashed
-        return ServoCommand(
+        return CartesianImpedanceTarget(
             target_pose_m=(
                 float(self._xy_des[0]),
                 float(self._xy_des[1]),

@@ -12,7 +12,7 @@ export interface RunSummary {
   disposition: string | null;
   bounded_success: boolean | null;
   has_3d: boolean;
-  verified: boolean;
+  ledger_state: string | null; // contract change (#23): M0 ledger state at listing, not a re-hash; null outside M0
   path: string;
 }
 
