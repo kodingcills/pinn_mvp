@@ -16,7 +16,7 @@ Backlog: GitHub Issues. This file holds only the current state and the next acti
 | Epic | Children (priority, status) |
 |---|---|
 | #9 Gate A Developer Alpha | **Gate A acceptance PASS at `9457ddc`** (fresh-clone journey). #13 truth leak (P0, done) · #14 runtime-only distribution (done; mujoco pinned <3.12 in `d860f89`) · #15 job identity + artifact root (done) · #23 corrupt run listed verified / cached replay (done) |
-| #10 Gate B Generalized execution | #16 world stepping out of core, envelopes, legacy adapter (done, verifier PASS, integrated `51adcb2..6a4de75`) · #17 async lifecycle + lease (done, verifier PASS with injected delayed ack / stale obs / authority conflict, `e6665b9..76063e8`) · #22 hold semantics (P1, next after #17; Gate C mechanism B) · #18 second command surface (P1, in progress) · #24 machine fault during hold misreported (P0, in progress on #17 head) |
+| #10 Gate B Generalized execution | #16 world stepping out of core, envelopes, legacy adapter (done, verifier PASS, integrated `51adcb2..6a4de75`) · #17 async lifecycle + lease (done, verifier PASS with injected delayed ack / stale obs / authority conflict, `e6665b9..76063e8`) · #22 hold semantics (P1, in progress, includes the E19 run for #19 step 3) · #18 second command surface (P1, in progress) · #24 machine fault during hold misreported (P0, done, verifier PASS, `6067f07..73db19d`) |
 | #11 Gate C Differential value | #19 stale-hold exceedance: diagnosis done (root cause: open-loop hold during the hold); E19 protocol amended `cf70a70`, run after #22 |
 | #12 Gate D Evaluator engine | #21 sim divergence graded valid (P0, done; M4 addendum, C1/C2 still ties) · #20 claim-to-experiment compiler (done, verifier PASS, `bd29b4d`; DEV: hold 0/8 stale actuation Haplous = G1, bare 8/8; admission 9/9 = G1, bare 3/9) |
 
@@ -35,7 +35,7 @@ Classification: VALIDATED LIMITATION (research-substrate tests), not product blo
 
 ## Next actions
 
-1. #24 and #18 owners working; on reports: independent verify, integrate, issue comment.
-2. After #24: #22 hold semantics, then the amended E19 run (#19 step 3) with an instantiated `g1_parity` arm; #18 second command surface.
+1. #18 and #22 owners working; on reports: independent verify, integrate (authored as kodingcills), issue comment.
+2. After #18 and #22: Gate B acceptance verifier (two command surfaces, injected faults), Gate C decision from E19.
 3. Open the PR to `main` (do not merge without operator approval) once Gate B lands, or earlier if the operator asks.
 4. Full suite on `6a4de75`: 975 passed, 4 failed (the known 4), 1 skipped, 1 xfailed (708 s).
