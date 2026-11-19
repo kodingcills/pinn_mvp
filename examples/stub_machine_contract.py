@@ -8,8 +8,12 @@ import json
 import sys
 
 from haplous import (
+    Ack,
+    AckStatus,
+    ActionEnvelope,
+    CartesianImpedanceTarget,
+    ClockDomain,
     CommandMode,
-    CommandOutcome,
     ExecutionIntent,
     HaplousRuntime,
     MachineCapabilities,
@@ -17,7 +21,6 @@ from haplous import (
     Requirement,
     RequirementKind,
     SensingChannel,
-    ServoCommand,
     Stamp,
     SuccessCondition,
 )
@@ -27,20 +30,18 @@ ALL_SENSING = frozenset({SensingChannel.POSE, SensingChannel.FORCE_Z, SensingCha
 
 
 class StubSession:
-    """Reports a constant pose and axial force on a clock it advances per step."""
+    """Reports a constant pose and axial force on a clock StubTicks advances."""
 
     def __init__(self, force_z_n: float, horizon_s: float) -> None:
         self.force_z_n, self.horizon_s, self.t_s, self.ended, self.fault = force_z_n, horizon_s, 0.0, False, None
 
     def observe(self) -> MachineObservation:
-        return MachineObservation(Stamp(self.t_s, self.t_s), (0.0, 0.0, -0.010), self.force_z_n, 0.0)
+        return MachineObservation(Stamp(self.t_s, self.t_s, ClockDomain.SIM), (0.0, 0.0, -0.010), self.force_z_n, 0.0)
 
-    def apply(self, command: ServoCommand) -> CommandOutcome:
-        return CommandOutcome(accepted=not self.ended, reason="session_ended" if self.ended else None)
-
-    def step(self) -> None:
-        self.t_s += PERIOD_S
-        self.ended = self.ended or self.t_s >= self.horizon_s
+    def submit(self, envelope: ActionEnvelope) -> Ack:
+        if self.ended:
+            return Ack(envelope.command_id, AckStatus.REJECTED, "session_ended")
+        return Ack(envelope.command_id, AckStatus.CONTROLLER_ACCEPTED)
 
     def stop(self) -> None:
         self.ended = True
@@ -60,16 +61,29 @@ class StubMachine:
         return self.caps
 
     def observe(self) -> MachineObservation:
-        return MachineObservation(Stamp(0.0, 0.0), (0.0, 0.0, -0.010), self.force_z_n, 0.0)
+        return MachineObservation(Stamp(0.0, 0.0, ClockDomain.SIM), (0.0, 0.0, -0.010), self.force_z_n, 0.0)
 
     def open_session(self, *, start_position_m, horizon_s) -> StubSession:
-        return StubSession(self.force_z_n, horizon_s)
+        self.session = StubSession(self.force_z_n, horizon_s)
+        return self.session
 
     def stop(self) -> None:
         self.stop_calls += 1
 
     def health(self) -> dict:
         return {"status": "ok"}
+
+
+class StubTicks:
+    """Simulated time: each tick advances the open stub session one period."""
+
+    def __init__(self, machine: StubMachine) -> None:
+        self.machine = machine
+
+    def wait(self) -> None:
+        session = self.machine.session
+        session.t_s += PERIOD_S
+        session.ended = session.ended or session.t_s >= session.horizon_s
 
 
 class HoldBehavior:
@@ -80,8 +94,8 @@ class HoldBehavior:
     def begin(self, intent, caps, observation) -> None:
         pass
 
-    def step(self, observation: MachineObservation) -> ServoCommand:
-        return ServoCommand(target_pose_m=observation.pose_m, k_z_n_per_m=1000.0)
+    def step(self, observation: MachineObservation) -> CartesianImpedanceTarget:
+        return CartesianImpedanceTarget(target_pose_m=observation.pose_m, k_z_n_per_m=1000.0)
 
 
 def run_leg(machine: StubMachine) -> dict:
@@ -95,7 +109,7 @@ def run_leg(machine: StubMachine) -> dict:
         success_condition=SuccessCondition("seated", lambda obs: bool(obs) and obs[-1].pose_m[2] <= -0.009),
         recovery_policy=None,
     )
-    runtime = HaplousRuntime(machine, behaviors={"hold": HoldBehavior})
+    runtime = HaplousRuntime(machine, behaviors={"hold": HoldBehavior}, tick_source=StubTicks(machine))
     feasibility = runtime.submit(intent)
     if feasibility.outcome != "REFUSED":
         runtime.execute()
