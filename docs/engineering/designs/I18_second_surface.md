@@ -103,3 +103,22 @@ gripper command uses the same side channel as the Cartesian `LiftPolicy` (the ta
 include their contracts, so guard 2 is never reached. MuJoCo machines declare Cartesian
 modes, so guard 1 behaves exactly like the old `isinstance` check. No new scoring epoch is
 needed.
+
+## Adaptation effort
+
+Measured with `git diff --numstat 76063e8` (excluding `results/`), as of the commit that
+adds this section.
+
+| Area | Files | Lines (+/-) |
+|---|---|---|
+| `haplous/` core (machine, capabilities, legacy, runtime, behavior, external, `__init__`) | 7 | +114 / -17 |
+| Joint machine and policy (`benchmarks/external/robosuite_lift_joint.py`, Lift task hook) | 2 | +243 / -1 |
+| Episode log, timeline and Studio read side | 3 | +6 / -5 |
+| Tests (new `tests/test_i18_joint_surface.py`, 4 call-site updates) | 5 | +217 / -4 |
+| Driver (`scripts/i18_joint_surface.py`) and this note | 2 | about +300 |
+
+Agent wall time was about 70 minutes of active work across two sittings (02:50 to 03:18 and
+07:02 to about 07:45 UTC). A rate-limit pause between them is not counted, and the
+13-minute parity run and two 14-minute suite runs are not counted either. This is an
+estimate from commit and file timestamps, not a measured timer. Agent tokens and credits
+were not observable (USAGE_NOT_MEASURED). A human engineer's effort was not measured.
