@@ -1,0 +1,43 @@
+{
+  "claim": {
+    "budget_cpu_min": 4.0,
+    "comparators": [
+      "haplous_mediated",
+      "g1_incumbent",
+      "bare_behavior"
+    ],
+    "machine_profiles": [
+      "mujoco_heb",
+      "mujoco_fcd_only",
+      "mujoco_ci_only"
+    ],
+    "n_scenarios": 3,
+    "operators": [],
+    "population": "admission_dev@v1",
+    "property_id": "od1_admission",
+    "requirements": {
+      "required_command_modes": [
+        "joint_position"
+      ]
+    },
+    "seed": 20022,
+    "statement": "A task requiring a joint-position command surface is refused on machines without one",
+    "task_family": "peg_insertion",
+    "tier": "DEV"
+  },
+  "reasons": [
+    {
+      "code": "unknown_capability",
+      "detail": "joint_position is not a command mode any machine model can state (['cartesian_impedance', 'force_controlled_descent'])"
+    },
+    {
+      "code": "capability_absent_from_every_profile",
+      "detail": "no profile in ['mujoco_heb', 'mujoco_fcd_only', 'mujoco_ci_only'] offers joint_position"
+    },
+    {
+      "code": "requirement_not_declared_by_task_behaviour",
+      "detail": "peg_insertion behaviour declares ['cartesian_impedance', 'force_controlled_descent'], claim requires ['joint_position']"
+    }
+  ],
+  "status": "UNSUPPORTED"
+}

@@ -1,0 +1,144 @@
+{
+  "arms": [
+    "haplous_mediated",
+    "g1_incumbent",
+    "bare_behavior"
+  ],
+  "better": "higher",
+  "claim": {
+    "budget_cpu_min": 4.0,
+    "comparators": [
+      "haplous_mediated",
+      "g1_incumbent",
+      "bare_behavior"
+    ],
+    "machine_profiles": [
+      "mujoco_heb",
+      "mujoco_fcd_only",
+      "mujoco_ci_only"
+    ],
+    "n_scenarios": 3,
+    "operators": [],
+    "population": "admission_dev@v1",
+    "property_id": "od1_admission",
+    "requirements": {
+      "required_command_modes": [
+        "cartesian_impedance",
+        "force_controlled_descent"
+      ]
+    },
+    "seed": 20021,
+    "statement": "A task whose required command modes the machine lacks is refused before execution",
+    "task_family": "peg_insertion",
+    "tier": "DEV"
+  },
+  "cost_basis": {
+    "bare_behavior": {
+      "cpu_s_per_episode": 16.334,
+      "source": "results/m4/campaign/cost.json mean, n=501"
+    },
+    "g1_incumbent": {
+      "cpu_s_per_episode": 2.576,
+      "source": "results/m4/campaign/cost.json mean, n=501"
+    },
+    "haplous_mediated": {
+      "cpu_s_per_episode": 1.213,
+      "source": "results/m4/campaign/cost.json mean, n=501"
+    }
+  },
+  "cpu_estimate_s": 181.1,
+  "estimand": "admission_correct",
+  "population": "admission_dev@v1",
+  "scoring_sources": {
+    "benchmarks/heb/metrics.py": "8fee381e814861f7c048140eb739c30a2b5ba1abf05a1b636d4fe6eddd0c1b7f",
+    "evaluation/stats.py": "237d95ffa278be1a7d34140108e845ed3cc30591d0849d08a3c0ba5113d9d376",
+    "hes/claim_compiler.py": "9798c016ec4da28f7030e52d8056ca5dacc24f704cdace8617a1eaa0e322fa47",
+    "hes/metrics.py": "6d6823e3a098911eb82ec48d6d20faa0b013a69d564c662a9ef2aea05b311c5c",
+    "hes/regression.py": "c5cdf1dde8d35d2ca264294dcba3ce97076e207f3fb6fdf1b11ef12072083495"
+  },
+  "status": "PLAN",
+  "tier": "DEV",
+  "units": [
+    {
+      "lacks_required": false,
+      "operator": null,
+      "profile": "mujoco_heb",
+      "scenario_id": "cadm_0000",
+      "scenario_sha256": "bdb620c754693f1bc61379844ae39d32a6db74e719b3fb9f3ce575c434366a66",
+      "stratum": "nominal",
+      "unit_id": "cadm_0000|mujoco_heb"
+    },
+    {
+      "lacks_required": true,
+      "operator": null,
+      "profile": "mujoco_fcd_only",
+      "scenario_id": "cadm_0000",
+      "scenario_sha256": "bdb620c754693f1bc61379844ae39d32a6db74e719b3fb9f3ce575c434366a66",
+      "stratum": "nominal",
+      "unit_id": "cadm_0000|mujoco_fcd_only"
+    },
+    {
+      "lacks_required": true,
+      "operator": null,
+      "profile": "mujoco_ci_only",
+      "scenario_id": "cadm_0000",
+      "scenario_sha256": "bdb620c754693f1bc61379844ae39d32a6db74e719b3fb9f3ce575c434366a66",
+      "stratum": "nominal",
+      "unit_id": "cadm_0000|mujoco_ci_only"
+    },
+    {
+      "lacks_required": false,
+      "operator": null,
+      "profile": "mujoco_heb",
+      "scenario_id": "cadm_0001",
+      "scenario_sha256": "baae13070233f433b80aa849c84902e489204fe0137cb271bd02e48035387d3f",
+      "stratum": "nominal",
+      "unit_id": "cadm_0001|mujoco_heb"
+    },
+    {
+      "lacks_required": true,
+      "operator": null,
+      "profile": "mujoco_fcd_only",
+      "scenario_id": "cadm_0001",
+      "scenario_sha256": "baae13070233f433b80aa849c84902e489204fe0137cb271bd02e48035387d3f",
+      "stratum": "nominal",
+      "unit_id": "cadm_0001|mujoco_fcd_only"
+    },
+    {
+      "lacks_required": true,
+      "operator": null,
+      "profile": "mujoco_ci_only",
+      "scenario_id": "cadm_0001",
+      "scenario_sha256": "baae13070233f433b80aa849c84902e489204fe0137cb271bd02e48035387d3f",
+      "stratum": "nominal",
+      "unit_id": "cadm_0001|mujoco_ci_only"
+    },
+    {
+      "lacks_required": false,
+      "operator": null,
+      "profile": "mujoco_heb",
+      "scenario_id": "cadm_0002",
+      "scenario_sha256": "5e4b24afe07c33ecf4d62289a5567c5ef00ce27a063295e4bfd8390f5e8149f1",
+      "stratum": "nominal",
+      "unit_id": "cadm_0002|mujoco_heb"
+    },
+    {
+      "lacks_required": true,
+      "operator": null,
+      "profile": "mujoco_fcd_only",
+      "scenario_id": "cadm_0002",
+      "scenario_sha256": "5e4b24afe07c33ecf4d62289a5567c5ef00ce27a063295e4bfd8390f5e8149f1",
+      "stratum": "nominal",
+      "unit_id": "cadm_0002|mujoco_fcd_only"
+    },
+    {
+      "lacks_required": true,
+      "operator": null,
+      "profile": "mujoco_ci_only",
+      "scenario_id": "cadm_0002",
+      "scenario_sha256": "5e4b24afe07c33ecf4d62289a5567c5ef00ce27a063295e4bfd8390f5e8149f1",
+      "stratum": "nominal",
+      "unit_id": "cadm_0002|mujoco_ci_only"
+    }
+  ]
+}

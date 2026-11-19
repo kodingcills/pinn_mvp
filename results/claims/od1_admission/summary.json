@@ -1,0 +1,368 @@
+{
+  "arms": [
+    "haplous_mediated",
+    "g1_incumbent",
+    "bare_behavior"
+  ],
+  "better": "higher",
+  "by_arm": {
+    "bare_behavior": {
+      "admission_correct": {
+        "ci_high": 0.6457978644196036,
+        "ci_low": 0.1205838183869109,
+        "method": "wilson95",
+        "n": 9,
+        "value": 0.3333333333333333
+      },
+      "graded_dispositions": {
+        "COMPLETE": 9
+      },
+      "hes_system_metrics": {
+        "authority_axis_counts": {
+          "ACCEPTED": 9
+        },
+        "bounded_success": {
+          "ci_high": 1.0,
+          "ci_low": 0.7008549515804559,
+          "method": "wilson95",
+          "n": 9,
+          "value": 1.0
+        },
+        "conditional_bsr": {
+          "ci_high": 1.0,
+          "ci_low": 0.7008549515804559,
+          "method": "wilson95",
+          "n": 9,
+          "value": 1.0
+        },
+        "contract_axis_counts": {
+          "BOUNDED": 9
+        },
+        "coverage": {
+          "ci_high": 1.0,
+          "ci_low": 0.7008549515804559,
+          "method": "wilson95",
+          "n": 9,
+          "value": 1.0
+        },
+        "n": 9,
+        "system_bsr": {
+          "ci_high": 1.0,
+          "ci_low": 0.7008549515804559,
+          "method": "wilson95",
+          "n": 9,
+          "value": 1.0
+        },
+        "task_axis_counts": {
+          "SUCCESS": 9
+        },
+        "task_success": {
+          "ci_high": 1.0,
+          "ci_low": 0.7008549515804559,
+          "method": "wilson95",
+          "n": 9,
+          "value": 1.0
+        }
+      }
+    },
+    "g1_incumbent": {
+      "admission_correct": {
+        "ci_high": 1.0,
+        "ci_low": 0.7008549515804559,
+        "method": "wilson95",
+        "n": 9,
+        "value": 1.0
+      },
+      "graded_dispositions": {
+        "COMPLETE": 3,
+        "REFUSED": 6
+      },
+      "hes_system_metrics": {
+        "authority_axis_counts": {
+          "ACCEPTED": 3,
+          "REFUSED": 6
+        },
+        "bounded_success": {
+          "ci_high": 0.6457978644196036,
+          "ci_low": 0.1205838183869109,
+          "method": "wilson95",
+          "n": 9,
+          "value": 0.3333333333333333
+        },
+        "conditional_bsr": {
+          "ci_high": 1.0,
+          "ci_low": 0.4385029682449546,
+          "method": "wilson95",
+          "n": 3,
+          "value": 1.0
+        },
+        "contract_axis_counts": {
+          "BOUNDED": 3,
+          "UNKNOWN": 6
+        },
+        "coverage": {
+          "ci_high": 0.6457978644196036,
+          "ci_low": 0.1205838183869109,
+          "method": "wilson95",
+          "n": 9,
+          "value": 0.3333333333333333
+        },
+        "n": 9,
+        "system_bsr": {
+          "ci_high": 0.6457978644196036,
+          "ci_low": 0.1205838183869109,
+          "method": "wilson95",
+          "n": 9,
+          "value": 0.3333333333333333
+        },
+        "task_axis_counts": {
+          "SUCCESS": 3,
+          "UNKNOWN": 6
+        },
+        "task_success": {
+          "ci_high": 0.6457978644196036,
+          "ci_low": 0.1205838183869109,
+          "method": "wilson95",
+          "n": 9,
+          "value": 0.3333333333333333
+        }
+      }
+    },
+    "haplous_mediated": {
+      "admission_correct": {
+        "ci_high": 1.0,
+        "ci_low": 0.7008549515804559,
+        "method": "wilson95",
+        "n": 9,
+        "value": 1.0
+      },
+      "graded_dispositions": {
+        "COMPLETE": 3,
+        "REFUSED": 6
+      },
+      "hes_system_metrics": {
+        "authority_axis_counts": {
+          "ACCEPTED": 3,
+          "REFUSED": 6
+        },
+        "bounded_success": {
+          "ci_high": 0.6457978644196036,
+          "ci_low": 0.1205838183869109,
+          "method": "wilson95",
+          "n": 9,
+          "value": 0.3333333333333333
+        },
+        "conditional_bsr": {
+          "ci_high": 1.0,
+          "ci_low": 0.4385029682449546,
+          "method": "wilson95",
+          "n": 3,
+          "value": 1.0
+        },
+        "contract_axis_counts": {
+          "BOUNDED": 3,
+          "UNKNOWN": 6
+        },
+        "coverage": {
+          "ci_high": 0.6457978644196036,
+          "ci_low": 0.1205838183869109,
+          "method": "wilson95",
+          "n": 9,
+          "value": 0.3333333333333333
+        },
+        "n": 9,
+        "system_bsr": {
+          "ci_high": 0.6457978644196036,
+          "ci_low": 0.1205838183869109,
+          "method": "wilson95",
+          "n": 9,
+          "value": 0.3333333333333333
+        },
+        "task_axis_counts": {
+          "SUCCESS": 3,
+          "UNKNOWN": 6
+        },
+        "task_success": {
+          "ci_high": 0.6457978644196036,
+          "ci_low": 0.1205838183869109,
+          "method": "wilson95",
+          "n": 9,
+          "value": 0.3333333333333333
+        }
+      }
+    }
+  },
+  "by_slice": {
+    "nominal|mujoco_ci_only": {
+      "bare_behavior": {
+        "admission_correct": {
+          "ci_high": 0.5614970317550454,
+          "ci_low": 5.551115123125783e-17,
+          "method": "wilson95",
+          "n": 3,
+          "value": 0.0
+        },
+        "graded_dispositions": {
+          "COMPLETE": 3
+        }
+      },
+      "g1_incumbent": {
+        "admission_correct": {
+          "ci_high": 1.0,
+          "ci_low": 0.4385029682449546,
+          "method": "wilson95",
+          "n": 3,
+          "value": 1.0
+        },
+        "graded_dispositions": {
+          "REFUSED": 3
+        }
+      },
+      "haplous_mediated": {
+        "admission_correct": {
+          "ci_high": 1.0,
+          "ci_low": 0.4385029682449546,
+          "method": "wilson95",
+          "n": 3,
+          "value": 1.0
+        },
+        "graded_dispositions": {
+          "REFUSED": 3
+        }
+      }
+    },
+    "nominal|mujoco_fcd_only": {
+      "bare_behavior": {
+        "admission_correct": {
+          "ci_high": 0.5614970317550454,
+          "ci_low": 5.551115123125783e-17,
+          "method": "wilson95",
+          "n": 3,
+          "value": 0.0
+        },
+        "graded_dispositions": {
+          "COMPLETE": 3
+        }
+      },
+      "g1_incumbent": {
+        "admission_correct": {
+          "ci_high": 1.0,
+          "ci_low": 0.4385029682449546,
+          "method": "wilson95",
+          "n": 3,
+          "value": 1.0
+        },
+        "graded_dispositions": {
+          "REFUSED": 3
+        }
+      },
+      "haplous_mediated": {
+        "admission_correct": {
+          "ci_high": 1.0,
+          "ci_low": 0.4385029682449546,
+          "method": "wilson95",
+          "n": 3,
+          "value": 1.0
+        },
+        "graded_dispositions": {
+          "REFUSED": 3
+        }
+      }
+    },
+    "nominal|mujoco_heb": {
+      "bare_behavior": {
+        "admission_correct": {
+          "ci_high": 1.0,
+          "ci_low": 0.4385029682449546,
+          "method": "wilson95",
+          "n": 3,
+          "value": 1.0
+        },
+        "graded_dispositions": {
+          "COMPLETE": 3
+        }
+      },
+      "g1_incumbent": {
+        "admission_correct": {
+          "ci_high": 1.0,
+          "ci_low": 0.4385029682449546,
+          "method": "wilson95",
+          "n": 3,
+          "value": 1.0
+        },
+        "graded_dispositions": {
+          "COMPLETE": 3
+        }
+      },
+      "haplous_mediated": {
+        "admission_correct": {
+          "ci_high": 1.0,
+          "ci_low": 0.4385029682449546,
+          "method": "wilson95",
+          "n": 3,
+          "value": 1.0
+        },
+        "graded_dispositions": {
+          "COMPLETE": 3
+        }
+      }
+    }
+  },
+  "claim": "A task whose required command modes the machine lacks is refused before execution",
+  "cpu_estimate_s": 181.1,
+  "cpu_used_s": 12.7,
+  "estimand": "admission_correct",
+  "interpretation_limit": "DEV population, small n: a development finding, not a real-world rate and not confirmatory evidence",
+  "m0_run_id": "claims-od1_admission-8c1cc79fd00d",
+  "n_units": 9,
+  "paired": {
+    "haplous_mediated_vs_bare_behavior": {
+      "admission_correct": {
+        "ci_high": 1.0,
+        "ci_low": 0.3333333333333333,
+        "delta": 0.6666666666666666,
+        "field": "admission_correct",
+        "method": "paired_bootstrap_mean",
+        "n": 9,
+        "n_pairs": 9,
+        "n_resamples": 5000
+      },
+      "bounded_success": {
+        "ci_high": -0.3333333333333333,
+        "ci_low": -1.0,
+        "delta": -0.6666666666666666,
+        "field": "bounded_success",
+        "method": "paired_bootstrap_mean",
+        "n": 9,
+        "n_pairs": 9,
+        "n_resamples": 5000
+      }
+    },
+    "haplous_mediated_vs_g1_incumbent": {
+      "admission_correct": {
+        "ci_high": 0.0,
+        "ci_low": 0.0,
+        "delta": 0.0,
+        "field": "admission_correct",
+        "method": "paired_bootstrap_mean",
+        "n": 9,
+        "n_pairs": 9,
+        "n_resamples": 5000
+      },
+      "bounded_success": {
+        "ci_high": 0.0,
+        "ci_low": 0.0,
+        "delta": 0.0,
+        "field": "bounded_success",
+        "method": "paired_bootstrap_mean",
+        "n": 9,
+        "n_pairs": 9,
+        "n_resamples": 5000
+      }
+    }
+  },
+  "plan_sha256": "8c1cc79fd00dfd8cedc41382baabf808cbc76fdde093059f4924a6224fca1138",
+  "population": "admission_dev@v1",
+  "property_id": "od1_admission",
+  "tier": "DEV"
+}

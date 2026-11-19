@@ -1,0 +1,131 @@
+{
+  "arms": [
+    "haplous_mediated",
+    "g1_incumbent",
+    "bare_behavior"
+  ],
+  "better": "lower",
+  "claim": {
+    "budget_cpu_min": 4.0,
+    "comparators": [
+      "haplous_mediated",
+      "g1_incumbent",
+      "bare_behavior"
+    ],
+    "machine_profiles": [
+      "mujoco_heb"
+    ],
+    "n_scenarios": 8,
+    "operators": [],
+    "population": "temporal_hold_dev@v1",
+    "property_id": "temporal_hold",
+    "requirements": {
+      "hold_budget_s": 0.5
+    },
+    "seed": 20020,
+    "statement": "Haplous holds rather than acting on stale state up to the hold budget",
+    "task_family": "peg_insertion",
+    "tier": "DEV"
+  },
+  "cost_basis": {
+    "bare_behavior": {
+      "cpu_s_per_episode": 16.334,
+      "source": "results/m4/campaign/cost.json mean, n=501"
+    },
+    "g1_incumbent": {
+      "cpu_s_per_episode": 2.576,
+      "source": "results/m4/campaign/cost.json mean, n=501"
+    },
+    "haplous_mediated": {
+      "cpu_s_per_episode": 1.213,
+      "source": "results/m4/campaign/cost.json mean, n=501"
+    }
+  },
+  "cpu_estimate_s": 161.0,
+  "estimand": "stale_span_actuated",
+  "plan_sha256": "3851766eb08e7a86ebeafc4493b9c6bc060b1f8f5a1c674f0cd7770103e81103",
+  "population": "temporal_hold_dev@v1",
+  "scoring_sources": {
+    "benchmarks/heb/metrics.py": "8fee381e814861f7c048140eb739c30a2b5ba1abf05a1b636d4fe6eddd0c1b7f",
+    "evaluation/stats.py": "237d95ffa278be1a7d34140108e845ed3cc30591d0849d08a3c0ba5113d9d376",
+    "hes/claim_compiler.py": "9798c016ec4da28f7030e52d8056ca5dacc24f704cdace8617a1eaa0e322fa47",
+    "hes/metrics.py": "6d6823e3a098911eb82ec48d6d20faa0b013a69d564c662a9ef2aea05b311c5c",
+    "hes/regression.py": "c5cdf1dde8d35d2ca264294dcba3ce97076e207f3fb6fdf1b11ef12072083495"
+  },
+  "status": "PLAN",
+  "tier": "DEV",
+  "units": [
+    {
+      "lacks_required": false,
+      "operator": null,
+      "profile": "mujoco_heb",
+      "scenario_id": "cth_dropout_below_budget_0000",
+      "scenario_sha256": "252f945df917947f550f64488ff4ac4ae468c1a2f0d7407fc82bda59fcc029f6",
+      "stratum": "below_budget",
+      "unit_id": "cth_dropout_below_budget_0000|mujoco_heb"
+    },
+    {
+      "lacks_required": false,
+      "operator": null,
+      "profile": "mujoco_heb",
+      "scenario_id": "cth_dropout_above_budget_0001",
+      "scenario_sha256": "cfbb180452eb25a93db0ad8d4eb82b885eb28b3b32076e78e20bfd852b7689ee",
+      "stratum": "above_budget",
+      "unit_id": "cth_dropout_above_budget_0001|mujoco_heb"
+    },
+    {
+      "lacks_required": false,
+      "operator": null,
+      "profile": "mujoco_heb",
+      "scenario_id": "cth_stale_below_budget_0002",
+      "scenario_sha256": "a3973fdc333e6b6bb46c0116f225e16d7ee4f4b61ad81e75ac4e4c456ad533ac",
+      "stratum": "below_budget",
+      "unit_id": "cth_stale_below_budget_0002|mujoco_heb"
+    },
+    {
+      "lacks_required": false,
+      "operator": null,
+      "profile": "mujoco_heb",
+      "scenario_id": "cth_stale_above_budget_0003",
+      "scenario_sha256": "95b5cf65ab73488f87f73f83d590bcaf36f0b787db5094f1f2561ee3cb150477",
+      "stratum": "above_budget",
+      "unit_id": "cth_stale_above_budget_0003|mujoco_heb"
+    },
+    {
+      "lacks_required": false,
+      "operator": null,
+      "profile": "mujoco_heb",
+      "scenario_id": "cth_dropout_below_budget_0004",
+      "scenario_sha256": "b61f01a3ce3070a632568b5047100debecbc36c7373d9505421dcb603fab404d",
+      "stratum": "below_budget",
+      "unit_id": "cth_dropout_below_budget_0004|mujoco_heb"
+    },
+    {
+      "lacks_required": false,
+      "operator": null,
+      "profile": "mujoco_heb",
+      "scenario_id": "cth_dropout_above_budget_0005",
+      "scenario_sha256": "276900921b281cf01fca31f565e222c06f21d755f5e2e240908e2fde582f6165",
+      "stratum": "above_budget",
+      "unit_id": "cth_dropout_above_budget_0005|mujoco_heb"
+    },
+    {
+      "lacks_required": false,
+      "operator": null,
+      "profile": "mujoco_heb",
+      "scenario_id": "cth_stale_below_budget_0006",
+      "scenario_sha256": "329fad312812756994fcae839b796d3dddc4f706ed96589538c9203d26077b82",
+      "stratum": "below_budget",
+      "unit_id": "cth_stale_below_budget_0006|mujoco_heb"
+    },
+    {
+      "lacks_required": false,
+      "operator": null,
+      "profile": "mujoco_heb",
+      "scenario_id": "cth_stale_above_budget_0007",
+      "scenario_sha256": "241bda06ce298bfd795820daa23d589017e19bb8ef12933a06f99102e3a86f08",
+      "stratum": "above_budget",
+      "unit_id": "cth_stale_above_budget_0007|mujoco_heb"
+    }
+  ]
+}
