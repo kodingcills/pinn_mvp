@@ -11,10 +11,12 @@ Backlog: GitHub Issues. This file holds only the current state and the next acti
 
 | Epic | Children (priority, status) |
 |---|---|
-| #9 Gate A Developer Alpha | #13 truth leak in `health()` (P0, fixed `03775a2`, verifier PASS; closes with the PR) · #14 runtime-only distribution (P1, integrated `8e675c0`, verifier PASS; closes with the PR) · #15 Studio job identity + artifact root (P1, in progress: E2E passed, suite pending) |
-| #10 Gate B Generalized execution | #16 remove world stepping, envelopes, legacy adapter (P1, in progress) · #17 async lifecycle + lease (P1, blocked by #16) · #18 second command surface (P1, blocked by #16, #17) · #22 hold semantics undeclared (P1, blocked by #16; Gate C mechanism B) |
-| #11 Gate C Differential value | #19 stale-hold force exceedance (P1): steps 1–2 done `1aefc64`, verifier PASS (root cause: open-loop hold during the hold, not resume); step 3 via #22 |
-| #12 Gate D Evaluator engine | #21 diverged/auto-reset episodes graded as valid (P0, in progress) · #20 claim-to-experiment compiler (P1, queued; WIP limit) |
+| #9 Gate A Developer Alpha | **Gate A acceptance PASS at `9457ddc`** (fresh-clone journey). #13 truth leak (P0, done) · #14 runtime-only distribution (done; mujoco pinned <3.12 in `d860f89`) · #15 job identity + artifact root (done) · #23 corrupt run listed verified / cached replay (done) |
+| #10 Gate B Generalized execution | #16 world stepping out of core, envelopes, legacy adapter (done, verifier PASS, integrated `51adcb2..6a4de75`) · #17 async lifecycle + lease (P1, in progress) · #22 hold semantics (P1, next after #17; Gate C mechanism B) · #18 second command surface (P1, after #17) |
+| #11 Gate C Differential value | #19 stale-hold exceedance: diagnosis done (root cause: open-loop hold during the hold); E19 protocol amended `cf70a70`, run after #22 |
+| #12 Gate D Evaluator engine | #21 sim divergence graded valid (P0, done; M4 addendum, C1/C2 still ties) · #20 claim-to-experiment compiler (P1, in progress, rebasing onto `6a4de75`) |
+
+"Done" = verifier PASS and integrated on the branch; issues close when the PR merges to `main`.
 
 GitHub dependency links: the available GitHub integration cannot set native blocked-by links;
 dependencies are stated in each issue body ("Blocked by"). Old issues #1–#5 closed as superseded with links.
@@ -29,7 +31,7 @@ Classification: VALIDATED LIMITATION (research-substrate tests), not product blo
 
 ## Next actions
 
-1. Resume after the 2026-11-17 usage limit: #16, #21, #15 owners resumed via SendMessage (work was saved in their worktrees). On their reports: independent verify, integrate, comment on the issue.
-2. At integration of #16: migrate `examples/stub_machine_contract.py` off `ServoCommand`/`session.step()`.
-2. After #16: #17 then #18; #22 (hold semantics) and the amended E19 run (#19 step 3).
-3. #15 after #14; #20 when WIP allows.
+1. #17 owner and #20 owner working; on reports: independent verify, integrate, issue comment.
+2. After #17: #22 hold semantics, then the amended E19 run (#19 step 3) with an instantiated `g1_parity` arm; #18 second command surface.
+3. Open the PR to `main` (do not merge without operator approval) once Gate B lands, or earlier if the operator asks.
+4. Full suite on `6a4de75` is running (expected: previous baseline + new tests, 4 known failures).
