@@ -24,6 +24,7 @@ from haplous.capabilities import (
 from haplous.constraints import Constraint, build_constraints
 from haplous.evidence import ExecutionEvidence
 from haplous.intent import ExecutionIntent, RequirementKind
+from haplous.lifecycle import CommandLedger, Judgement, Verdict
 from haplous.machine import (
     ActionEnvelope,
     Machine,
@@ -276,7 +277,7 @@ class HaplousRuntime:
         window_span_s = 1.5 * success.window_s if success.window_s else None
         last_source: Optional[float] = None
         rejected_streak = 0
-        # lease_epoch stays 0 until leases exist (#17).
+        epoch = 0
         command_id = 0
         correlation_id = f"execution-{self._archive_seq}"
         degraded_announced = False
@@ -297,7 +298,74 @@ class HaplousRuntime:
             else 0
         )
 
+        def settle(j: Judgement, status: str | None, t_s: float) -> bool:
+            """Apply one judged ack to command authority; True if terminal."""
+            nonlocal holding, hold_cause, untrusted_ticks, rejected_streak
+            if j.verdict is Verdict.IGNORED:
+                self._evidence.append("ack_ignored", t_s=t_s, command_id=j.command_id,
+                                      status=status, reason=j.reason)
+            elif j.verdict is Verdict.ACCEPTED:
+                if holding and rejected_streak > 0:
+                    # Restoration after command rejection: the
+                    # machine accepts again; this tick's
+                    # constraints were evaluated on fresh state
+                    # above, so revalidation already passed.
+                    holding = False
+                    hold_cause = None
+                    untrusted_ticks = 0
+                    self._evidence.append(
+                        "temporal_revalidation_resumed",
+                        t_s=t_s,
+                        cause="command_accepted",
+                    )
+                    if self._tracker.state is ExecutionState.DEGRADED:
+                        self._tracker.transition(ExecutionState.EXECUTING)
+                        self._evidence.append(
+                            "state_transition",
+                            t_s=t_s,
+                            to="executing",
+                        )
+                rejected_streak = 0
+            elif j.verdict is Verdict.NOT_ACCEPTED:
+                rejected_streak += 1
+                self._evidence.append(
+                    "command_rejected",
+                    t_s=t_s,
+                    reason=j.reason,
+                    streak=rejected_streak,
+                )
+                if rejected_streak >= _COMMAND_REJECTION_LIMIT:
+                    # Command rejection suspends NEW authority but
+                    # the machine holds; attempts continue so
+                    # restoration is discoverable. The hold budget
+                    # bounds the exposure.
+                    if not holding:
+                        holding = True
+                        hold_cause = "command_rejection"
+                        self._evidence.append(
+                            "temporal_hold_entered",
+                            t_s=t_s,
+                            cause="command_rejection",
+                        )
+                    untrusted_ticks += 1
+                    if untrusted_ticks > max_hold_ticks:
+                        self._machine.stop()
+                        self._tracker.transition(ExecutionState.ABORTED)
+                        self._evidence.append(
+                            "outcome",
+                            t_s=t_s,
+                            result="ABORTED",
+                            reason="temporal_hold_budget_exhausted",
+                            untrusted_ticks=untrusted_ticks,
+                        )
+                        return True
+            return False
+
         try:
+            if caps.leased_authority:
+                epoch = session.acquire_lease()
+                self._evidence.append("authority_granted", t_s=0.0, epoch=epoch)
+            ledger = CommandLedger(epoch)
             first = session.observe()
             if session.fault is not None:
                 self._abort_machine_fault(session, 0.0)
@@ -324,6 +392,23 @@ class HaplousRuntime:
                 obs = session.observe()
                 if session.fault is not None:
                     self._abort_machine_fault(session, last_source)
+                    return
+                # ARCH-001 decision 5: lost authority takes the stop path.
+                if caps.leased_authority and session.lease_epoch != epoch:
+                    self._machine.stop()
+                    self._tracker.transition(ExecutionState.ABORTED)
+                    self._evidence.append(
+                        "authority_revoked",
+                        t_s=last_source,
+                        held_epoch=epoch,
+                        session_epoch=session.lease_epoch,
+                    )
+                    self._evidence.append(
+                        "outcome",
+                        t_s=last_source,
+                        result="ABORTED",
+                        reason="authority_revoked",
+                    )
                     return
                 # OD-1 section 4: a required command mode that is no longer
                 # satisfied is a defined safe stop, never silent continuation.
@@ -633,73 +718,35 @@ class HaplousRuntime:
                     )
                     return
 
-                # Behavior decision on fresh state, then authorize.
+                # Behavior decision on fresh state, then authorize. Acks are
+                # judged only on such ticks (an acceptance may restore
+                # authority), at this observation's receipt time, on its
+                # clock; they wait in the session otherwise.
                 if not skip_command:
+                    now_s, now_clock = obs.stamp.received_s, obs.stamp.clock
+                    for ack in session.poll_acks():
+                        if settle(ledger.judge(ack, now_s, now_clock), ack.status, obs.stamp.source_s):
+                            return
+                    for j in ledger.expire(now_s, now_clock):
+                        if settle(j, None, obs.stamp.source_s):
+                            return
                     command_id += 1
-                    outcome = session.submit(ActionEnvelope(
+                    envelope = ActionEnvelope(
                         command_id=command_id,
-                        lease_epoch=0,
+                        lease_epoch=epoch,
                         origin_source_s=obs.stamp.source_s,
                         clock=obs.stamp.clock,
                         valid_until_s=obs.stamp.source_s + state_max_age_s,
                         payload=behavior.step(obs),
                         correlation_id=correlation_id,
-                    ))
-                    if outcome.accepted:
-                        if holding and rejected_streak > 0:
-                            # Restoration after command rejection: the
-                            # machine accepts again; this tick's
-                            # constraints were evaluated on fresh state
-                            # above, so revalidation already passed.
-                            holding = False
-                            hold_cause = None
-                            untrusted_ticks = 0
-                            self._evidence.append(
-                                "temporal_revalidation_resumed",
-                                t_s=obs.stamp.source_s,
-                                cause="command_accepted",
-                            )
-                            if self._tracker.state is ExecutionState.DEGRADED:
-                                self._tracker.transition(ExecutionState.EXECUTING)
-                                self._evidence.append(
-                                    "state_transition",
-                                    t_s=obs.stamp.source_s,
-                                    to="executing",
-                                )
-                        rejected_streak = 0
-                    else:
-                        rejected_streak += 1
-                        self._evidence.append(
-                            "command_rejected",
-                            t_s=obs.stamp.source_s,
-                            reason=outcome.reason,
-                            streak=rejected_streak,
-                        )
-                        if rejected_streak >= _COMMAND_REJECTION_LIMIT:
-                            # Command rejection suspends NEW authority but
-                            # the machine holds; attempts continue so
-                            # restoration is discoverable. The hold budget
-                            # bounds the exposure.
-                            if not holding:
-                                holding = True
-                                hold_cause = "command_rejection"
-                                self._evidence.append(
-                                    "temporal_hold_entered",
-                                    t_s=obs.stamp.source_s,
-                                    cause="command_rejection",
-                                )
-                            untrusted_ticks += 1
-                            if untrusted_ticks > max_hold_ticks:
-                                self._machine.stop()
-                                self._tracker.transition(ExecutionState.ABORTED)
-                                self._evidence.append(
-                                    "outcome",
-                                    t_s=obs.stamp.source_s,
-                                    result="ABORTED",
-                                    reason="temporal_hold_budget_exhausted",
-                                    untrusted_ticks=untrusted_ticks,
-                                )
-                                return
+                    )
+                    ledger.issued(envelope)
+                    ack = session.submit(envelope)
+                    # The immediate ack is the session's answer at dispatch,
+                    # judged on the decision's own tick.
+                    j = ledger.judge(ack, envelope.origin_source_s, envelope.clock)
+                    if settle(j, ack.status, obs.stamp.source_s):
+                        return
                 self._ticks.wait()
                 if session.ended:
                     if session.fault is not None:

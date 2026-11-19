@@ -16,7 +16,7 @@ def _python(code: str) -> subprocess.CompletedProcess[str]:
 
 def test_runtime_and_cli_import_closure_is_stdlib_only() -> None:
     result = _python(
-        "import sys, haplous, haplous.runtime, haplous.capabilities, haplous.machine, haplous.cli\n"
+        "import sys, haplous, haplous.runtime, haplous.capabilities, haplous.machine, haplous.lifecycle, haplous.cli\n"
         f"print(sorted(m for m in {EXTRA_MODULES!r} if m in sys.modules))"
     )
     assert result.returncode == 0, result.stderr

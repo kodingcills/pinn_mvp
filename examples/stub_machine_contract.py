@@ -43,6 +43,9 @@ class StubSession:
             return Ack(envelope.command_id, AckStatus.REJECTED, "session_ended")
         return Ack(envelope.command_id, AckStatus.CONTROLLER_ACCEPTED)
 
+    def poll_acks(self) -> list[Ack]:
+        return []
+
     def stop(self) -> None:
         self.ended = True
 

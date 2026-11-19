@@ -125,6 +125,9 @@ class ClockedMachine:
         self.clock.t += self.work_s  # decision-to-dispatch takes host time
         return Ack(envelope.command_id, AckStatus.CONTROLLER_ACCEPTED)
 
+    def poll_acks(self) -> list[Ack]:
+        return []
+
     def stop(self) -> None:
         pass
 
@@ -189,7 +192,6 @@ def test_legacy_session_answers_each_envelope_synchronously(outcome, status):
     ack = LegacySession(inner).submit(_envelope(TARGET))
     assert inner.applied == [TARGET]
     assert ack == Ack(7, status, outcome.reason)
-    assert ack.accepted is outcome.accepted
 
 
 def test_legacy_session_rejects_a_payload_it_does_not_declare():
