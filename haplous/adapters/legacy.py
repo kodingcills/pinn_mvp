@@ -9,12 +9,13 @@ from __future__ import annotations
 from collections.abc import Mapping
 from typing import TYPE_CHECKING, Any, Protocol, runtime_checkable
 
+from haplous.capabilities import CommandMode, payload_modes
 from haplous.machine import (
     Ack,
     AckStatus,
     ActionEnvelope,
-    CartesianImpedanceTarget,
     CommandOutcome,
+    CommandPayload,
     MachineObservation,
 )
 from haplous.runtime import HaplousRuntime
@@ -29,7 +30,7 @@ class SimSession(Protocol):
 
     def observe(self) -> MachineObservation | None: ...
 
-    def apply(self, command: CartesianImpedanceTarget) -> CommandOutcome: ...
+    def apply(self, command: CommandPayload) -> CommandOutcome: ...
 
     def step(self) -> None: ...
 
@@ -63,10 +64,12 @@ class LegacySession:
     """Product MachineSession over a SimSession: submit unwraps the
     envelope and applies its payload, answering synchronously. Its
     machine does not declare leased_authority: the lease is the constant
-    epoch 0, and an envelope under any other epoch is stale."""
+    epoch 0, and an envelope under any other epoch is stale. A payload
+    whose command modes the machine does not declare is rejected."""
 
-    def __init__(self, inner: SimSession) -> None:
+    def __init__(self, inner: SimSession, command_modes: frozenset[CommandMode]) -> None:
         self.inner = inner
+        self.command_modes = command_modes
 
     def observe(self) -> MachineObservation | None:
         return self.inner.observe()
@@ -74,7 +77,7 @@ class LegacySession:
     def submit(self, envelope: ActionEnvelope) -> Ack:
         if envelope.lease_epoch != 0:
             return Ack(envelope.command_id, AckStatus.REJECTED, "stale_lease_epoch")
-        if not isinstance(envelope.payload, CartesianImpedanceTarget):
+        if not payload_modes(envelope.payload) & self.command_modes:
             return Ack(envelope.command_id, AckStatus.REJECTED, "unsupported_payload")
         outcome = self.inner.apply(envelope.payload)
         status = AckStatus.CONTROLLER_ACCEPTED if outcome.accepted else AckStatus.REJECTED
@@ -113,7 +116,8 @@ class LegacyMachine:
         self, *, start_position_m: tuple[float, float, float], horizon_s: float
     ) -> LegacySession:
         self.session = LegacySession(
-            self.inner.open_session(start_position_m=start_position_m, horizon_s=horizon_s)
+            self.inner.open_session(start_position_m=start_position_m, horizon_s=horizon_s),
+            self.inner.capabilities().command_modes,
         )
         return self.session
 

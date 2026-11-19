@@ -9,11 +9,37 @@ from enum import Enum
 from typing import Any
 
 from haplous.intent import ExecutionIntent, RequirementKind
+from haplous.machine import CartesianImpedanceTarget, JointPositionTarget
 
 
 class CommandMode(Enum):
     CARTESIAN_IMPEDANCE = "cartesian_impedance"
     FORCE_CONTROLLED_DESCENT = "force_controlled_descent"
+    JOINT_POSITION = "joint_position"
+
+
+# The command modes each payload type realizes. A session accepts a payload
+# only if the machine declares one of its modes (ARCH-001 decision 3).
+PAYLOAD_MODES: dict[type, frozenset[CommandMode]] = {
+    CartesianImpedanceTarget: frozenset(
+        {CommandMode.CARTESIAN_IMPEDANCE, CommandMode.FORCE_CONTROLLED_DESCENT}
+    ),
+    JointPositionTarget: frozenset({CommandMode.JOINT_POSITION}),
+}
+
+
+def payload_modes(payload: object) -> frozenset[CommandMode]:
+    return PAYLOAD_MODES.get(type(payload), frozenset())
+
+
+class StopResponse(Enum):
+    """What the machine physically does on stop(). On a missing new command
+    (temporal hold) every machine holds its last accepted command."""
+
+    # Actuation removed: the mechanism coasts under physics and contact.
+    ACTUATION_OFF = "actuation_off"
+    # The controller latches the measured position and servos to it.
+    HOLD_POSITION = "hold_position"
 
 
 class SensingChannel(Enum):
@@ -51,6 +77,7 @@ class MachineCapabilities:
     # False: the host owns authority outright and every envelope carries
     # the constant epoch 0.
     leased_authority: bool = False
+    stop_response: StopResponse = StopResponse.ACTUATION_OFF
 
 
 @dataclass(frozen=True)

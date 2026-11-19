@@ -17,6 +17,7 @@ from haplous.capabilities import (
     MachineCapabilities,
     RefusalReason,
     SensingChannel,
+    StopResponse,
 )
 from haplous.constraints import Constraint, ConstraintStatus
 from haplous.evidence import EvidenceEvent, ExecutionEvidence
@@ -34,7 +35,9 @@ from haplous.machine import (
     CartesianImpedanceTarget,
     ClockDomain,
     CommandOutcome,
+    CommandPayload,
     ControlParameters,
+    JointPositionTarget,
     LeasedSession,
     Machine,
     MachineObservation,
@@ -60,6 +63,7 @@ __all__ = [
     "ClockDomain",
     "CommandMode",
     "CommandOutcome",
+    "CommandPayload",
     "Constraint",
     "ControlParameters",
     "EvidenceEvent",
@@ -70,6 +74,7 @@ __all__ = [
     "FeasibilityResult",
     "HaplousRuntime",
     "IllegalTransitionError",
+    "JointPositionTarget",
     "LeasedSession",
     "Machine",
     "MachineCapabilities",
@@ -82,6 +87,7 @@ __all__ = [
     "RequirementKind",
     "SensingChannel",
     "Stamp",
+    "StopResponse",
     "SuccessCondition",
     "TickSource",
     "__version__",

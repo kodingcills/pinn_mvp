@@ -10,6 +10,7 @@ from hypothesis import given, settings
 from hypothesis import strategies as st
 
 from haplous.adapters.legacy import CommandOutcome, LegacySession
+from haplous.capabilities import CommandMode
 from haplous.intent import SuccessCondition
 from haplous.lifecycle import CommandLedger, Verdict
 from haplous.machine import (
@@ -292,7 +293,7 @@ class _Applied:
 
 def test_legacy_session_holds_the_constant_epoch_zero():
     inner = _Applied()
-    session = LegacySession(inner)
+    session = LegacySession(inner, frozenset({CommandMode.CARTESIAN_IMPEDANCE}))
     stale = ActionEnvelope(7, 1, 1.0, ClockDomain.SIM, 1.02, TARGET, "x")
     assert session.submit(stale) == Ack(7, A.REJECTED, "stale_lease_epoch")
     assert inner.applied == []

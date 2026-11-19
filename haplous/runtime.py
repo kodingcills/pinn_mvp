@@ -14,12 +14,14 @@ from typing import TYPE_CHECKING, Callable, Mapping, Optional
 
 from haplous.behavior import ExecutionBehavior
 from haplous.capabilities import (
+    PAYLOAD_MODES,
     FeasibilityResult,
     MachineCapabilities,
     RefusalReason,
     command_mode_admission,
     mode_names,
     negotiate,
+    payload_modes,
 )
 from haplous.constraints import Constraint, build_constraints
 from haplous.evidence import ExecutionEvidence
@@ -165,6 +167,7 @@ class HaplousRuntime:
                 "max_initial_offset_m": caps.max_initial_offset_m,
                 "execution_horizon_s": caps.execution_horizon_s,
                 "supports_stop": caps.supports_stop,
+                "stop_response": caps.stop_response.value,
             },
         )
         if feasibility.outcome == "REFUSED":
@@ -385,6 +388,13 @@ class HaplousRuntime:
                 "motion_started",
                 t_s=first.stamp.source_s,
                 state_period_s=period_s,
+                # The payload types the behaviour's contract admits; the
+                # dispatch guard below holds every command to them.
+                payload_kinds=sorted(
+                    t.__name__
+                    for t, modes in PAYLOAD_MODES.items()
+                    if modes & behavior.required_command_modes
+                ),
             )
             window.append(first)
             last_source = first.stamp.source_s
@@ -730,6 +740,26 @@ class HaplousRuntime:
                     for j in ledger.expire(now_s, now_clock):
                         if settle(j, None, obs.stamp.source_s):
                             return
+                    payload = behavior.step(obs)
+                    if not payload_modes(payload) & behavior.required_command_modes:
+                        # A command outside the admitted contract is a
+                        # substitution nobody authorized (OD-1), even when
+                        # the machine would accept it.
+                        self._machine.stop()
+                        self._tracker.transition(ExecutionState.ABORTED)
+                        self._evidence.append(
+                            "command_contract_violated",
+                            t_s=obs.stamp.source_s,
+                            payload_kind=type(payload).__name__,
+                            required=mode_names(behavior.required_command_modes),
+                        )
+                        self._evidence.append(
+                            "outcome",
+                            t_s=obs.stamp.source_s,
+                            result="ABORTED",
+                            reason="command_contract_violated",
+                        )
+                        return
                     command_id += 1
                     envelope = ActionEnvelope(
                         command_id=command_id,
@@ -737,7 +767,7 @@ class HaplousRuntime:
                         origin_source_s=obs.stamp.source_s,
                         clock=obs.stamp.clock,
                         valid_until_s=obs.stamp.source_s + state_max_age_s,
-                        payload=behavior.step(obs),
+                        payload=payload,
                         correlation_id=correlation_id,
                     )
                     ledger.issued(envelope)
