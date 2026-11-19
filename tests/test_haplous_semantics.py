@@ -847,3 +847,24 @@ def test_execute_requires_ready():
     runtime = sim_runtime(machine, behaviors={"motion": HoldBehavior})
     with pytest.raises(RuntimeError):
         runtime.execute()
+
+
+@pytest.mark.parametrize("hold", ["stale_state", "command_rejection"])
+@pytest.mark.parametrize("fault_on_step", [6, 9, 12])
+def test_machine_fault_during_other_holds_aborts_as_machine_fault(hold, fault_on_step):
+    """#24 regression guard (from the verifier): faults during the stale-state
+    and command-rejection holds also report the machine fault with one stop."""
+    if hold == "stale_state":
+        script = stream(seated_samples(3, z=-0.002, fz=1.0)) + [obs(0.0, received=0.1)] * 12
+        kwargs = dict(hold_last=False)
+    else:
+        script = stream([(0.0, 0.0, -0.002, 1.0, 0.0)] * 30)
+        kwargs = dict(reject_windows_s=((0.005, 0.5),))
+    machine = _FaultOnStepMachine(
+        observation=obs(0.0), script=script, fault_on_step=fault_on_step, **kwargs
+    )
+    runtime = runtime_over(machine)
+    evidence = runtime.execute()
+    assert runtime.state is ExecutionState.ABORTED
+    assert outcome_payload(evidence)["reason"] == "machine_fault_X"
+    assert machine.stop_calls == 1
