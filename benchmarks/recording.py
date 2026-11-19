@@ -96,8 +96,10 @@ class _StateStream:
 class EpisodeRecorder:
     """Owns the open files of one recording. One session per recorder."""
 
-    def __init__(self, out_dir: Path, chunk_ticks: int = 1024) -> None:
+    def __init__(self, out_dir: Path, chunk_ticks: int = 1024, declared_hold=None) -> None:
         self.out = out_dir
+        # A HoldSemantics override for the machine's declaration (sealed-epoch replays).
+        self.declared_hold = declared_hold
         self.chunk_ticks = chunk_ticks
         self.log = EpisodeLog(out_dir)
         self.stream: _StateStream | None = None
@@ -188,6 +190,12 @@ class RecordingMachine(DivergenceGuardedMachine):
         self.recorder = recorder
         recorder.attach_model(self._model)
 
+    def capabilities(self):
+        caps = super().capabilities()
+        if self.recorder.declared_hold is None:
+            return caps
+        return replace(caps, hold_semantics=self.recorder.declared_hold)
+
     def open_session(self, *, start_position_m, horizon_s) -> _RecordingSession:
         if self._session is not None:
             raise RuntimeError("a recording holds exactly one session")
@@ -211,7 +219,7 @@ def _capture_runtime() -> Iterator[list]:
         yield captured
 
 
-def run_episode(scenario: Scenario, out_dir: Path | None, chunk_ticks: int = 1024):
+def run_episode(scenario: Scenario, out_dir: Path | None, chunk_ticks: int = 1024, declared_hold=None):
     """Run `haplous_mediated` on `scenario`, recording into `out_dir` when
     given. Returns (SystemRun, realization, metadata or None)."""
     if out_dir is None:
@@ -219,7 +227,7 @@ def run_episode(scenario: Scenario, out_dir: Path | None, chunk_ticks: int = 102
         run = systems.HaplousSystem().run(realization, scenario)
         grade_run(scenario, realization.bundle, run)  # same work as the recorded path, so RSS comparisons isolate recording
         return run, realization, None
-    recorder = EpisodeRecorder(out_dir, chunk_ticks)
+    recorder = EpisodeRecorder(out_dir, chunk_ticks, declared_hold)
     realization = mujoco_backend.build_realization(scenario, machine_factory=recorder.machine_factory)
     with _capture_runtime() as runtimes:
         run = systems.HaplousSystem().run(realization, scenario)

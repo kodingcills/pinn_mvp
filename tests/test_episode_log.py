@@ -13,6 +13,7 @@ from benchmarks.recording import run_episode, scenario_by_id
 from evaluation import replay as rp
 from haplous.adapters.external import ExternalMachineAdapter
 from haplous.adapters.legacy import sim_runtime
+from haplous.capabilities import HoldSemantics
 from haplous.machine import CartesianImpedanceTarget
 from tests.test_external_adapter import FakeExternalTask, _fake_intent, _HoldBehavior
 
@@ -56,7 +57,8 @@ def test_file_names_match_the_replay_format():
 
 
 def test_mujoco_recording_through_the_neutral_log_matches_the_committed_m2_recording(tmp_path):
-    run_episode(scenario_by_id("insert_dropout_large"), tmp_path)
+    # M2 was recorded before #22: replay with its closed-loop hold assumption.
+    run_episode(scenario_by_id("insert_dropout_large"), tmp_path, declared_hold=HoldSemantics.CLOSED_LOOP_HOLD)
     assert (tmp_path / rp.EVENTS).read_bytes() == (M2_RECORDING / rp.EVENTS).read_bytes()
     assert (tmp_path / rp.METADATA).read_bytes() == (M2_RECORDING / rp.METADATA).read_bytes()
     fresh, committed = ((d / rp.TELEMETRY).read_text() for d in (tmp_path, M2_RECORDING))

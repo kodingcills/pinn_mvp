@@ -85,8 +85,8 @@ def test_closed_loop_machine_holds_by_withholding_commands(script):
                               observation=obs(0.0), script=script())
     runtime, evidence = run(machine)
     assert runtime.state is ExecutionState.COMPLETE
-    assert [e["action"] for e in hold_entries(evidence)] == ["hold"]
-    assert hold_entries(evidence)[0]["hold_semantics"] == "closed_loop_hold"
+    assert [e.get("action", "hold") for e in hold_entries(evidence)] == ["hold"]
+    assert "hold_semantics" not in hold_entries(evidence)[0]  # pre-#22 event, byte for byte
     assert applied_in(machine, *HELD) == []
 
 
@@ -96,7 +96,7 @@ def test_open_loop_or_heartbeat_machine_gets_an_active_hold(semantics, script):
     machine = ScriptedMachine(caps=std_caps(hold_semantics=semantics), observation=obs(0.0), script=script())
     runtime, evidence = run(machine)
     assert runtime.state is ExecutionState.COMPLETE
-    assert [e["action"] for e in hold_entries(evidence)] == ["active_hold"]
+    assert [e.get("action", "hold") for e in hold_entries(evidence)] == ["active_hold"]
     last_accepted = applied_in(machine, PERIOD, PERIOD)
     held = applied_in(machine, *HELD)
     # One re-assertion per withheld tick, each the last accepted payload unchanged.
@@ -147,14 +147,14 @@ def test_open_loop_or_heartbeat_machine_stops_on_command_rejection(semantics):
     assert payload["cause"] == "command_rejection"
     assert payload["hold_semantics"] == semantics.value
     assert machine.stop_calls >= 1
-    assert [e["action"] for e in hold_entries(evidence)] == ["stop"]
+    assert [e.get("action", "hold") for e in hold_entries(evidence)] == ["stop"]
 
 
 def test_closed_loop_machine_holds_through_command_rejection():
     machine = rejection_machine(HoldSemantics.CLOSED_LOOP_HOLD)
     runtime, evidence = run(machine)
     assert runtime.state is ExecutionState.COMPLETE
-    assert [e["action"] for e in hold_entries(evidence)] == ["hold"]
+    assert [e.get("action", "hold") for e in hold_entries(evidence)] == ["hold"]
 
 
 @pytest.mark.parametrize("script", [stale_script, dropout_script, None], ids=["stale", "dropout", "rejection"])
@@ -169,7 +169,7 @@ def test_undeclared_machine_never_gets_an_open_loop_hold(script):
     runtime, evidence = run(machine)
     assert runtime.state is ExecutionState.ABORTED
     assert outcome_payload(evidence)["reason"] == "hold_unsupported_by_machine"
-    assert [e["action"] for e in hold_entries(evidence)] == ["stop"]
+    assert [e.get("action", "hold") for e in hold_entries(evidence)] == ["stop"]
     kinds = [e.kind for e in evidence.events]
     assert kinds.index("temporal_hold_entered") == kinds.index("outcome") - 1
     assert "temporal_revalidation_resumed" not in kinds
@@ -201,15 +201,7 @@ def test_rejected_reassertion_stops_a_zero_order_machine():
     assert runtime.state is ExecutionState.ABORTED
     payload = outcome_payload(evidence)
     assert (payload["reason"], payload["cause"]) == ("hold_unsupported_by_machine", "command_rejection")
-    assert [e["action"] for e in hold_entries(evidence)] == ["active_hold", "stop"]
-
-
-def test_feasibility_evidence_records_hold_semantics():
-    machine = ScriptedMachine(caps=std_caps(hold_semantics=HoldSemantics.ZERO_ORDER_WRENCH),
-                              observation=obs(0.0), script=stale_script())
-    runtime, evidence = run(machine)
-    feas = next(e for e in evidence.events if e.kind == "feasibility")
-    assert feas.payload["capabilities"]["hold_semantics"] == "zero_order_wrench"
+    assert [e.get("action", "hold") for e in hold_entries(evidence)] == ["active_hold", "stop"]
 
 
 def test_mujoco_machine_declares_zero_order_wrench():

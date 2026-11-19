@@ -15,6 +15,7 @@ def test_heb_file_set_is_expected():
         "counterfactual.py",
         "divergence.py",
         "false_refusal.py",
+        "hold_realizations.py",
         "insertion.py",
         "metrics.py",
         "mujoco_backend.py",

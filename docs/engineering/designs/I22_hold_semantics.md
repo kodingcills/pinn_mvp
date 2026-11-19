@@ -87,8 +87,11 @@ before.
 ## Runtime mechanics
 
 - **Hold entry.** One nested `enter_hold(cause, t_s, **data)` replaces the four inline
-  entries. It records `temporal_hold_entered {cause, action, hold_semantics, ...}`, so the
-  evidence says which action was taken and why. On STOP it calls `machine.stop()` and ends
+  entries. For ACTIVE_HOLD and STOP it records `temporal_hold_entered {cause, action,
+  hold_semantics, ...}`, so the evidence says which action was taken and why. A plain HOLD
+  records the pre-#22 event unchanged, `{cause, ...}`, with no action field. That way sealed
+  recordings made before #22 (M2, the M4 dry run) replay byte for byte on a machine that
+  declares `closed_loop_hold`. On STOP it calls `machine.stop()` and ends
   ABORTED with reason `hold_unsupported_by_machine` (payload: cause and semantics).
   `observation_loss` now sets `hold_cause` too. Before, it left it `None`, which behaved the
   same on every check.
@@ -106,7 +109,9 @@ before.
   `settle` ran only on fresh ticks, where any other hold had already resumed, so the two
   conditions agreed. With re-assertions, `settle` also runs on stale ticks, and an accepted
   re-assertion must never resume authority.
-- **Evidence.** The feasibility record's capability snapshot gains `hold_semantics`.
+- **Evidence.** The feasibility capability snapshot is unchanged, for the same replay
+  reason. `scripts/m4_campaign.py record-one` and `tests/test_episode_log.py` replay the sealed
+  pre-#22 recordings with `EpisodeRecorder(declared_hold=CLOSED_LOOP_HOLD)`.
 
 ## Migration
 

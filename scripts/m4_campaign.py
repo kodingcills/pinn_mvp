@@ -274,14 +274,18 @@ def cmd_record_one(args: argparse.Namespace) -> int:
     from benchmarks.heb.metrics import grade_run
     from benchmarks.heb.systems import system_by_name
     from benchmarks.recording import EpisodeRecorder, run_episode
+    from haplous.capabilities import HoldSemantics
 
     cfg = load_config()
     out = Path(os.environ["M0_ARTIFACT_DIR"])
     scenario = next(s for s in generate(cfg["populations"][args.population]) if s.id == args.scenario_id)
+    # M4 is sealed under the pre-#22 runtime, which assumed a closed-loop hold on every machine
+    # (docs/engineering/designs/I22_hold_semantics.md); replays keep that declaration.
+    hold = HoldSemantics.CLOSED_LOOP_HOLD
     if args.arm == "haplous_mediated":
-        run, _, _ = run_episode(scenario, out)
+        run, _, _ = run_episode(scenario, out, declared_hold=hold)
     else:
-        recorder = EpisodeRecorder(out)
+        recorder = EpisodeRecorder(out, declared_hold=hold)
         realization = mujoco_backend.build_realization(scenario, machine_factory=recorder.machine_factory)
         run = system_by_name(args.arm).run(realization, scenario)
         recorder.finish(scenario, run, None, grade_run(scenario, realization.bundle, run))

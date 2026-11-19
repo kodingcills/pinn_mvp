@@ -188,7 +188,6 @@ class HaplousRuntime:
                 "max_initial_offset_m": caps.max_initial_offset_m,
                 "execution_horizon_s": caps.execution_horizon_s,
                 "supports_stop": caps.supports_stop,
-                "hold_semantics": caps.hold_semantics.value,
             },
         )
         if feasibility.outcome == "REFUSED":
@@ -334,12 +333,15 @@ class HaplousRuntime:
                 return False
             holding = True
             hold_cause = cause
+            # A plain hold keeps the pre-#22 event byte for byte (sealed
+            # recordings replay unchanged); other actions say what and why.
+            why = {} if action is HoldAction.HOLD else {
+                "action": action.value, "hold_semantics": caps.hold_semantics.value}
             self._evidence.append(
                 "temporal_hold_entered",
                 t_s=t_s,
                 cause=cause,
-                action=action.value,
-                hold_semantics=caps.hold_semantics.value,
+                **why,
                 **data,
             )
             if action is HoldAction.STOP:

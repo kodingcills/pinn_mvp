@@ -8,7 +8,10 @@ grading.
 
 - Protocol: `E19_stale_resume_dev.md`, unchanged. The binding is `E19_step3_binding.md`,
   committed in `eac6d15` before any E19 row existed.
-- Candidate: #22 mechanism B, at the commit of `docs/engineering/designs/I22_hold_semantics.md`.
+- Candidate: #22 mechanism B. The run was made at `eac6d15`, with the runtime of `ff27f1c`. A
+  later commit changed only evidence payloads: a plain hold's event is kept in its pre-#22
+  form, and the capability snapshot field was dropped. Control flow is unchanged, so the
+  rows stand.
 - Population: `e19_stale_resume_dev@v1` (seed 19019, n = 64).
 - Grading: HEB 0.3.0. Scoring epoch for the system under test: `hes-i22-hold`.
 - Driver: `scripts/e19_dev.py`.
