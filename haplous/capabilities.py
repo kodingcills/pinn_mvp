@@ -47,6 +47,10 @@ class MachineCapabilities:
     # mode preserves the required behaviour. A substitute also needs the
     # task's authorization; neither side alone admits it.
     verified_adapters: frozenset[tuple[CommandMode, CommandMode]] = frozenset()
+    # Authority is a lease the session grants (haplous.machine.LeasedSession).
+    # False: the host owns authority outright and every envelope carries
+    # the constant epoch 0.
+    leased_authority: bool = False
 
 
 @dataclass(frozen=True)

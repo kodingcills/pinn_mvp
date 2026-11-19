@@ -115,39 +115,50 @@ class ActionEnvelope:
 
 
 class AckStatus(StrEnum):
-    """Machine acknowledgement of one envelope. Synchronous sessions answer
-    with CONTROLLER_ACCEPTED or REJECTED only."""
+    """Machine acknowledgement of one envelope (ARCH-001 decision 4).
+    Synchronous sessions answer submit() with CONTROLLER_ACCEPTED or
+    REJECTED only; asynchronous sessions answer ACCEPTED_FOR_DISPATCH and
+    report the rest through poll_acks(). Whether an ack authorizes anything
+    is decided by haplous.lifecycle.CommandLedger, never by the ack alone."""
 
+    ACCEPTED_FOR_DISPATCH = "accepted_for_dispatch"
     CONTROLLER_ACCEPTED = "controller_accepted"
+    EXECUTING = "executing"
+    COMPLETED = "completed"
     REJECTED = "rejected"
+    CANCELED = "canceled"
+    UNKNOWN = "unknown"
+    FAULTED = "faulted"
 
 
 @dataclass(frozen=True)
 class Ack:
-    """Acknowledgement of envelope `command_id`. Anything but
-    CONTROLLER_ACCEPTED means the machine keeps holding its previous
-    command."""
+    """Acknowledgement of envelope `command_id`. Until a command is
+    accepted the machine keeps holding its previous accepted command."""
 
     command_id: int
     status: AckStatus
     reason: str | None = None
-
-    @property
-    def accepted(self) -> bool:
-        return self.status is AckStatus.CONTROLLER_ACCEPTED
 
 
 @runtime_checkable
 class MachineSession(Protocol):
     """One live execution session on the machine. The runtime observes,
     decides and submits; the machine moves only under envelopes it
-    accepted. A session ends by exhausting its horizon (ended, fault None)
-    or by a machine fault (reported through fault). There is no step():
-    world advancement belongs to the integration's TickSource."""
+    accepted, and never starts one past its valid_until_s. A session ends
+    by exhausting its horizon (ended, fault None) or by a machine fault
+    (reported through fault). There is no step(): world advancement belongs
+    to the integration's TickSource.
+
+    submit() answers at once; poll_acks() drains the acks produced since
+    the last call. On a disconnect the session answers UNKNOWN for its
+    outstanding commands and for anything submitted while disconnected."""
 
     def observe(self) -> MachineObservation | None: ...
 
     def submit(self, envelope: ActionEnvelope) -> Ack: ...
+
+    def poll_acks(self) -> list[Ack]: ...
 
     def stop(self) -> None: ...
 
@@ -156,6 +167,20 @@ class MachineSession(Protocol):
 
     @property
     def fault(self) -> str | None: ...
+
+
+@runtime_checkable
+class LeasedSession(MachineSession, Protocol):
+    """A session on a machine whose capabilities declare leased_authority
+    (ARCH-001 decision 5). acquire_lease() grants authority under a new
+    epoch, greater than any the session granted before; lease_epoch is
+    the epoch the session honours now (None once authority is lost). The
+    session rejects envelopes whose lease_epoch is not the current one."""
+
+    def acquire_lease(self) -> int: ...
+
+    @property
+    def lease_epoch(self) -> int | None: ...
 
 
 @runtime_checkable

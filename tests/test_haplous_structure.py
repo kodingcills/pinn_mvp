@@ -16,6 +16,7 @@ def test_core_file_set_is_expected():
         "evidence.py",
         "evidence_store.py",
         "intent.py",
+        "lifecycle.py",
         "machine.py",
         "runtime.py",
         "state.py",

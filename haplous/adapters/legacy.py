@@ -61,7 +61,9 @@ class SimMachine(Protocol):
 
 class LegacySession:
     """Product MachineSession over a SimSession: submit unwraps the
-    envelope and applies its payload, answering synchronously."""
+    envelope and applies its payload, answering synchronously. Its
+    machine does not declare leased_authority: the lease is the constant
+    epoch 0, and an envelope under any other epoch is stale."""
 
     def __init__(self, inner: SimSession) -> None:
         self.inner = inner
@@ -70,11 +72,16 @@ class LegacySession:
         return self.inner.observe()
 
     def submit(self, envelope: ActionEnvelope) -> Ack:
+        if envelope.lease_epoch != 0:
+            return Ack(envelope.command_id, AckStatus.REJECTED, "stale_lease_epoch")
         if not isinstance(envelope.payload, CartesianImpedanceTarget):
             return Ack(envelope.command_id, AckStatus.REJECTED, "unsupported_payload")
         outcome = self.inner.apply(envelope.payload)
         status = AckStatus.CONTROLLER_ACCEPTED if outcome.accepted else AckStatus.REJECTED
         return Ack(envelope.command_id, status, outcome.reason)
+
+    def poll_acks(self) -> list[Ack]:
+        return []
 
     def stop(self) -> None:
         self.inner.stop()
