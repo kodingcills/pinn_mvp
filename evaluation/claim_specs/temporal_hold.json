@@ -1,0 +1,13 @@
+{
+  "property_id": "temporal_hold",
+  "statement": "Haplous holds rather than acting on stale state up to the hold budget",
+  "requirements": {"hold_budget_s": 0.5},
+  "machine_profiles": ["mujoco_heb"],
+  "task_family": "peg_insertion",
+  "comparators": ["haplous_mediated", "g1_incumbent", "bare_behavior"],
+  "population": "temporal_hold_dev@v1",
+  "n_scenarios": 8,
+  "budget_cpu_min": 4.0,
+  "seed": 20020,
+  "tier": "DEV"
+}
