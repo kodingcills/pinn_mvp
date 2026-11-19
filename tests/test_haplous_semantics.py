@@ -660,6 +660,84 @@ def test_machine_fault_mid_motion_aborts_and_stops():
     assert machine.stop_calls == 1
 
 
+class _FaultOnStepSession(ScriptedSession):
+    """Faults while the world advances (issue #24), not at observe."""
+
+    fault_on_step = 0
+
+    def step(self) -> None:
+        super().step()
+        self.fault_on_step -= 1
+        if self.fault_on_step == 0:
+            self._fault, self._ended = "X", True
+
+
+class _FaultOnStepMachine(ScriptedMachine):
+    def __init__(self, *, fault_on_step, **kwargs):
+        super().__init__(**kwargs)
+        self._fault_on_step = fault_on_step
+
+    def open_session(self, *, start_position_m, horizon_s):
+        session = super().open_session(
+            start_position_m=start_position_m, horizon_s=horizon_s
+        )
+        session.__class__ = _FaultOnStepSession
+        session.fault_on_step = self._fault_on_step
+        return session
+
+
+@pytest.mark.parametrize("seated", [False, True])
+def test_machine_fault_during_temporal_hold_aborts_as_machine_fault(seated):
+    """#24: a session ending with a fault while the runtime holds on lost
+    observations is a machine fault, never success_condition_unmet and never
+    COMPLETE, even when the success condition holds on the last window."""
+    if seated:
+        # Seated but stale: live completion is withheld (fresh state only),
+        # so the success condition holds on the window at session end.
+        script = stream(seated_samples(4, z=-0.002, fz=1.0))
+        script.append(obs(4 * PERIOD, received=1.0))
+        intent = dict(
+            requirements=tuple(
+                replace(r, hard=False)
+                if r.kind is RequirementKind.STATE_MAX_AGE_S
+                else r
+                for r in make_intent().requirements
+            )
+        )
+    else:
+        script = stream(seated_samples(5, z=-0.002, fz=1.0))
+        intent = {}
+    machine = _FaultOnStepMachine(
+        observation=obs(0.0),
+        script=script + [None] * 10,
+        hold_last=False,
+        fault_on_step=8,
+    )
+    runtime = runtime_over(machine, **intent)
+    evidence = runtime.execute()
+    kinds = [e.kind for e in evidence.events]
+    assert "temporal_hold_entered" in kinds
+    assert runtime.state is ExecutionState.ABORTED
+    payload = outcome_payload(evidence)
+    assert payload["result"] == "ABORTED"
+    assert payload["reason"] == "machine_fault_X"
+    assert machine.stop_calls == 1
+
+
+def test_machine_fault_at_step_outside_hold_aborts_as_machine_fault():
+    """Parity: the main-loop session-end path already reports the fault."""
+    machine = _FaultOnStepMachine(
+        observation=obs(0.0),
+        script=stream(seated_samples(5, z=-0.002, fz=1.0)),
+        fault_on_step=3,
+    )
+    runtime = runtime_over(machine)
+    evidence = runtime.execute()
+    assert runtime.state is ExecutionState.ABORTED
+    assert outcome_payload(evidence)["reason"] == "machine_fault_X"
+    assert machine.stop_calls == 1
+
+
 def test_stop_request_issued_on_hard_fault():
     machine = ScriptedMachine(
         observation=obs(0.0),
