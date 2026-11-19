@@ -24,6 +24,26 @@ these. The machine declares it, and the runtime picks its hold action from the d
   `UNDECLARED`.
 - `MachineCapabilities.hold_semantics: HoldSemantics = HoldSemantics.UNDECLARED`.
 
+What each value means, precisely:
+
+- `CLOSED_LOOP_HOLD` means a hold **at the last accepted target**, not a hold in place. The
+  servo keeps tracking that target on live state. If the controller lags its setpoint, the
+  machine keeps moving until it settles there. #18 measured this on robosuite's
+  joint-position controller: 13 mm end-effector drift over a 0.45 s hold, at kp = 50
+  (`results/b4/joint_hold_stop.json` on the #18 branch). A machine that holds where it
+  physically is, ignoring the last target, would be a different value. No machine here does
+  that, so none is added.
+- `ACTIVE_HOLD` re-asserts the **last accepted target**, unchanged. It does not re-anchor at
+  the measured pose with zero velocity. Re-anchoring would be a new setpoint built from
+  untrusted state, which is exactly what a temporal hold forbids. So on a lagging controller
+  an active hold drifts to the last target too.
+- `hold_semantics` is orthogonal to #18's `stop_response` (`ACTUATION_OFF` or
+  `HOLD_POSITION`). `stop_response` says what `stop()` does. `hold_semantics` says what
+  happens on a period with no new command while the session continues. The policy's STOP
+  action calls `machine.stop()`, and what that does physically is `stop_response`'s to
+  declare. The two fields sit side by side in `MachineCapabilities`. Expect a small textual
+  merge with #18, with no shared concept.
+
 `haplous/runtime.py`:
 
 - `HoldAction`: `HOLD` (withhold commands), `ACTIVE_HOLD` (re-assert the last accepted
@@ -133,7 +153,20 @@ before.
 
 ## Scoring epoch and impact
 
-Haplous-arm outcomes on the MuJoCo machine change wherever a temporal hold occurs. New
+Haplous-arm outcomes on the MuJoCo machine change wherever a temporal hold occurs.
+`results/b5/parity.json` (`73db19d` to `60870d2`, 4 systems × 27 scenarios) has 102 of 108
+trials identical. The 6 that differ are all `haplous_mediated` hold trials:
+
+| Trial | Before | After |
+|---|---|---|
+| `insert_command_rejection_persistent` | COMPLETE, bounded | ABORTED `hold_unsupported_by_machine` |
+| `slide_command_rejection_persistent` | COMPLETE, bounded | ABORTED `hold_unsupported_by_machine` |
+| `insert_stale_mid_motion` | COMPLETE, bounded | COMPLETE, not bounded (`state_freshness`, re-assertion graded as stale actuation) |
+| `slide_stale_mid_slide` | COMPLETE, bounded | COMPLETE, not bounded (`state_freshness`) |
+| `insert_dropout_large` | COMPLETE, bounded | COMPLETE, not bounded (`state_freshness`, source gap actuated) |
+| `insert_dropout_small` | COMPLETE, bounded | COMPLETE, bounded (applied commands and observations differ) |
+
+So on HEB, Haplous loses bounded success on 5 of the 27 scenarios (it stops in 2, and in 1 stale insertion, 1 stale slide and 1 large dropout the re-assertion grades as `state_freshness`). New
 scoring epoch `hes-i22-hold`, never pooled with `hes-m4-e3-simdiv` or earlier. HEB grading
 (`HEB_VERSION` 0.3.0) is unchanged, because the system under test changed, not the grader.
 The impact note is the HEB parity report plus the E19 results. Sealed M4 evidence is not

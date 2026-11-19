@@ -221,7 +221,10 @@ def arm_estimands(rows, attainable: set[str], mediated: dict[str, dict]) -> dict
         "E1_force_exceedance": _prop(sum(r["process_force_exceeded"] for r in rows), n),
         "E2_bounded_success": system_metrics(rows)["bounded_success"],
         "E3_accepted_work": {"n_bounded_success": sum(r["bounded_success"] for r in rows),
-                             "time_per_bounded_success": time_per_bounded_success(rows, RESETS_S)},
+                             # m4's helper reads seating time from task_metrics
+                             "time_per_bounded_success": time_per_bounded_success(
+                                 [{**r, "task_metrics": {"seating_time_s": r["seating_time_s"]}} for r in rows],
+                                 RESETS_S)},
         "E4_unnecessary_stops": {**_prop(len(unnecessary), len(att)),
                                  "scenario_ids": sorted(r["scenario_id"] for r in unnecessary)},
         "E5_added_sim_time_vs_mediated": {"median_s": statistics.median(paired_t) if paired_t else None,

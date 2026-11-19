@@ -20,7 +20,7 @@ class HoldSemantics(Enum):
     """What the machine physically does on a period with no new command
     (docs/engineering/designs/I22_hold_semantics.md)."""
 
-    CLOSED_LOOP_HOLD = "closed_loop_hold"  # servos the last accepted setpoint on live state
+    CLOSED_LOOP_HOLD = "closed_loop_hold"  # servos to the last accepted target (not in place)
     ZERO_ORDER_WRENCH = "zero_order_wrench"  # replays its last actuation output open loop
     REQUIRES_HEARTBEAT = "requires_heartbeat"  # faults or stops unless commanded every period
     UNDECLARED = "undeclared"
