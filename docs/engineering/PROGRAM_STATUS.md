@@ -6,6 +6,10 @@ Backlog: GitHub Issues. This file holds only the current state and the next acti
 - Work branch: `claude/magical-curie-si1vjr`, restarted from `main` @ `a8541bf` (PR #8 merge).
 - Nothing runs between sessions. Resume from this file and the open issues.
 - Usage: `USAGE_NOT_MEASURED`.
+- Commit attribution (operator, 2026-11-19): author and committer `kodingcills`; no Claude
+  co-author or session trailers. Branch commits since `a8541bf` were rewritten to match
+  (backup ref `backup/pre-author-rewrite` local only); SHAs quoted in issue comments before
+  2026-11-19 refer to the pre-rewrite commits.
 
 ## Issue graph
 
