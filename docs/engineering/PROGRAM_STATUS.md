@@ -34,4 +34,4 @@ Classification: VALIDATED LIMITATION (research-substrate tests), not product blo
 1. #17 owner and #20 owner working; on reports: independent verify, integrate, issue comment.
 2. After #17: #22 hold semantics, then the amended E19 run (#19 step 3) with an instantiated `g1_parity` arm; #18 second command surface.
 3. Open the PR to `main` (do not merge without operator approval) once Gate B lands, or earlier if the operator asks.
-4. Full suite on `6a4de75` is running (expected: previous baseline + new tests, 4 known failures).
+4. Full suite on `6a4de75`: 975 passed, 4 failed (the known 4), 1 skipped, 1 xfailed (708 s).
