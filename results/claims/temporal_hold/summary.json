@@ -1,0 +1,334 @@
+{
+  "arms": [
+    "haplous_mediated",
+    "g1_incumbent",
+    "bare_behavior"
+  ],
+  "better": "lower",
+  "by_arm": {
+    "bare_behavior": {
+      "graded_dispositions": {
+        "COMPLETE": 8
+      },
+      "hes_system_metrics": {
+        "authority_axis_counts": {
+          "ACCEPTED": 8
+        },
+        "bounded_success": {
+          "ci_high": 0.32440756488388023,
+          "ci_low": 0.0,
+          "method": "wilson95",
+          "n": 8,
+          "value": 0.0
+        },
+        "conditional_bsr": {
+          "ci_high": 0.32440756488388023,
+          "ci_low": 0.0,
+          "method": "wilson95",
+          "n": 8,
+          "value": 0.0
+        },
+        "contract_axis_counts": {
+          "VIOLATED": 8
+        },
+        "coverage": {
+          "ci_high": 1.0,
+          "ci_low": 0.6755924351161198,
+          "method": "wilson95",
+          "n": 8,
+          "value": 1.0
+        },
+        "n": 8,
+        "system_bsr": {
+          "ci_high": 0.32440756488388023,
+          "ci_low": 0.0,
+          "method": "wilson95",
+          "n": 8,
+          "value": 0.0
+        },
+        "task_axis_counts": {
+          "SUCCESS": 8
+        },
+        "task_success": {
+          "ci_high": 1.0,
+          "ci_low": 0.6755924351161198,
+          "method": "wilson95",
+          "n": 8,
+          "value": 1.0
+        }
+      },
+      "stale_span_actuated": {
+        "ci_high": 1.0,
+        "ci_low": 0.6755924351161198,
+        "method": "wilson95",
+        "n": 8,
+        "value": 1.0
+      }
+    },
+    "g1_incumbent": {
+      "graded_dispositions": {
+        "ABORTED": 4,
+        "COMPLETE": 3,
+        "SIM_DIVERGED": 1
+      },
+      "hes_system_metrics": {
+        "authority_axis_counts": {
+          "ABORTED": 5,
+          "ACCEPTED": 3
+        },
+        "bounded_success": {
+          "ci_high": 0.6942576053973727,
+          "ci_low": 0.13684428582359742,
+          "method": "wilson95",
+          "n": 8,
+          "value": 0.375
+        },
+        "conditional_bsr": {
+          "ci_high": 0.6942576053973727,
+          "ci_low": 0.13684428582359742,
+          "method": "wilson95",
+          "n": 8,
+          "value": 0.375
+        },
+        "contract_axis_counts": {
+          "BOUNDED": 8
+        },
+        "coverage": {
+          "ci_high": 1.0,
+          "ci_low": 0.6755924351161198,
+          "method": "wilson95",
+          "n": 8,
+          "value": 1.0
+        },
+        "n": 8,
+        "system_bsr": {
+          "ci_high": 0.6942576053973727,
+          "ci_low": 0.13684428582359742,
+          "method": "wilson95",
+          "n": 8,
+          "value": 0.375
+        },
+        "task_axis_counts": {
+          "FAILURE": 5,
+          "SUCCESS": 3
+        },
+        "task_success": {
+          "ci_high": 0.6942576053973727,
+          "ci_low": 0.13684428582359742,
+          "method": "wilson95",
+          "n": 8,
+          "value": 0.375
+        }
+      },
+      "stale_span_actuated": {
+        "ci_high": 0.32440756488388023,
+        "ci_low": 0.0,
+        "method": "wilson95",
+        "n": 8,
+        "value": 0.0
+      }
+    },
+    "haplous_mediated": {
+      "graded_dispositions": {
+        "ABORTED": 4,
+        "COMPLETE": 3,
+        "SIM_DIVERGED": 1
+      },
+      "hes_system_metrics": {
+        "authority_axis_counts": {
+          "ABORTED": 5,
+          "ACCEPTED": 3
+        },
+        "bounded_success": {
+          "ci_high": 0.6942576053973727,
+          "ci_low": 0.13684428582359742,
+          "method": "wilson95",
+          "n": 8,
+          "value": 0.375
+        },
+        "conditional_bsr": {
+          "ci_high": 0.6942576053973727,
+          "ci_low": 0.13684428582359742,
+          "method": "wilson95",
+          "n": 8,
+          "value": 0.375
+        },
+        "contract_axis_counts": {
+          "BOUNDED": 8
+        },
+        "coverage": {
+          "ci_high": 1.0,
+          "ci_low": 0.6755924351161198,
+          "method": "wilson95",
+          "n": 8,
+          "value": 1.0
+        },
+        "n": 8,
+        "system_bsr": {
+          "ci_high": 0.6942576053973727,
+          "ci_low": 0.13684428582359742,
+          "method": "wilson95",
+          "n": 8,
+          "value": 0.375
+        },
+        "task_axis_counts": {
+          "FAILURE": 5,
+          "SUCCESS": 3
+        },
+        "task_success": {
+          "ci_high": 0.6942576053973727,
+          "ci_low": 0.13684428582359742,
+          "method": "wilson95",
+          "n": 8,
+          "value": 0.375
+        }
+      },
+      "stale_span_actuated": {
+        "ci_high": 0.32440756488388023,
+        "ci_low": 0.0,
+        "method": "wilson95",
+        "n": 8,
+        "value": 0.0
+      }
+    }
+  },
+  "by_slice": {
+    "above_budget|mujoco_heb": {
+      "bare_behavior": {
+        "graded_dispositions": {
+          "COMPLETE": 4
+        },
+        "stale_span_actuated": {
+          "ci_high": 1.0,
+          "ci_low": 0.5101091635454027,
+          "method": "wilson95",
+          "n": 4,
+          "value": 1.0
+        }
+      },
+      "g1_incumbent": {
+        "graded_dispositions": {
+          "ABORTED": 3,
+          "SIM_DIVERGED": 1
+        },
+        "stale_span_actuated": {
+          "ci_high": 0.4898908364545973,
+          "ci_low": 0.0,
+          "method": "wilson95",
+          "n": 4,
+          "value": 0.0
+        }
+      },
+      "haplous_mediated": {
+        "graded_dispositions": {
+          "ABORTED": 3,
+          "SIM_DIVERGED": 1
+        },
+        "stale_span_actuated": {
+          "ci_high": 0.4898908364545973,
+          "ci_low": 0.0,
+          "method": "wilson95",
+          "n": 4,
+          "value": 0.0
+        }
+      }
+    },
+    "below_budget|mujoco_heb": {
+      "bare_behavior": {
+        "graded_dispositions": {
+          "COMPLETE": 4
+        },
+        "stale_span_actuated": {
+          "ci_high": 1.0,
+          "ci_low": 0.5101091635454027,
+          "method": "wilson95",
+          "n": 4,
+          "value": 1.0
+        }
+      },
+      "g1_incumbent": {
+        "graded_dispositions": {
+          "ABORTED": 1,
+          "COMPLETE": 3
+        },
+        "stale_span_actuated": {
+          "ci_high": 0.4898908364545973,
+          "ci_low": 0.0,
+          "method": "wilson95",
+          "n": 4,
+          "value": 0.0
+        }
+      },
+      "haplous_mediated": {
+        "graded_dispositions": {
+          "ABORTED": 1,
+          "COMPLETE": 3
+        },
+        "stale_span_actuated": {
+          "ci_high": 0.4898908364545973,
+          "ci_low": 0.0,
+          "method": "wilson95",
+          "n": 4,
+          "value": 0.0
+        }
+      }
+    }
+  },
+  "claim": "Haplous holds rather than acting on stale state up to the hold budget",
+  "cpu_estimate_s": 161.0,
+  "cpu_used_s": 20.2,
+  "estimand": "stale_span_actuated",
+  "interpretation_limit": "DEV population, small n: a development finding, not a real-world rate and not confirmatory evidence",
+  "m0_run_id": "claims-temporal_hold-3851766eb08e",
+  "n_units": 8,
+  "paired": {
+    "haplous_mediated_vs_bare_behavior": {
+      "bounded_success": {
+        "ci_high": 0.75,
+        "ci_low": 0.12187500000000107,
+        "delta": 0.375,
+        "field": "bounded_success",
+        "method": "paired_bootstrap_mean",
+        "n": 8,
+        "n_pairs": 8,
+        "n_resamples": 5000
+      },
+      "stale_span_actuated": {
+        "ci_high": -1.0,
+        "ci_low": -1.0,
+        "delta": -1.0,
+        "field": "stale_span_actuated",
+        "method": "paired_bootstrap_mean",
+        "n": 8,
+        "n_pairs": 8,
+        "n_resamples": 5000
+      }
+    },
+    "haplous_mediated_vs_g1_incumbent": {
+      "bounded_success": {
+        "ci_high": 0.0,
+        "ci_low": 0.0,
+        "delta": 0.0,
+        "field": "bounded_success",
+        "method": "paired_bootstrap_mean",
+        "n": 8,
+        "n_pairs": 8,
+        "n_resamples": 5000
+      },
+      "stale_span_actuated": {
+        "ci_high": 0.0,
+        "ci_low": 0.0,
+        "delta": 0.0,
+        "field": "stale_span_actuated",
+        "method": "paired_bootstrap_mean",
+        "n": 8,
+        "n_pairs": 8,
+        "n_resamples": 5000
+      }
+    }
+  },
+  "plan_sha256": "3851766eb08e7a86ebeafc4493b9c6bc060b1f8f5a1c674f0cd7770103e81103",
+  "population": "temporal_hold_dev@v1",
+  "property_id": "temporal_hold",
+  "tier": "DEV"
+}
