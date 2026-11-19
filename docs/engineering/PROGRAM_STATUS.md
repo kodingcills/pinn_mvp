@@ -12,9 +12,9 @@ Backlog: GitHub Issues. This file holds only the current state and the next acti
 | Epic | Children (priority, status) |
 |---|---|
 | #9 Gate A Developer Alpha | **Gate A acceptance PASS at `9457ddc`** (fresh-clone journey). #13 truth leak (P0, done) · #14 runtime-only distribution (done; mujoco pinned <3.12 in `d860f89`) · #15 job identity + artifact root (done) · #23 corrupt run listed verified / cached replay (done) |
-| #10 Gate B Generalized execution | #16 world stepping out of core, envelopes, legacy adapter (done, verifier PASS, integrated `51adcb2..6a4de75`) · #17 async lifecycle + lease (P1, in progress) · #22 hold semantics (P1, next after #17; Gate C mechanism B) · #18 second command surface (P1, after #17) |
+| #10 Gate B Generalized execution | #16 world stepping out of core, envelopes, legacy adapter (done, verifier PASS, integrated `51adcb2..6a4de75`) · #17 async lifecycle + lease (P1, in progress) · #22 hold semantics (P1, next after #17; Gate C mechanism B) · #18 second command surface (P1, after #17) · #24 machine fault during hold misreported (P0, right after #17) |
 | #11 Gate C Differential value | #19 stale-hold exceedance: diagnosis done (root cause: open-loop hold during the hold); E19 protocol amended `cf70a70`, run after #22 |
-| #12 Gate D Evaluator engine | #21 sim divergence graded valid (P0, done; M4 addendum, C1/C2 still ties) · #20 claim-to-experiment compiler (P1, in progress, rebasing onto `6a4de75`) |
+| #12 Gate D Evaluator engine | #21 sim divergence graded valid (P0, done; M4 addendum, C1/C2 still ties) · #20 claim-to-experiment compiler (done, verifier PASS, `bd29b4d`; DEV: hold 0/8 stale actuation Haplous = G1, bare 8/8; admission 9/9 = G1, bare 3/9) |
 
 "Done" = verifier PASS and integrated on the branch; issues close when the PR merges to `main`.
 
@@ -32,6 +32,6 @@ Classification: VALIDATED LIMITATION (research-substrate tests), not product blo
 ## Next actions
 
 1. #17 owner and #20 owner working; on reports: independent verify, integrate, issue comment.
-2. After #17: #22 hold semantics, then the amended E19 run (#19 step 3) with an instantiated `g1_parity` arm; #18 second command surface.
+2. After #17: #24 (P0) then #22 hold semantics, then the amended E19 run (#19 step 3) with an instantiated `g1_parity` arm; #18 second command surface.
 3. Open the PR to `main` (do not merge without operator approval) once Gate B lands, or earlier if the operator asks.
 4. Full suite on `6a4de75`: 975 passed, 4 failed (the known 4), 1 skipped, 1 xfailed (708 s).
