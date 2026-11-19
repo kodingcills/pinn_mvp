@@ -51,7 +51,8 @@ def load(log_dir: Path) -> dict[str, Any]:
         raise TimelineRefused(f"episode log unreadable in {log_dir}: {exc}") from exc
     dt = meta["timestep_s"]
     obs = [r for r in rows if r["kind"] == "observation" and r["observation"] is not None]
-    cmd = [r for r in rows if r["kind"] == "command"]
+    # Cartesian targets only; a joint-position command (#18) has no pose target to plot.
+    cmd = [r for r in rows if r["kind"] == "command" and "target_pose_m" in r["command"]]
     if len(obs) != meta["n_observations"]:
         raise TimelineRefused(f"{len(obs)} observations on disk, metadata records {meta['n_observations']}")
     end_s = meta["n_ticks"] * dt

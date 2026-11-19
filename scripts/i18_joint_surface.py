@@ -32,7 +32,11 @@ DROPOUT_S = (1.0, 1.4)
 
 def _run(seed: int, *, log_dir: Path | None = None, dropout=(), deadline_s: float = 12.0):
     from benchmarks.episode_log import LoggingMachine
-    from benchmarks.external.robosuite_lift_joint import JointLiftPolicy, RobosuiteLiftJointTask, lift_joint_intent
+    from benchmarks.external.robosuite_lift_joint import (
+        JointLiftPolicy,
+        RobosuiteLiftJointTask,
+        lift_joint_intent,
+    )
     from haplous.adapters.external import ExternalMachineAdapter
     from haplous.adapters.legacy import sim_runtime
 
@@ -76,17 +80,17 @@ def _response(trace: list[dict], t0: float, target_q: list[float], end_s: float)
     # Overshoot: the farthest any joint travels past its hold target, in the
     # direction it was moving at t0 (0 when it never crosses the target).
     direction = [1.0 if v >= 0 else -1.0 for v in at["qdot"]]
-    past = [max(0.0, max(d * (q - g) for d, q, g in zip(direction, s["q"], target_q))) for s in window]
-    stopped = next((s["t_s"] for s, v in zip(window, speeds) if v < STOPPED_RAD_S), None)
+    past = [max(0.0, max(d * (q - g) for d, q, g in zip(direction, s["q"], target_q, strict=True))) for s in window]
+    stopped = next((s["t_s"] for s, v in zip(window, speeds, strict=True) if v < STOPPED_RAD_S), None)
     eef0 = at["eef_m"]
-    travel = max(sum((a - b) ** 2 for a, b in zip(s["eef_m"], eef0)) ** 0.5 for s in window)
+    travel = max(sum((a - b) ** 2 for a, b in zip(s["eef_m"], eef0, strict=True)) ** 0.5 for s in window)
     return {
         "event_t_s": round(at["t_s"], 6),
         "speed_at_event_rad_s": max(abs(v) for v in at["qdot"]),
         "time_to_stop_s": None if stopped is None else round(stopped - at["t_s"], 6),
         "stopped_threshold_rad_s": STOPPED_RAD_S,
         "overshoot_rad": max(past),
-        "max_target_error_rad": max(max(abs(q - g) for q, g in zip(s["q"], target_q)) for s in window),
+        "max_target_error_rad": max(max(abs(q - g) for q, g in zip(s["q"], target_q, strict=True)) for s in window),
         "eef_travel_after_event_m": travel,
         "final_speed_rad_s": speeds[-1],
         "sample_period_s": round(window[1]["t_s"] - window[0]["t_s"], 6),
@@ -99,9 +103,9 @@ def holdstop(args) -> int:
     task, evidence, outcome = _run(args.seed, deadline_s=STOP_AT_S)
     assert outcome["reason"] == "deadline_exceeded", outcome
     stop_t = [e.t_s for e in evidence.events if e.kind == "outcome"][-1]
-    t_stop_cmd = next(s["t_s"] for s in task.trace if s["t_s"] > stop_t)
     for _ in range(round(SETTLE_WINDOW_S / task.capabilities().state_period_s)):
         task.step()  # the world keeps advancing; the controller holds the latched position
+    t_stop_cmd = next(s["t_s"] for s in task.trace if s["t_s"] > stop_t)
     stop_target = task.trace[-1]["target_q"]
     stop = _response(task.trace, stop_t, stop_target, stop_t + SETTLE_WINDOW_S)
     stop["runtime_stop_t_s"] = stop_t
@@ -115,7 +119,9 @@ def holdstop(args) -> int:
     kinds = [(e.kind, e.t_s, e.payload) for e in evidence.events]
     entered = next(t for k, t, p in kinds if k == "temporal_hold_entered")
     resumed = next(t for k, t, p in kinds if k == "temporal_revalidation_resumed")
-    held = [s for s in task.trace if entered <= s["t_s"] < resumed]
+    # The sample at `entered` predates that tick's command; from the next
+    # step on, the target in force is the last accepted command.
+    held = [s for s in task.trace if entered < s["t_s"] <= resumed + 1e-9]
     hold = _response(task.trace, entered, held[0]["target_q"], resumed)
     hold["hold_entered_t_s"] = entered
     hold["hold_resumed_t_s"] = resumed
@@ -126,7 +132,7 @@ def holdstop(args) -> int:
     result = {
         "issue": 18,
         "surface": "joint_position (robosuite 1.5.2 JointPositionController, absolute input, kp=50, damping_ratio=1)",
-        "task": "robosuite/1.5.2/Lift, seed %d" % args.seed,
+        "task": f"robosuite/1.5.2/Lift, seed {args.seed}",
         "clock": "sim (robosuite env.sim.data.time); samples are control steps, so times resolve to one period",
         "after_stop": stop,
         "during_temporal_hold": hold,
