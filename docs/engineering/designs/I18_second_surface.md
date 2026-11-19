@@ -122,3 +122,11 @@ Agent wall time was about 70 minutes of active work across two sittings (02:50 t
 13-minute parity run and two 14-minute suite runs are not counted either. This is an
 estimate from commit and file timestamps, not a measured timer. Agent tokens and credits
 were not observable (USAGE_NOT_MEASURED). A human engineer's effort was not measured.
+
+## Finding for #22 (hold semantics)
+
+A temporal hold on this surface does not freeze the arm. The machine keeps servoing to the
+last accepted joint target, and with robosuite's packaged kp=50 the joints lag that target, so
+the arm keeps moving through the hold: 0.026 rad/s still at the end of a 0.45 s hold, 0.053 rad
+from the stale target, 13.4 mm of end-effector travel (`results/b4/joint_hold_stop.json`).
+"Closed-loop hold to the last target" is therefore not "hold in place"; #22 must distinguish them.
