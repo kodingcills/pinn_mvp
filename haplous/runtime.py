@@ -465,7 +465,7 @@ class HaplousRuntime:
                         degraded_announced = True
                     self._ticks.wait()
                     if session.ended:
-                        self._finish_on_session_end(session, window)
+                        self._finish_on_session_end(session, window, last_source)
                         return
                     continue
                 gap_s = obs.stamp.source_s - last_source
@@ -749,10 +749,7 @@ class HaplousRuntime:
                         return
                 self._ticks.wait()
                 if session.ended:
-                    if session.fault is not None:
-                        self._abort_machine_fault(session, last_source)
-                    else:
-                        self._finish_on_session_end(session, window)
+                    self._finish_on_session_end(session, window, last_source)
                     return
         except Exception as exc:
             self._machine.stop()
@@ -844,8 +841,16 @@ class HaplousRuntime:
         return True, True
 
     def _finish_on_session_end(
-        self, session: MachineSession, window: list[MachineObservation]
+        self,
+        session: MachineSession,
+        window: list[MachineObservation],
+        last_source: float,
     ) -> None:
+        # The one session-end decision (#24): a fault ends the session as a
+        # machine fault before any success evaluation, on every path.
+        if session.fault is not None:
+            self._abort_machine_fault(session, last_source)
+            return
         assert self._intent is not None and self._intent.success_condition
         success = self._intent.success_condition
         if window and success.evaluate(list(window)):
