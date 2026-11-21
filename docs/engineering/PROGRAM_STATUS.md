@@ -38,11 +38,27 @@ do not touch product user paths: 3 `test_r05` (locked R05 evidence fingerprints 
 float on this platform; G5 filter check) and `test_rollout` capture (0.503 mm vs 0.5 mm threshold).
 Classification: VALIDATED LIMITATION (research-substrate tests), not product blockers.
 
+## Direction (operator review, 2026-11-21)
+
+E20 is archived as a confounded comparison: it found no trustworthy effort advantage either way.
+Reusable G1 (`benchmarks/g1lib/`) is the permanent competitive baseline. The evaluator is enough to
+improve the runtime; no more evaluator expansion unless a concrete runtime change needs it. Planned
+effort split: about 65% runtime and integration, 25% external controller or developer validation,
+10% evaluator. No native rewrite, general OEM framework or broad simulation campaign. Customer
+discovery runs in parallel (human-led).
+
+Milestone **Runtime Integration Readiness** (issues under #10):
+#27 truthful observations and stop semantics (P0) · #28 command validity at receipt time (P0) ·
+#29 restart reconciliation, never resume authority (P1). Each follows the AGENTS.md
+runtime-semantics workflow: design in the issue, parity, verifier PASS.
+
 ## Next actions
 
-1. Open a PR from this branch to `main` for review (do not merge without operator approval).
-2. Gate C next hypothesis: proposed on #11 (integration effort; async-controller semantics vs a fair G1).
-3. Gate D remaining: counterexample minimisation / boundary search, plots, Studio Performance Atlas and issue-from-replay.
-4. Gate E: integration beta and cold-reader handoff; then `PRODUCT_RELEASE_READOUT.md`.
-5. Done: HEB parity at HEAD, `results/b6/parity.json`, 108/108 identical vs `76063e8` (closes the Gate B b4 caveat).
-6. E20 (Gate C, integration effort vs reusable G1): feasibility PASS (`E20_feasibility.md`), pre-registration frozen at `f95b49b`; arms H and G started 2026-11-21T16:31Z in isolated worktrees; then one combined verifier.
+1. M0: PR #26 made mergeable (main recorded as an ancestor; its tree equals `764a8fe`). Exact-head
+   full suite and HEB parity `results/b7/` (results recorded below once finished).
+2. #27, then #28, then #29.
+3. A small URSim interface-characterization spike using the official UR client library or ROS 2
+   driver. Read-only first: telemetry, program status, controller version, timestamps, reconnect.
+   Then ack and authority behaviour. No custom protocol driver.
+4. Gate E: only the essential cold-reader path.
+5. Deferred: Gate D counterexample search, Studio Atlas, plots.

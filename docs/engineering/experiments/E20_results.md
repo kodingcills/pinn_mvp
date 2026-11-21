@@ -59,3 +59,26 @@ needs (a) builders who have not seen the target driver before their library phas
 phase at all with both foundations frozen beforehand; (b) several integrations or builders per arm
 for an interval; and (c) a task harder than one adapter file, so that effort rises above the
 measurement floor. Any commercial reading still requires review by a real robotics developer.
+
+## Post-hoc review notes (operator review, 2026-11-21; the sealed decision above is unchanged)
+
+- **Wording.** The pre-registered rule-3 outcome stands as recorded. The correct reading is "the
+  experiment did not identify a trustworthy integration-effort advantage for either approach". That
+  is not a demonstration of equivalence, and not a tie. The 15 acceptance cases are 9 nominal and
+  6 fault/contract cases; none establishes machinery safety.
+- **Driver ack model simplified.** `driver.py` applies a queued command when its ack falls due,
+  so application and acknowledgement are coupled, and it never checks `valid_until_s`. A real
+  controller can execute before an ack arrives, or after the link is lost, and a late ack cannot
+  undo motion. A4 therefore tests that motion stops after an ack is overdue, not deadline
+  enforcement at the machine.
+- **Revocation.** The driver accepts `stop()` without a control token, so A7 shows a simulated abort
+  path, not safe termination after real controller authority is lost.
+- **Nominal seeds.** The policy was developed on the same seeds; seed 8 was excluded after it failed.
+  That was fair between the arms, but 9/9 nominal is not independent evidence of task robustness.
+- **Haplous adapter truthfulness.** `benchmarks/e20_haplous/arm.py` declares
+  `StopResponse.HOLD_POSITION`, but the driver latches zero joint velocity
+  (`stop_behaviour: zero_velocity_latched`). It reports `force_z_n=0.0` and `tilt_deg=0.0` without
+  measuring them, and declares infinite reach and execution horizon. Admission refuses force- or
+  tilt-dependent contracts, because sensing is declared POSE-only, but the adapter is not a template
+  for a real integration. Follow-up: Runtime Integration Readiness (see `PROGRAM_STATUS.md`).
+- **Extension boundary.** Adding a command surface still needs a core change (17 lines here).
