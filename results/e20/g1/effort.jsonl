@@ -1,0 +1,5 @@
+{"event": "phase_start", "phase": "library", "t": 1795278699.6656196, "note": ""}
+{"event": "phase_end", "phase": "library", "t": 1795279541.8815143, "note": ""}
+{"event": "phase_start", "phase": "integration", "t": 1795279541.9165573, "note": ""}
+{"event": "acceptance_run", "arm": "benchmarks.e20_g1.arm:run", "start": 1795279572.4312093, "wall_s": 24.3, "passed": 15, "total": 15}
+{"event": "phase_end", "phase": "integration", "t": 1795279600.9327204, "note": ""}

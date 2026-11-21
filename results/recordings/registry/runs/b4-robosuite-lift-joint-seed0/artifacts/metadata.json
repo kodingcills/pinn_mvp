@@ -1,0 +1,22 @@
+{
+  "backend": "robosuite-1.5.2",
+  "clocks": {
+    "host_monotonic_ns": "recording host time.monotonic_ns()",
+    "t_s": "machine seconds",
+    "tick": "session step index"
+  },
+  "command_surface": "joint_position",
+  "format": "haplous-episode-log-v1",
+  "n_observations": 62,
+  "n_ticks": 60,
+  "outcome": {
+    "disposition": "COMPLETE",
+    "reason": null,
+    "refusal_codes": [],
+    "task_success": true
+  },
+  "seed": 0,
+  "system": "haplous_mediated",
+  "task_id": "robosuite/1.5.2/Lift/joint_position",
+  "timestep_s": 0.05
+}

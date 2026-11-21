@@ -1,0 +1,157 @@
+{
+ "cases": [
+  {
+   "case": "A1_nominal",
+   "seed": 0,
+   "outcome": "COMPLETE",
+   "reason": null,
+   "grader": true,
+   "pass": true,
+   "problems": []
+  },
+  {
+   "case": "A1_nominal",
+   "seed": 1,
+   "outcome": "COMPLETE",
+   "reason": null,
+   "grader": true,
+   "pass": true,
+   "problems": []
+  },
+  {
+   "case": "A1_nominal",
+   "seed": 2,
+   "outcome": "COMPLETE",
+   "reason": null,
+   "grader": true,
+   "pass": true,
+   "problems": []
+  },
+  {
+   "case": "A1_nominal",
+   "seed": 3,
+   "outcome": "COMPLETE",
+   "reason": null,
+   "grader": true,
+   "pass": true,
+   "problems": []
+  },
+  {
+   "case": "A1_nominal",
+   "seed": 4,
+   "outcome": "COMPLETE",
+   "reason": null,
+   "grader": true,
+   "pass": true,
+   "problems": []
+  },
+  {
+   "case": "A1_nominal",
+   "seed": 5,
+   "outcome": "COMPLETE",
+   "reason": null,
+   "grader": true,
+   "pass": true,
+   "problems": []
+  },
+  {
+   "case": "A1_nominal",
+   "seed": 6,
+   "outcome": "COMPLETE",
+   "reason": null,
+   "grader": true,
+   "pass": true,
+   "problems": []
+  },
+  {
+   "case": "A1_nominal",
+   "seed": 7,
+   "outcome": "COMPLETE",
+   "reason": null,
+   "grader": true,
+   "pass": true,
+   "problems": []
+  },
+  {
+   "case": "A1_nominal",
+   "seed": 9,
+   "outcome": "COMPLETE",
+   "reason": null,
+   "grader": true,
+   "pass": true,
+   "problems": []
+  },
+  {
+   "case": "A2_contract_refusal",
+   "seed": 0,
+   "outcome": "COMPLETE",
+   "reason": null,
+   "grader": true,
+   "pass": false,
+   "problems": [
+    "not REFUSED",
+    "79 commands sent before refusing"
+   ]
+  },
+  {
+   "case": "A3_stale_state",
+   "seed": 0,
+   "outcome": "COMPLETE",
+   "reason": null,
+   "grader": true,
+   "pass": false,
+   "problems": [
+    "10 motion commands during the stale window"
+   ]
+  },
+  {
+   "case": "A4_late_ack",
+   "seed": 0,
+   "outcome": "COMPLETE",
+   "reason": null,
+   "grader": true,
+   "pass": false,
+   "problems": [
+    "77 motion commands after acks became overdue",
+    "not ABORTED under persistent late acks"
+   ]
+  },
+  {
+   "case": "A5_duplicate_ack",
+   "seed": 0,
+   "outcome": "COMPLETE",
+   "reason": null,
+   "grader": true,
+   "pass": true,
+   "problems": []
+  },
+  {
+   "case": "A6_disconnect",
+   "seed": 0,
+   "outcome": "ABORTED",
+   "reason": "step_budget_or_disconnect",
+   "grader": false,
+   "pass": false,
+   "problems": [
+    "stop() not called within 0.25 s of the fault"
+   ]
+  },
+  {
+   "case": "A7_authority_revoked",
+   "seed": 0,
+   "outcome": "ABORTED",
+   "reason": "step_budget_or_disconnect",
+   "grader": false,
+   "pass": false,
+   "problems": [
+    "374 motion commands after the fault",
+    "stop() not called within 0.25 s of the fault"
+   ]
+  }
+ ],
+ "passed": 10,
+ "total": 15,
+ "all_pass": false,
+ "arm": "benchmarks.e20_shared.direct_arm:run",
+ "wall_s": 30.6
+}

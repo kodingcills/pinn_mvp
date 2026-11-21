@@ -86,6 +86,32 @@ class CartesianImpedanceTarget:
 
 
 @dataclass(frozen=True)
+class JointPositionTarget:
+    """Joint-position command surface: one absolute setpoint per arm joint,
+    in radians, in the joint order of the machine's controller. The
+    machine's joint position loop owns its gains, limits and torque
+    saturation; a newer accepted target replaces the old one at the next
+    control step (no blending or trajectory)."""
+
+    positions_rad: tuple[float, ...]
+
+
+@dataclass(frozen=True)
+class JointVelocityTarget:
+    """Joint-velocity command surface: one velocity per arm joint, in rad/s,
+    in the joint order of the machine's controller, plus the binary gripper
+    command (-1 open, +1 close) that travels with it. The machine applies
+    an accepted target until a newer one replaces it or it is stopped."""
+
+    velocities_rad_s: tuple[float, ...]
+    gripper: float
+
+
+# Every command surface an ActionEnvelope can carry (ARCH-001 decision 3).
+CommandPayload = CartesianImpedanceTarget | JointPositionTarget | JointVelocityTarget
+
+
+@dataclass(frozen=True)
 class CommandOutcome:
     """Result of handing a target to a step-driven simulator session or
     ExternalTask (haplous.adapters.legacy). Not part of the product session
@@ -110,7 +136,7 @@ class ActionEnvelope:
     origin_source_s: float
     clock: ClockDomain
     valid_until_s: float
-    payload: CartesianImpedanceTarget
+    payload: CommandPayload
     correlation_id: str
 
 

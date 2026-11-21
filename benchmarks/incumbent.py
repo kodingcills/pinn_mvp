@@ -8,16 +8,18 @@ acceptance, machine fault, interface loss). It reads exactly what Haplous
 reads: the ExecutionIntent built from the scenario's declared requirements,
 machine.capabilities(), machine/session observations, health and command
 outcomes, and the behaviour's declared command contract. It never imports
-haplous runtime logic."""
+haplous runtime logic. The supervision itself lives in ``benchmarks.g1lib``;
+this module is its HEB machine adapter and task configuration."""
 from __future__ import annotations
 
 import time
 
+from benchmarks.g1lib import GUARDS as LIB_GUARDS
+from benchmarks.g1lib import Limit, Recovery, Sample, Sent, Supervisor, Task
 from benchmarks.heb import systems
 from benchmarks.heb.divergence import divergence_detail
 from benchmarks.heb.protocol import Realization, Scenario, SystemRun
 from haplous.intent import RequirementKind
-from haplous.machine import MachineObservation
 
 GUARDS = frozenset({
     "command_mode",       # pre-motion: required controller interfaces present
@@ -46,6 +48,79 @@ def unmet_command_modes(behavior: object, caps) -> list[str] | None:
     return sorted(m.value for m in required if m not in caps.command_modes)
 
 
+class _HebAdapter:
+    """g1lib adapter over a HEB machine: synchronous command outcomes, no exclusive control."""
+
+    def __init__(self, machine, intent, caps) -> None:
+        self.machine, self.session = machine, None
+        self._intent, self._caps, self._t = intent, caps, 0.0
+
+    def _sample(self, obs) -> Sample | None:
+        if obs is None:
+            return None
+        self._t = max(self._t, obs.stamp.source_s)
+        return Sample(obs.stamp.source_s, obs.stamp.age_s, obs)
+
+    def now(self) -> float:
+        return self._t
+
+    def peek(self) -> Sample | None:
+        return self._sample(self.machine.observe())
+
+    def open(self) -> None:
+        self.session = self.machine.open_session(
+            start_position_m=self._intent.start_position_m,
+            horizon_s=self._caps.execution_horizon_s,
+        )
+
+    def sample(self) -> Sample | None:
+        return self._sample(self.session.observe())
+
+    def health(self) -> str | None:
+        status = str(self.machine.health().get("status", "ok"))
+        return None if status == "ok" else status
+
+    def has_authority(self) -> bool:
+        return True
+
+    def command_modes(self):
+        return self.machine.capabilities().command_modes
+
+    def send(self, command, valid_until_s: float) -> Sent:
+        return Sent("accepted" if self.session.apply(command).accepted else "rejected")
+
+    def poll_acks(self) -> tuple:
+        return ()
+
+    def hold_command(self) -> None:
+        return None  # the machine holds its last setpoint
+
+    def stop(self) -> None:
+        self.session.stop()
+
+    def step(self) -> None:
+        self.session.step()
+
+    def ended(self) -> bool:
+        return self.session.ended
+
+    def fault(self) -> str | None:
+        return self.session.fault
+
+
+class _Restartable:
+    """HEB behaviour as a g1lib Behavior: restarts re-run ``begin`` from the live pose."""
+
+    def __init__(self, behavior, intent, caps) -> None:
+        self._behavior, self._intent, self._caps = behavior, intent, caps
+
+    def begin(self, obs) -> None:
+        self._behavior.begin(self._intent, self._caps, obs)
+
+    def step(self, obs):
+        return self._behavior.step(obs)
+
+
 class G1IncumbentSystem:
     """``disabled`` removes named guards; it exists for the planted
     guard-removal tests and is never used by an arm name."""
@@ -56,146 +131,64 @@ class G1IncumbentSystem:
             raise ValueError(f"unknown G1 guards {sorted(unknown)}")
         self.name = "g1_incumbent"
         self._on = GUARDS - frozenset(disabled)
+        self._supervisor = Supervisor(disabled=frozenset(disabled) & LIB_GUARDS)
 
-    def _pre_motion(self, machine, behavior, caps, limits, max_age) -> tuple[str, ...]:
-        codes: list[str] = []
-        if "command_mode" in self._on:
-            unmet = unmet_command_modes(behavior, caps)
-            if unmet is None:
-                codes.append("command_contract_undeclared")
-            elif unmet:
-                codes.append("controller_interface_unavailable")
+    def _task(self, behavior, caps, condition, limits, policy) -> Task:
+        on = self._on
         offset = limits.get(RequirementKind.INITIAL_OFFSET_M)
-        if "reach" in self._on and offset is not None and offset > caps.max_initial_offset_m:
-            codes.append("start_outside_validated_envelope")
         deadline = limits.get(RequirementKind.DEADLINE_S)
-        if "cycle_time" in self._on and deadline is not None and deadline < caps.expected_duration_s:
-            codes.append("cycle_time_infeasible")
-        if not codes and "sensor_ready" in self._on:
-            obs = machine.observe()
-            if obs is None or obs.stamp.age_s > max_age:
-                codes.append("sensor_not_ready")
-        return tuple(codes)
+        force_limit = limits.get(RequirementKind.MAX_PROCESS_FORCE_N)
+        tilt_limit = limits.get(RequirementKind.MAX_TILT_DEG)
+        checks = []
+        if "reach" in on and offset is not None:
+            checks.append(("start_outside_validated_envelope", offset > caps.max_initial_offset_m))
+        if "cycle_time" in on and deadline is not None:
+            checks.append(("cycle_time_infeasible", deadline < caps.expected_duration_s))
+        live = []
+        if "force_ceiling" in on and force_limit is not None:
+            permitted = "recovery" in on and policy is not None and "process_force" in policy.permitted_conditions
+            recovery = Recovery(policy.max_recovery_actions, policy.settle_s) if permitted else None
+            live.append(Limit("force_ceiling", lambda o: abs(o.force_z_n) > force_limit, "force_limit", recovery))
+        if "tilt" in on and tilt_limit is not None:
+            live.append(Limit("tilt", lambda o: o.tilt_deg > tilt_limit, "tilt_limit"))
+        if "deadline" in on and deadline is not None:
+            live.append(Limit("deadline", lambda o: o.stamp.source_s > deadline, "deadline_exceeded"))
+        return Task(
+            required_modes=getattr(behavior, "required_command_modes", None),
+            offered_modes=caps.command_modes,
+            max_state_age_s=limits[RequirementKind.STATE_MAX_AGE_S],
+            # Watchdog and rejection timeouts: the machine's declared compliant-hold time.
+            max_untrusted_ticks=int(caps.max_hold_unobserved_s / caps.state_period_s),
+            complete=condition.evaluate,
+            admission_checks=tuple(checks),
+            limits=tuple(live),
+        )
 
     def run(self, realization: Realization, scenario: Scenario) -> SystemRun:
         machine = realization.machine
         condition = realization.condition_factory(scenario, realization.bundle)
         intent = systems.build_intent(scenario, condition)  # module lookup: the leak detector patches it
         limits = {r.kind: r.limit for r in intent.requirements}
-        max_age = limits[RequirementKind.STATE_MAX_AGE_S]
-        force_limit = limits.get(RequirementKind.MAX_PROCESS_FORCE_N)
-        tilt_limit = limits.get(RequirementKind.MAX_TILT_DEG)
-        deadline = limits.get(RequirementKind.DEADLINE_S)
-        policy = intent.recovery_policy
         t0 = time.perf_counter()
         caps = machine.capabilities()
         behavior = realization.behavior_factory()
-
-        def result(disposition, reason, observations=(), codes=(), **detail):
-            return SystemRun(
-                system=self.name,
-                disposition=disposition,
-                reason=reason,
-                refusal_codes=codes,
-                observations=tuple(observations),
-                wall_s=time.perf_counter() - t0,
-                detail=detail,
-            )
-
-        codes = self._pre_motion(machine, behavior, caps, limits, max_age)
-        if codes:
-            return result("REFUSED", "g1_pre_motion_refusal", codes=codes, refusal_stage="pre_motion")
-        try:
-            session = machine.open_session(
-                start_position_m=intent.start_position_m,
-                horizon_s=caps.execution_horizon_s,
-            )
-        except Exception as exc:
-            return result("ABORTED", f"machine_error_{type(exc).__name__}")
-        obs = session.observe()
-        if obs is None:
-            session.stop()
-            return result("ABORTED", "state_unavailable_at_start")
-        behavior.begin(intent, caps, obs)
-        observations: list[MachineObservation] = [obs]
-        # Watchdog and rejection timeouts: the machine's declared compliant-hold time.
-        max_untrusted = int(caps.max_hold_unobserved_s / caps.state_period_s)
-        untrusted = rejected = retries = 0
-        episode_t: float | None = None
-
-        def stop(disposition, reason):
-            session.stop()
-            return result(
-                disposition,
-                reason,
-                observations,
-                applied_command_times=tuple(getattr(session, "applied_command_times", ())),
+        task = self._task(behavior, caps, condition, limits, intent.recovery_policy)
+        adapter = _HebAdapter(machine, intent, caps)
+        out = self._supervisor.run(adapter, _Restartable(behavior, intent, caps), task)
+        detail: dict = {}
+        if out.stage == "admission":
+            detail = {"refusal_stage": "pre_motion"}
+        elif out.stage == "run":
+            detail = {
+                "applied_command_times": tuple(getattr(adapter.session, "applied_command_times", ())),
                 **divergence_detail(machine),
-            )
-
-        while True:
-            if "machine_fault" in self._on and str(machine.health().get("status", "ok")) != "ok":
-                return stop("ABORTED", "machine_unhealthy")
-            if "capability_loss" in self._on and unmet_command_modes(behavior, machine.capabilities()):
-                return stop("ABORTED", "controller_interface_lost")
-            if obs is None and "dropout" not in self._on:
-                obs = observations[-1]  # guard removed: act on the last sample
-            trusted = obs is not None and (obs.stamp.age_s <= max_age or "stale" not in self._on)
-            command = None
-            if not trusted:
-                untrusted += 1
-                if untrusted > max_untrusted:
-                    return stop("ABORTED", "watchdog_timeout")
-            else:
-                untrusted = 0
-                t = obs.stamp.source_s
-                skip = False
-                breached = (
-                    "force_ceiling" in self._on
-                    and force_limit is not None
-                    and abs(obs.force_z_n) > force_limit
-                )
-                if breached:
-                    permitted = (
-                        "recovery" in self._on
-                        and policy is not None
-                        and "process_force" in policy.permitted_conditions
-                    )
-                    if not permitted:
-                        return stop("ABORTED", "force_limit")
-                    if episode_t is None:
-                        if retries >= policy.max_recovery_actions:
-                            return stop("ABORTED", "recovery_budget_exhausted")
-                        retries += 1
-                        episode_t = t
-                        behavior.begin(intent, caps, obs)  # back off: restart from the live pose
-                        skip = True
-                    elif policy.settle_s > 0.0 and t - episode_t > policy.settle_s:
-                        return stop("ABORTED", "recovery_timeout")
-                else:
-                    episode_t = None
-                if "tilt" in self._on and tilt_limit is not None and obs.tilt_deg > tilt_limit:
-                    return stop("ABORTED", "tilt_limit")
-                if "deadline" in self._on and deadline is not None and t > deadline:
-                    return stop("ABORTED", "deadline_exceeded")
-                if episode_t is None and condition.evaluate(observations):
-                    return stop("COMPLETE", None)
-                if not skip:
-                    command = behavior.step(obs)
-            if command is not None:
-                accepted = session.apply(command).accepted
-                if "command_rejection" in self._on:
-                    rejected = 0 if accepted else rejected + 1
-                    if rejected > max_untrusted:
-                        return stop("ABORTED", "command_rejection_timeout")
-            session.step()
-            if session.ended:
-                break
-            obs = session.observe()
-            if obs is not None:
-                observations.append(obs)
-        if session.fault is not None and "machine_fault" in self._on:
-            return stop("ABORTED", f"machine_fault_{session.fault}")
-        if condition.evaluate(observations):
-            return stop("COMPLETE", None)
-        return stop("ABORTED", "horizon_exhausted")
+            }
+        return SystemRun(
+            system=self.name,
+            disposition=out.disposition,
+            reason="g1_pre_motion_refusal" if out.stage == "admission" else out.reason,
+            refusal_codes=out.codes,
+            observations=tuple(out.history),
+            wall_s=time.perf_counter() - t0,
+            detail=detail,
+        )

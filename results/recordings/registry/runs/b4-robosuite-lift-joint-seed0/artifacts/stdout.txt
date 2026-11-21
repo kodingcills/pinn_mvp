@@ -1,0 +1,1 @@
+{"motion_started": [{"payload_kinds": ["JointPositionTarget"], "state_period_s": 0.05}], "outcome": {"disposition": "COMPLETE", "reason": null, "refusal_codes": [], "task_success": true}, "seed": 0, "task_result": {"completion_time_s": 2.999999999999891, "n_contact_steps": 60, "n_steps": 60, "peak_force_n": 6.183814082754262, "peak_tilt_deg": 10.504771704452908, "success": true}}

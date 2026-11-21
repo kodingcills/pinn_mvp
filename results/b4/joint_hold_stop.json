@@ -1,0 +1,43 @@
+{
+  "after_stop": {
+    "eef_travel_after_event_m": 0.0029339802416558573,
+    "event_t_s": 1.0,
+    "final_speed_rad_s": 8.462094418062417e-05,
+    "first_held_step_t_s": 1.0500000000000007,
+    "max_target_error_rad": 0.009816345156394846,
+    "overshoot_rad": 0.009816345156394846,
+    "runtime_stop_t_s": 1.0000000000000007,
+    "sample_period_s": 0.05,
+    "speed_at_event_rad_s": 0.20158379890766318,
+    "stop_response_declared": "hold_position",
+    "stopped_threshold_rad_s": 0.01,
+    "time_to_stop_s": 0.15,
+    "window_end_s": 3.0
+  },
+  "clock": "sim (robosuite env.sim.data.time); samples are control steps, so times resolve to one period",
+  "during_temporal_hold": {
+    "eef_travel_after_event_m": 0.01336133983217684,
+    "episode_outcome": {
+      "disposition": "COMPLETE",
+      "reason": null,
+      "refusal_codes": [],
+      "task_success": true
+    },
+    "event_t_s": 0.95,
+    "final_speed_rad_s": 0.026466398069049966,
+    "hold_entered_t_s": 0.9500000000000007,
+    "hold_resumed_t_s": 1.400000000000001,
+    "max_target_error_rad": 0.05290201892845614,
+    "overshoot_rad": 0.0,
+    "sample_period_s": 0.05,
+    "speed_at_event_rad_s": 0.2459218849690173,
+    "stopped_threshold_rad_s": 0.01,
+    "target_constant_during_hold": true,
+    "time_to_stop_s": null,
+    "window_end_s": 1.4
+  },
+  "issue": 18,
+  "limits": "HARDWARE_NOT_VALIDATED: simulated controller and plant; no real Panda measured",
+  "surface": "joint_position (robosuite 1.5.2 JointPositionController, absolute input, kp=50, damping_ratio=1)",
+  "task": "robosuite/1.5.2/Lift, seed 0"
+}

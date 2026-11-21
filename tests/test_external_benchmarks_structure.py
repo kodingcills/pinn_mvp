@@ -11,6 +11,7 @@ EXPECTED_FILES = {
     "maniskill_task.py",
     "robosuite_lift_policy.py",
     "robosuite_lift_task.py",
+    "robosuite_lift_joint.py",
 }
 
 

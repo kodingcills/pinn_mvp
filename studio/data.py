@@ -189,7 +189,7 @@ def series(log_dir: Path, dt: float) -> dict[str, list[Any]]:
             continue
         row = json.loads(line)
         if row["kind"] == "command":
-            target = row["command"]["target_pose_m"]
+            target = row["command"].get("target_pose_m")  # None for a joint-position command (#18)
         elif row["kind"] == "observation":
             obs = row["observation"]
             out["t_s"].append(row["tick"] * dt)

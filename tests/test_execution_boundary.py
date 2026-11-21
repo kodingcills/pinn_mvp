@@ -10,6 +10,7 @@ from pathlib import Path
 import pytest
 
 from haplous.adapters.legacy import CommandOutcome, LegacySession
+from haplous.capabilities import CommandMode
 from haplous.intent import SuccessCondition
 from haplous.machine import (
     Ack,
@@ -189,13 +190,13 @@ TARGET = CartesianImpedanceTarget(target_pose_m=(0.0, 0.0, -0.01), k_z_n_per_m=5
 ])
 def test_legacy_session_answers_each_envelope_synchronously(outcome, status):
     inner = _SimSession(outcome)
-    ack = LegacySession(inner).submit(_envelope(TARGET))
+    ack = LegacySession(inner, frozenset({CommandMode.CARTESIAN_IMPEDANCE})).submit(_envelope(TARGET))
     assert inner.applied == [TARGET]
     assert ack == Ack(7, status, outcome.reason)
 
 
 def test_legacy_session_rejects_a_payload_it_does_not_declare():
     inner = _SimSession(CommandOutcome(accepted=True))
-    ack = LegacySession(inner).submit(_envelope(object()))
+    ack = LegacySession(inner, frozenset({CommandMode.CARTESIAN_IMPEDANCE})).submit(_envelope(object()))
     assert inner.applied == [], "no silent substitution"
     assert ack == Ack(7, AckStatus.REJECTED, "unsupported_payload")

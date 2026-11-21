@@ -23,7 +23,7 @@ from pathlib import Path
 from typing import Any
 
 from haplous.adapters.legacy import CommandOutcome, SimSession
-from haplous.machine import CartesianImpedanceTarget, Machine, MachineObservation
+from haplous.machine import CommandPayload, Machine, MachineObservation
 
 FORMAT = "haplous-episode-log-v1"
 TELEMETRY = "telemetry.jsonl"
@@ -64,7 +64,7 @@ class EpisodeLog:
         self._line(self._telemetry, {"tick": tick, "host_monotonic_ns": time.monotonic_ns(),
                                      "kind": "observation", "observation": _observation_row(obs)})
 
-    def command(self, tick: int, command: CartesianImpedanceTarget, outcome: CommandOutcome) -> None:
+    def command(self, tick: int, command: CommandPayload, outcome: CommandOutcome) -> None:
         self._line(self._telemetry, {"tick": tick, "host_monotonic_ns": time.monotonic_ns(),
                                      "kind": "command", "command": asdict(command), "outcome": asdict(outcome)})
 
@@ -102,7 +102,7 @@ class LoggingSession:
         self.log.observation(self.tick, obs)
         return obs
 
-    def apply(self, command: CartesianImpedanceTarget) -> CommandOutcome:
+    def apply(self, command: CommandPayload) -> CommandOutcome:
         outcome = self.inner.apply(command)
         self.log.command(self.tick, command, outcome)
         return outcome

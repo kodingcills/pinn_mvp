@@ -1,0 +1,3 @@
+{"event": "phase_start", "phase": "integration", "t": 1795278709.477076, "note": ""}
+{"event": "acceptance_run", "arm": "benchmarks.e20_haplous.arm:run", "start": 1795278876.3908901, "wall_s": 30.1, "passed": 15, "total": 15}
+{"event": "phase_end", "phase": "integration", "t": 1795278910.2124248, "note": ""}

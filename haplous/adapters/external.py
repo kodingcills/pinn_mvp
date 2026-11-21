@@ -18,7 +18,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Mapping, Protocol, runtime_checkable
 
 from haplous.adapters.legacy import CommandOutcome
-from haplous.machine import CartesianImpedanceTarget, MachineObservation
+from haplous.machine import CommandPayload, MachineObservation
 
 if TYPE_CHECKING:
     from haplous.adapters.legacy import SimSession
@@ -40,7 +40,7 @@ class ExternalTask(Protocol):
 
     def observe(self) -> MachineObservation | None: ...
 
-    def apply_command(self, command: CartesianImpedanceTarget) -> CommandOutcome: ...
+    def apply_command(self, command: CommandPayload) -> CommandOutcome: ...
 
     def step(self) -> None: ...
 
@@ -64,7 +64,7 @@ class ExternalMachineSession:
     def observe(self) -> MachineObservation | None:
         return self._task.observe()
 
-    def apply(self, command: CartesianImpedanceTarget) -> CommandOutcome:
+    def apply(self, command: CommandPayload) -> CommandOutcome:
         return self._task.apply_command(command)
 
     def step(self) -> None:

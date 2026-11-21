@@ -69,7 +69,7 @@ class RobosuiteLiftTask:
 
         if self._env is not None:
             self._env.close()
-        config = suite.load_composite_controller_config(robot="Panda")
+        config = self._make_controller_config(suite.load_composite_controller_config(robot="Panda"))
         self._controller_config = config
         self._env = suite.make(
             env_name="Lift",
@@ -96,6 +96,9 @@ class RobosuiteLiftTask:
         self._peak_tilt_deg = 0.0
         self._completion_time_s = None
         self._first_success_step = None
+
+    def _make_controller_config(self, config: dict) -> dict:
+        return config
 
     def capabilities(self) -> MachineCapabilities:
         return MachineCapabilities(

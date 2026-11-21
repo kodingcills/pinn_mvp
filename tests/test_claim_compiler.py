@@ -66,7 +66,9 @@ def test_compilation_is_deterministic(plans):
 
 def test_joint_position_claim_is_unsupported():
     result = cc.compile_claim(claims_run.load_spec(str(SPECS / "joint_position_unsupported.json")))
-    assert {"unknown_capability", "capability_absent_from_every_profile"} <= codes(result)
+    # joint_position is a real mode since #18, but no HEB machine profile offers it.
+    assert "capability_absent_from_every_profile" in codes(result)
+    assert "unknown_capability" not in codes(result)
 
 
 @pytest.mark.parametrize("changes, code", [
