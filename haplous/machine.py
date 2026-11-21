@@ -96,8 +96,19 @@ class JointPositionTarget:
     positions_rad: tuple[float, ...]
 
 
+@dataclass(frozen=True)
+class JointVelocityTarget:
+    """Joint-velocity command surface: one velocity per arm joint, in rad/s,
+    in the joint order of the machine's controller, plus the binary gripper
+    command (-1 open, +1 close) that travels with it. The machine applies
+    an accepted target until a newer one replaces it or it is stopped."""
+
+    velocities_rad_s: tuple[float, ...]
+    gripper: float
+
+
 # Every command surface an ActionEnvelope can carry (ARCH-001 decision 3).
-CommandPayload = CartesianImpedanceTarget | JointPositionTarget
+CommandPayload = CartesianImpedanceTarget | JointPositionTarget | JointVelocityTarget
 
 
 @dataclass(frozen=True)

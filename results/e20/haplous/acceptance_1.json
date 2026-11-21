@@ -1,0 +1,144 @@
+{
+ "cases": [
+  {
+   "case": "A1_nominal",
+   "seed": 0,
+   "outcome": "COMPLETE",
+   "reason": null,
+   "grader": true,
+   "pass": true,
+   "problems": []
+  },
+  {
+   "case": "A1_nominal",
+   "seed": 1,
+   "outcome": "COMPLETE",
+   "reason": null,
+   "grader": true,
+   "pass": true,
+   "problems": []
+  },
+  {
+   "case": "A1_nominal",
+   "seed": 2,
+   "outcome": "COMPLETE",
+   "reason": null,
+   "grader": true,
+   "pass": true,
+   "problems": []
+  },
+  {
+   "case": "A1_nominal",
+   "seed": 3,
+   "outcome": "COMPLETE",
+   "reason": null,
+   "grader": true,
+   "pass": true,
+   "problems": []
+  },
+  {
+   "case": "A1_nominal",
+   "seed": 4,
+   "outcome": "COMPLETE",
+   "reason": null,
+   "grader": true,
+   "pass": true,
+   "problems": []
+  },
+  {
+   "case": "A1_nominal",
+   "seed": 5,
+   "outcome": "COMPLETE",
+   "reason": null,
+   "grader": true,
+   "pass": true,
+   "problems": []
+  },
+  {
+   "case": "A1_nominal",
+   "seed": 6,
+   "outcome": "COMPLETE",
+   "reason": null,
+   "grader": true,
+   "pass": true,
+   "problems": []
+  },
+  {
+   "case": "A1_nominal",
+   "seed": 7,
+   "outcome": "COMPLETE",
+   "reason": null,
+   "grader": true,
+   "pass": true,
+   "problems": []
+  },
+  {
+   "case": "A1_nominal",
+   "seed": 9,
+   "outcome": "COMPLETE",
+   "reason": null,
+   "grader": true,
+   "pass": true,
+   "problems": []
+  },
+  {
+   "case": "A2_contract_refusal",
+   "seed": 0,
+   "outcome": "REFUSED",
+   "reason": "unsupported_control_mode",
+   "grader": false,
+   "pass": true,
+   "problems": []
+  },
+  {
+   "case": "A3_stale_state",
+   "seed": 0,
+   "outcome": "ABORTED",
+   "reason": "temporal_hold_budget_exhausted",
+   "grader": false,
+   "pass": true,
+   "problems": []
+  },
+  {
+   "case": "A4_late_ack",
+   "seed": 0,
+   "outcome": "ABORTED",
+   "reason": "temporal_hold_budget_exhausted",
+   "grader": false,
+   "pass": true,
+   "problems": []
+  },
+  {
+   "case": "A5_duplicate_ack",
+   "seed": 0,
+   "outcome": "COMPLETE",
+   "reason": null,
+   "grader": true,
+   "pass": true,
+   "problems": []
+  },
+  {
+   "case": "A6_disconnect",
+   "seed": 0,
+   "outcome": "ABORTED",
+   "reason": "machine_fault_disconnected",
+   "grader": false,
+   "pass": true,
+   "problems": []
+  },
+  {
+   "case": "A7_authority_revoked",
+   "seed": 0,
+   "outcome": "ABORTED",
+   "reason": "authority_revoked",
+   "grader": false,
+   "pass": true,
+   "problems": []
+  }
+ ],
+ "passed": 15,
+ "total": 15,
+ "all_pass": true,
+ "arm": "benchmarks.e20_haplous.arm:run",
+ "wall_s": 30.1
+}
