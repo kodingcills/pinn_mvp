@@ -23,7 +23,7 @@ robotics developer reviews the workflow and the effort accounting.
 | Machine harness | `benchmarks/e20_shared/driver.py` (`c623c1ef98f307dc`): neutral vendor-style driver with asynchronous acks, exclusive control token, latched stop, fault injection |
 | Task policy | `benchmarks/e20_shared/lift_policy.py` (`cb9398e8a25359e9`), 9/10 nominal |
 | Success predicate on observed state | `acceptance.lifted()` (cube z > 0.84 m); the grader stays harness-only |
-| Acceptance suite | `benchmarks/e20_shared/acceptance.py` (`90e9793bb6d6c60b`), runner `scripts/e20_acceptance.py` (`8fa86e7f64f57964`) |
+| Acceptance suite | `benchmarks/e20_shared/acceptance.py` (`18eca2710b36f0d8`), runner `scripts/e20_acceptance.py` (`8fa86e7f64f57964`) |
 | Seeds | nominal 0–7 and 9; faults on seed 0 |
 
 Acceptance cases (hard gate, all 15 must pass), graded from the driver's own logs:

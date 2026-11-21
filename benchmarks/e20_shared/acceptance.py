@@ -9,7 +9,7 @@ harness can reach. Thresholds are fixed here and may not be changed by either ar
 """
 from __future__ import annotations
 
-from typing import Callable
+from collections.abc import Callable
 
 import numpy as np
 
@@ -69,7 +69,7 @@ def _evidence_ok(ep: dict) -> list[str]:
     if r.get("outcome") != "COMPLETE" and not r.get("reason"):
         problems.append("non-COMPLETE outcome without a reason")
     ts = [e.get("t_s") for e in r.get("events", [])]
-    if not ts or any(b < a for a, b in zip(ts, ts[1:])):
+    if not ts or any(b < a for a, b in zip(ts, ts[1:], strict=False)):
         problems.append("events missing or not time-ordered")
     if any(s["valid_until_s"] - s["t_s"] > MAX_VALIDITY_S + 1e-9 for s in ep["sends"]):
         problems.append(f"a command validity horizon exceeds {MAX_VALIDITY_S} s")
