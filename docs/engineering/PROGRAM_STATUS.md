@@ -39,4 +39,4 @@ Classification: VALIDATED LIMITATION (research-substrate tests), not product blo
 1. #18 and #22 owners working; on reports: independent verify, integrate (authored as kodingcills), issue comment.
 2. Gate C decision from E19 (#22 owner). Then Gate D remaining children and Gate E (integration beta, cold reader), then the release readout. Re-run HEB parity at HEAD to close the b4 caveat.
 3. Open the PR to `main` (do not merge without operator approval) once Gate B lands, or earlier if the operator asks.
-4. Full suite on `6a4de75`: 975 passed, 4 failed (the known 4), 1 skipped, 1 xfailed (708 s).
+4. Full suite on `658e01c` (after #18): 1049 passed, 4 failed (the known 4), 1 skipped, 1 xfailed (820 s).
