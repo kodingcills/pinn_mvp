@@ -1,0 +1,98 @@
+{
+ "policy": "benchmarks/e20_shared/lift_policy.py",
+ "seeds": [
+  0,
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9
+ ],
+ "episodes": [
+  {
+   "seed": 0,
+   "success": true,
+   "steps": 79,
+   "sim_time_s": 3.95,
+   "finite": true,
+   "final_phase": "lift"
+  },
+  {
+   "seed": 1,
+   "success": true,
+   "steps": 79,
+   "sim_time_s": 3.95,
+   "finite": true,
+   "final_phase": "lift"
+  },
+  {
+   "seed": 2,
+   "success": true,
+   "steps": 82,
+   "sim_time_s": 4.1,
+   "finite": true,
+   "final_phase": "lift"
+  },
+  {
+   "seed": 3,
+   "success": true,
+   "steps": 85,
+   "sim_time_s": 4.25,
+   "finite": true,
+   "final_phase": "lift"
+  },
+  {
+   "seed": 4,
+   "success": true,
+   "steps": 86,
+   "sim_time_s": 4.3,
+   "finite": true,
+   "final_phase": "lift"
+  },
+  {
+   "seed": 5,
+   "success": true,
+   "steps": 80,
+   "sim_time_s": 4.0,
+   "finite": true,
+   "final_phase": "lift"
+  },
+  {
+   "seed": 6,
+   "success": true,
+   "steps": 83,
+   "sim_time_s": 4.15,
+   "finite": true,
+   "final_phase": "lift"
+  },
+  {
+   "seed": 7,
+   "success": true,
+   "steps": 80,
+   "sim_time_s": 4.0,
+   "finite": true,
+   "final_phase": "lift"
+  },
+  {
+   "seed": 8,
+   "success": false,
+   "steps": 400,
+   "final_phase": "lift",
+   "finite": true,
+   "cube_z": 0.8215
+  },
+  {
+   "seed": 9,
+   "success": true,
+   "steps": 84,
+   "sim_time_s": 4.2,
+   "finite": true,
+   "final_phase": "lift"
+  }
+ ],
+ "successes": 9
+}
