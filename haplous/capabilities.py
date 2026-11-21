@@ -9,13 +9,14 @@ from enum import Enum
 from typing import Any
 
 from haplous.intent import ExecutionIntent, RequirementKind
-from haplous.machine import CartesianImpedanceTarget, JointPositionTarget
+from haplous.machine import CartesianImpedanceTarget, JointPositionTarget, JointVelocityTarget
 
 
 class CommandMode(Enum):
     CARTESIAN_IMPEDANCE = "cartesian_impedance"
     FORCE_CONTROLLED_DESCENT = "force_controlled_descent"
     JOINT_POSITION = "joint_position"
+    JOINT_VELOCITY = "joint_velocity"
 
 
 # The command modes each payload type realizes. A session accepts a payload
@@ -25,6 +26,7 @@ PAYLOAD_MODES: dict[type, frozenset[CommandMode]] = {
         {CommandMode.CARTESIAN_IMPEDANCE, CommandMode.FORCE_CONTROLLED_DESCENT}
     ),
     JointPositionTarget: frozenset({CommandMode.JOINT_POSITION}),
+    JointVelocityTarget: frozenset({CommandMode.JOINT_VELOCITY}),
 }
 
 
