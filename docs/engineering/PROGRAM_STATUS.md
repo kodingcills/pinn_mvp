@@ -44,4 +44,5 @@ Classification: VALIDATED LIMITATION (research-substrate tests), not product blo
 2. Gate C next hypothesis: proposed on #11 (integration effort; async-controller semantics vs a fair G1).
 3. Gate D remaining: counterexample minimisation / boundary search, plots, Studio Performance Atlas and issue-from-replay.
 4. Gate E: integration beta and cold-reader handoff; then `PRODUCT_RELEASE_READOUT.md`.
-5. Re-run HEB parity at HEAD (closes the b4 caveat from the Gate B review).
+5. Done: HEB parity at HEAD, `results/b6/parity.json`, 108/108 identical vs `76063e8` (closes the Gate B b4 caveat).
+6. E20 (Gate C, integration effort vs reusable G1): feasibility PASS (`E20_feasibility.md`), pre-registration frozen at `f95b49b`; arms H and G started 2026-11-21T16:31Z in isolated worktrees; then one combined verifier.
