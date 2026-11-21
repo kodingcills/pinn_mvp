@@ -5,7 +5,11 @@ Backlog: GitHub Issues. This file holds only the current state and the next acti
 
 - Work branch: `claude/magical-curie-si1vjr`, restarted from `main` @ `a8541bf` (PR #8 merge).
 - Nothing runs between sessions. Resume from this file and the open issues.
-- Usage: `USAGE_NOT_MEASURED`.
+- Usage: about $379 / 725M tokens / 4 h agent time by 2026-11-21 (operator's session meter);
+  driven mostly by per-issue owner + verifier subagents.
+- Cost rule (operator, 2026-11-21): one combined independent review per gate, not per issue;
+  small fixes done directly by the coordinator without an agent; no long simulation re-runs
+  unless the code under test changed since the last run.
 - Commit attribution (operator, 2026-11-19): author and committer `kodingcills`; no Claude
   co-author or session trailers. Branch commits since `a8541bf` were rewritten to match
   (backup ref `backup/pre-author-rewrite` local only); SHAs quoted in issue comments before
